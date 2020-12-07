@@ -1,0 +1,9 @@
+name: snwplugin
+version: 1.0
+author: JakeDaDream
+main: me.jakedadream.snwplugin.snwplugin
+api-version: 1.16
+commands:
+  givecoin:
+    description: Gives player a coin
+    usage: /<command>
