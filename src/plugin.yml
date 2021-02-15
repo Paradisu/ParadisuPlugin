@@ -7,3 +7,12 @@ commands:
   givecoin:
     description: Gives player a SNW coin
     usage: /<command>
+  thruwand:
+    description: Gives player a //thru wand
+    usage: /<command>
+  LlamazBanWand:
+    description: Bans llamaz on right click
+    usage: /<command>
+  mhat:
+    description: Puts a model on your head
+    usage: /<command>
