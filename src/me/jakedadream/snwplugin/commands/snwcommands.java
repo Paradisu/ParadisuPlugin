@@ -12,31 +12,29 @@ public class snwcommands implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage(ChatColor.RED + "Only players can use that command!"); // Removes console's ability to spawn in a coin
+            sender.sendMessage(ChatColor.RED + "Only players can use that command!");
             return true;
         }
         Player player = (Player) sender;
-        if (cmd.getName().equalsIgnoreCase("givecoin")) {
-            player.getInventory().addItem(ItemManager.createCoin());  // Add coins to inventory
-        }
 
-        if (!(sender instanceof Player)) {
-            sender.sendMessage(ChatColor.RED + "Only players can use that command!"); // Removes console's ability to spawn in a coin
-            return true;
+        switch (cmd.getName().toLowerCase()) {
+            case "givecoin":
+                player.getInventory().addItem(ItemManager.createCoin());
+                return true;
+            case "launch":
+                player.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "Zoooom!");
+                if (args.length == 0) {
+                    // /launch
+                    player.setVelocity(player.getLocation().getDirection().multiply(2).setY(2));
+                } else {
+                    // /launch <number>
+                    player.setVelocity(player.getLocation().getDirection().multiply(Integer.parseInt(args[0])).setY(2));
+                }
+                return true;
+            default:
+                return false;
+                //complain
         }
-        Player playeruser = (Player) sender;
-        if (cmd.getName().equalsIgnoreCase("thruwand")) {
-            playeruser.getInventory().addItem(ItemManager.createThruWand());  // Add thruwand to inventory
-        }
-
-        if (!(sender instanceof Player)) {
-            sender.sendMessage(ChatColor.RED + "Only players can use that command!"); // Removes console's ability to spawn in a coin
-            return true;
-        }
-        Player playeruser2 = (Player) sender;
-        if (cmd.getName().equalsIgnoreCase("llamazbanwand")) {
-            playeruser.getInventory().addItem(ItemManager.createLLamazBanWand());  // Add llamazbanwand to inventory
-        }
-        return true;
     }
+
 }
