@@ -1,7 +1,5 @@
 package me.jakedadream.snwplugin.events;
 
-import com.sun.xml.internal.ws.api.message.Packet;
-import com.sun.xml.internal.ws.client.dispatch.PacketDispatch;
 import me.jakedadream.snwplugin.items.ItemManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
@@ -10,10 +8,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
 
 import static org.bukkit.Bukkit.*;
 
@@ -66,5 +65,31 @@ public class snwevents implements Listener {
                 }
             }
         }
+    }
+    @EventHandler
+    public static void WearHatEvent(PlayerInteractEvent wearhat) {
+        Player player = wearhat.getPlayer();
+
+        switch(((Damageable)player.getEquipment().getItemInMainHand().getItemMeta()).getDamage()) {
+            case 16: case 24: case 25: case 26: case 27: case 28: case 29: case 41: case 53: case 60: case 64: case 65: case 66:
+                if (wearhat.getAction() == Action.RIGHT_CLICK_AIR) {
+
+                    if (wearhat.getItem() != null) {
+                        ItemStack[] armor = player.getInventory().getArmorContents();
+                        ItemStack swap = armor[3];
+                        armor[3] = player.getEquipment().getItemInMainHand();
+                        player.getInventory().setArmorContents(armor);
+                        player.getInventory().setItemInMainHand(swap);
+
+                        // player.getInventory().getItemInMainHand().setType(Material.AIR);
+
+
+                        break;
+
+
+                    }
+                }
+        }
+
     }
 }
