@@ -70,26 +70,21 @@ public class snwevents implements Listener {
     public static void WearHatEvent(PlayerInteractEvent wearhat) {
         Player player = wearhat.getPlayer();
 
-        switch(((Damageable)player.getEquipment().getItemInMainHand().getItemMeta()).getDamage()) {
+        switch(((Damageable)player.getInventory().getItemInMainHand().getItemMeta()).getDamage()) {
             case 16: case 24: case 25: case 26: case 27: case 28: case 29: case 41: case 53: case 60: case 64: case 65: case 66:
-                if (wearhat.getAction() == Action.RIGHT_CLICK_AIR) {
+                if (wearhat.getAction() == Action.RIGHT_CLICK_AIR && wearhat.getItem() != null) {
+                    ItemStack[] armor = player.getInventory().getArmorContents();
+                    ItemStack swap = armor[3];
+                    armor[3] = player.getInventory().getItemInMainHand();
+                    player.getInventory().setArmorContents(armor);
+                    player.getInventory().setItemInMainHand(swap);
 
-                    if (wearhat.getItem() != null) {
-                        ItemStack[] armor = player.getInventory().getArmorContents();
-                        ItemStack swap = armor[3];
-                        armor[3] = player.getEquipment().getItemInMainHand();
-                        player.getInventory().setArmorContents(armor);
-                        player.getInventory().setItemInMainHand(swap);
-
-                        // player.getInventory().getItemInMainHand().setType(Material.AIR);
-
-
-                        break;
-
-
-                    }
+                    // player.getInventory().getItemInMainHand().setType(Material.AIR);
                 }
+                break;
+            default:
+                player.sendMessage("You can't wear that item!"); //TODO @jake edit message
+                break;
         }
-
     }
 }
