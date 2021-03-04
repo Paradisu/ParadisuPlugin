@@ -2,15 +2,14 @@ package me.jakedadream.snwplugin.events;
 
 import me.jakedadream.snwplugin.items.ItemManager;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerInteractAtEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 
@@ -60,7 +59,7 @@ public class snwevents implements Listener {
             if (rcevent2.getItem() != null) {
                 if (rcevent2.getItem().getItemMeta().hashCode() == ItemManager.createLLamazBanWand().getItemMeta().hashCode()) {
                     if (user.hasPermission("litebans.ban")) {
-                        user.performCommand("litebans:ban Lord_of_llamaz §b§lGet Rekt Nerd");
+                        user.performCommand("litebans:ban Lord_of_llamaz §7§lLlamaz ban wand ban: You were doing something to piss someone off. Stop it.");
                     }
                 }
             }
@@ -70,8 +69,10 @@ public class snwevents implements Listener {
     public static void WearHatEvent(PlayerInteractEvent wearhat) {
         Player player = wearhat.getPlayer();
 
+        if (player.getInventory().getItemInMainHand().getType() == Material.AIR)
+            return;
         switch(((Damageable)player.getEquipment().getItemInMainHand().getItemMeta()).getDamage()) {
-            case 16: case 24: case 25: case 26: case 27: case 28: case 29: case 41: case 53: case 60: case 64: case 65: case 66:
+            case 16: case 24: case 25: case 26: case 27: case 28: case 29: case 41: case 53: case 60: case 64: case 65: case 66: case 76: case 77: case 78:
                 if (wearhat.getAction() == Action.RIGHT_CLICK_AIR) {
 
                     if (wearhat.getItem() != null) {
@@ -81,15 +82,18 @@ public class snwevents implements Listener {
                         player.getInventory().setArmorContents(armor);
                         player.getInventory().setItemInMainHand(swap);
 
-                        // player.getInventory().getItemInMainHand().setType(Material.AIR);
 
 
                         break;
 
-
                     }
                 }
         }
-
     }
-}
+    @EventHandler
+    public static void TableFlipEvent (AsyncPlayerChatEvent pchat) {
+        String msg = pchat.getMessage();
+        msg = msg.replace(":tableflip:","(╯°□°）╯︵ ┻━┻");
+        pchat.setMessage(msg);
+        }
+    }

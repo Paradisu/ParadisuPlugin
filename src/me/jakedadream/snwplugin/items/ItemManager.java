@@ -134,7 +134,16 @@ public class ItemManager {
             "§eHissy §fthe §2§lGoomba", //66
             "§cPirahna §aPlant §fJaw", //67
             "§cPirahna §aPlant §fStem", //68
-            "§cPirahna §aPlant §fMouth" //69
+            "§cPirahna §aPlant §fMouth", //69
+            "§fTex's §dSimp §6Compass", //70
+            "§fSalty's §dSimp §6Compass", //71
+            "§fUnconfirmable's §dSimp §6Compass", //72
+            "§fEboy's §dSimp §6Compass", //73
+            "§fJake's §dSimp §6Compass", //74
+            "§4§lShy §f§lGuy", //75
+            "§4§lWanda's Headband", //76
+            "§0§lMais §8§lBunny Ears", //77
+            "§6§lLlama Hat" //78
     };
 
 

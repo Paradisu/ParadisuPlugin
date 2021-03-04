@@ -25,3 +25,6 @@ commands:
   launch:
     description: Launches you in the air
     usage: /<command> <number>
+  idlist:
+    description: Gives list of Model IDs
+    usage: /<command>
