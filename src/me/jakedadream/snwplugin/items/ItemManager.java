@@ -3,10 +3,6 @@ package me.jakedadream.snwplugin.items;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
@@ -62,6 +58,33 @@ public class ItemManager {
             meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
             item.setItemMeta(meta);
             return item;
+    }
+
+        public static ItemStack createAcceptButton() {
+            ItemStack item = new ItemStack(Material.LIME_CONCRETE, 1);
+            ItemMeta meta = item.getItemMeta();
+            meta.setDisplayName("§a§lAccept!");
+            meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+            item.setItemMeta(meta);
+            return item;
+
+    }
+        public static ItemStack createDenyButton() {
+            ItemStack item = new ItemStack(Material.RED_CONCRETE, 1);
+            ItemMeta meta = item.getItemMeta();
+            meta.setDisplayName("§c§lClose Menu!");
+            meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+            item.setItemMeta(meta);
+            return item;
+
+    }        public static ItemStack createBlankButton() {
+            ItemStack item = new ItemStack(Material.SUNFLOWER, 1);
+            ItemMeta meta = item.getItemMeta();
+            meta.setDisplayName("§7");
+            meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+            item.setItemMeta(meta);
+            return item;
+
     }
 
     private static String[] names = {
@@ -143,7 +166,20 @@ public class ItemManager {
             "§4§lShy §f§lGuy", //75
             "§4§lWanda's Headband", //76
             "§0§lMais §8§lBunny Ears", //77
-            "§6§lLlama Hat" //78
+            "§6§lLlama Hat", //78
+            "§b§lLight Blue §fYoshi Ride Cart", //79
+            "§a§lLight Green §fYoshi Ride Cart", //80
+            "§5§lPurple §fYoshi Ride Cart", //81
+            "§6§lOrange §fYoshi Ride Cart", //82
+            "§c§lRed §fYoshi Ride Cart", //83
+            "§d§lPink §fYoshi Ride Cart", //84
+            "§3§lBlue §fYoshi Ride Cart", //85
+            "§e§lYellow §fYoshi Ride Cart", //86
+            "§fYoshi Ride Cart §cBars", //87
+            "§8§lBowser's Castle §7Recycle Can", //88
+            "§8§lBowser's Castle §7Trash Can", //89
+            "§3§lSuper Nintendo World §fRecycle Can", //90
+            "§3§lSuper Nintendo World §fTrash Can", //91
     };
 
 

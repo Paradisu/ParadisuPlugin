@@ -154,7 +154,20 @@ public class snwcommands implements CommandExecutor {
                         "§7|  §4§lShy §f§lGuy §6§l//75\n" +
                         "§7|  §4§lWanda's Headband §6§l//76\n" +
                         "§7|  §0§lMais §8§lBunny Ears §6§l//77\n" +
-                        "§7|  §6§lLlama Hat §6§l//78");
+                        "§7|  §6§lLlama Hat §6§l//78\n" +
+                        "§7|  §b§lLight Blue §fYoshi Ride Cart §6§l//79\n" +
+                        "§7|  §a§lLight Green §fYoshi Ride Cart §6§l//80\n" +
+                        "§7|  §5§lPurple §fYoshi Ride Cart §6§l//81\n" +
+                        "§7|  §6§lOrange §fYoshi Ride Cart §6§l//82\n" +
+                        "§7|  §c§lRed §fYoshi Ride Cart §6§l//83\n" +
+                        "§7|  §d§lPink §fYoshi Ride Cart §6§l//84\n" +
+                        "§7|  §3§lBlue §fYoshi Ride Cart §6§l//85\n" +
+                        "§7|  §e§lYellow §fYoshi Ride Cart §6§l//86\n" +
+                        "§7|  §fYoshi Ride Cart §cBars §6§l//87\n" +
+                        "§7|  §8§lBowser's Castle §7Recycle Can §6§l//88\n" +
+                        "§7|  §8§lBowser's Castle §7Trash Can §6§l//89\n" +
+                        "§7|  §3§lSuper Nintendo World §fRecycle Can §6§l//90\n" +
+                        "§7|  §3§lSuper Nintendo World §fTrash Can §6§l//91");
                 return true;
 
 
