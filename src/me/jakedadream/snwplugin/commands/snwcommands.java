@@ -62,17 +62,6 @@ public class snwcommands implements CommandExecutor {
                 }
                 return true;
 
-            case "launch":
-                player.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "Zoooom!");
-                if (args.length == 0) {
-                    // /launch
-                    player.setVelocity(player.getLocation().getDirection().multiply(2).setY(2));
-                } else {
-                    // /launch <number>
-                    player.setVelocity(player.getLocation().getDirection().multiply(Integer.parseInt(args[0])).setY(2));
-                }
-                return true;
-
             case "idlist":
                 player.sendMessage("" +
                         "§7| §c§lMODEL ID LIST\n" +
@@ -167,9 +156,10 @@ public class snwcommands implements CommandExecutor {
                         "§7|  §8§lBowser's Castle §7Recycle Can §6§l//88\n" +
                         "§7|  §8§lBowser's Castle §7Trash Can §6§l//89\n" +
                         "§7|  §3§lSuper Nintendo World §fRecycle Can §6§l//90\n" +
-                        "§7|  §3§lSuper Nintendo World §fTrash Can §6§l//91");
+                        "§7|  §3§lSuper Nintendo World §fTrash Can §6§l//91\n" +
+                        "§7|  §a§lYoshi §fMerchandise §aKart §6§l//92\n" +
+                        "§7|  §3§lWater§9§lWorld §f§lSpinner §6§l//92");
                 return true;
-
 
             default:
                 return false;

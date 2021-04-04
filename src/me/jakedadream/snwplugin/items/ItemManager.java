@@ -13,6 +13,10 @@ import java.util.List;
 
 public class ItemManager {
 
+    public static ItemStack denybutton = createDenyButton();
+    public static ItemStack acceptbutton = createAcceptButton();
+    public static ItemStack blankbutton = createBlankButton();
+
     public static ItemStack createCoin() {
         ItemStack item = new ItemStack(Material.GOLD_NUGGET, 1);
         ItemMeta meta = item.getItemMeta();
@@ -60,7 +64,7 @@ public class ItemManager {
             return item;
     }
 
-        public static ItemStack createAcceptButton() {
+        private static ItemStack createAcceptButton() {
             ItemStack item = new ItemStack(Material.LIME_CONCRETE, 1);
             ItemMeta meta = item.getItemMeta();
             meta.setDisplayName("§a§lAccept!");
@@ -69,7 +73,7 @@ public class ItemManager {
             return item;
 
     }
-        public static ItemStack createDenyButton() {
+        private static ItemStack createDenyButton() {
             ItemStack item = new ItemStack(Material.RED_CONCRETE, 1);
             ItemMeta meta = item.getItemMeta();
             meta.setDisplayName("§c§lClose Menu!");
@@ -77,7 +81,8 @@ public class ItemManager {
             item.setItemMeta(meta);
             return item;
 
-    }        public static ItemStack createBlankButton() {
+    }
+        private static ItemStack createBlankButton() {
             ItemStack item = new ItemStack(Material.SUNFLOWER, 1);
             ItemMeta meta = item.getItemMeta();
             meta.setDisplayName("§7");
@@ -180,6 +185,8 @@ public class ItemManager {
             "§8§lBowser's Castle §7Trash Can", //89
             "§3§lSuper Nintendo World §fRecycle Can", //90
             "§3§lSuper Nintendo World §fTrash Can", //91
+            "§a§lYoshi §fMerchandise §aKart", // 92
+            "§3§lWater§9§lWorld §f§lSpinner" //93
     };
 
 

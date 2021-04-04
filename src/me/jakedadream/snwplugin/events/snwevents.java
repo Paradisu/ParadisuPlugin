@@ -9,16 +9,20 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 
+import java.util.HashMap;
+
 import static org.bukkit.Bukkit.*;
 
 public class snwevents implements Listener {
+
+    private static HashMap < Player, ItemStack > ident = new HashMap<>();
 
     @EventHandler
     public static void onJoin(PlayerJoinEvent jEvent) {
@@ -165,41 +169,64 @@ public class snwevents implements Listener {
     }
     @EventHandler
     public void InvenClick(InventoryClickEvent event) {
-        Player player = event.getWhoClicked();
+        Player player = (Player) event.getWhoClicked();
 
         Inventory open = event.getClickedInventory();
         ItemStack item = event.getCurrentItem();
-        ItemManager createAcceptButton = new ItemManager();
-        ItemManager createBlankButton = new ItemManager();
-        ItemManager createDenyButton = new ItemManager();
 
+        // player.sendMessage(event.getSlot() + "");
         if(open == null){
             return;
         }
 
-        if(open.equals()) {         // <!> PLEASE REMEMBER OT DO THIS IDK HOW TO PLZ RMEMBER I NEED TO LIKE SET THE INVENTORY TO BE THE RIGHT ONE OR SOMETHINNNN WOOT
-            event.setCancelled(true);
+        if(player.getOpenInventory().getTitle().equals("§3§lWaste Bin")) {
+            ident.put(player, event.getCurrentItem());
 
-            if (item.equals(null) || item.hasItemMeta()) {
+            if (item == null || event.getSlot() > 26) {
                 return;
             }
 
-            if (item.getItemMeta().equals(createAcceptButton)) {            // Please remember to like make it so when you click this happens
-                trashcans ntc = new trashcans();
-                event.isCancelled(true);
-                event.getClickedInventory().setItem(1, Material.AIR);// CLEAR ALL ITEMS 1-27
-                ntc.TrashCanInv(player);
-
+            if (item.getItemMeta().equals(ItemManager.acceptbutton.getItemMeta())) {
+                trashcans.TrashCanInv(player);
+                event.setCancelled(true);
+                // Stop them from taking the Accept Button
+                // Delete the items and reopen a new Trashcan inv using 'trashcans.TrashCanInv(player);'
             }
 
-            if (item.getItemMeta().equals(createDenyButton)) {            // Please remember to like make it so when you click this happens
-                event.isCancelled(true);
+            if (item.getItemMeta().equals(ItemManager.denybutton.getItemMeta())) {
+                for (int i = 0; i < 27; i++) {
+                    player.getInventory().addItem(open.getItem(i));
+                }
+                event.setCancelled(true);
                 // GIVES ALL THE ITEMS BACK AND CLOSES TRASHCAN
+                // Stop them from taking the Deny Button
             }
-            if (item.getItemMeta().equals(createBlankButton)) {            // Please remember to like make it so when you click this happens
-                event.isCancelled(true);
+
+            if (item.getItemMeta().equals(ItemManager.blankbutton.getItemMeta())) {
+                event.setCancelled(true);
                 // Do nothing lolololololol
+                // Stop them from taking the Blank Button
             }
         }
     }
+    @EventHandler
+    public void CloseTrashCanNAHHH (InventoryCloseEvent event) {
+        Player player = (Player) event.getPlayer();
+        if (ident.get(player) == null || ident.get(player).equals(ItemManager.denybutton) || ident.get(player).equals(ItemManager.acceptbutton)) {
+            return;
+        }
+        ItemStack[] storagecontents = event.getInventory().getStorageContents();
+        trashcans.TrashCanInv(player);
+        player.getOpenInventory().getTopInventory().setStorageContents(storagecontents);
+        // Stop them from closing Any "TrashcanInv" trashcan UNLESS they click the deny/accept Button
+    }
+
+
+    @EventHandler
+    public void ElytraLaunchEvent(PlayerToggleSneakEvent elytrashift) {
+        Player player = elytrashift.getPlayer();
+            if(player.isSneaking() && player.isGliding() && player.getVelocity().length() < 1.8) {
+                player.setVelocity(player.getLocation().getDirection().multiply(2).setY(2));
+            }
+        }
 }
