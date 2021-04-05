@@ -1,7 +1,9 @@
 package me.jakedadream.snwplugin.commands;
 
 import me.jakedadream.snwplugin.items.ItemManager;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -36,14 +38,14 @@ public class snwcommands implements CommandExecutor {
                 return true;
 
             case "thruwand":
-                    player.getInventory().addItem(ItemManager.createThruWand());
+                player.getInventory().addItem(ItemManager.createThruWand());
                 return true;
 
             case "mgive":
                 try {
                     id = Short.parseShort(args[0]);
                     player.getInventory().addItem(ItemManager.createmodel(id));
-                } catch(Exception ex) {
+                } catch (Exception ex) {
                     player.sendMessage("§e§l<!> §cDumbass, this isn't a registered number. Please try again, or don't.");
                 }
                 return true;
@@ -56,7 +58,7 @@ public class snwcommands implements CommandExecutor {
                     armor[3] = ItemManager.createmodel(id);
                     player.getInventory().setArmorContents(armor);
 
-                } catch(Exception ex) {
+                } catch (Exception ex) {
                     player.sendMessage("§e§l<!> §cDumbass, this isn't a registered number. Please try again, or don't.");
 
                 }
@@ -161,7 +163,29 @@ public class snwcommands implements CommandExecutor {
                         "§7|  §3§lWater§9§lWorld §f§lSpinner §6§l//92");
                 return true;
 
-            default:
+
+            case "sc":
+                if (player.hasPermission("snw.sc")) {
+                    if (args.length == 0) {
+                        // /sc (no args)
+                        player.sendMessage("§3[§c§lS§b§lN§a§lW§3] §fIncorrect usage; Please use '/sc <message>'");
+                } else {
+
+                    for (World w : Bukkit.getWorlds()) {
+                        for (Player p : w.getPlayers()) {
+                            if (p.hasPermission("snw.sc")) {
+                                p.sendMessage("§3[§f§lSC§3] §a" + player.getDisplayName() + ":§f " + args[0].length());
+                                // /sc <message>;
+                            }
+                        }
+                    }
+                }
+                }
+                return true;
+
+
+
+                    default:
                 return false;
             //complain
         }

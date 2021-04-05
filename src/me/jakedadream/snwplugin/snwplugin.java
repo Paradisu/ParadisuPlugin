@@ -21,6 +21,7 @@ public class snwplugin extends JavaPlugin {
         getCommand("llamazbanwand").setExecutor(new snwcommands());
         getCommand("thruwand").setExecutor(new snwcommands());
         getCommand("idlist").setExecutor(new snwcommands());
+        getCommand("sc").setExecutor(new snwcommands());
         getServer().getPluginManager().registerEvents(new snwevents(),this);
         getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[SNW] Plugin is now enabled :D");
     }
@@ -28,6 +29,7 @@ public class snwplugin extends JavaPlugin {
     @Override
     public void onDisable() {
         getServer().getConsoleSender().sendMessage(ChatColor.RED + "[SNW] Plugin is now disabled :(");
+        getServer().getConsoleSender().sendMessage(ChatColor.RED + "[SNW] Fuck you");
     }
 }
 

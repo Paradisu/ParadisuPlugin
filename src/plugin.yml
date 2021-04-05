@@ -28,3 +28,6 @@ commands:
   idlist:
     description: Gives list of Model IDs
     usage: /<command>
+  sc:
+    description: Communicate to other staff
+    usage: /<command> <message>
