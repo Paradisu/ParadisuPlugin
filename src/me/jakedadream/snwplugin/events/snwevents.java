@@ -81,31 +81,14 @@ public class snwevents implements Listener {
 
         if (player.getInventory().getItemInMainHand().getType() == Material.AIR)
             return;
-        switch (((Damageable) player.getEquipment().getItemInMainHand().getItemMeta()).getDamage()) {
-            case 16:
-            case 24:
-            case 25:
-            case 26:
-            case 27:
-            case 28:
-            case 29:
-            case 41:
-            case 53:
-            case 60:
-            case 64:
-            case 65:
-            case 66:
-            case 76:
-            case 77:
-            case 78:
-                if (wearhat.getAction() == Action.RIGHT_CLICK_AIR) {
-
-                    if (wearhat.getItem() != null) {
-                        ItemStack[] armor = player.getInventory().getArmorContents();
-                        ItemStack swap = armor[3];
-                        armor[3] = player.getEquipment().getItemInMainHand();
-                        player.getInventory().setArmorContents(armor);
-                        player.getInventory().setItemInMainHand(swap);
+        switch(((Damageable)player.getInventory().getItemInMainHand().getItemMeta()).getDamage()) {
+            case 16: case 24: case 25: case 26: case 27: case 28: case 29: case 41: case 53: case 60: case 64: case 65: case 66:
+                if (wearhat.getAction() == Action.RIGHT_CLICK_AIR && wearhat.getItem() != null) {
+                    ItemStack[] armor = player.getInventory().getArmorContents();
+                    ItemStack swap = armor[3];
+                    armor[3] = player.getInventory().getItemInMainHand();
+                    player.getInventory().setArmorContents(armor);
+                    player.getInventory().setItemInMainHand(swap);
 
 
                         break;
@@ -113,7 +96,6 @@ public class snwevents implements Listener {
                     }
                 }
         }
-    }
 
     @EventHandler
     public static void TableFlipEvent(AsyncPlayerChatEvent pchat) {

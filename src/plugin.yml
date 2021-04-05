@@ -34,19 +34,31 @@ commands:
   gms:
     description: Changes your gamemode to Survival
     usage: /<command>
-    aliases: ['gm s, gm0, gm 0']
+    aliases:
+      - gm s
+      - gm0
+      - gm 0
   gmc:
     description: Changes your gamemode to Survival
     usage: /<command>
-    aliases: [ 'gm c, gm1, gm 1' ]
+    aliases:
+      - gm c
+      - gm 1
+      - gm1
   gmsp:
     description: Changes your gamemode to Survival
     usage: /<command>
-    aliases: [ 'gm sp, gm3, gm 3' ]
+    aliases:
+      - gm sp
+      - gm 3
+      - gm3
   gma:
     description: Changes your gamemode to Survival
     usage: /<command>
-    aliases: [ 'gm a, gm2, gm 2' ]
+    aliases:
+      - gm a
+      - gm 2
+      - gm2
   nickname:
     description: Changes your display name
     usage: /<command> <name>

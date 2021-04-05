@@ -171,15 +171,20 @@ public class snwcommands implements CommandExecutor {
                         // /sc (no args)
                         player.sendMessage("§3[§c§lS§b§lN§a§lW§3] §fIncorrect usage; Please use '/sc <message>'");
                     } else {
+                        String allArgs = "";
 
+                        for(String arg : args) {
+                            allArgs += arg + " ";
+                        }
                         for (World w : Bukkit.getWorlds()) {
                             for (Player p : w.getPlayers()) {
                                 if (p.hasPermission("snw.sc")) {
-                                    p.sendMessage("§3[§f§lSC§3] §a" + player.getDisplayName() + ":§f " + args[0].length());
+                                    p.sendMessage("§3[§f§lSC§3] §a" + player.getDisplayName() + ":§f " + allArgs);
                                     // /sc <message>;
                                 }
                             }
                         }
+
                     }
                 }
                 return true;
