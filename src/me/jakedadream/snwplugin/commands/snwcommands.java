@@ -3,6 +3,7 @@ package me.jakedadream.snwplugin.commands;
 import me.jakedadream.snwplugin.items.ItemManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -169,23 +170,51 @@ public class snwcommands implements CommandExecutor {
                     if (args.length == 0) {
                         // /sc (no args)
                         player.sendMessage("§3[§c§lS§b§lN§a§lW§3] §fIncorrect usage; Please use '/sc <message>'");
-                } else {
+                    } else {
 
-                    for (World w : Bukkit.getWorlds()) {
-                        for (Player p : w.getPlayers()) {
-                            if (p.hasPermission("snw.sc")) {
-                                p.sendMessage("§3[§f§lSC§3] §a" + player.getDisplayName() + ":§f " + args[0].length());
-                                // /sc <message>;
+                        for (World w : Bukkit.getWorlds()) {
+                            for (Player p : w.getPlayers()) {
+                                if (p.hasPermission("snw.sc")) {
+                                    p.sendMessage("§3[§f§lSC§3] §a" + player.getDisplayName() + ":§f " + args[0].length());
+                                    // /sc <message>;
+                                }
                             }
                         }
                     }
                 }
-                }
+                return true;
+
+            case "gmc":
+                player.setGameMode(GameMode.CREATIVE);
                 return true;
 
 
+            case "gms":
+                player.setGameMode(GameMode.SURVIVAL);
+                return true;
 
-                    default:
+            case "gmsp":
+                player.setGameMode(GameMode.SPECTATOR);
+                return true;
+
+            case "gma":
+                player.setGameMode(GameMode.ADVENTURE);
+                return true;
+
+            case "nickname":
+                if (player.hasPermission("snw.nickname")) {
+                    if (args.length == 0) {
+                        // /nick (no args)
+                        player.sendMessage("§3[§c§lS§b§lN§a§lW§3] §fIncorrect usage; Please use '/nick <nickname>'");
+                    } else {
+                        player.setDisplayName(args[0]);
+                        // /nick <nickname>;
+                    }
+                }
+        return true;
+
+
+            default:
                 return false;
             //complain
         }

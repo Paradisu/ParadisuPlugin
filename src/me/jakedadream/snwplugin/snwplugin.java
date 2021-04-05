@@ -22,6 +22,11 @@ public class snwplugin extends JavaPlugin {
         getCommand("thruwand").setExecutor(new snwcommands());
         getCommand("idlist").setExecutor(new snwcommands());
         getCommand("sc").setExecutor(new snwcommands());
+        getCommand("gms").setExecutor(new snwcommands());
+        getCommand("gmc").setExecutor(new snwcommands());
+        getCommand("gmsp").setExecutor(new snwcommands());
+        getCommand("gma").setExecutor(new snwcommands());
+        getCommand("nickname").setExecutor(new snwcommands());
         getServer().getPluginManager().registerEvents(new snwevents(),this);
         getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[SNW] Plugin is now enabled :D");
     }
