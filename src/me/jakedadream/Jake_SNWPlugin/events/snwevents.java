@@ -1,6 +1,6 @@
-package me.jakedadream.snwplugin.events;
+package me.jakedadream.Jake_SNWPlugin.events;
 
-import me.jakedadream.snwplugin.items.ItemManager;
+import me.jakedadream.Jake_SNWPlugin.items.ItemManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -15,14 +15,15 @@ import org.bukkit.event.player.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
 
 import static org.bukkit.Bukkit.*;
 
-public class snwevents implements Listener {
+public class snwevents extends JavaPlugin implements Listener {
 
-    private static HashMap < Player, ItemStack > ident = new HashMap<>();
+    private static HashMap<Player, ItemStack> ident = new HashMap<>();
 
     @EventHandler
     public static void onJoin(PlayerJoinEvent jEvent) {
@@ -81,14 +82,31 @@ public class snwevents implements Listener {
 
         if (player.getInventory().getItemInMainHand().getType() == Material.AIR)
             return;
-        switch(((Damageable)player.getInventory().getItemInMainHand().getItemMeta()).getDamage()) {
-            case 16: case 24: case 25: case 26: case 27: case 28: case 29: case 41: case 53: case 60: case 64: case 65: case 66:
-                if (wearhat.getAction() == Action.RIGHT_CLICK_AIR && wearhat.getItem() != null) {
-                    ItemStack[] armor = player.getInventory().getArmorContents();
-                    ItemStack swap = armor[3];
-                    armor[3] = player.getInventory().getItemInMainHand();
-                    player.getInventory().setArmorContents(armor);
-                    player.getInventory().setItemInMainHand(swap);
+        switch (((Damageable) player.getEquipment().getItemInMainHand().getItemMeta()).getDamage()) {
+            case 16:
+            case 24:
+            case 25:
+            case 26:
+            case 27:
+            case 28:
+            case 29:
+            case 41:
+            case 53:
+            case 60:
+            case 64:
+            case 65:
+            case 66:
+            case 76:
+            case 77:
+            case 78:
+                if (wearhat.getAction() == Action.RIGHT_CLICK_AIR) {
+
+                    if (wearhat.getItem() != null) {
+                        ItemStack[] armor = player.getInventory().getArmorContents();
+                        ItemStack swap = armor[3];
+                        armor[3] = player.getEquipment().getItemInMainHand();
+                        player.getInventory().setArmorContents(armor);
+                        player.getInventory().setItemInMainHand(swap);
 
 
                         break;
@@ -96,6 +114,7 @@ public class snwevents implements Listener {
                     }
                 }
         }
+    }
 
     @EventHandler
     public static void TableFlipEvent(AsyncPlayerChatEvent pchat) {
@@ -138,6 +157,7 @@ public class snwevents implements Listener {
         msg = msg.replace(":unflip:", "┬─┬ノ( º _ ºノ)");
         pchat.setMessage(msg);
     }
+
     @EventHandler()
     public void onRClick(PlayerInteractAtEntityEvent intEvent) {
         Player player = intEvent.getPlayer();
@@ -149,6 +169,7 @@ public class snwevents implements Listener {
             }
         }
     }
+
     @EventHandler
     public void InvenClick(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
@@ -157,11 +178,11 @@ public class snwevents implements Listener {
         ItemStack item = event.getCurrentItem();
 
         // player.sendMessage(event.getSlot() + "");
-        if(open == null){
+        if (open == null) {
             return;
         }
 
-        if(player.getOpenInventory().getTitle().equals("§3§lWaste Bin")) {
+        if (player.getOpenInventory().getTitle().equals("§3§lWaste Bin")) {
             ident.put(player, event.getCurrentItem());
 
             if (item == null || event.getSlot() > 26) {
@@ -191,8 +212,10 @@ public class snwevents implements Listener {
             }
         }
     }
+
+
     @EventHandler
-    public void CloseTrashCanNAHHH (InventoryCloseEvent event) {
+    public void CloseTrashCanNAHHH(InventoryCloseEvent event) {
         Player player = (Player) event.getPlayer();
         if (ident.get(player) == null || ident.get(player).equals(ItemManager.denybutton) || ident.get(player).equals(ItemManager.acceptbutton)) {
             return;
@@ -207,8 +230,14 @@ public class snwevents implements Listener {
     @EventHandler
     public void ElytraLaunchEvent(PlayerToggleSneakEvent elytrashift) {
         Player player = elytrashift.getPlayer();
-            if(player.isSneaking() && player.isGliding() && player.getVelocity().length() < 1.8) {
-                player.setVelocity(player.getLocation().getDirection().multiply(2).setY(2));
-            }
+        if (player.isSneaking() && player.isGliding() && player.getVelocity().length() < 1.8) {
+            player.setVelocity(player.getLocation().getDirection().multiply(2).setY(2));
         }
+    }
+
+    public void onPlayerChat(AsyncPlayerChatEvent e) {
+        if (getConfig().getString(e.getPlayer().getName()) != null) {
+            e.getPlayer().setDisplayName(getConfig().getString(e.getPlayer().getName()));
+        }
+    }
 }

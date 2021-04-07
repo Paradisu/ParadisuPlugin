@@ -1,4 +1,4 @@
-package me.jakedadream.snwplugin.items;
+package me.jakedadream.Jake_SNWPlugin.items;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -186,7 +186,9 @@ public class ItemManager {
             "§3§lSuper Nintendo World §fRecycle Can", //90
             "§3§lSuper Nintendo World §fTrash Can", //91
             "§a§lYoshi §fMerchandise §aKart", // 92
-            "§3§lWater§9§lWorld §f§lSpinner" //93
+            "§3§lWater§9§lWorld §f§lSpinner", // 93
+            "TBD Model", // 94
+            "§a§lNEVER SET TO BE A MODEL <PLACEHOLDER NAME>" // Line Above + 1
     };
 
 

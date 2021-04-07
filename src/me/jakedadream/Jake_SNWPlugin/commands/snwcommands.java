@@ -1,17 +1,17 @@
-package me.jakedadream.snwplugin.commands;
+package me.jakedadream.Jake_SNWPlugin.commands;
 
-import me.jakedadream.snwplugin.items.ItemManager;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
-import org.bukkit.World;
+import me.jakedadream.Jake_SNWPlugin.items.ItemManager;
+import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
-public class snwcommands implements CommandExecutor {
+public class snwcommands extends JavaPlugin implements CommandExecutor  {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -173,13 +173,13 @@ public class snwcommands implements CommandExecutor {
                     } else {
                         String allArgs = "";
 
-                        for(String arg : args) {
+                        for (String arg : args) {
                             allArgs += arg + " ";
                         }
                         for (World w : Bukkit.getWorlds()) {
                             for (Player p : w.getPlayers()) {
                                 if (p.hasPermission("snw.sc")) {
-                                    p.sendMessage("§3[§f§lSC§3] §a" + player.getDisplayName() + ":§f " + allArgs);
+                                    p.sendMessage("§3『§b§l§oSC§3』 §c" + player.getDisplayName() + " §f»§3 " + allArgs);
                                     // /sc <message>;
                                 }
                             }
@@ -212,12 +212,60 @@ public class snwcommands implements CommandExecutor {
                         // /nick (no args)
                         player.sendMessage("§3[§c§lS§b§lN§a§lW§3] §fIncorrect usage; Please use '/nick <nickname>'");
                     } else {
-                        player.setDisplayName(args[0]);
+                        String nick = "";
+                        for (String arg : args) {
+                            nick += arg + " ";
+                        }
+                        nick = nick.substring(0, nick.length() - 1);
+
+                        nick = nick.replaceAll("&", "§");
+                        player.sendMessage("§3[§c§lS§b§lN§a§lW§3] §fYour nickname was changed to " + nick + "§f!");
+                        getConfig().set(player.getName(), nick);
+                        saveConfig();
+
+                        }
+
                         // /nick <nickname>;
+                }
+                return true;
+
+
+            case "enderchest":
+                if (player.hasPermission("snw.ec")) {
+                    player.openInventory(player.getEnderChest());
+                }
+                return true;
+
+
+            case "workbench":
+                if (player.hasPermission("snw.wb")) {
+                    player.openWorkbench(null, true);
+                }
+                return true;
+
+            case "invsee":
+                if (player.hasPermission("snw.invsee")) {
+
+                    if (args.length < 1) {
+                        player.sendMessage("§3[§c§lS§b§lN§a§lW§3] §fIncorrect usage; Please use '/invsee <player>'");
+                    }
+                    if (args.length == 1 && player.hasPermission("snw.invsee")) {
+                        player.sendMessage("§3[§c§lS§b§lN§a§lW§3] §fCommand is a WIP");
                     }
                 }
-        return true;
+                return true;
 
+            case "invis":
+                if (player.hasPermission("snw.invis")) {
+                    player.addPotionEffect((new PotionEffect(PotionEffectType.INVISIBILITY, 120, 1, true, false)));
+                }
+                return true;
+
+            case "uninvis":
+                if (player.hasPermission("snw.invis")) {
+                        player.removePotionEffect(PotionEffectType.INVISIBILITY);
+                    }
+                return true;
 
             default:
                 return false;

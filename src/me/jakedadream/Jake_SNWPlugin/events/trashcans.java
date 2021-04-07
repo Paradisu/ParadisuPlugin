@@ -1,12 +1,12 @@
-package me.jakedadream.snwplugin.events;
+package me.jakedadream.Jake_SNWPlugin.events;
 
-import me.jakedadream.snwplugin.items.ItemManager;
+import me.jakedadream.Jake_SNWPlugin.items.ItemManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import org.bukkit.inventory.Inventory;
 
-import static me.jakedadream.snwplugin.items.ItemManager.*;
+import static me.jakedadream.Jake_SNWPlugin.items.ItemManager.*;
 
 
 public class trashcans {

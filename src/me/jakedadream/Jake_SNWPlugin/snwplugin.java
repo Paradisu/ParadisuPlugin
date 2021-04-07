@@ -1,7 +1,8 @@
-package me.jakedadream.snwplugin;
+package me.jakedadream.Jake_SNWPlugin;
 
-import me.jakedadream.snwplugin.commands.snwcommands;
-import me.jakedadream.snwplugin.events.snwevents;
+import me.jakedadream.Jake_SNWPlugin.commands.snwcommands;
+import me.jakedadream.Jake_SNWPlugin.events.snwevents;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -27,8 +28,14 @@ public class snwplugin extends JavaPlugin {
         getCommand("gmsp").setExecutor(new snwcommands());
         getCommand("gma").setExecutor(new snwcommands());
         getCommand("nickname").setExecutor(new snwcommands());
+        getCommand("enderchest").setExecutor(new snwcommands());
+        getCommand("workbench").setExecutor(new snwcommands());
+        getCommand("invsee").setExecutor(new snwcommands());
+        getCommand("invis").setExecutor(new snwcommands());
+        getCommand("uninvis").setExecutor(new snwcommands());
         getServer().getPluginManager().registerEvents(new snwevents(),this);
         getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[SNW] Plugin is now enabled :D");
+        this.saveDefaultConfig();
     }
 
     @Override

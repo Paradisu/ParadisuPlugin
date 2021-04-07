@@ -1,4 +1,4 @@
-name: snwplugin
+name: JakesSNWPlugin
 version: 1.1
 authors: [JakeDaDream, Lord_Of_Llamaz, RealInstantRamen]
 main: me.jakedadream.snwplugin.snwplugin
@@ -62,4 +62,38 @@ commands:
   nickname:
     description: Changes your display name
     usage: /<command> <name>
-    aliases: ['nick']
+    aliases:
+      - nick
+  enderchest:
+    description: Opens your EC
+    usage: /<command>
+    aliases:
+      - ec
+      - echest
+      - enderc
+  workbench:
+    description: Opens a Workbench
+    usage: /<command>
+    aliases:
+      - wb
+      - craft
+      - craftingtable
+  invsee:
+    description: Lets you see what another person has in their inventory
+    usage: /<command> <player>
+    aliases:
+      - invpeek
+      - invs
+  invis:
+    description: Gives you minecraft invis potion for 2 minutes
+    usage: /<command>
+    aliases:
+      - giveinvis
+      - setinvis
+  uninvis:
+    description: Removes potion effect Invis
+    usage: /<command>
+    aliases:
+      - reminvis
+      - removeinvis
+      - unsetinvis
