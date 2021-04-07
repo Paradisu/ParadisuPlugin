@@ -1,4 +1,4 @@
-package me.jakedadream.Jake_SNWPlugin.items;
+package me.jakedadream.snwplugin.items;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;

@@ -1,6 +1,6 @@
-package me.jakedadream.Jake_SNWPlugin.events;
+package me.jakedadream.snwplugin.events;
 
-import me.jakedadream.Jake_SNWPlugin.items.ItemManager;
+import me.jakedadream.snwplugin.items.ItemManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -15,13 +15,12 @@ import org.bukkit.event.player.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
 
-import static org.bukkit.Bukkit.*;
+import static org.bukkit.Bukkit.getServer;
 
-public class snwevents extends JavaPlugin implements Listener {
+public class snwevents implements Listener {
 
     private static HashMap<Player, ItemStack> ident = new HashMap<>();
 

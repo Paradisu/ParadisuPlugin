@@ -1,17 +1,16 @@
-package me.jakedadream.Jake_SNWPlugin.commands;
+package me.jakedadream.snwplugin.commands;
 
-import me.jakedadream.Jake_SNWPlugin.items.ItemManager;
+import me.jakedadream.snwplugin.items.ItemManager;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-public class snwcommands extends JavaPlugin implements CommandExecutor  {
+public class snwcommands implements CommandExecutor  {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {

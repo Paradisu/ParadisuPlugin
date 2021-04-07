@@ -1,8 +1,7 @@
-package me.jakedadream.Jake_SNWPlugin;
+package me.jakedadream.snwplugin;
 
-import me.jakedadream.Jake_SNWPlugin.commands.snwcommands;
-import me.jakedadream.Jake_SNWPlugin.events.snwevents;
-import org.bukkit.Bukkit;
+import me.jakedadream.snwplugin.commands.snwcommands;
+import me.jakedadream.snwplugin.events.snwevents;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 

@@ -1,5 +1,5 @@
-name: JakesSNWPlugin
-version: 1.1
+name: snwplugin
+version: 2
 authors: [JakeDaDream, Lord_Of_Llamaz, RealInstantRamen]
 main: me.jakedadream.snwplugin.snwplugin
 api-version: 1.16
