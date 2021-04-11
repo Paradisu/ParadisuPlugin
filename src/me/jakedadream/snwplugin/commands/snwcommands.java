@@ -1,6 +1,7 @@
 package me.jakedadream.snwplugin.commands;
 
 import me.jakedadream.snwplugin.items.ItemManager;
+import me.jakedadream.snwplugin.snwplugin;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -10,7 +11,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+
 public class snwcommands implements CommandExecutor  {
+
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -190,19 +193,23 @@ public class snwcommands implements CommandExecutor  {
 
             case "gmc":
                 player.setGameMode(GameMode.CREATIVE);
+                player.sendMessage("§3[§c§lS§b§lN§a§lW§3] §fYour gamemode has been set to §3Creative§f!");
                 return true;
 
 
             case "gms":
                 player.setGameMode(GameMode.SURVIVAL);
+                player.sendMessage("§3[§c§lS§b§lN§a§lW§3] §fYour gamemode has been set to §3Survival§f!");
                 return true;
 
             case "gmsp":
                 player.setGameMode(GameMode.SPECTATOR);
+                player.sendMessage("§3[§c§lS§b§lN§a§lW§3] §fYour gamemode has been set to §3Spectator§f!");
                 return true;
 
             case "gma":
                 player.setGameMode(GameMode.ADVENTURE);
+                player.sendMessage("§3[§c§lS§b§lN§a§lW§3] §fYour gamemode has been set to §3Adventure§f!");
                 return true;
 
             case "nickname":
@@ -218,9 +225,9 @@ public class snwcommands implements CommandExecutor  {
                         nick = nick.substring(0, nick.length() - 1);
 
                         nick = nick.replaceAll("&", "§");
-                        player.sendMessage("§3[§c§lS§b§lN§a§lW§3] §fYour nickname was changed to " + nick + "§f!");
-                        getConfig().set(player.getName(), nick);
-                        saveConfig();
+                        player.sendMessage("§3[§c§lS§b§lN§a§lW§3] §fYour nickname was changed to §n" + nick + "§f!");
+                        snwplugin.getPlugin(snwplugin.class).getConfig().set(player.getName(), nick);
+                        snwplugin.getPlugin(snwplugin.class).saveConfig();
 
                         }
 
@@ -257,13 +264,38 @@ public class snwcommands implements CommandExecutor  {
             case "invis":
                 if (player.hasPermission("snw.invis")) {
                     player.addPotionEffect((new PotionEffect(PotionEffectType.INVISIBILITY, 120, 1, true, false)));
+                    player.sendMessage("§3[§c§lS§b§lN§a§lW§3] §fYou are now invis for 2 minutes!");
                 }
                 return true;
 
             case "uninvis":
                 if (player.hasPermission("snw.invis")) {
                         player.removePotionEffect(PotionEffectType.INVISIBILITY);
+                    player.sendMessage("§3[§c§lS§b§lN§a§lW§3] §fYou are no longer invis!");
                     }
+                return true;
+
+
+            case "day":
+                if (player.hasPermission("snw.time")) {
+                    player.getWorld().setTime(1000);
+                    player.sendMessage("§3[§c§lS§b§lN§a§lW§3] §fYou set the time to §3§nDay§f!");
+                }
+                return true;
+
+            case "night":
+                if (player.hasPermission("snw.time")) {
+                    player.getWorld().setTime(14000);
+                    player.sendMessage("§3[§c§lS§b§lN§a§lW§3] §fYou set the time to §3§nNight§f!");
+                }
+                return true;
+
+
+            case "noon":
+                if (player.hasPermission("snw.time")) {
+                    player.getWorld().setTime(600);
+                    player.sendMessage("§3[§c§lS§b§lN§a§lW§3] §fYou set the time to §3§nNoon§f!");
+                }
                 return true;
 
             default:

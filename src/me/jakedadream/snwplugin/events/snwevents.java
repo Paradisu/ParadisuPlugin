@@ -1,6 +1,7 @@
 package me.jakedadream.snwplugin.events;
 
 import me.jakedadream.snwplugin.items.ItemManager;
+import me.jakedadream.snwplugin.snwplugin;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -235,8 +236,8 @@ public class snwevents implements Listener {
     }
 
     public void onPlayerChat(AsyncPlayerChatEvent e) {
-        if (getConfig().getString(e.getPlayer().getName()) != null) {
-            e.getPlayer().setDisplayName(getConfig().getString(e.getPlayer().getName()));
+        if (snwplugin.getPlugin(snwplugin.class).getConfig().getString(e.getPlayer().getName()) != null) {
+            e.getPlayer().setDisplayName(snwplugin.getPlugin(snwplugin.class).getConfig().getString(e.getPlayer().getName()));
         }
     }
 }

@@ -32,6 +32,9 @@ public class snwplugin extends JavaPlugin {
         getCommand("invsee").setExecutor(new snwcommands());
         getCommand("invis").setExecutor(new snwcommands());
         getCommand("uninvis").setExecutor(new snwcommands());
+        getCommand("day").setExecutor(new snwcommands());
+        getCommand("night").setExecutor(new snwcommands());
+        getCommand("noon").setExecutor(new snwcommands());
         getServer().getPluginManager().registerEvents(new snwevents(),this);
         getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[SNW] Plugin is now enabled :D");
         this.saveDefaultConfig();

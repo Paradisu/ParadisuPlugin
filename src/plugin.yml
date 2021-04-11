@@ -1,5 +1,5 @@
 name: snwplugin
-version: 2
+version: 2.2
 authors: [JakeDaDream, Lord_Of_Llamaz, RealInstantRamen]
 main: me.jakedadream.snwplugin.snwplugin
 api-version: 1.16
@@ -97,3 +97,18 @@ commands:
       - reminvis
       - removeinvis
       - unsetinvis
+  Day:
+    description: Sets the time to day
+    usage: /<command>
+    aliases:
+      - setday
+  Night:
+    description: Sets the time to night
+    usage: /<command>
+    aliases:
+      - setnight
+  Noon:
+    description: Sets the time to noon
+    usage: /<command>
+    aliases:
+      - setnoon
