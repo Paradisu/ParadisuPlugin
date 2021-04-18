@@ -28,5 +28,5 @@ public class trashcans {
         inv.setItem(35, acceptbutton);
 
         player.openInventory(inv);
-    }
+    } // yuh
 }

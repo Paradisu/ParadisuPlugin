@@ -35,6 +35,8 @@ public class snwplugin extends JavaPlugin {
         getCommand("day").setExecutor(new snwcommands());
         getCommand("night").setExecutor(new snwcommands());
         getCommand("noon").setExecutor(new snwcommands());
+        getCommand("speed").setExecutor(new snwcommands());
+        getCommand("flyspeed").setExecutor(new snwcommands());
         getServer().getPluginManager().registerEvents(new snwevents(),this);
         getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[SNW] Plugin is now enabled :D");
         this.saveDefaultConfig();
@@ -66,7 +68,7 @@ public class snwplugin extends JavaPlugin {
 //                               █▀▀█ █▀▀▄ █▀▀▄ 　 ░█▀▀█ █▀▀ █▀▀█ █── ▀█▀ █▀▀▄ █▀▀ ▀▀█▀▀ █▀▀█ █▀▀▄ ▀▀█▀▀ ░█▀▀█ █▀▀█ █▀▄▀█ █▀▀ █▀▀▄
 //                               █▄▄█ █──█ █──█ 　 ░█▄▄▀ █▀▀ █▄▄█ █── ░█─ █──█ ▀▀█ ──█── █▄▄█ █──█ ──█── ░█▄▄▀ █▄▄█ █─▀─█ █▀▀ █──█
 //                               ▀──▀ ▀──▀ ▀▀▀─ 　 ░█─░█ ▀▀▀ ▀──▀ ▀▀▀ ▄█▄ ▀──▀ ▀▀▀ ──▀── ▀──▀ ▀──▀ ──▀── ░█─░█ ▀──▀ ▀───▀ ▀▀▀ ▀──▀
-
+//
 
 
 

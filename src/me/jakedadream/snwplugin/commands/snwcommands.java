@@ -298,6 +298,46 @@ public class snwcommands implements CommandExecutor  {
                 }
                 return true;
 
+            case "spawn":
+                if (player.hasPermission("snw.spawn")) {
+                    player.performCommand("warp snw");
+                }
+                return true;
+
+            case "speed":
+                if (player.hasPermission("snw.speed")) {
+
+                    if (args.length < 1) {
+                        player.sendMessage("§3[§c§lS§b§lN§a§lW§3] §fIncorrect usage; Please use '/speed <1-10>'");
+                    }
+                    if (args.length == 1 && player.hasPermission("snw.invsee")) {
+                            int speed = Integer.parseInt(args[0]);
+                            player.sendMessage("§3[§c§lS§b§lN§a§lW§3] §fYou have set your walking speed to §3" + args + "§f!");
+                            player.setWalkSpeed(speed);
+                    }
+                }
+                return true;
+
+            case "flyspeed":
+                if (player.hasPermission("snw.flyspeed")) {
+
+                    if (args.length < 1) {
+                        player.sendMessage("§3[§c§lS§b§lN§a§lW§3] §fIncorrect usage; Please use '/flyspeed <1-10>'");
+                    }
+                    if (args.length == 1 && player.hasPermission("snw.invsee")) {
+                            int speed = Integer.parseInt(args[0]);
+                            player.sendMessage("§3[§c§lS§b§lN§a§lW§3] §fYou have set your flying speed to §3" + args + "§f!");
+                            player.setFlySpeed(speed);
+                    }
+                }
+                return true;
+
+            case "sex":
+                if (player.hasPermission("snw.sex")) {
+                    player.sendMessage("§3[§c§lS§b§lN§a§lW§3] §fYou are now having sex!!!!!");
+                }
+                return true;
+
             default:
                 return false;
             //complain

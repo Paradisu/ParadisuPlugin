@@ -235,5 +235,5 @@ public class ItemManager {
         }
         return lore;
     }
-
+ // end
 }

@@ -112,3 +112,12 @@ commands:
     usage: /<command>
     aliases:
       - setnoon
+  speed:
+    description: Sets your walking speed to whatever you want
+    usage: /<command> <number>
+  flyspeed:
+      description: Sets your fly speed to whatever you want
+      usage: /<command> <number>
+  sex:
+    description: You have sex
+    usage: /<command>

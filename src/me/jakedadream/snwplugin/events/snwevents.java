@@ -177,7 +177,6 @@ public class snwevents implements Listener {
         Inventory open = event.getClickedInventory();
         ItemStack item = event.getCurrentItem();
 
-        // player.sendMessage(event.getSlot() + "");
         if (open == null) {
             return;
         }
