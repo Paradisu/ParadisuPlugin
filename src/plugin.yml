@@ -1,6 +1,6 @@
 name: snwplugin
-version: 2.2
-authors: [JakeDaDream, Lord_Of_Llamaz, RealInstantRamen]
+version: 69.420.666
+authors: [JakeDaDream, RealInstantRamen, andyinnie, _Kastle laughed at me]
 main: me.jakedadream.snwplugin.snwplugin
 api-version: 1.16
 commands:
@@ -10,20 +10,11 @@ commands:
   givestarcoin:
       description: Gives player a Star coin
       usage: /<command>
-  thruwand:
-    description: Gives player a //thru wand
-    usage: /<command>
-  LlamazBanWand:
-    description: Bans llamaz on right click
-    usage: /<command>
   mhat:
     description: Puts a model on your head
     usage: /<command> <number>
   mgive:
     description: Puts a model in your inventory
-    usage: /<command> <number>
-  launch:
-    description: Launches you in the air
     usage: /<command> <number>
   idlist:
     description: Gives list of Model IDs
@@ -35,29 +26,21 @@ commands:
     description: Changes your gamemode to Survival
     usage: /<command>
     aliases:
-      - gm s
       - gm0
-      - gm 0
   gmc:
     description: Changes your gamemode to Survival
     usage: /<command>
     aliases:
-      - gm c
-      - gm 1
       - gm1
   gmsp:
     description: Changes your gamemode to Survival
     usage: /<command>
     aliases:
-      - gm sp
-      - gm 3
       - gm3
   gma:
     description: Changes your gamemode to Survival
     usage: /<command>
     aliases:
-      - gm a
-      - gm 2
       - gm2
   nickname:
     description: Changes your display name
@@ -84,19 +67,6 @@ commands:
     aliases:
       - invpeek
       - invs
-  invis:
-    description: Gives you minecraft invis potion for 2 minutes
-    usage: /<command>
-    aliases:
-      - giveinvis
-      - setinvis
-  uninvis:
-    description: Removes potion effect Invis
-    usage: /<command>
-    aliases:
-      - reminvis
-      - removeinvis
-      - unsetinvis
   Day:
     description: Sets the time to day
     usage: /<command>
@@ -112,12 +82,37 @@ commands:
     usage: /<command>
     aliases:
       - setnoon
-  speed:
-    description: Sets your walking speed to whatever you want
-    usage: /<command> <number>
-  flyspeed:
-      description: Sets your fly speed to whatever you want
-      usage: /<command> <number>
   sex:
     description: You have sex
     usage: /<command>
+  tp:
+    description: Tp to another player or tp a player to another player
+    usage: /<command> <player>
+  tphere:
+    description: Tp's a player to you
+    usage: /<command> <player>
+  trashcan:
+    description: Opens the trashcan inventory
+    usage: /<command>
+    aliases:
+      - trash
+  clearinventory:
+    description: Clears your inventory
+    usage: /<command>
+    aliases:
+      - ci
+      - clearinv
+      - clear
+  fly:
+    description: Allows you to toggle fly
+    usage: /<command>
+  spawn:
+    description: Brings you to spawn
+    usage: /<command>
+  skull:
+    description: Give's you a player head
+    usage: /<command> <player>
+    aliases:
+      - giveskull
+      - skulls
+      - head

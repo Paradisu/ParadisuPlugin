@@ -1,5 +1,6 @@
 package me.jakedadream.snwplugin.items;
 
+import me.jakedadream.snwplugin.snwplugin;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -235,5 +236,7 @@ public class ItemManager {
         }
         return lore;
     }
+
+
  // end
 }
