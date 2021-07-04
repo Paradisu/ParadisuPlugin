@@ -9,6 +9,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -303,15 +304,19 @@ public class snwcommands implements CommandExecutor {
             case "invsee":
                 if (player.hasPermission("snw.invsee")) {
 
-                    if (args.length < 1) {
+                    if (args.length == 0) {
                         player.sendMessage("§3[§dParadisu §bツ§3] §fIncorrect usage; Please use '/invsee <player>'");
                     }
-                    if (args.length == 1 && player.hasPermission("snw.invsee")) {
-                        player.sendMessage("§3[§dParadisu §bツ§3] §fCommand is a WIP");
+                    if (args.length >= 1) {
+                        Player target = Bukkit.getServer().getPlayer(args[0]);
+
+                        Inventory targetinv = target.getInventory();
+                        player.openInventory(targetinv);
+                        player.sendMessage("§3[§dParadisu §bツ§3] §fNow opening the inventory of §3" + target + "");
+
                     }
-                } else {
-                    player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");
-                }
+
+                } else {player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");}
                 return true;
 
 

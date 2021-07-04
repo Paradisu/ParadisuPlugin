@@ -35,28 +35,13 @@ public class PluginInventories {
         player.openInventory(inv);
     } // yuh
 
-    public static void ItemShowcase(Player player) {
-        snwevents snwe = new snwevents();
-        snwevents createDisplayItem = new snwevents();
-        Inventory inv = Bukkit.createInventory(null, 27, "§3§l" + player.getDisplayName() + "'s §fitem!");
-        ItemManager createBlankButton = new ItemManager();
-        inv.setItem(0, blankbutton);
-        inv.setItem(1, blankbutton);
-        inv.setItem(2, blankbutton);
-        inv.setItem(3, blankbutton);
-        inv.setItem(4, blankbutton);
-        inv.setItem(5, blankbutton);
-        inv.setItem(6, blankbutton);
-        inv.setItem(7, blankbutton);
-        inv.setItem(8, blankbutton);
-        inv.setItem(18, blankbutton);
-        inv.setItem(19, blankbutton);
-        inv.setItem(20, blankbutton);
-        inv.setItem(21, blankbutton);
-        inv.setItem(22, blankbutton);
-        inv.setItem(23, blankbutton);
-        inv.setItem(24, blankbutton);
-        inv.setItem(25, blankbutton);
-        inv.setItem(26, blankbutton);
-    }
+
+    public static void InvseeInv(Player player) {
+        Inventory inv = Bukkit.createInventory(null, 36, "§3§l" + "'s §finventory"); //4 Rows
+
+
+
+        player.openInventory(inv);
+    } // yuh
+
 }
