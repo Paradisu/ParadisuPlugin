@@ -7,7 +7,9 @@ import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -15,6 +17,17 @@ import org.bukkit.inventory.meta.SkullMeta;
 
 public class snwcommands implements CommandExecutor {
 
+
+    private String getParsedName(String[] args) {
+        String name = "";
+
+        // Concat all the args to a string
+        for (int i = 0; i < args.length; i++) {
+            name = name.concat(args[i]);
+            name = name.concat(" ");
+        }
+        return ChatColor.translateAlternateColorCodes('&', name);
+    }
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -32,12 +45,16 @@ public class snwcommands implements CommandExecutor {
             case "givecoin":
                 if (player.hasPermission("snw.givecoin")) {
                     player.getInventory().addItem(ItemManager.createCoin());
+                } else {
+                    player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");
                 }
                 return true;
 
             case "givestarcoin":
                 if (player.hasPermission("snw.givestarcoin")) {
                     player.getInventory().addItem(ItemManager.createStarCoin());
+                } else {
+                    player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");
                 }
                 return true;
 
@@ -50,6 +67,8 @@ public class snwcommands implements CommandExecutor {
                     } catch (Exception ex) {
                         player.sendMessage("§e§l<!> §cDumbass, this isn't a registered number. Please try again, or don't.");
                     }
+                } else {
+                    player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");
                 }
                 return true;
 
@@ -66,11 +85,13 @@ public class snwcommands implements CommandExecutor {
                         player.sendMessage("§e§l<!> §cDumbass, this isn't a registered number. Please try again, or don't.");
 
                     }
+                } else {
+                    player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");
                 }
                 return true;
 
             case "idlist":
-                if (player.hasPermission("snw.mdoels")) {
+                if (player.hasPermission("snw.models")) {
                     player.sendMessage("" +
                             "§7| §c§lMODEL ID LIST\n" +
                             "§7|---------------------\n" +
@@ -167,6 +188,8 @@ public class snwcommands implements CommandExecutor {
                             "§7|  §3§lSuper Nintendo World §fTrash Can §6§l//91\n" +
                             "§7|  §a§lYoshi §fMerchandise §aKart §6§l//92\n" +
                             "§7|  §3§lWater§9§lWorld §f§lSpinner §6§l//92");
+                } else {
+                    player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");
                 }
                 return true;
 
@@ -192,6 +215,8 @@ public class snwcommands implements CommandExecutor {
                         }
 
                     }
+                } else {
+                    player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");
                 }
                 return true;
 
@@ -199,6 +224,8 @@ public class snwcommands implements CommandExecutor {
                 if (player.hasPermission("snw.gmc") || player.hasPermission("snw.gm.*")) {
                     player.setGameMode(GameMode.CREATIVE);
                     player.sendMessage("§3[§dParadisu §bツ§3] §fYour gamemode has been set to §3Creative§f!");
+                } else {
+                    player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");
                 }
                 return true;
 
@@ -207,6 +234,8 @@ public class snwcommands implements CommandExecutor {
                 if (player.hasPermission("snw.gms") || player.hasPermission("snw.gm.*")) {
                     player.setGameMode(GameMode.SURVIVAL);
                     player.sendMessage("§3[§dParadisu §bツ§3] §fYour gamemode has been set to §3Survival§f!");
+                } else {
+                    player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");
                 }
                 return true;
 
@@ -214,6 +243,8 @@ public class snwcommands implements CommandExecutor {
                 if (player.hasPermission("snw.gmsp") || player.hasPermission("snw.gm.*")) {
                     player.setGameMode(GameMode.SPECTATOR);
                     player.sendMessage("§3[§dParadisu §bツ§3] §fYour gamemode has been set to §3Spectator§f!");
+                } else {
+                    player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");
                 }
                 return true;
 
@@ -221,6 +252,8 @@ public class snwcommands implements CommandExecutor {
                 if (player.hasPermission("snw.gma") || player.hasPermission("snw.gm.*")) {
                     player.setGameMode(GameMode.ADVENTURE);
                     player.sendMessage("§3[§dParadisu §bツ§3] §fYour gamemode has been set to §3Adventure§f!");
+                } else {
+                    player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");
                 }
                 return true;
 
@@ -244,6 +277,8 @@ public class snwcommands implements CommandExecutor {
                     }
 
                     // /nick <nickname>;
+                } else {
+                    player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");
                 }
                 return true;
 
@@ -251,6 +286,8 @@ public class snwcommands implements CommandExecutor {
             case "enderchest":
                 if (player.hasPermission("snw.ec")) {
                     player.openInventory(player.getEnderChest());
+                } else {
+                    player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");
                 }
                 return true;
 
@@ -258,6 +295,8 @@ public class snwcommands implements CommandExecutor {
             case "workbench":
                 if (player.hasPermission("snw.wb")) {
                     player.openWorkbench(null, true);
+                } else {
+                    player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");
                 }
                 return true;
 
@@ -270,6 +309,8 @@ public class snwcommands implements CommandExecutor {
                     if (args.length == 1 && player.hasPermission("snw.invsee")) {
                         player.sendMessage("§3[§dParadisu §bツ§3] §fCommand is a WIP");
                     }
+                } else {
+                    player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");
                 }
                 return true;
 
@@ -278,6 +319,8 @@ public class snwcommands implements CommandExecutor {
                 if (player.hasPermission("snw.time")) {
                     player.getWorld().setTime(1000);
                     player.sendMessage("§3[§dParadisu §bツ§3] §fYou set the time to §3§nDay§f!");
+                } else {
+                    player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");
                 }
                 return true;
 
@@ -285,6 +328,8 @@ public class snwcommands implements CommandExecutor {
                 if (player.hasPermission("snw.time")) {
                     player.getWorld().setTime(14000);
                     player.sendMessage("§3[§dParadisu §bツ§3] §fYou set the time to §3§nNight§f!");
+                } else {
+                    player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");
                 }
                 return true;
 
@@ -293,12 +338,16 @@ public class snwcommands implements CommandExecutor {
                 if (player.hasPermission("snw.time")) {
                     player.getWorld().setTime(600);
                     player.sendMessage("§3[§dParadisu §bツ§3] §fYou set the time to §3§nNoon§f!");
+                } else {
+                    player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");
                 }
                 return true;
 
             case "spawn":
                 if (player.hasPermission("snw.spawn")) {
-                    player.performCommand("warp snw");
+                    player.performCommand("warp spawn");
+                } else {
+                    player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");
                 }
                 return true;
 
@@ -322,6 +371,8 @@ public class snwcommands implements CommandExecutor {
                     } else {
                         player.sendMessage("§3[§dParadisu §bツ§3] §fPlease do /tphere (player)");
                     }
+                } else {
+                    player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");
                 }
                 return true;
 
@@ -358,6 +409,8 @@ public class snwcommands implements CommandExecutor {
                     } else if (args.length > 2) {
                         player.sendMessage("§3[§dParadisu §bツ§3] §fPlease do `/tp (player)` OR `/tp (player1) (player2)`");
                     }
+                } else {
+                    player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");
                 }
                 return true;
 
@@ -371,7 +424,7 @@ public class snwcommands implements CommandExecutor {
                         metaSkull = (SkullMeta) itemSkull.getItemMeta();
                         ItemMeta meta = itemSkull.getItemMeta();
                         metaSkull.setOwner(owner);
-                        meta.setDisplayName("§fSkull of §3" + owner + "§f!");
+                        meta.setDisplayName("§7§lSkull of §3" + owner + "§f!");
 
                         itemSkull.setItemMeta(metaSkull);
                         player.getInventory().addItem(itemSkull);
@@ -379,8 +432,13 @@ public class snwcommands implements CommandExecutor {
                         // player.performCommand("give @p minecraft:player_head{SkullOwner:\"" + args[0] + "\"}");
                         player.sendMessage("§3[§dParadisu §bツ§3] §fWe successfully gave you the head of §3§n" + owner + "§f!");
 
-                    } else { player.sendMessage("§3[§dParadisu §bツ§3] §fPlease provide a valid name!"); }
+                    } else {
+                        player.sendMessage("§3[§dParadisu §bツ§3] §fPlease provide a valid name!");
+                    }
+                } else {
+                    player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");
                 }
+                return true;
 
             case "clearinventory":
 
@@ -390,7 +448,7 @@ public class snwcommands implements CommandExecutor {
 
                         player.getInventory().clear();
                         player.sendMessage("§3[§dParadisu §bツ§3] §fYour inventory has been cleared.");
-                    } else if (args.length == 1) {
+                    } else if (args.length == 1 && player.hasPermission("snw.clearinventoryother")) {
                         String cleartarget = args[0];
                         Player target = Bukkit.getServer().getPlayer(cleartarget);
                         target.getInventory().clear();
@@ -398,9 +456,12 @@ public class snwcommands implements CommandExecutor {
                         target.sendMessage("§3[§dParadisu §bツ§3] §fYour inventory has been cleared by another player.");
                         player.sendMessage("§3[§dParadisu §bツ§3] §fYou cleared the inventory of§3 " + cleartarget + " §f!");
                     } else if (args.length > 1) {
-                        player.sendMessage("§3[§dParadisu §bツ§3] §fPlease provide a signle valid name!");
+                        player.sendMessage("§3[§dParadisu §bツ§3] §fPlease provide a single valid name!");
                     }
+                } else {
+                    player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");
                 }
+                return true;
 
 
             case "trashcan":
@@ -408,8 +469,10 @@ public class snwcommands implements CommandExecutor {
                     PluginInventories inv = new PluginInventories();
                     inv.TrashCanInv(player);
                     player.sendMessage("§3[§dParadisu §bツ§3] §fOpened a trashcan");
-                    player.sendMessage("§3[§dParadisu §bツ§3] §fLarge thanks to InstantRamen for large development of /trash");
+                } else {
+                    player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");
                 }
+                return true;
 
             case "fly":
                 if (player.hasPermission("snw.fly")) {
@@ -429,9 +492,9 @@ public class snwcommands implements CommandExecutor {
                         // FLY OTHER
                         // FLY OTHER
                         // FLY OTHER
-                        } else if (args.length >= 1 && player.hasPermission("snw.flyother")) {
-                            String flytarget = args[0];
-                            Player target = Bukkit.getServer().getPlayer(flytarget);
+                    } else if (args.length >= 1 && player.hasPermission("snw.flyother")) {
+                        String flytarget = args[0];
+                        Player target = Bukkit.getServer().getPlayer(flytarget);
 
                         if (target.isFlying()) {
                             target.setFlying(false);
@@ -444,10 +507,76 @@ public class snwcommands implements CommandExecutor {
                             target.sendMessage("§3[§dParadisu §bツ§3] §fYou are now flying");
 
                         } else {
-                            player.sendMessage("§3[§dParadisu §bツ§3] §fHow can they be flying and not flying?");
+                            player.sendMessage("§3[§dParadisu §bツ§3] §fIf you see this message, the game things you/the player is somehow Flying & Not Flying, please contact Jakey");
                         }
                     }
+                } else {
+                    player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");
                 }
+                return true;
+
+            case "rename":
+                if (player.hasPermission("snw.rename")) {
+                    if (args.length == 0) {
+                        player.sendMessage("§3[§dParadisu §bツ§3] §fPlease provide arguments");
+                    } else {
+                        if (player.getInventory().getItemInMainHand().getType() == Material.AIR) {
+                            player.sendMessage("§3[§dParadisu §bツ§3] §7Please hold an item.");
+                        } else {
+                     /*                   String allArgs = "";
+                                            for (String arg : args) {
+                                                allArgs += arg + " ";
+                                            }
+*/
+                            ItemStack item = player.getInventory().getItemInMainHand();
+                            ItemMeta meta = item.getItemMeta();
+                            String name = getParsedName(args);
+                            meta.setDisplayName(name);
+                            item.setItemMeta(meta);
+                        }
+                    }
+
+                } else {
+                    player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");
+                }
+                return true;
+
+            case "glow":
+                if (player.hasPermission("snw.glow")) {
+                    if (player.getInventory().getItemInMainHand().getType() == Material.AIR || player.getInventory().getItemInMainHand().getAmount() == 0 || player.getInventory().getItemInMainHand().getType() == null) {
+                        player.sendMessage("§3[§dParadisu §bツ§3] §7Please hold an item.");
+                    } else {
+
+                        ItemStack item = player.getInventory().getItemInMainHand();
+                        ItemMeta meta = item.getItemMeta();
+                        meta.addEnchant(Enchantment.ARROW_INFINITE, 4341, true);
+                        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                        item.setItemMeta(meta);
+
+                        player.sendMessage("§3[§dParadisu §bツ§3] §fItem is now glowing");
+                    }
+                } else {
+                    player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");
+                }
+                return true;
+
+            case "unglow":
+                if (player.hasPermission("snw.glow")) {
+                    if (player.getInventory().getItemInMainHand().getType() == Material.AIR || player.getInventory().getItemInMainHand().getAmount() == 0 || player.getInventory().getItemInMainHand().getType() == null) {
+                        player.sendMessage("§3[§dParadisu §bツ§3] §7Please hold an item.");
+                    } else {
+
+                    ItemStack item = player.getInventory().getItemInMainHand();
+                    ItemMeta meta = item.getItemMeta();
+                    meta.removeEnchant(Enchantment.ARROW_INFINITE);
+                    meta.removeItemFlags(ItemFlag.HIDE_ENCHANTS);
+                    item.setItemMeta(meta);
+
+                    player.sendMessage("§3[§dParadisu §bツ§3] §fItem is no longer glowing");
+
+                    }
+                } { player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command."); }
+                return true;
 
                 default:
                     return false;

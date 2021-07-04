@@ -228,7 +228,7 @@ public class snwevents implements Listener {
             e.setJoinMessage("§2[§a§l+§2]§f " + joiner.getName() + " joined!");
         }
     }
-
+/*
     @EventHandler
     public void dubsteplauncher(PlayerInteractEvent e) {
         Player player = e.getPlayer();
@@ -242,20 +242,6 @@ public class snwevents implements Listener {
         return;
     }
 
-    //    @EventHandler
-    //    public void onPlayerInteractAtEntity(PlayerInteractAtEntityEvent intEvent) {
-    //        Player p = intEvent.getPlayer();
-    //        if (intEvent.getRightClicked().getType() == EntityType.ARMOR_STAND) {                    // Tests if you right click an armorstand
-    //            if (intEvent.getRightClicked().getName().equals("CoinPickup")) {                     // Tests if the name is "CoinPickup"
-    //                getServer().getConsoleSender().sendMessage(ChatColor.YELLOW + "A player picked up a coin");     // Triggers a message in chat
-    //                p.getWorld().playSound(p.getLocation(), Sound.ENTITY_ILLUSIONER_CAST_SPELL, 1F, 1F);        // plays a sound to the player
-    //                p.sendMessage("§3[§dParadisu §bツ§3] §f§lYou just picked up a coin!");                          // Triggers another message in chat
-    //                intEvent.getPlayer().getInventory().addItem(ItemManager.createCoin());                             // Adds an item into your inv (Can be used to trigger anything, like a gui)
-    //                intEvent.getRightClicked().remove();
-    //            }
-
-
-/*
     @EventHandler
     public static void ItemShowEvent(AsyncPlayerChatEvent pchat) {
         String msg = pchat.getMessage();

@@ -1,5 +1,5 @@
 name: snwplugin
-version: 69.420.666
+version: 69
 authors: [JakeDaDream, RealInstantRamen, andyinnie, _Kastle laughed at me]
 main: me.jakedadream.snwplugin.snwplugin
 api-version: 1.16
@@ -106,7 +106,7 @@ commands:
   fly:
     description: Allows you to toggle fly
     usage: /<command>
-  spawn:
+  Spawn:
     description: Brings you to spawn
     usage: /<command>
   skull:
@@ -116,3 +116,16 @@ commands:
       - giveskull
       - skulls
       - head
+  rename:
+    description: Renames the item in your hand
+    usage: /<command> <args>
+  glow:
+    description: Gives the item an enchantment effect
+    usage: /<command>
+    aliases:
+      - glint
+  unglow:
+    description: Removes the item's enchantment effect
+    usage: /<command>
+    aliases:
+      - unglint
