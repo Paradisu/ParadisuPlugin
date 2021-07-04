@@ -355,8 +355,6 @@ public class snwcommands implements CommandExecutor {
             case "sex":
                 if (player.hasPermission("snw.sex")) {
                     player.sendMessage("§3[§dParadisu §bツ§3] §fYou are now having sex!!!!!");
-                } else {
-                    player.sendMessage("§3[§dParadisu §bツ§3] §fYou are not worthy of sex");
                 }
                 return true;
 
