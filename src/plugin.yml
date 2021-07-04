@@ -42,11 +42,6 @@ commands:
     usage: /<command>
     aliases:
       - gm2
-  nickname:
-    description: Changes your display name
-    usage: /<command> <name>
-    aliases:
-      - nick
   enderchest:
     description: Opens your EC
     usage: /<command>

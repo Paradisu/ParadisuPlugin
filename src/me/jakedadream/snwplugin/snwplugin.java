@@ -25,7 +25,6 @@ public class snwplugin extends JavaPlugin {
         getCommand("gms").setExecutor(new snwcommands());
         getCommand("gmsp").setExecutor(new snwcommands());
         getCommand("gma").setExecutor(new snwcommands());
-        getCommand("nickname").setExecutor(new snwcommands());
         getCommand("enderchest").setExecutor(new snwcommands());
         getCommand("workbench").setExecutor(new snwcommands());
         getCommand("invsee").setExecutor(new snwcommands());

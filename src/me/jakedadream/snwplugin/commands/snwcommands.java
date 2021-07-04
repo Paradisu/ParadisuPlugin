@@ -258,31 +258,6 @@ public class snwcommands implements CommandExecutor {
                 }
                 return true;
 
-            case "nickname":
-                if (player.hasPermission("snw.nickname")) {
-                    if (args.length == 0) {
-                        // /nick (no args)
-                        player.sendMessage("§3[§dParadisu §bツ§3] §fIncorrect usage; Please use '/nick <nickname>'");
-                    } else {
-                        String nick = "";
-                        for (String arg : args) {
-                            nick += arg + " ";
-                        }
-                        nick = nick.substring(0, nick.length() - 1);
-
-                        nick = nick.replaceAll("&", "§");
-                        player.sendMessage("§3[§dParadisu §bツ§3] §fYour nickname was changed to §n" + nick + "§f!");
-                        snwplugin.getPlugin(snwplugin.class).getConfig().set(player.getName(), nick);
-                        snwplugin.getPlugin(snwplugin.class).saveConfig();
-
-                    }
-
-                    // /nick <nickname>;
-                } else {
-                    player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");
-                }
-                return true;
-
 
             case "enderchest":
                 if (player.hasPermission("snw.ec")) {
@@ -432,7 +407,6 @@ public class snwcommands implements CommandExecutor {
                         itemSkull.setItemMeta(metaSkull);
                         player.getInventory().addItem(itemSkull);
 
-                        // player.performCommand("give @p minecraft:player_head{SkullOwner:\"" + args[0] + "\"}");
                         player.sendMessage("§3[§dParadisu §bツ§3] §fWe successfully gave you the head of §3§n" + owner + "§f!");
 
                     } else {
@@ -580,6 +554,30 @@ public class snwcommands implements CommandExecutor {
                     }
                 } { player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command."); }
                 return true;
+
+            case "broadcast2":
+                if (player.hasPermission("snw.broadcast")) {
+                    if (args.length == 0) {
+                        // /sc (no args)
+                        player.sendMessage("§3[§dParadisu §bツ§3] §fIncorrect usage; Please use '/broadcast <message>'");
+                    } else {
+                        String allArgs = "";
+
+                        for (String arg : args) {
+                            allArgs += arg + " ";
+                        }
+                        for (World w : Bukkit.getWorlds()) {
+                            for (Player p : w.getPlayers()) {
+                                    p.sendMessage("\n§3[§dParadisu Broadcast §bツ§3] §f§l» " + allArgs + "\n");
+                            }
+                        }
+
+                    }
+                } else {
+                    player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");
+                }
+                return true;
+
 
                 default:
                     return false;
