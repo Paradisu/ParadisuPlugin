@@ -308,7 +308,7 @@ public class snwcommands implements CommandExecutor {
                         player.sendMessage("§3[§dParadisu §bツ§3] §fIncorrect usage; Please use '/invsee <player>'");
                     }
                     if (args.length >= 1) {
-                        Player target = Bukkit.getServer().getPlayer(args[0]);
+                        Player target = Bukkit.getServer().getPlayerExact(args[0]);
 
                         Inventory targetinv = target.getInventory();
                         player.openInventory(targetinv);
