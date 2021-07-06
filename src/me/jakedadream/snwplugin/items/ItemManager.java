@@ -1,9 +1,11 @@
 package me.jakedadream.snwplugin.items;
 
-import me.jakedadream.snwplugin.snwplugin;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
@@ -18,44 +20,15 @@ public class ItemManager {
     public static ItemStack acceptbutton = createAcceptButton();
     public static ItemStack blankbutton = createBlankButton();
 
-    public static ItemStack createCoin() {
-        ItemStack item = new ItemStack(Material.GOLD_NUGGET, 1);
-        ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName("§e§lGOLD COIN");
-        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-        item.setItemMeta(meta);
-        return item;
+        public static ItemStack createCoin() {
+            ItemStack item = new ItemStack(Material.GOLD_NUGGET, 1);
+            ItemMeta meta = item.getItemMeta();
+            meta.setDisplayName("§e§lGOLD COIN");
+            meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+            item.setItemMeta(meta);
+            return item;
     }
 
-    public static ItemStack createThruWand() {
-        ItemStack item = new ItemStack(Material.SPECTRAL_ARROW, 1);
-        ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName("§7'//Thru' §3Wand");
-        List<String> lore = new ArrayList<>();
-        lore.add("§dRight click wand to //thru");
-        lore.add("§7(Requires worldedit perms)");
-        meta.setLore(lore);
-        meta.addEnchant(Enchantment.LUCK, 1, false);
-        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-        item.setItemMeta(meta);
-        return item;
-    }
-
-    public static ItemStack createLLamazBanWand() {
-        ItemStack item = new ItemStack(Material.SPECTRAL_ARROW, 1);
-        ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName("§7'/ban Llamaz' §3Wand");
-        List<String> lore = new ArrayList<>();
-        lore.add("§cRight click wand to /ban Llamaz");
-        lore.add("§7(Requires ban perms)");
-        meta.setLore(lore);
-        meta.addEnchant(Enchantment.LUCK, 1, false);
-        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-        item.setItemMeta(meta);
-        return item;
-    }
         public static ItemStack createStarCoin() {
             ItemStack item = new ItemStack(Material.IRON_NUGGET, 1);
             ItemMeta meta = item.getItemMeta();
@@ -239,4 +212,5 @@ public class ItemManager {
 
 
  // end
+
 }

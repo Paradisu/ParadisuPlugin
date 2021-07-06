@@ -124,3 +124,25 @@ commands:
     usage: /<command>
     aliases:
       - unglint
+  broadcast:
+    description: Broadcast a message to everyone
+    usage: /<command> <message>
+    aliases:
+      - bc
+      - alert
+      - messageall
+  speed:
+    description: changes how fast you move
+    usage: /<command> <#>
+  sudo:
+    description: allows you to talk & run commands as others
+    usage: /<command> <args>
+  whomademe:
+    description: tells you the creators of the plugin
+    usage: /<command>
+    aliases:
+      - whoami
+      - snwplugin
+  rp:
+    description: does rp stuff
+    usage: /<command> <args>

@@ -1,8 +1,7 @@
 package me.jakedadream.snwplugin.commands;
 
-import me.jakedadream.snwplugin.events.PluginInventories;
 import me.jakedadream.snwplugin.items.ItemManager;
-import me.jakedadream.snwplugin.snwplugin;
+import me.jakedadream.snwplugin.items.PluginInventories;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -61,7 +60,7 @@ public class snwcommands implements CommandExecutor {
 
 
             case "mgive":
-                if (player.hasPermission("snw.mdoels")) {
+                if (player.hasPermission("snw.models")) {
                     try {
                         id = Short.parseShort(args[0]);
                         player.getInventory().addItem(ItemManager.createmodel(id));
@@ -74,7 +73,7 @@ public class snwcommands implements CommandExecutor {
                 return true;
 
             case "mhat":
-                if (player.hasPermission("snw.mdoels")) {
+                if (player.hasPermission("snw.models")) {
                     try {
                         id = Short.parseShort(args[0]);
 
@@ -500,11 +499,7 @@ public class snwcommands implements CommandExecutor {
                         if (player.getInventory().getItemInMainHand().getType() == Material.AIR) {
                             player.sendMessage("§3[§dParadisu §bツ§3] §7Please hold an item.");
                         } else {
-                     /*                   String allArgs = "";
-                                            for (String arg : args) {
-                                                allArgs += arg + " ";
-                                            }
-*/
+
                             ItemStack item = player.getInventory().getItemInMainHand();
                             ItemMeta meta = item.getItemMeta();
                             String name = getParsedName(args);
@@ -555,7 +550,7 @@ public class snwcommands implements CommandExecutor {
                 } { player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command."); }
                 return true;
 
-            case "broadcast2":
+            case "broadcast":
                 if (player.hasPermission("snw.broadcast")) {
                     if (args.length == 0) {
                         // /sc (no args)
@@ -568,7 +563,9 @@ public class snwcommands implements CommandExecutor {
                         }
                         for (World w : Bukkit.getWorlds()) {
                             for (Player p : w.getPlayers()) {
-                                    p.sendMessage("\n§3[§dParadisu Broadcast §bツ§3] §f§l» " + allArgs + "\n");
+                                    p.sendMessage((""));
+                                    p.sendMessage("§3[§dParadisu Broadcast §bツ§3] §f§l» " + allArgs);
+                                    p.sendMessage((""));
                             }
                         }
 
@@ -578,8 +575,81 @@ public class snwcommands implements CommandExecutor {
                 }
                 return true;
 
+            case "speed":
+                if (player.hasPermission("snw.speed")) {
+                    if (args.length == 0 || args[0].equalsIgnoreCase("1")) {
+                            player.setFlySpeed(0.2F);
+                            player.setWalkSpeed(0.2F);
+                            player.sendMessage("§3[§dParadisu §bツ§3] §fReset player speed");
+                        return true;
+                    }
+                    if (Float.parseFloat(args[0]) <= 10.0F) {
+                            player.setFlySpeed(0.1F * Float.parseFloat(args[0]));
+                            player.setWalkSpeed(0.1F * Float.parseFloat(args[0]));
+                            player.sendMessage("§3[§dParadisu §bツ§3] §fSet player speed to " + args[0]);
+                        return true;
+                    }
+                        player.sendMessage("§3[§dParadisu §bツ§3] §3" + args[0] + "§f is either higher than 10, or an invalid argument");
+                } else {player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command."); }
+                return true;
 
-                default:
+            case "sudo":
+                if (player.hasPermission("snw.sudo")) {
+                    if (args.length < 2) {
+                        player.sendMessage("§3[§dParadisu §bツ§3] §fPlease use the command as §3/sudo <player> <command or message>");
+                        return true;
+                    }
+                    Player target = Bukkit.getPlayer(args[0].toLowerCase());
+                    if (target == null) {
+                        player.sendMessage("§3[§dParadisu §bツ§3] §fThat player is not online!");
+                        return true;
+                    }  if (args[1] != null) {
+                        StringBuilder execution = new StringBuilder();
+                        for (int i = 1; i < args.length; i++) {
+                            execution.append(" ").append(args[i]);
+                        }
+                        if (execution.toString().trim().startsWith("c:")) {
+                            target.chat(execution.toString().trim().replace("c:", ""));
+                            player.sendMessage("§3[§dParadisu §bツ§3] §f §rForcing §3" + target.getDisplayName() + " §rto say §3" + execution.toString().trim().replace("c:", ""));
+                            return true;
+                        }
+                        player.getServer().dispatchCommand((CommandSender)target, execution.toString().trim());
+                        player.sendMessage("§3[§dParadisu §bツ§3] §fForcing §3" + target.getDisplayName() + " §rto run §3" + execution.toString().trim());
+                        return true;
+                    }
+                } else {player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command."); }
+                return true;
+
+            case "whomademe":
+                if (player.hasPermission("displayname.default")) {
+                    player.sendMessage("");
+                    player.sendMessage("    §3[§dParadisu §bツ§3] Plugin");
+                    player.sendMessage("§c====================================");
+                    player.sendMessage("§dPlugin Coded by §3Jakey §d- §3Jakey#9999");
+                    player.sendMessage("");
+                    player.sendMessage("§b§oWith help from:");
+                    player.sendMessage("§3RealInstantRamen §c- §f§oTrashcans & Model ID system");
+                    player.sendMessage("§3Andyinnie §c- §f§oEarly coin development");
+                    player.sendMessage("§3Kastle_ §c- §f§oPointing out dumb flaws i've made");
+                    player.sendMessage("");
+
+                } else {player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command."); }
+                return true;
+
+                /*
+                case "resetluckyblockleaderboard"
+                if (player.hasPermission("snw.resetlb")) {
+                    getConfig().getConfigurationSection("playerdata");
+                    player.sendMessage("§3[§dParadisu §bツ§3] §fReset all lucky block amounts"));
+                    for (String key : getConfig().getConfigurationSection("playerdata").getKeys(false)) {
+                        String lb = key + ".lb";
+                        getConfig().getConfigurationSection("playerdata").set(lb, Integer.valueOf(0));
+                    }
+                    saveConfig();
+                } */
+
+
+            default:
                     return false;
                     //complain
         }

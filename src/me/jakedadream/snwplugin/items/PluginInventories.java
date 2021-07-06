@@ -1,18 +1,8 @@
-package me.jakedadream.snwplugin.events;
+package me.jakedadream.snwplugin.items;
 
-import me.jakedadream.snwplugin.items.ItemManager;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
-
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static me.jakedadream.snwplugin.items.ItemManager.*;
-
 
 public class PluginInventories {
 
@@ -22,15 +12,15 @@ public class PluginInventories {
         ItemManager createBlankButton = new ItemManager();
         ItemManager createDenyButton = new ItemManager();
 
-        inv.setItem(27, blankbutton);
-        inv.setItem(28, blankbutton);
-        inv.setItem(29, blankbutton);
-        inv.setItem(30, blankbutton);
-        inv.setItem(31, blankbutton);
-        inv.setItem(32, blankbutton);
-        inv.setItem(33, blankbutton);
-        inv.setItem(34, denybutton);
-        inv.setItem(35, acceptbutton);
+        inv.setItem(27, ItemManager.blankbutton);
+        inv.setItem(28, ItemManager.blankbutton);
+        inv.setItem(29, ItemManager.blankbutton);
+        inv.setItem(30, ItemManager.blankbutton);
+        inv.setItem(31, ItemManager.blankbutton);
+        inv.setItem(32, ItemManager.blankbutton);
+        inv.setItem(33, ItemManager.blankbutton);
+        inv.setItem(34, ItemManager.denybutton);
+        inv.setItem(35, ItemManager.acceptbutton);
 
         player.openInventory(inv);
     } // yuh
@@ -38,7 +28,6 @@ public class PluginInventories {
 
     public static void InvseeInv(Player player) {
         Inventory inv = Bukkit.createInventory(null, 36, "§3§l" + "'s §finventory"); //4 Rows
-
 
 
         player.openInventory(inv);

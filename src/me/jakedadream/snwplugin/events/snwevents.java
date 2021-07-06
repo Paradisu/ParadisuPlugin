@@ -1,12 +1,17 @@
 package me.jakedadream.snwplugin.events;
 
 import me.jakedadream.snwplugin.items.ItemManager;
+import me.jakedadream.snwplugin.items.PluginInventories;
 import me.jakedadream.snwplugin.snwplugin;
 import org.bukkit.*;
+import org.bukkit.block.Block;
+import org.bukkit.block.data.Levelled;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.Inventory;
@@ -17,8 +22,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.HashMap;
 
-import static org.bukkit.Bukkit.getName;
-import static org.bukkit.Bukkit.getServer;
+import static org.bukkit.Bukkit.*;
 
 public class snwevents implements Listener {
 
@@ -32,11 +36,21 @@ public class snwevents implements Listener {
         joiner.sendMessage("§3[§dParadisu §bツ§3] §fBe sure to do §e/rp §f& §e/audio§f!");
         joiner.sendMessage("§f§l----------------------------");
 
-        Location loc = new Location((Bukkit.getWorld("SuperNW")), 82.5, 86.1, -741.5, 75, 0);    // 82.5 86.1 -741.5
-        joiner.teleport(loc);
+        if (!joiner.hasPermission("snw.nospawnonjoin")) {
+            Location loc = new Location((Bukkit.getWorld("SuperNW")), 82.5, 86.1, -741.5, 75, 0);    // 82.5 86.1 -741.5
+            joiner.teleport(loc);
+        }
 
         joiner.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 10, 1, false));
         joiner.setGameMode(GameMode.ADVENTURE);
+
+        /*
+        player.setResourcePack(getConfig().getString("resource-pack-link"));
+        if (getConfig().getConfigurationSection("playerdata").getConfigurationSection(player.getUniqueId().toString() + ", " + player.getName()) == null) {
+            getConfig().getConfigurationSection("playerdata").createSection(player.getUniqueId().toString() + ", " + player.getName());
+            ConfigurationSection pd = getConfig().getConfigurationSection("playerdata").getConfigurationSection(player.getUniqueId().toString() + ", " + player.getName());
+            pd.set("lb", Integer.valueOf(0));
+            saveConfig(); */
 
     }
 
@@ -228,7 +242,77 @@ public class snwevents implements Listener {
             e.setJoinMessage("§2[§a§l+§2]§f " + joiner.getName() + " joined!");
         }
     }
+
+    @EventHandler
+    public void PlayerCraft(CraftItemEvent cie) {
+        cie.setCancelled(false);
+    }
+
+    /*
+    @EventHandler
+    public void PlayerPunchBlock(PlayerInteractEvent pie) {
+        if (pie.getAction() == Action.LEFT_CLICK_BLOCK) {
+            Player player = pie.getPlayer();
+            Block b = pie.getClickedBlock();
+            if (b.getType() != Material.CAULDRON)
+                return;  if (b.getType() == Material.CAULDRON) {
+                int full = ((Levelled)b.getBlockData()).getLevel();
+                if (((Levelled)b.getBlockData()).getLevel() == 3) {
+                    ConfigurationSection pd = getConfig().getConfigurationSection("playerdata").getConfigurationSection(player.getUniqueId().toString() + ", " + player.getName());
+                    if (pd.getInt("lb") <= 4) {
+                        pd.set("lb", Integer.valueOf(pd.getInt("lb") + 1));
+                        saveConfig();
+                        player.sendMessage(getConfig().getString("message-prefix") + " §rYou have claimed §e§L(" + pd.getInt("lb") + "/5)§r lucky blocks");
+                        player.playSound(player.getLocation(), Sound.ENTITY_EVOKER_CAST_SPELL, 1.0F, 1.0F);
+                    } else {
+                        player.sendMessage(getConfig().getString("message-prefix") + " §rYou have claimed the maximum lucky blocks for the day.");
+                        player.playSound(player.getLocation(), Sound.ENTITY_DROWNED_HURT, 1.0F, 1.0F);
+                    }
+                }
+            }
+        }
+    }
+} */
+
+    @EventHandler
+    public void playerResourcePack(PlayerResourcePackStatusEvent rp) {
+        Player player = rp.getPlayer();
+        rp.getStatus();
+        if ((rp.getStatus() == PlayerResourcePackStatusEvent.Status.DECLINED || rp.getStatus() == PlayerResourcePackStatusEvent.Status.FAILED_DOWNLOAD)
+                && !player.hasPermission("rp.bypass")) {
+                        player.kickPlayer("You are required to accept the resource pack!");
+                        Bukkit.broadcast("§3[§dParadisu §bツ§3] §c" + player.getName() + " §cdenied the resource pack and was kicked.\n§cIf this was a mistake, give §a" + player.getName() + " §f§lrp.bypass §cor disable rp-required in config.yml", "rp.bypass");
+        }
+    }
+
 /*
+    @EventHandler
+    public void PlayerPunchBlock(PlayerInteractEvent pie) {
+        if (pie.getAction() == Action.LEFT_CLICK_BLOCK) {
+            Player player = pie.getPlayer();
+            Block b = pie.getClickedBlock();
+            if (b.getType() != Material.CAULDRON)
+                return;  if (b.getType() == Material.CAULDRON) {
+                    int full = ((Levelled)b.getBlockData()).getLevel();
+                    if (((Levelled)b.getBlockData()).getLevel() == 3) {
+                        ConfigurationSection pd = getConfig().getConfigurationSection("playerdata").getConfigurationSection(player.getUniqueId().toString() + ", " + player.getName());
+                        if (pd.getInt("lb") <= 4) {
+                            pd.set("lb", Integer.valueOf(pd.getInt("lb") + 1));
+                            saveConfig();
+                            player.sendMessage(getConfig().getString("message-prefix") + " §rYou have claimed §e§L(" + pd.getInt("lb") + "/5)§r lucky blocks");
+                            player.playSound(player.getLocation(), Sound.ENTITY_EVOKER_CAST_SPELL, 1.0F, 1.0F);
+                        } else {
+                            player.sendMessage(getConfig().getString("message-prefix") + " §rYou have claimed the maximum lucky blocks for the day.");
+                            player.playSound(player.getLocation(), Sound.ENTITY_DROWNED_HURT, 1.0F, 1.0F);
+                        }
+                    }
+                }
+        }
+    }
+}
+
+
+
     @EventHandler
     public void dubsteplauncher(PlayerInteractEvent e) {
         Player player = e.getPlayer();

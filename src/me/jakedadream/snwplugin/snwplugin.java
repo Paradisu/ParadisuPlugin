@@ -1,6 +1,7 @@
 package me.jakedadream.snwplugin;
 
 import me.jakedadream.snwplugin.commands.snwcommands;
+import me.jakedadream.snwplugin.commands.snwRP;
 import me.jakedadream.snwplugin.events.snwevents;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -14,6 +15,12 @@ public class snwplugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
+
+        saveDefaultConfig();
+        getConfig();
+
+
+
 //        ArrayList createCommand = getCommand(().setExecutor(new snwcommands()));
         getCommand("givecoin").setExecutor(new snwcommands());
         getCommand("givestarcoin").setExecutor(new snwcommands());
@@ -42,6 +49,14 @@ public class snwplugin extends JavaPlugin {
         getCommand("rename").setExecutor(new snwcommands());
         getCommand("glow").setExecutor(new snwcommands());
         getCommand("unglow").setExecutor(new snwcommands());
+        getCommand("broadcast").setExecutor(new snwcommands());
+        getCommand("speed").setExecutor(new snwcommands());
+        getCommand("sudo").setExecutor(new snwcommands());
+        getCommand("whomademe").setExecutor(new snwcommands());
+
+
+        getCommand("rp").setExecutor(new snwRP());
+
         getServer().getPluginManager().registerEvents(new snwevents(),this);
         getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[SNW] Plugin is now enabled :D");
         this.saveDefaultConfig();
