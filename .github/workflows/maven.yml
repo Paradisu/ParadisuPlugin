@@ -70,4 +70,5 @@ jobs:
         bodyFile: "release_notes.md"
         draft: false
         prerelease: false
+        tag: ${{ steps.lookupSNWVersion.outputs.result }}
         token: ${{ secrets.GITHUB_TOKEN }}
