@@ -35,8 +35,7 @@ public class snwplugin extends JavaPlugin {
     @Override
     public void onEnable() {
 
-        saveDefaultConfig();
-        getConfig();
+
 
 
 

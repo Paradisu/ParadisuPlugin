@@ -2,7 +2,6 @@ package me.jakedadream.snwplugin.events;
 
 import me.jakedadream.snwplugin.snwplugin;
 import org.bukkit.Bukkit;
-import sun.plugin2.main.server.Plugin;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
