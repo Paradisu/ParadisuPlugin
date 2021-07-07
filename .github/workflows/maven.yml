@@ -56,16 +56,16 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         name: SNWPlugin-Latest
-        path: staging/SNWPlugin-*.jar
+        path: staging/snwplugin-*.jar
     - name: Generate release diff
       env:
-        BEGIN_COMMIT: ${{ steps.version.outputs.previous_tag }}
+        BEGIN_COMMIT: ${{ steps.tag_version.outputs.previous_tag }}
         END_COMMIT: ${{ steps.version.outputs.tag }}
       run: git fetch --tags --force && git log --pretty=format:"* %s (%h)" ${BEGIN_COMMIT}..${END_COMMIT} > release_notes.md
     - name: Create release
       uses: ncipollo/release-action@v1
       with:
-        artifacts: staging/SNWPlugin-*.jar
+        artifacts: staging/snwplugin-*.jar
         allowUpdates: true
         bodyFile: "release_notes.md"
         draft: false
