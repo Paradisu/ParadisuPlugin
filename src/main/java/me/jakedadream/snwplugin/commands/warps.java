@@ -8,22 +8,23 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import me.jakedadream.snwplugin.snwplugin;
 
 import java.util.Set;
 
 public class warps implements CommandExecutor {
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-/*
+
         Player player = (Player) sender;
 
-
+                            //snwplugin.getPlugin(snwplugin.class)
         /*
         ============================================
         Warping
         ============================================
          */
-        /*
+
         if (cmd.getName().equalsIgnoreCase("warp")) {
             if (args.length == 0) {
                 player.sendMessage("§3[§dParadisu §bツ§3] §f/warp §3(name)");
@@ -41,16 +42,16 @@ public class warps implements CommandExecutor {
             player.playSound(loc, Sound.ENTITY_PLAYER_LEVELUP, 1.0F, 1.0F);
             return true;
         }
-*/
+
         /*
         ============================================
         Warp list
         ============================================
          */
-        /*
+
         if (cmd.getName().equalsIgnoreCase("warps")) {
             Set<String> list = getConfig().getConfigurationSection("warps").getKeys(false);
-            player.sendMessage(getConfig().getString("§3[§dParadisu §bツ§3] §fHere is a list of warps: §c" + list.toString());
+            player.sendMessage(getConfig().getString("§3[§dParadisu §bツ§3] §fHere is a list of warps: §c" + list.toString()));
             return true;
         }
 
@@ -59,10 +60,10 @@ public class warps implements CommandExecutor {
         Setting and deleting warps
         ============================================
          */
-/*
+
         if (cmd.getName().equalsIgnoreCase("setwarp")) {
             if (args.length == 0) {
-                player.sendMessage(getConfig().getString("message-prefix") + "§r /setwarp (name)");
+                player.sendMessage("§3[§dParadisu §bツ§3]§f /setwarp (name)");
                 return true;
             }
             Location loc = player.getLocation();
@@ -96,8 +97,6 @@ public class warps implements CommandExecutor {
         }
 
         return false;
-    } */
-        /* Made by Llamaz */
-        return false;
     }
+        /* Made by Llamaz */
 }

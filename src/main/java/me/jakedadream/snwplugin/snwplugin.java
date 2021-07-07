@@ -1,9 +1,20 @@
 package me.jakedadream.snwplugin;
 
 import me.jakedadream.snwplugin.commands.snwcommands;
+import me.jakedadream.snwplugin.commands.warps;
 import me.jakedadream.snwplugin.events.snwevents;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+import me.jakedadream.snwplugin.events.entityedits;
+
+import java.io.File;
+import java.io.IOException;
+
+import static sun.nio.ch.IOUtil.load;
 
 public class snwplugin extends JavaPlugin {
 
@@ -31,6 +42,7 @@ public class snwplugin extends JavaPlugin {
         With help from RealInstantRamen, Andyinnie, & Kastle yelling in my ear.
 */
 
+    int sched;
 
     @Override
     public void onEnable() {
@@ -71,12 +83,33 @@ public class snwplugin extends JavaPlugin {
         getCommand("speed").setExecutor(new snwcommands());
         getCommand("sudo").setExecutor(new snwcommands());
         getCommand("whomademe").setExecutor(new snwcommands());
-
-
+        getCommand("warp").setExecutor(new warps());
+        getCommand("warps").setExecutor(new warps());
+        getCommand("delwarp").setExecutor(new warps());
+        getCommand("createwarp").setExecutor(new warps());
+        //
+        //
+        createwarpfiles();
+        //
+        //
         getServer().getPluginManager().registerEvents(new snwevents(),this);
         getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[SNW] Plugin is now enabled :D");
         this.saveDefaultConfig();
+
+
+
+
+
+        if(!Bukkit.getScheduler().isCurrentlyRunning(sched)) {
+            sched = Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
+                @Override
+                public void run() {
+                    new entityedits().load();
+                }
+            }, 1, 1);
+        }
     }
+
 
     @Override
     public void onDisable() {
@@ -85,7 +118,26 @@ public class snwplugin extends JavaPlugin {
     }
 
 
+    private File configf;
+    private FileConfiguration warpsconfig;
 
+    public void createwarpfiles() {
+
+        configf = new File(getDataFolder(), "warps.yml");
+
+        if(!configf.exists()) {
+            configf.getParentFile().mkdirs();
+            saveResource("warps.yml", false);
+        }
+
+        warpsconfig = new YamlConfiguration();
+
+        try {
+            warpsconfig.load(configf);
+        } catch (IOException | InvalidConfigurationException e) {
+            e.printStackTrace();
+        }
+    }
 }
 
 

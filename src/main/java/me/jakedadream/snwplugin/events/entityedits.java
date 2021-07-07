@@ -8,13 +8,13 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.Listener;
 import org.bukkit.potion.PotionEffectType;
-
+import me.jakedadream.snwplugin.snwplugin;
 
 public class entityedits implements Listener {
 
 
 
-        public void run() {
+        public void load() {
             Bukkit.getWorlds();
             for (World w : Bukkit.getWorlds()) {
 
