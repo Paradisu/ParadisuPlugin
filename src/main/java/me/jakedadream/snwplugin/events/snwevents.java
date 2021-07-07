@@ -4,9 +4,6 @@ import me.jakedadream.snwplugin.items.ItemManager;
 import me.jakedadream.snwplugin.items.PluginInventories;
 import me.jakedadream.snwplugin.snwplugin;
 import org.bukkit.*;
-import org.bukkit.block.Block;
-import org.bukkit.block.data.Levelled;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -43,14 +40,6 @@ public class snwevents implements Listener {
 
         joiner.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 10, 1, false));
         joiner.setGameMode(GameMode.ADVENTURE);
-
-        /*
-        player.setResourcePack(getConfig().getString("resource-pack-link"));
-        if (getConfig().getConfigurationSection("playerdata").getConfigurationSection(player.getUniqueId().toString() + ", " + player.getName()) == null) {
-            getConfig().getConfigurationSection("playerdata").createSection(player.getUniqueId().toString() + ", " + player.getName());
-            ConfigurationSection pd = getConfig().getConfigurationSection("playerdata").getConfigurationSection(player.getUniqueId().toString() + ", " + player.getName());
-            pd.set("lb", Integer.valueOf(0));
-            saveConfig(); */
 
     }
 
@@ -149,6 +138,15 @@ public class snwevents implements Listener {
         msg = msg.replace(":unflip:", "┬─┬ノ( º _ ºノ)");
         pchat.setMessage(msg);
     }
+
+    @EventHandler
+    public static void welcomeevent(AsyncPlayerChatEvent pchat) {
+        String msg = pchat.getMessage();
+        msg = msg.replace(":Welcome!", "┬─┬ノ( º _ ºノ)");
+        pchat.setMessage(msg);
+    }
+
+
 
     @EventHandler()
     public void onRClick(PlayerInteractAtEntityEvent intEvent) {

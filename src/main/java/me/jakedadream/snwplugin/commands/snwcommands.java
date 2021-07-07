@@ -547,7 +547,7 @@ public class snwcommands implements CommandExecutor {
                     player.sendMessage("§3[§dParadisu §bツ§3] §fItem is no longer glowing");
 
                     }
-                } { player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command."); }
+                } else { player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command."); }
                 return true;
 
             case "broadcast":

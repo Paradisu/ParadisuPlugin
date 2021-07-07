@@ -1,7 +1,6 @@
 package me.jakedadream.snwplugin;
 
 import me.jakedadream.snwplugin.commands.snwcommands;
-import me.jakedadream.snwplugin.commands.snwRP;
 import me.jakedadream.snwplugin.events.snwevents;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -11,6 +10,26 @@ public class snwplugin extends JavaPlugin {
     public static void main(String[] args) {
         System.out.println("[SNW] Starting...");
     }
+
+    /*
+   _____                         _   _ _       _                 _        __          __        _     _
+  / ____|                       | \ | (_)     | |               | |       \ \        / /       | |   | |
+ | (___  _   _ _ __   ___ _ __  |  \| |_ _ __ | |_ ___ _ __   __| | ___    \ \  /\  / /__  _ __| | __| |
+  \___ \| | | | '_ \ / _ \ '__| | . ` | | '_ \| __/ _ \ '_ \ / _` |/ _ \    \ \/  \/ / _ \| '__| |/ _` |
+  ____) | |_| | |_) |  __/ |    | |\  | | | | | ||  __/ | | | (_| | (_) |    \  /\  / (_) | |  | | (_| |
+ |_____/ \__,_| .__/ \___|_|    |_| \_|_|_| |_|\__\___|_| |_|\__,_|\___/      \/  \/ \___/|_|  |_|\__,_|
+              | |
+              |_|
+.  .   .  .     .  .             .          .---.      .
+ \  \ /  /   o _|__|_            |              |      |
+  \  \  /.--..  |  |  .-. .--.   |.-. .  .      | .-.  |.-. .-. .  .
+   \/ \/ |   |  |  | (.-' |  |   |   )|  |      ;(   ) |-.'(.-' |  |
+    ' '  ' -' `-`-'`-'`--''  `-  '`-' `--|  `--'  `-'`-'  `-`--'`--|
+                                         ;                         ;
+                                      `-'                       `-'
+
+        With help from RealInstantRamen, Andyinnie, & Kastle yelling in my ear.
+*/
 
 
     @Override
@@ -55,8 +74,6 @@ public class snwplugin extends JavaPlugin {
         getCommand("whomademe").setExecutor(new snwcommands());
 
 
-        getCommand("rp").setExecutor(new snwRP());
-
         getServer().getPluginManager().registerEvents(new snwevents(),this);
         getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[SNW] Plugin is now enabled :D");
         this.saveDefaultConfig();
@@ -68,25 +85,7 @@ public class snwplugin extends JavaPlugin {
         getServer().getConsoleSender().sendMessage(ChatColor.RED + "[SNW] Fuck you");
     }
 
-    /*
-   _____                         _   _ _       _                 _        __          __        _     _
-  / ____|                       | \ | (_)     | |               | |       \ \        / /       | |   | |
- | (___  _   _ _ __   ___ _ __  |  \| |_ _ __ | |_ ___ _ __   __| | ___    \ \  /\  / /__  _ __| | __| |
-  \___ \| | | | '_ \ / _ \ '__| | . ` | | '_ \| __/ _ \ '_ \ / _` |/ _ \    \ \/  \/ / _ \| '__| |/ _` |
-  ____) | |_| | |_) |  __/ |    | |\  | | | | | ||  __/ | | | (_| | (_) |    \  /\  / (_) | |  | | (_| |
- |_____/ \__,_| .__/ \___|_|    |_| \_|_|_| |_|\__\___|_| |_|\__,_|\___/      \/  \/ \___/|_|  |_|\__,_|
-              | |
-              |_|
-.  .   .  .     .  .             .          .---.      .
- \  \ /  /   o _|__|_            |              |      |
-  \  \  /.--..  |  |  .-. .--.   |.-. .  .      | .-.  |.-. .-. .  .
-   \/ \/ |   |  |  | (.-' |  |   |   )|  |      ;(   ) |-.'(.-' |  |
-    ' '  ' -' `-`-'`-'`--''  `-  '`-' `--|  `--'  `-'`-'  `-`--'`--|
-                                         ;                         ;
-                                      `-'                       `-'
 
-        With help from RealInstantRamen, Andyinnie, & Kastle yelling in my ear.
-*/
 
 }
 

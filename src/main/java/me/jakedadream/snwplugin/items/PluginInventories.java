@@ -26,11 +26,6 @@ public class PluginInventories {
     } // yuh
 
 
-    public static void InvseeInv(Player player) {
-        Inventory inv = Bukkit.createInventory(null, 36, "§3§l" + "'s §finventory"); //4 Rows
 
-
-        player.openInventory(inv);
-    } // yuh
 
 }

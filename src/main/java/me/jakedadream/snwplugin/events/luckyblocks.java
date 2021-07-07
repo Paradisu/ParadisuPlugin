@@ -13,6 +13,7 @@ public class luckyblocks {
 
 
     public void run() {
+        /*
         SimpleDateFormat sdf = new SimpleDateFormat("kk:mm");
         TimeZone ttz = TimeZone.getTimeZone("GMT+9");
         sdf.setTimeZone(ttz);
@@ -27,6 +28,6 @@ public class luckyblocks {
                 snwplugin.this.getConfig().getConfigurationSection("playerdata").set(lb, Integer.valueOf(0));
                 snwplugin.this.saveConfig();
             }
-        }
-    }).runTaskTimer((Plugin)this, 0L, 1200L);
+        } */
+    }
 }
