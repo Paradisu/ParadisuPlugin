@@ -1,7 +1,6 @@
 package me.jakedadream.snwplugin;
 
 import me.jakedadream.snwplugin.commands.snwcommands;
-import me.jakedadream.snwplugin.commands.warps;
 import me.jakedadream.snwplugin.events.snwevents;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -13,8 +12,6 @@ import me.jakedadream.snwplugin.events.entityedits;
 
 import java.io.File;
 import java.io.IOException;
-
-import static sun.nio.ch.IOUtil.load;
 
 public class snwplugin extends JavaPlugin {
 
@@ -48,9 +45,6 @@ public class snwplugin extends JavaPlugin {
     public void onEnable() {
 
 
-
-
-
 //        ArrayList createCommand = getCommand(().setExecutor(new snwcommands()));
         getCommand("givecoin").setExecutor(new snwcommands());
         getCommand("givestarcoin").setExecutor(new snwcommands());
@@ -77,37 +71,45 @@ public class snwplugin extends JavaPlugin {
         getCommand("trashcan").setExecutor(new snwcommands());
         getCommand("fly").setExecutor(new snwcommands());
         getCommand("rename").setExecutor(new snwcommands());
+        getCommand("srename").setExecutor(new snwcommands());
         getCommand("glow").setExecutor(new snwcommands());
         getCommand("unglow").setExecutor(new snwcommands());
         getCommand("broadcast").setExecutor(new snwcommands());
         getCommand("speed").setExecutor(new snwcommands());
         getCommand("sudo").setExecutor(new snwcommands());
         getCommand("whomademe").setExecutor(new snwcommands());
-        getCommand("warp").setExecutor(new warps());
-        getCommand("warps").setExecutor(new warps());
-        getCommand("delwarp").setExecutor(new warps());
-        getCommand("createwarp").setExecutor(new warps());
         //
         //
         createwarpfiles();
         //
         //
-        getServer().getPluginManager().registerEvents(new snwevents(),this);
+        getServer().getPluginManager().registerEvents(new snwevents(), this);
         getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[SNW] Plugin is now enabled :D");
-        this.saveDefaultConfig();
+
+
+     /*
 
 
 
 
 
-        if(!Bukkit.getScheduler().isCurrentlyRunning(sched)) {
+
+
+
+
+
+
+     */
+
+
+ /*       if (!Bukkit.getScheduler().isCurrentlyRunning(sched)) {
             sched = Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
                 @Override
                 public void run() {
                     new entityedits().load();
                 }
             }, 1, 1);
-        }
+        } */
     }
 
 
@@ -125,7 +127,7 @@ public class snwplugin extends JavaPlugin {
 
         configf = new File(getDataFolder(), "warps.yml");
 
-        if(!configf.exists()) {
+        if (!configf.exists()) {
             configf.getParentFile().mkdirs();
             saveResource("warps.yml", false);
         }
@@ -137,6 +139,10 @@ public class snwplugin extends JavaPlugin {
         } catch (IOException | InvalidConfigurationException e) {
             e.printStackTrace();
         }
+    }
+
+    public FileConfiguration getWarpsconfig() {
+        return this.warpsconfig;
     }
 }
 

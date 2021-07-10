@@ -7,6 +7,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
@@ -513,6 +514,39 @@ public class snwcommands implements CommandExecutor {
                 }
                 return true;
 
+
+            case "srename":
+                if (player.hasPermission("snw.shulkerrename")) {
+                    if (args.length == 0) {
+                        player.sendMessage("§3[§dParadisu §bツ§3] §fPlease provide a name for your storage");
+                    } else {
+                        Material phand = player.getInventory().getItemInMainHand().getType();
+                        if (phand == Material.AIR || phand == null) {
+                            player.sendMessage("§3[§dParadisu §bツ§3] §7Please hold a storage item to rename.");
+                        } else if (phand == Material.SHULKER_BOX || phand == Material.WHITE_SHULKER_BOX || phand == Material.LIGHT_GRAY_SHULKER_BOX ||
+                                phand == Material.GRAY_SHULKER_BOX || phand == Material.BLACK_SHULKER_BOX || phand == Material.BROWN_SHULKER_BOX ||
+                                phand == Material.RED_SHULKER_BOX || phand == Material.ORANGE_SHULKER_BOX || phand == Material.YELLOW_SHULKER_BOX ||
+                                phand == Material.LIME_SHULKER_BOX || phand == Material.GREEN_SHULKER_BOX || phand == Material.CYAN_SHULKER_BOX ||
+                                phand == Material.LIGHT_BLUE_SHULKER_BOX || phand == Material.BLUE_SHULKER_BOX || phand == Material.PURPLE_SHULKER_BOX ||
+                                phand == Material.MAGENTA_SHULKER_BOX || phand == Material.PINK_SHULKER_BOX) {
+
+                                        ItemStack item = player.getInventory().getItemInMainHand();
+                                        ItemMeta meta = item.getItemMeta();
+                                        String name = getParsedName(args);
+                                        meta.setDisplayName(name);
+                                        item.setItemMeta(meta);
+
+                            player.sendMessage("§3[§dParadisu §bツ§3] §fYou renamed your storage item to; " + getParsedName(args));
+
+
+                        } else {
+                            player.sendMessage("§3[§dParadisu §bツ§3] §fPlease hold a storage item to rename.");
+                        }
+                    }
+                } else {player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");
+                }
+                return true;
+
             case "glow":
                 if (player.hasPermission("snw.glow")) {
                     if (player.getInventory().getItemInMainHand().getType() == Material.AIR || player.getInventory().getItemInMainHand().getAmount() == 0 || player.getInventory().getItemInMainHand().getType() == null) {
@@ -531,6 +565,8 @@ public class snwcommands implements CommandExecutor {
                     player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");
                 }
                 return true;
+
+
 
             case "unglow":
                 if (player.hasPermission("snw.glow")) {

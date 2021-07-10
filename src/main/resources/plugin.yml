@@ -1,6 +1,6 @@
 name: snwplugin
-version: 1.1.0
-authors: [JakeDaDream, RealInstantRamen, andyinnie, _Kastle laughed at me]
+version: 1.2.0
+authors: [JakeDaDream, RealInstantRamen, andyinnie, _Kastle]
 main: me.jakedadream.snwplugin.snwplugin
 api-version: 1.16
 commands:
@@ -118,6 +118,12 @@ commands:
   rename:
     description: Renames the item in your hand
     usage: /<command> <args>
+  srename:
+    description: Renames a storage item in your hand
+    usage: <command> <args>
+    aliases:
+      - shulkerrename
+      - shulkerrn
   glow:
     description: Gives the item an enchantment effect
     usage: /<command>
@@ -129,24 +135,17 @@ commands:
     aliases:
       - unglint
   broadcast:
-    description: Broadcast a message to everyone
-    usage: /<command> <message>
+    description: Sends a message to all players
+    usage: /<command> <args>
     aliases:
       - bc
-      - alert
-      - messageall
+      - snwbc
   speed:
-    description: changes how fast you move
-    usage: /<command> <#>
+    description: changes how fast your player movement is
+    usage: /<command> <args>
   sudo:
-    description: allows you to talk & run commands as others
+    description: forces a user to run a command or message
     usage: /<command> <args>
   whomademe:
     description: tells you the creators of the plugin
     usage: /<command>
-    aliases:
-      - whoami
-      - snwplugin
-  rp:
-    description: does rp stuff
-    usage: /<command> <args>
