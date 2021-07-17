@@ -36,6 +36,7 @@ public class snwevents implements Listener {
 
         if (!joiner.hasPermission("snw.nospawnonjoin")) {
             Location loc = new Location((Bukkit.getWorld("SuperNW")), 82.5, 86.1, -741.5, 75, 0);    // 82.5 86.1 -741.5
+            joiner.setGameMode(GameMode.ADVENTURE);
             joiner.teleport(loc);
         }
 
@@ -281,21 +282,22 @@ public class snwevents implements Listener {
 
     @EventHandler
     public void dslauncher(final PlayerInteractEvent e) {
-        if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.LEFT_CLICK_AIR) {
+        if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_AIR) {
 
             Player p = e.getPlayer();
 
             if (e.getItem().getType() == Material.DIAMOND_AXE) {
-                if (e.getItem().getItemMeta().getCustomModelData() == 146) {
+                if (e.getItem().getItemMeta().hasCustomModelData()) {
+                    if (e.getItem().getItemMeta().getCustomModelData() == 146) {
+                        ItemStack item = new ItemStack(Material.DEAD_TUBE_CORAL_BLOCK, 1);
+                        Snowball s = e.getPlayer().launchProjectile(Snowball.class);
+                        s.setItem(item);
 
-                    ItemStack item = new ItemStack(Material.DEAD_TUBE_CORAL_BLOCK, 1);
-                    Snowball s = e.getPlayer().launchProjectile(Snowball.class);
-                    s.setItem(item);
 
-
-                    p.getWorld().playSound(p.getLocation(), Sound.ENTITY_PIGLIN_JEALOUS, 1F, 1F);
-               }
-            }
+                        p.getWorld().playSound(p.getLocation(), Sound.ENTITY_PIGLIN_JEALOUS, 1F, 1F);
+                    }
+                }
+            } else {return;}
         }
     }
 
@@ -310,7 +312,7 @@ public class snwevents implements Listener {
 
             p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, seconds * 20, 1, true, false));
             p.sendMessage("§3[§dParadisu §bツ§3] §fYou consumed a drink/food item and were given speed for§3 " + seconds/60 + "§f minutes.");
-        } else { return; }
+        }
     }
 /*
     @EventHandler
