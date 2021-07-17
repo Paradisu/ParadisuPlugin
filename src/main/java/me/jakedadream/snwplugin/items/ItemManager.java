@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
@@ -65,6 +66,7 @@ public class ItemManager {
             return item;
 
     }
+
 
     private static String[] names = {
             "templateName", //0
@@ -173,7 +175,8 @@ public class ItemManager {
         meta.setLore(getLore(id));
         meta.setDisplayName(names[id]);
         meta.setUnbreakable(true);
-        ((Damageable) meta).setDamage(id);
+        Integer intid = new Integer(id);
+        meta.setCustomModelData(intid);
         item.setItemMeta(meta);
         return item;
     }

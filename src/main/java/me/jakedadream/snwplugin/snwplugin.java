@@ -78,13 +78,14 @@ public class snwplugin extends JavaPlugin {
         getCommand("speed").setExecutor(new snwcommands());
         getCommand("sudo").setExecutor(new snwcommands());
         getCommand("whomademe").setExecutor(new snwcommands());
+        getCommand("tempcmd").setExecutor(new snwcommands());
         //
         //
         createwarpfiles();
         //
         //
         getServer().getPluginManager().registerEvents(new snwevents(), this);
-        getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[SNW] Plugin is now enabled :D");
+        getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[SNW] Plugin is now enabled");
 
 
      /*

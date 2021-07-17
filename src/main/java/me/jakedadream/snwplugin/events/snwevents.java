@@ -4,6 +4,7 @@ import me.jakedadream.snwplugin.items.ItemManager;
 import me.jakedadream.snwplugin.items.PluginInventories;
 import me.jakedadream.snwplugin.snwplugin;
 import org.bukkit.*;
+import org.bukkit.block.data.type.Snow;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -13,8 +14,10 @@ import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -280,46 +283,41 @@ public class snwevents implements Listener {
 } */
 
     @EventHandler
-    public void playerResourcePack(PlayerResourcePackStatusEvent rp) {
-        Player player = rp.getPlayer();
-        rp.getStatus();
-        if ((rp.getStatus() == PlayerResourcePackStatusEvent.Status.DECLINED || rp.getStatus() == PlayerResourcePackStatusEvent.Status.FAILED_DOWNLOAD)
-                && !player.hasPermission("rp.bypass")) {
-                        player.kickPlayer("You are required to accept the resource pack!");
-                        Bukkit.broadcast("§3[§dParadisu §bツ§3] §c" + player.getName() + " §cdenied the resource pack and was kicked.\n§cIf this was a mistake, give §a" + player.getName() + " §f§lrp.bypass §cor disable rp-required in config.yml", "rp.bypass");
-        }
+    public void dslauncher(final PlayerInteractEvent e) {
+        if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.LEFT_CLICK_AIR) {
+
+            Player p = e.getPlayer();
+
+            if (e.getItem().getType() == Material.DIAMOND_AXE) {
+                if (e.getItem().getItemMeta().getCustomModelData() == 146) {
+
+                    ItemStack item = new ItemStack(Material.DEAD_TUBE_CORAL_BLOCK, 1);
+                    Snowball s = e.getPlayer().launchProjectile(Snowball.class);
+                    s.setItem(item);
+
+
+                    p.getWorld().playSound(p.getLocation(), Sound.ENTITY_PIGLIN_JEALOUS, 1F, 1F);
+               } else { return; }
+            } else { return; }
+        } else { return; }
     }
 
+    @EventHandler
+    public void EatFoodEvent(PlayerItemConsumeEvent e) {
+        Player p = e.getPlayer();
+        ItemStack items = e.getItem();
+        String itemconsumed = items.getItemMeta().getLocalizedName();
+        if (e.getItem().getType() == Material.HONEY_BOTTLE) {
+
+            Integer seconds = 600; // 10 minutes in seconds
+
+            p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, seconds * 20, 1, true, false));
+            p.sendMessage("§3[§dParadisu §bツ§3] §fYou consumed a drink/food item and were given speed for§3 " + seconds/60 + "§f minutes.");
+        } else { return; }
+    }
 /*
     @EventHandler
-    public void PlayerPunchBlock(PlayerInteractEvent pie) {
-        if (pie.getAction() == Action.LEFT_CLICK_BLOCK) {
-            Player player = pie.getPlayer();
-            Block b = pie.getClickedBlock();
-            if (b.getType() != Material.CAULDRON)
-                return;  if (b.getType() == Material.CAULDRON) {
-                    int full = ((Levelled)b.getBlockData()).getLevel();
-                    if (((Levelled)b.getBlockData()).getLevel() == 3) {
-                        ConfigurationSection pd = getConfig().getConfigurationSection("playerdata").getConfigurationSection(player.getUniqueId().toString() + ", " + player.getName());
-                        if (pd.getInt("lb") <= 4) {
-                            pd.set("lb", Integer.valueOf(pd.getInt("lb") + 1));
-                            saveConfig();
-                            player.sendMessage(getConfig().getString("message-prefix") + " §rYou have claimed §e§L(" + pd.getInt("lb") + "/5)§r lucky blocks");
-                            player.playSound(player.getLocation(), Sound.ENTITY_EVOKER_CAST_SPELL, 1.0F, 1.0F);
-                        } else {
-                            player.sendMessage(getConfig().getString("message-prefix") + " §rYou have claimed the maximum lucky blocks for the day.");
-                            player.playSound(player.getLocation(), Sound.ENTITY_DROWNED_HURT, 1.0F, 1.0F);
-                        }
-                    }
-                }
-        }
-    }
-}
-
-
-
-    @EventHandler
-    public void dubsteplauncher(PlayerInteractEvent e) {
+    public void (PlayerInteractEvent e) {
         Player player = e.getPlayer();
         if (e.getAction().equals(Action.RIGHT_CLICK_AIR)) {
             String launchername = "§4§lD§c§lu§6§lb§e§ls§2§lt§a§le§b§lp§3§l§1§l§9§l§d§l§4§l§c§l §4§lR§c§la§6§ly§e§lg§2§lu§a§ln";
@@ -331,6 +329,10 @@ public class snwevents implements Listener {
         return;
     }
 
+ */
+
+
+/*
     @EventHandler
     public static void ItemShowEvent(AsyncPlayerChatEvent pchat) {
         String msg = pchat.getMessage();

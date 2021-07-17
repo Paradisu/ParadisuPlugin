@@ -659,7 +659,7 @@ public class snwcommands implements CommandExecutor {
             case "whomademe":
                 if (player.hasPermission("displayname.default")) {
                     player.sendMessage("");
-                    player.sendMessage("    §3[§dParadisu §bツ§3] Plugin");
+                    player.sendMessage("           §3[§dParadisu §bツ§3] Plugin");
                     player.sendMessage("§c====================================");
                     player.sendMessage("§dPlugin Coded by §3Jakey §d- §3Jakey#9999");
                     player.sendMessage("");
@@ -684,6 +684,15 @@ public class snwcommands implements CommandExecutor {
                     saveConfig();
                 } */
 
+            case "tempcmd":
+                if (player.hasPermission("snw.*")) {
+                    //
+                    // change code depending on test
+                    //
+                    player.sendMessage("Command not currently in use to test");
+
+                } else {player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command."); }
+                return true;
 
             default:
                     return false;

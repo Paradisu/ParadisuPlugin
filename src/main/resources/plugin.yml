@@ -149,3 +149,6 @@ commands:
   whomademe:
     description: tells you the creators of the plugin
     usage: /<command>
+  tempcmd:
+    description: made for testing stuff idk
+    usage: /<command>
