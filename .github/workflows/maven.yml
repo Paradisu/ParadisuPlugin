@@ -53,8 +53,8 @@ jobs:
     - run: mkdir staging && cp target/*.jar staging
     - uses: actions/upload-artifact@v2
       with:
-        name: SNWPlugin-Latest
-        path: staging/SNWPlugin-*.jar
+        name: ParadisuPlugin-Latest
+        path: staging/ParadisuPlugin-*.jar
     - name: Generate release diff
       env:
         BEGIN_COMMIT: ${{ steps.get-previous-tag.outputs.tag }}
@@ -63,7 +63,7 @@ jobs:
     - name: Create release
       uses: ncipollo/release-action@v1
       with:
-        artifacts: staging/SNWPlugin-*.jar
+        artifacts: staging/ParadisuPlugin-*.jar
         allowUpdates: true
         bodyFile: "release_notes.md"
         draft: false

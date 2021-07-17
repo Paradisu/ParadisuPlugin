@@ -1,10 +1,9 @@
-package me.jakedadream.snwplugin.events;
+package me.jakedadream.ParadisuPlugin.events;
 
-import me.jakedadream.snwplugin.items.ItemManager;
-import me.jakedadream.snwplugin.items.PluginInventories;
-import me.jakedadream.snwplugin.snwplugin;
+import me.jakedadream.ParadisuPlugin.items.ItemManager;
+import me.jakedadream.ParadisuPlugin.items.PluginInventories;
+import me.jakedadream.ParadisuPlugin.paradisumain;
 import org.bukkit.*;
-import org.bukkit.block.data.type.Snow;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,10 +13,8 @@ import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -220,8 +217,8 @@ public class snwevents implements Listener {
 */
     @EventHandler
     public void onPlayerChat(AsyncPlayerChatEvent e) {
-        if (snwplugin.getPlugin(snwplugin.class).getConfig().getString(e.getPlayer().getName()) != null) {
-            e.getPlayer().setDisplayName(snwplugin.getPlugin(snwplugin.class).getConfig().getString(e.getPlayer().getName()));
+        if (paradisumain.getPlugin(paradisumain.class).getConfig().getString(e.getPlayer().getName()) != null) {
+            e.getPlayer().setDisplayName(paradisumain.getPlugin(paradisumain.class).getConfig().getString(e.getPlayer().getName()));
         }
     }    //////////////////// FIX THIS
 
@@ -297,9 +294,9 @@ public class snwevents implements Listener {
 
 
                     p.getWorld().playSound(p.getLocation(), Sound.ENTITY_PIGLIN_JEALOUS, 1F, 1F);
-               } else { return; }
-            } else { return; }
-        } else { return; }
+               }
+            }
+        }
     }
 
     @EventHandler

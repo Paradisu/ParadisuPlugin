@@ -1,4 +1,4 @@
-package me.jakedadream.snwplugin.commands;
+package me.jakedadream.ParadisuPlugin.commands;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;

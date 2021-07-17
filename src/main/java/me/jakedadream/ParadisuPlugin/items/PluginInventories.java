@@ -1,4 +1,4 @@
-package me.jakedadream.snwplugin.items;
+package me.jakedadream.ParadisuPlugin.items;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

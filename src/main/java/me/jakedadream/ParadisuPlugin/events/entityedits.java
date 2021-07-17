@@ -1,14 +1,11 @@
-package me.jakedadream.snwplugin.events;
+package me.jakedadream.ParadisuPlugin.events;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.Listener;
-import org.bukkit.potion.PotionEffectType;
-import me.jakedadream.snwplugin.snwplugin;
 
 public class entityedits implements Listener {
 

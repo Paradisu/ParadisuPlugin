@@ -1,12 +1,4 @@
-package me.jakedadream.snwplugin.events;
-
-import me.jakedadream.snwplugin.snwplugin;
-import org.bukkit.Bukkit;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
+package me.jakedadream.ParadisuPlugin.events;
 
 public class luckyblocks {
 

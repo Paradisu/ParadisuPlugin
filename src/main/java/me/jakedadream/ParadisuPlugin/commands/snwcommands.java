@@ -1,13 +1,12 @@
-package me.jakedadream.snwplugin.commands;
+package me.jakedadream.ParadisuPlugin.commands;
 
-import me.jakedadream.snwplugin.items.ItemManager;
-import me.jakedadream.snwplugin.items.PluginInventories;
+import me.jakedadream.ParadisuPlugin.items.ItemManager;
+import me.jakedadream.ParadisuPlugin.items.PluginInventories;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;

@@ -5,15 +5,15 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>groupId</groupId>
-    <artifactId>snwplugin</artifactId>
+    <artifactId>ParadisuPlugin</artifactId>
     <version>${revision}</version>
     <packaging>jar</packaging>
-    <name>SNWPlugin</name>
+    <name>ParadisuPlugin</name>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
-        <mainClass>me.jakedadream.snwplugin.snwplugin</mainClass>
+        <mainClass>me.jakedadream.ParadisuPlugin.paradisumain</mainClass>
         <jar.finalName>${project.name}-${project.version}</jar.finalName>
     </properties>
 

@@ -1,22 +1,20 @@
-package me.jakedadream.snwplugin;
+package me.jakedadream.ParadisuPlugin;
 
-import me.jakedadream.snwplugin.commands.snwcommands;
-import me.jakedadream.snwplugin.events.snwevents;
-import org.bukkit.Bukkit;
+import me.jakedadream.ParadisuPlugin.commands.snwcommands;
+import me.jakedadream.ParadisuPlugin.events.snwevents;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
-import me.jakedadream.snwplugin.events.entityedits;
 
 import java.io.File;
 import java.io.IOException;
 
-public class snwplugin extends JavaPlugin {
+public class paradisumain extends JavaPlugin {
 
     public static void main(String[] args) {
-        System.out.println("[SNW] Starting...");
+        System.out.println("[Paradisu] Starting...");
     }
 
     /*
@@ -85,7 +83,7 @@ public class snwplugin extends JavaPlugin {
         //
         //
         getServer().getPluginManager().registerEvents(new snwevents(), this);
-        getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[SNW] Plugin is now enabled");
+        getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[Paradisu] Plugin is now enabled");
 
 
      /*
@@ -116,8 +114,8 @@ public class snwplugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        getServer().getConsoleSender().sendMessage(ChatColor.RED + "[SNW] Plugin is now disabled :(");
-        getServer().getConsoleSender().sendMessage(ChatColor.RED + "[SNW] Fuck you");
+        getServer().getConsoleSender().sendMessage(ChatColor.RED + "[Paradisu] Plugin is now disabled :(");
+        getServer().getConsoleSender().sendMessage(ChatColor.RED + "[Paradisu] Fuck you");
     }
 
 
