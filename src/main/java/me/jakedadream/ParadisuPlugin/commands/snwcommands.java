@@ -454,10 +454,13 @@ public class snwcommands implements CommandExecutor {
                 if (player.hasPermission("snw.fly")) {
                     if (args.length < 1) {
                         if (player.isFlying()) {
+                            player.setAllowFlight(false);
                             player.setFlying(false);
+
                             player.sendMessage("§3[§dParadisu §bツ§3] §fYou are no longer flying");
 
                         } else if (!player.isFlying()) {
+                            player.setAllowFlight(true);
                             player.setFlying(true);
                             player.sendMessage("§3[§dParadisu §bツ§3] §fYou are now flying");
 
@@ -473,12 +476,16 @@ public class snwcommands implements CommandExecutor {
                         Player target = Bukkit.getServer().getPlayer(flytarget);
 
                         if (target.isFlying()) {
+                            player.setAllowFlight(false);
                             target.setFlying(false);
+
                             player.sendMessage("§3[§dParadisu §bツ§3] §3" + flytarget + " §fis no longer flying!");
                             target.sendMessage("§3[§dParadisu §bツ§3] §fYou are no longer flying");
 
                         } else if (!player.isFlying()) {
+                            player.setAllowFlight(true);
                             target.setFlying(true);
+
                             player.sendMessage("§3[§dParadisu §bツ§3] §3" + flytarget + " §fis now flying!");
                             target.sendMessage("§3[§dParadisu §bツ§3] §fYou are now flying");
 

@@ -63,39 +63,16 @@ public class snwevents implements Listener {
     public static void WearHatEvent(PlayerInteractEvent wearhat) {
         Player player = wearhat.getPlayer();
 
-        if (player.getInventory().getItemInMainHand().getType() == Material.AIR)
-            return;
-        switch (((Damageable) player.getEquipment().getItemInMainHand().getItemMeta()).getDamage()) {
-            case 16:
-            case 24:
-            case 25:
-            case 26:
-            case 27:
-            case 28:
-            case 29:
-            case 41:
-            case 53:
-            case 60:
-            case 64:
-            case 65:
-            case 66:
-            case 76:
-            case 77:
-            case 78:
-                if (wearhat.getAction() == Action.RIGHT_CLICK_AIR) {
+        if (player.getInventory().getItemInMainHand().getType() == Material.AIR) return;
+        if (wearhat.getAction() == Action.RIGHT_CLICK_AIR) {
 
-                    if (wearhat.getItem() != null) {
-                        ItemStack[] armor = player.getInventory().getArmorContents();
-                        ItemStack swap = armor[3];
-                        armor[3] = player.getEquipment().getItemInMainHand();
-                        player.getInventory().setArmorContents(armor);
-                        player.getInventory().setItemInMainHand(swap);
-
-
-                        break;
-
-                    }
-                }
+            if (wearhat.getItem() != null && wearhat.getItem().getType() == Material.CARVED_PUMPKIN) {
+                ItemStack[] armor = player.getInventory().getArmorContents();
+                ItemStack swap = armor[3];
+                armor[3] = player.getEquipment().getItemInMainHand();
+                player.getInventory().setArmorContents(armor);
+                player.getInventory().setItemInMainHand(swap);
+            }
         }
     }
 
@@ -282,13 +259,17 @@ public class snwevents implements Listener {
 
     @EventHandler
     public void dslauncher(final PlayerInteractEvent e) {
-        if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_AIR) {
-
+        if (e.getAction() != null) {
             Player p = e.getPlayer();
 
-            if (e.getItem().getType() == Material.DIAMOND_AXE) {
-                if (e.getItem().getItemMeta().hasCustomModelData()) {
+            if (e.getAction() == Action.RIGHT_CLICK_BLOCK)
+                return;
+
+            if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_AIR) {
+
+                if (e.getItem().getType() == Material.DIAMOND_AXE) {
                     if (e.getItem().getItemMeta().getCustomModelData() == 146) {
+
                         ItemStack item = new ItemStack(Material.DEAD_TUBE_CORAL_BLOCK, 1);
                         Snowball s = e.getPlayer().launchProjectile(Snowball.class);
                         s.setItem(item);
@@ -297,7 +278,7 @@ public class snwevents implements Listener {
                         p.getWorld().playSound(p.getLocation(), Sound.ENTITY_PIGLIN_JEALOUS, 1F, 1F);
                     }
                 }
-            } else {return;}
+            }
         }
     }
 
@@ -314,6 +295,7 @@ public class snwevents implements Listener {
             p.sendMessage("§3[§dParadisu §bツ§3] §fYou consumed a drink/food item and were given speed for§3 " + seconds/60 + "§f minutes.");
         }
     }
+
 /*
     @EventHandler
     public void (PlayerInteractEvent e) {
