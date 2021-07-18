@@ -70,3 +70,8 @@ jobs:
         prerelease: false
         tag: ${{ steps.lookupSNWVersion.outputs.result }}
         token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Upload jar to server
+      env:
+        PTERODACTYL_TOKEN: ${{ secrets.PTERODACTYL_TOKEN }}
+      run: |
+        cp staging/ParadisuPlugin-*.jar ParadisuPlugin.jar && upload_url=$(curl "https://panel.disneyland.network/api/client/servers/978fd706/files/upload" -H "Authorization: Bearer ${PTERODACTYL_TOKEN}" -X GET -s | jq -r .attributes.url) && curl -F files=@ParadisuPlugin.jar "${upload_url}&directory=/plugins"
