@@ -267,6 +267,8 @@ public class snwevents implements Listener {
 
             if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_AIR) {
 
+                if (e.getItem() == null) return;
+
                 if (e.getItem().getType() == Material.DIAMOND_AXE) {
                     if (e.getItem().getItemMeta().getCustomModelData() == 146) {
 
