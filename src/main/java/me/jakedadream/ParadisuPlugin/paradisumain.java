@@ -1,7 +1,7 @@
 package me.jakedadream.ParadisuPlugin;
 
 import me.jakedadream.ParadisuPlugin.commands.snwcommands;
-import me.jakedadream.ParadisuPlugin.events.snwevents;
+import me.jakedadream.ParadisuPlugin.events.*;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -82,9 +82,16 @@ public class paradisumain extends JavaPlugin {
         createwarpfiles();
         //
         //
+        getServer().getPluginManager().registerEvents(new luckyblocks(), this);
+        getServer().getPluginManager().registerEvents(new entityedits(), this);
+        getServer().getPluginManager().registerEvents(new toys(), this);
+        getServer().getPluginManager().registerEvents(new chatevents(), this);
         getServer().getPluginManager().registerEvents(new snwevents(), this);
+        //
+        //
         getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[Paradisu] Plugin is now enabled");
-
+        //
+        //
 
      /*
 

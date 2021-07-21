@@ -14,7 +14,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -40,10 +39,8 @@ public class snwevents implements Listener {
             joiner.teleport(loc);
         }
 
-        joiner.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 10, 1, false));
-        joiner.setGameMode(GameMode.ADVENTURE);
-
     }
+
 
     @EventHandler
     public void onPlayerInteractAtEntity(PlayerInteractAtEntityEvent intEvent) {
@@ -75,57 +72,6 @@ public class snwevents implements Listener {
             }
         }
     }
-
-    @EventHandler
-    public static void TableFlipEvent(AsyncPlayerChatEvent pchat) {
-        String msg = pchat.getMessage();
-        msg = msg.replace(":tableflip:", "(╯°□°）╯︵ ┻━┻");
-        pchat.setMessage(msg);
-    }
-
-    @EventHandler
-    public static void DabEvent(AsyncPlayerChatEvent pchat) {
-        String msg = pchat.getMessage();
-        msg = msg.replace(":shrug:", "¯⧹_(ツ)_/¯");
-        pchat.setMessage(msg);
-    }
-
-    @EventHandler
-    public static void HappyEvent(AsyncPlayerChatEvent pchat) {
-        String msg = pchat.getMessage();
-        msg = msg.replace(":happy:", "(^⌣^)");
-        pchat.setMessage(msg);
-    }
-
-    @EventHandler
-    public static void BangEvent(AsyncPlayerChatEvent pchat) {
-        String msg = pchat.getMessage();
-        msg = msg.replace(":interrobang:", "§4§l!?");
-        pchat.setMessage(msg);
-    }
-
-    @EventHandler
-    public static void WaveEvent(AsyncPlayerChatEvent pchat) {
-        String msg = pchat.getMessage();
-        msg = msg.replace(":wave:", "(^⌣^)ノ");
-        pchat.setMessage(msg);
-    }
-
-    @EventHandler
-    public static void UnflipEvent(AsyncPlayerChatEvent pchat) {
-        String msg = pchat.getMessage();
-        msg = msg.replace(":unflip:", "┬─┬ノ( º _ ºノ)");
-        pchat.setMessage(msg);
-    }
-
-    @EventHandler
-    public static void welcomeevent(AsyncPlayerChatEvent pchat) {
-        String msg = pchat.getMessage();
-        msg = msg.replace(":Welcome!", "┬─┬ノ( º _ ºノ)");
-        pchat.setMessage(msg);
-    }
-
-
 
     @EventHandler()
     public void onRClick(PlayerInteractAtEntityEvent intEvent) {
@@ -257,32 +203,6 @@ public class snwevents implements Listener {
     }
 } */
 
-    @EventHandler
-    public void dslauncher(final PlayerInteractEvent e) {
-        if (e.getAction() != null) {
-            Player p = e.getPlayer();
-
-            if (e.getAction() == Action.RIGHT_CLICK_BLOCK)
-                return;
-
-            if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_AIR) {
-
-                if (e.getItem() == null) return;
-
-                if (e.getItem().getType() == Material.DIAMOND_AXE) {
-                    if (e.getItem().getItemMeta().getCustomModelData() == 146) {
-
-                        ItemStack item = new ItemStack(Material.DEAD_TUBE_CORAL_BLOCK, 1);
-                        Snowball s = e.getPlayer().launchProjectile(Snowball.class);
-                        s.setItem(item);
-
-
-                        p.getWorld().playSound(p.getLocation(), Sound.ENTITY_PIGLIN_JEALOUS, 1F, 1F);
-                    }
-                }
-            }
-        }
-    }
 
     @EventHandler
     public void EatFoodEvent(PlayerItemConsumeEvent e) {
@@ -297,37 +217,4 @@ public class snwevents implements Listener {
             p.sendMessage("§3[§dParadisu §bツ§3] §fYou consumed a drink/food item and were given speed for§3 " + seconds/60 + "§f minutes.");
         }
     }
-
-/*
-    @EventHandler
-    public void (PlayerInteractEvent e) {
-        Player player = e.getPlayer();
-        if (e.getAction().equals(Action.RIGHT_CLICK_AIR)) {
-            String launchername = "§4§lD§c§lu§6§lb§e§ls§2§lt§a§le§b§lp§3§l§1§l§9§l§d§l§4§l§c§l §4§lR§c§la§6§ly§e§lg§2§lu§a§ln";
-            if (player.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(launchername)) {
-                player.sendMessage("You right clicked the raygun!");
-                //gun mechanics
-            }
-        }
-        return;
-    }
-
- */
-
-
-/*
-    @EventHandler
-    public static void ItemShowEvent(AsyncPlayerChatEvent pchat) {
-        String msg = pchat.getMessage();
-        String name = pchat.getPlayer().getInventory().getItemInMainHand().getItemMeta().getDisplayName();
-        List<String> lore = pchat.getPlayer().getInventory().getItemInMainHand().getItemMeta().getLore();
-        Integer amount = pchat.getPlayer().getInventory().getItemInMainHand().getAmount();
-        Material mat = pchat.getPlayer().getInventory().getItemInMainHand().getType();
-
-        msg = msg.replace("[item]", "§f[" + name + "§f]");
-//        msg = msg.replace("[item]", "" + displayitem);
-
-        pchat.setMessage(msg);
-    } */
- // new stuff
 }

@@ -15,6 +15,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 
+
 public class snwcommands implements CommandExecutor {
 
 
@@ -282,12 +283,14 @@ public class snwcommands implements CommandExecutor {
                         player.sendMessage("§3[§dParadisu §bツ§3] §fIncorrect usage; Please use '/invsee <player>'");
                     }
                     if (args.length >= 1) {
-                        Player target = Bukkit.getServer().getPlayerExact(args[0]);
-
-                        Inventory targetinv = target.getInventory();
-                        player.openInventory(targetinv);
-                        player.sendMessage("§3[§dParadisu §bツ§3] §fNow opening the inventory of §3" + target + "");
-
+                        Player target = Bukkit.getPlayerExact(args[0]);
+                        try {
+                            Inventory targetinv = target.getInventory();
+                            player.openInventory(targetinv);
+                            player.sendMessage("§3[§dParadisu §bツ§3] §fNow opening the inventory of §3" + target + "");
+                        } catch (NullPointerException e) {
+                            player.sendMessage("§3[§dParadisu §bツ§3] §fThis player does not exist or is offline.");
+                        }
                     }
 
                 } else {player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");}
@@ -356,8 +359,8 @@ public class snwcommands implements CommandExecutor {
             case "tp":
                 if (player.hasPermission("snw.tp") || player.hasPermission("snw.tp.*")) {
                     if (args.length < 1) {
-                        player.sendMessage("§3[§dParadisu §bツ§3] §fPlease do `/tp (player)` OR `/tp (player1) (player2)`");
-
+                        player.sendMessage("§3[§dParadisu §bツ§3] §fPlease do §3§o/tp User §f§lOR");
+                        player.sendMessage("§3[§dParadisu §bツ§3] §fPlease do §3§o/tp User User");
 
                         // TP TO A SINGLE PLAYER
                     } else if (args.length == 1) {
@@ -652,7 +655,7 @@ public class snwcommands implements CommandExecutor {
                         }
                         if (execution.toString().trim().startsWith("c:")) {
                             target.chat(execution.toString().trim().replace("c:", ""));
-                            player.sendMessage("§3[§dParadisu §bツ§3] §f §rForcing §3" + target.getDisplayName() + " §rto say §3" + execution.toString().trim().replace("c:", ""));
+                            player.sendMessage("§3[§dParadisu §bツ§3] §fForcing §3" + target.getDisplayName() + " §rto say §3" + execution.toString().trim().replace("c:", ""));
                             return true;
                         }
                         player.getServer().dispatchCommand((CommandSender)target, execution.toString().trim());
