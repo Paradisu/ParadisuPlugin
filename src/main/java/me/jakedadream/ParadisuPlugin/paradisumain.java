@@ -1,6 +1,7 @@
 package me.jakedadream.ParadisuPlugin;
 
 import me.jakedadream.ParadisuPlugin.commands.snwcommands;
+import me.jakedadream.ParadisuPlugin.commands.warps;
 import me.jakedadream.ParadisuPlugin.events.snwevents;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -37,13 +38,14 @@ public class paradisumain extends JavaPlugin {
         With help from RealInstantRamen, Andyinnie, & Kastle yelling in my ear.
 */
 
-    int sched;
-
+//    int sched;
+//    @SuppressWarnings("unchecked")
     @Override
     public void onEnable() {
 
 
 //        ArrayList createCommand = getCommand(().setExecutor(new snwcommands()));
+
         getCommand("givecoin").setExecutor(new snwcommands());
         getCommand("givestarcoin").setExecutor(new snwcommands());
         getCommand("mgive").setExecutor(new snwcommands());
@@ -77,9 +79,17 @@ public class paradisumain extends JavaPlugin {
         getCommand("sudo").setExecutor(new snwcommands());
         getCommand("whomademe").setExecutor(new snwcommands());
         getCommand("tempcmd").setExecutor(new snwcommands());
+        getCommand("setwarp").setExecutor(new warps());
+        getCommand("delwarp").setExecutor(new warps());
+        getCommand("warp").setExecutor(new warps());
         //
         //
-        createwarpfiles();
+        getConfig().options().copyDefaults();
+        saveDefaultConfig();
+
+        createWarpFiles();
+        saveWarpConfig();
+
         //
         //
         getServer().getPluginManager().registerEvents(new snwevents(), this);
@@ -119,29 +129,45 @@ public class paradisumain extends JavaPlugin {
     }
 
 
-    private File configf;
-    private FileConfiguration warpsconfig;
+    public static File sourceWarpFile;
+    public static FileConfiguration fileWarpConfig;
 
-    public void createwarpfiles() {
+    public void createWarpFiles() {
 
-        configf = new File(getDataFolder(), "warps.yml");
+        sourceWarpFile = new File(getDataFolder(), "warps.yml");
 
-        if (!configf.exists()) {
-            configf.getParentFile().mkdirs();
+        if (!sourceWarpFile.exists()) {
+            sourceWarpFile.getParentFile().mkdirs();
             saveResource("warps.yml", false);
         }
 
-        warpsconfig = new YamlConfiguration();
+        fileWarpConfig = new YamlConfiguration();
 
         try {
-            warpsconfig.load(configf);
+            fileWarpConfig.load(sourceWarpFile);
         } catch (IOException | InvalidConfigurationException e) {
             e.printStackTrace();
         }
     }
 
-    public FileConfiguration getWarpsconfig() {
-        return this.warpsconfig;
+
+    //gets fileWarpConfig
+    public static FileConfiguration getWarpConfig() {
+        return fileWarpConfig;
+    }
+
+    //use if edited through commands
+    public static void saveWarpConfig(){
+        try {
+            fileWarpConfig.save(sourceWarpFile);
+        } catch (IOException e){
+            System.out.println("couldn't save file");
+        }
+    }
+
+    //use if edited file through text editor
+    public static void reloadWarpConfig(){
+        fileWarpConfig = YamlConfiguration.loadConfiguration(sourceWarpFile);
     }
 }
 
