@@ -24,7 +24,7 @@ public class generalcommands implements CommandExecutor {
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 
-
+        //
        // commands done by console & players
 
 
