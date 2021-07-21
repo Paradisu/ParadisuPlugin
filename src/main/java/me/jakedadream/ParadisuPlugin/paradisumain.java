@@ -78,6 +78,8 @@ public class paradisumain extends JavaPlugin {
         getCommand("sudo").setExecutor(new snwcommands());
         getCommand("whomademe").setExecutor(new snwcommands());
         getCommand("tempcmd").setExecutor(new snwcommands());
+        getCommand("list").setExecutor(new snwcommands());
+        getCommand("findplayercords").setExecutor(new snwcommands());
         //
         //
      //   getCommand("XYZ").setExecutor(new generalcommands());

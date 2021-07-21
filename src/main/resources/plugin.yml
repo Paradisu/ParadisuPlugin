@@ -1,5 +1,5 @@
 name: ParadisuPlugin
-version: 2.2.1
+version: 2.3.0
 authors: [JakeDaDream, RealInstantRamen, andyinnie, _Kastle]
 main: me.jakedadream.ParadisuPlugin.paradisumain
 api-version: 1.16
@@ -152,3 +152,12 @@ commands:
   tempcmd:
     description: made for testing stuff idk
     usage: /<command>
+  list:
+    description: makes a list of all online players
+    usage: /<command>
+  findplayercords:
+    description: finds a players world and cords
+    usage: /<commands> <args>
+    aliases:
+      - fpc
+      - findpc
