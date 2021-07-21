@@ -1,5 +1,6 @@
 package me.jakedadream.ParadisuPlugin;
 
+import me.jakedadream.ParadisuPlugin.commands.generalcommands;
 import me.jakedadream.ParadisuPlugin.commands.snwcommands;
 import me.jakedadream.ParadisuPlugin.events.*;
 import org.bukkit.ChatColor;
@@ -77,6 +78,9 @@ public class paradisumain extends JavaPlugin {
         getCommand("sudo").setExecutor(new snwcommands());
         getCommand("whomademe").setExecutor(new snwcommands());
         getCommand("tempcmd").setExecutor(new snwcommands());
+        //
+        //
+     //   getCommand("XYZ").setExecutor(new generalcommands());
         //
         //
         createwarpfiles();

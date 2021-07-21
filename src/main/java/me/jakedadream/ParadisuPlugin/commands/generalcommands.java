@@ -1,22 +1,14 @@
 package me.jakedadream.ParadisuPlugin.commands;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 
-import java.io.File;
-
-public class warps implements CommandExecutor {
-
-    private Plugin plugin;
-    private FileConfiguration conf;
-    private File file;
-
-    private final String fileName = "warps.yml";
+public class generalcommands implements CommandExecutor {
 
     private String getParsedName(String[] args) {
         String name = "";
@@ -30,8 +22,12 @@ public class warps implements CommandExecutor {
     }
 
 
-
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+
+
+       // commands done by console & players
+
+
         return true;
     }
 }
