@@ -1,5 +1,5 @@
 name: ParadisuPlugin
-version: 2.3.0
+version: 2.3.1
 authors: [JakeDaDream, RealInstantRamen, andyinnie, _Kastle]
 main: me.jakedadream.ParadisuPlugin.paradisumain
 api-version: 1.16
@@ -161,3 +161,6 @@ commands:
     aliases:
       - fpc
       - findpc
+  currenttime:
+    description: tells you da time
+    usage: /<commands>

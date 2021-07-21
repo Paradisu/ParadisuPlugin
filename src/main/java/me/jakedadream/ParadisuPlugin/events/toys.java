@@ -10,6 +10,8 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Random;
+
 public class toys implements Listener {
 
     @EventHandler
@@ -32,7 +34,9 @@ public class toys implements Listener {
                         s.setItem(item);
 
 
-                        p.getWorld().playSound(p.getLocation(), Sound.ENTITY_PIGLIN_JEALOUS, 1F, 1F);
+                        Random rd = new Random();
+                        Float rpitch = rd.nextFloat();
+                        p.getWorld().playSound(p.getLocation(), Sound.BLOCK_RESPAWN_ANCHOR_DEPLETE, 1F, rpitch);
                     }
                 }
             }

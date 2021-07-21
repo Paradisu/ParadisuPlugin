@@ -338,7 +338,7 @@ public class snwcommands implements CommandExecutor {
             case "sex":
                 if (player.hasPermission("snw.sex")) {
                     player.sendMessage("§3[§dParadisu §bツ§3] §fYou are now having sex!!!!!");
-                }
+                } else { player.sendMessage("Unknown command. Tyle \"/help\" for help."); }
                 return true;
 
             case "tphere":
@@ -734,15 +734,18 @@ public class snwcommands implements CommandExecutor {
                             unknown.add(all.getName());
                         }
 
-                        player.sendMessage("§3§l============ §d§oOnline Players §3§l============\n" +
-                                " \n" +
-                                "§3\uE006 §d»§f " + owners + "\n" +
-                                "§e\uE002 §d»§f " + devs + "\n" +
-                                "§c\uE001 §d»§f " + builders + "\n" +
-                                "§a\uE005 §d»§f " + staff + "\n" +
-                                "§d\uE008 §d»§f " + supporters + "\n" +
-                                "§7\uE00A §d»§f " + visitors + "\n" );
+
+                        String result = String.join(" ", owners);
                     }
+                    player.sendMessage("§3§l============= §f" + onlineammount + " §d§oOnline Players §3§l=============\n" +
+                            " \n" +
+                            "§3\uE006 §d»§f " + owners + "\n" +
+                            "§e\uE002 §d»§f " + devs + "\n" +
+                            "§c\uE001 §d»§f " + builders + "\n" +
+                            "§a\uE005 §d»§f " + staff + "\n" +
+                            "§d\uE008 §d»§f " + supporters + "\n" +
+                            "§7\uE00A §d»§f " + visitors + "\n" );
+
                 } else {player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command."); }
                 return true;
 
@@ -765,6 +768,20 @@ public class snwcommands implements CommandExecutor {
 
 
                     } else { player.sendMessage("§3[§dParadisu §bツ§3] §fNot enough or too many args."); }
+                } else {player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command."); }
+                return true;
+
+            case "currenttime":
+                if (player.hasPermission("snw.currenttime")) {
+                    String ampm = null;
+                    Long ct = player.getWorld().getTime();
+                    if (ct<1200) {
+                        ampm = "AM";
+                    } else { ampm = "PM";}
+
+                    player.sendMessage("It is currently " + ct + " " + ampm);
+
+
                 } else {player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command."); }
                 return true;
 

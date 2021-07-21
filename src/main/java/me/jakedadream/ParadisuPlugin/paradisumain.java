@@ -80,6 +80,7 @@ public class paradisumain extends JavaPlugin {
         getCommand("tempcmd").setExecutor(new snwcommands());
         getCommand("list").setExecutor(new snwcommands());
         getCommand("findplayercords").setExecutor(new snwcommands());
+        getCommand("currenttime").setExecutor(new snwcommands());
         //
         //
      //   getCommand("XYZ").setExecutor(new generalcommands());
