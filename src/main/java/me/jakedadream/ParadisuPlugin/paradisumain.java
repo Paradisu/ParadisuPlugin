@@ -12,6 +12,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.io.IOException;
 
+//uploadtest
+
 public class paradisumain extends JavaPlugin {
 
     public static void main(String[] args) {
