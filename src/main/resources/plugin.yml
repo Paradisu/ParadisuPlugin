@@ -159,3 +159,15 @@ commands:
   tempcmd:
     description: made for testing stuff idk
     usage: /<command>
+  list:
+    description: makes a list of all online players
+    usage: /<command>
+  findplayercords:
+    description: finds a players world and cords
+    usage: /<commands> <args>
+    aliases:
+      - fpc
+      - findpc
+  currenttime:
+    description: tells you da time
+    usage: /<commands>

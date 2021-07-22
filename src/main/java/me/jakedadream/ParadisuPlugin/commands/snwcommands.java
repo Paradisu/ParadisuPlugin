@@ -14,6 +14,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
+import java.util.ArrayList;
+
 
 public class snwcommands implements CommandExecutor {
 
@@ -282,12 +284,14 @@ public class snwcommands implements CommandExecutor {
                         player.sendMessage("§3[§dParadisu §bツ§3] §fIncorrect usage; Please use '/invsee <player>'");
                     }
                     if (args.length >= 1) {
-                        Player target = Bukkit.getServer().getPlayerExact(args[0]);
-
-                        Inventory targetinv = target.getInventory();
-                        player.openInventory(targetinv);
-                        player.sendMessage("§3[§dParadisu §bツ§3] §fNow opening the inventory of §3" + target + "");
-
+                        Player target = Bukkit.getPlayerExact(args[0]);
+                        try {
+                            Inventory targetinv = target.getInventory();
+                            player.openInventory(targetinv);
+                            player.sendMessage("§3[§dParadisu §bツ§3] §fNow opening the inventory of §3" + target + "");
+                        } catch (NullPointerException e) {
+                            player.sendMessage("§3[§dParadisu §bツ§3] §fThis player does not exist or is offline.");
+                        }
                     }
 
                 } else {player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");}
@@ -334,7 +338,7 @@ public class snwcommands implements CommandExecutor {
             case "sex":
                 if (player.hasPermission("snw.sex")) {
                     player.sendMessage("§3[§dParadisu §bツ§3] §fYou are now having sex!!!!!");
-                }
+                } else { player.sendMessage("Unknown command. Tyle \"/help\" for help."); }
                 return true;
 
             case "tphere":
@@ -356,8 +360,8 @@ public class snwcommands implements CommandExecutor {
             case "tp":
                 if (player.hasPermission("snw.tp") || player.hasPermission("snw.tp.*")) {
                     if (args.length < 1) {
-                        player.sendMessage("§3[§dParadisu §bツ§3] §fPlease do `/tp (player)` OR `/tp (player1) (player2)`");
-
+                        player.sendMessage("§3[§dParadisu §bツ§3] §fPlease do §3§o/tp User §f§lOR");
+                        player.sendMessage("§3[§dParadisu §bツ§3] §fPlease do §3§o/tp User User");
 
                         // TP TO A SINGLE PLAYER
                     } else if (args.length == 1) {
@@ -606,7 +610,7 @@ public class snwcommands implements CommandExecutor {
                         for (World w : Bukkit.getWorlds()) {
                             for (Player p : w.getPlayers()) {
                                     p.sendMessage((""));
-                                    p.sendMessage("§3[§dParadisu Broadcast §bツ§3] §f§l» " + allArgs);
+                                    p.sendMessage("§3§l[§dParadisu Broadcast §bツ§3§l] §f§l» " + allArgs);
                                     p.sendMessage((""));
                             }
                         }
@@ -652,7 +656,7 @@ public class snwcommands implements CommandExecutor {
                         }
                         if (execution.toString().trim().startsWith("c:")) {
                             target.chat(execution.toString().trim().replace("c:", ""));
-                            player.sendMessage("§3[§dParadisu §bツ§3] §f §rForcing §3" + target.getDisplayName() + " §rto say §3" + execution.toString().trim().replace("c:", ""));
+                            player.sendMessage("§3[§dParadisu §bツ§3] §fForcing §3" + target.getDisplayName() + " §rto say §3" + execution.toString().trim().replace("c:", ""));
                             return true;
                         }
                         player.getServer().dispatchCommand((CommandSender)target, execution.toString().trim());
@@ -699,6 +703,88 @@ public class snwcommands implements CommandExecutor {
 
                 } else {player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command."); }
                 return true;
+
+            case "list":
+                if (player.hasPermission("snw.list")) {
+                    ArrayList<String> owners = new ArrayList<>();
+                    ArrayList<String> devs = new ArrayList<>();
+                    ArrayList<String> builders = new ArrayList<>();
+                    ArrayList<String> staff = new ArrayList<>();
+                    ArrayList<String> supporters = new ArrayList<>();
+                    ArrayList<String> visitors = new ArrayList<>();
+                    ArrayList<String> unknown = new ArrayList<>();
+                    World w = Bukkit.getWorld("SuperNW");
+                    Integer onlineammount = Bukkit.getOnlinePlayers().size();
+
+                    for (Player all : Bukkit.getOnlinePlayers()) {
+
+                        if (all.hasPermission("displayname.owner")) {
+                            owners.add(all.getName());
+                        } else if (all.hasPermission("displayname.dev")) {
+                            devs.add(all.getName());
+                        } else if (all.hasPermission("displayname.builder")) {
+                            builders.add(all.getName());
+                        } else if (all.hasPermission("displayname.staff")) {
+                            staff.add(all.getName());
+                        } else if (all.hasPermission("displayname.supporter")) {
+                            supporters.add(all.getName());
+                        } else if (all.hasPermission("displayname.visitor")) {
+                            visitors.add(all.getName());
+                        } else {
+                            unknown.add(all.getName());
+                        }
+
+
+                        String result = String.join(" ", owners);
+                    }
+                    player.sendMessage("§3§l============= §f" + onlineammount + " §d§oOnline Players §3§l=============\n" +
+                            " \n" +
+                            "§3\uE006 §d»§f " + owners + "\n" +
+                            "§e\uE002 §d»§f " + devs + "\n" +
+                            "§c\uE001 §d»§f " + builders + "\n" +
+                            "§a\uE005 §d»§f " + staff + "\n" +
+                            "§d\uE008 §d»§f " + supporters + "\n" +
+                            "§7\uE00A §d»§f " + visitors + "\n" );
+
+                } else {player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command."); }
+                return true;
+
+            case "findplayercords":
+                if (player.hasPermission("snw.findplayercords")) {
+                    if (args.length == 1) {
+                        Player target = Bukkit.getPlayerExact(args[0]);
+                        Location targetlocation = target.getLocation();
+                        Integer tx = targetlocation.getBlockX();
+                        Integer ty = targetlocation.getBlockY();
+                        Integer tz = targetlocation.getBlockZ();
+                        String tw = targetlocation.getWorld().getName();
+
+
+
+                        player.sendMessage("§3[§dParadisu §bツ§3] §fThe player§3 " + args[0] + " §fis in §3" + tw + "§f at" +
+                                " §3X » §d§o" + tx +
+                                " §3Y » §d§o" + ty +
+                                " §3Z » §d§o" + tz + "§f.");
+
+
+                    } else { player.sendMessage("§3[§dParadisu §bツ§3] §fNot enough or too many args."); }
+                } else {player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command."); }
+                return true;
+
+            case "currenttime":
+                if (player.hasPermission("snw.currenttime")) {
+                    String ampm = null;
+                    Long ct = player.getWorld().getTime();
+                    if (ct<1200) {
+                        ampm = "AM";
+                    } else { ampm = "PM";}
+
+                    player.sendMessage("It is currently " + ct + " " + ampm);
+
+
+                } else {player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command."); }
+                return true;
+
 
             default:
                     return false;

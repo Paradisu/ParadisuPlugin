@@ -1,7 +1,6 @@
 package me.jakedadream.ParadisuPlugin;
 
 import me.jakedadream.ParadisuPlugin.commands.snwcommands;
-import me.jakedadream.ParadisuPlugin.commands.warps;
 import me.jakedadream.ParadisuPlugin.events.snwevents;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -38,14 +37,13 @@ public class paradisumain extends JavaPlugin {
         With help from RealInstantRamen, Andyinnie, & Kastle yelling in my ear.
 */
 
-//    int sched;
-//    @SuppressWarnings("unchecked")
+    int sched;
+
     @Override
     public void onEnable() {
 
 
 //        ArrayList createCommand = getCommand(().setExecutor(new snwcommands()));
-
         getCommand("givecoin").setExecutor(new snwcommands());
         getCommand("givestarcoin").setExecutor(new snwcommands());
         getCommand("mgive").setExecutor(new snwcommands());
@@ -79,6 +77,12 @@ public class paradisumain extends JavaPlugin {
         getCommand("sudo").setExecutor(new snwcommands());
         getCommand("whomademe").setExecutor(new snwcommands());
         getCommand("tempcmd").setExecutor(new snwcommands());
+        getCommand("list").setExecutor(new snwcommands());
+        getCommand("findplayercords").setExecutor(new snwcommands());
+        getCommand("currenttime").setExecutor(new snwcommands());
+        //
+        //
+     //   getCommand("XYZ").setExecutor(new generalcommands());
         getCommand("setwarp").setExecutor(new warps());
         getCommand("delwarp").setExecutor(new warps());
         getCommand("warp").setExecutor(new warps());
@@ -92,9 +96,16 @@ public class paradisumain extends JavaPlugin {
 
         //
         //
+        getServer().getPluginManager().registerEvents(new luckyblocks(), this);
+        getServer().getPluginManager().registerEvents(new entityedits(), this);
+        getServer().getPluginManager().registerEvents(new toys(), this);
+        getServer().getPluginManager().registerEvents(new chatevents(), this);
         getServer().getPluginManager().registerEvents(new snwevents(), this);
+        //
+        //
         getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[Paradisu] Plugin is now enabled");
-
+        //
+        //
 
      /*
 

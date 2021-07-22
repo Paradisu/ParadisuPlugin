@@ -1,6 +1,8 @@
 package me.jakedadream.ParadisuPlugin.events;
 
-public class luckyblocks {
+import org.bukkit.event.Listener;
+
+public class luckyblocks implements Listener {
 
 
     public void run() {
