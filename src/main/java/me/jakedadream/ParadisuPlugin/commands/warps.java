@@ -4,6 +4,7 @@ import me.jakedadream.ParadisuPlugin.paradisumain;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -15,6 +16,9 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.io.File;
+import java.io.ObjectInputFilter;
+import java.util.Locale;
+import java.util.Set;
 
 public class warps implements CommandExecutor {
 
@@ -62,6 +66,7 @@ public class warps implements CommandExecutor {
                 paradisumain.fileWarpConfig.createSection(args[0].toLowerCase());
                 ConfigurationSection cs = paradisumain.fileWarpConfig.getConfigurationSection(args[0].toLowerCase());
 
+
                 cs.set("X", loc.getX());
                 cs.set("Y", loc.getY());
                 cs.set("Z", loc.getZ());
@@ -99,13 +104,15 @@ public class warps implements CommandExecutor {
                     player.sendMessage("§3[§dParadisu §bツ§3] §fUsage: /warp <place>");
                     return true;
                 }
-                ConfigurationSection d = paradisumain.fileWarpConfig.getConfigurationSection(args[0]);
+                ConfigurationSection d = paradisumain.fileWarpConfig.getConfigurationSection(args[0].toLowerCase());
                 if (d == null){
-                    player.sendMessage("§3[§dParadisu §bツ§3] §fThat warp doesn't exist.");
-                    return true;
-                } else {
-//                    player.sendMessage(String.valueOf(d.getDouble("X")));
-
+                    if (paradisumain.fileWarpConfig.getString("aliases." + args[0].toLowerCase()) != null) {
+                        String w = paradisumain.fileWarpConfig.getString("aliases." + args[0].toLowerCase());
+                        d = paradisumain.fileWarpConfig.getConfigurationSection(w);
+                    } else {
+                        player.sendMessage("§3[§dParadisu §bツ§3] §fThat warp doesn't exist.");
+                        return true;
+                    }
                 }
                 if (!(player.hasPermission(d.getString("Permission")))){
                     player.sendMessage("§3[§dParadisu §bツ§3] §7You cannot warp here.");
@@ -130,7 +137,65 @@ public class warps implements CommandExecutor {
 
                 player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20, 1));
                 player.teleport(l);
+                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 10, 29);
                 player.sendMessage("§3[§dParadisu §bツ§3] §fWelcome to " + ChatColor.DARK_AQUA +  wstring + ChatColor.WHITE + "!");
+                break;
+
+            case "reloadwarp":
+            case "reloadwarps":
+                if(!(player.hasPermission("snw.warp.reload"))){
+                    player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");
+                    return true;
+                }
+                paradisumain.reloadWarpConfig();
+                player.sendMessage("§3[§dParadisu §bツ§3] §fReloaded warps.");
+                break;
+
+            case "setalias":
+                if(!(player.hasPermission("snw.warp.setalias"))){
+                    player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");
+                    return true;
+                }
+                if(args.length < 2 || paradisumain.fileWarpConfig.getConfigurationSection(args[0].toLowerCase()) == null){
+                    player.sendMessage("§3[§dParadisu §bツ§3] §fPlease use /setalias <warp> <alias>");
+                    return true;
+                }
+                ConfigurationSection al = paradisumain.fileWarpConfig.getConfigurationSection("aliases");
+                al.set(args[1].toLowerCase(), args[0].toLowerCase());
+                paradisumain.saveWarpConfig();
+                player.sendMessage("§3[§dParadisu §bツ§3] §f" + ChatColor.DARK_AQUA + args[1] + ChatColor.WHITE + " is now a warp alias for " + ChatColor.DARK_AQUA + args[0] + ChatColor.WHITE + "!");
+                break;
+
+            case "delalias":
+                if(!(player.hasPermission("snw.warp.delalias"))){
+                    player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");
+                    return true;
+                }
+                if(args.length < 2 || paradisumain.fileWarpConfig.getConfigurationSection(args[0].toLowerCase()) == null || paradisumain.fileWarpConfig.getString("aliases." + args[1].toLowerCase()) == null){
+                    player.sendMessage("§3[§dParadisu §bツ§3] §fPlease use /delalias <warp> <alias>");
+                    return true;
+                }
+                paradisumain.fileWarpConfig.getConfigurationSection("aliases").set(args[1].toLowerCase(), null);
+                paradisumain.saveWarpConfig();
+                player.sendMessage("§3[§dParadisu §bツ§3] §fDeleted warp alias " + ChatColor.DARK_AQUA + args[1]);
+                break;
+
+            case "warps":
+                Set<String> s = paradisumain.fileWarpConfig.getKeys(false);
+                s.remove("aliases");
+                String mes = "§3[§dParadisu §bツ§3] §fCurrent Warps:" + ChatColor.DARK_AQUA;
+                for (String i : s){
+//                    player.sendMessage(i);
+                    i = i.substring(0,1).toUpperCase() + i.substring(1);
+//                    player.sendMessage(i);
+                    mes = mes.concat("\n" + i);
+//                    player.sendMessage(mes);
+                }
+                player.sendMessage(mes);
+                break;
+
+//                 String wstring = d.getName();
+//                wstring = wstring.substring(0,1).toUpperCase() + wstring.substring(1);
 
         }
         return false;
