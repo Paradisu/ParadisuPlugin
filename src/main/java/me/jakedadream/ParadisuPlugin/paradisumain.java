@@ -1,7 +1,8 @@
 package me.jakedadream.ParadisuPlugin;
 
 import me.jakedadream.ParadisuPlugin.commands.snwcommands;
-import me.jakedadream.ParadisuPlugin.events.snwevents;
+import me.jakedadream.ParadisuPlugin.commands.warps;
+import me.jakedadream.ParadisuPlugin.events.*;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
