@@ -171,9 +171,6 @@ commands:
   whomademe:
     description: tells you the creators of the plugin
     usage: /<command>
-  tempcmd:
-    description: made for testing stuff idk
-    usage: /<command>
   list:
     description: makes a list of all online players
     usage: /<command>
