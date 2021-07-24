@@ -157,7 +157,10 @@ public class ItemManager {
             "§3§lSuper Nintendo World §fTrash Can", //91
             "§a§lYoshi §fMerchandise §aKart", // 92
             "§3§lWater§9§lWorld §f§lSpinner", // 93
-            "TBD Model", // 94
+            "§3§lAmity §c§lIsland §6§lSign", // 94
+            "§c§lMav's Surfboard", // 95
+            "§4§lJurassic §e§lWorld §8§lHat", //96
+            "§6§lSpace §f§lShuttle", //97
             "§a§lNEVER SET TO BE A MODEL <PLACEHOLDER NAME>" // Line Above + 1
     };
 

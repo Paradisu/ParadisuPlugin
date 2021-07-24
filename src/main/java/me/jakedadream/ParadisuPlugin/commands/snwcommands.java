@@ -193,7 +193,11 @@ public class snwcommands implements CommandExecutor {
                             "§7|  §3§lSuper Nintendo World §fRecycle Can §6§l//90\n" +
                             "§7|  §3§lSuper Nintendo World §fTrash Can §6§l//91\n" +
                             "§7|  §a§lYoshi §fMerchandise §aKart §6§l//92\n" +
-                            "§7|  §3§lWater§9§lWorld §f§lSpinner §6§l//92");
+                            "§7|  §3§lWater§9§lWorld §f§lSpinner §6§l//93\n" +
+                            "§7|  §3§lAmity §c§lIsland §6§lSign §6§l//94\n" +
+                            "§7|  §c§Mav's Surfboard §6§l//95\n" +
+                            "§7|  §4§lJurassic §e§lWorld §8§lHat §6§l//96\n" +
+                            "§7|  §6§lSpace §f§lShuttle §6§l//97");
                 } else {
                     player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");
                 }
