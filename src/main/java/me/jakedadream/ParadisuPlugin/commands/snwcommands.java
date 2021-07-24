@@ -2,6 +2,7 @@ package me.jakedadream.ParadisuPlugin.commands;
 
 import me.jakedadream.ParadisuPlugin.items.ItemManager;
 import me.jakedadream.ParadisuPlugin.items.PluginInventories;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -14,7 +15,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 public class snwcommands implements CommandExecutor {
@@ -212,6 +216,33 @@ public class snwcommands implements CommandExecutor {
                                 if (p.hasPermission("snw.sc")) {
                                     p.sendMessage("§3『§b§l§oSC§3』 §c" + player.getDisplayName() + " §f»§3 " + allArgs);
                                     // /sc <message>;
+                                }
+                            }
+                        }
+
+                    }
+                } else {
+                    player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");
+                }
+                return true;
+
+
+            case "ac":
+                if (player.hasPermission("snw.ac")) {
+                    if (args.length == 0) {
+                        // /ac (no args)
+                        player.sendMessage("§3[§dParadisu §bツ§3] §fIncorrect usage; Please use '/ac <message>'");
+                    } else {
+                        String allArgs = "";
+
+                        for (String arg : args) {
+                            allArgs += arg + " ";
+                        }
+                        for (World w : Bukkit.getWorlds()) {
+                            for (Player p : w.getPlayers()) {
+                                if (p.hasPermission("snw.ac")) {
+                                    p.sendMessage("§c『§4§l§oSC§c』 §c" + player.getDisplayName() + " §f»§3 " + allArgs);
+                                    // /AC <message>;
                                 }
                             }
                         }
@@ -599,7 +630,6 @@ public class snwcommands implements CommandExecutor {
             case "broadcast":
                 if (player.hasPermission("snw.broadcast")) {
                     if (args.length == 0) {
-                        // /sc (no args)
                         player.sendMessage("§3[§dParadisu §bツ§3] §fIncorrect usage; Please use '/broadcast <message>'");
                     } else {
                         String allArgs = "";
@@ -694,57 +724,69 @@ public class snwcommands implements CommandExecutor {
                     saveConfig();
                 } */
 
-            case "tempcmd":
-                if (player.hasPermission("snw.*")) {
-                    //
-                    // change code depending on test
-                    //
-                    player.sendMessage("Command not currently in use to test");
-
-                } else {player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command."); }
-                return true;
 
             case "list":
                 if (player.hasPermission("snw.list")) {
-                    ArrayList<String> owners = new ArrayList<>();
+
+                    ArrayList<String> owners = new ArrayList<String>();;
                     ArrayList<String> devs = new ArrayList<>();
+                    String devss = String.join(", ", devs);
                     ArrayList<String> builders = new ArrayList<>();
+                    String builderss = String.join(", ", builders);
                     ArrayList<String> staff = new ArrayList<>();
+                    String staffs = String.join(", ", staff);
                     ArrayList<String> supporters = new ArrayList<>();
+                    String supporterss = String.join(", ", supporters);
                     ArrayList<String> visitors = new ArrayList<>();
+                    String visitorss = String.join(", ", visitors);
                     ArrayList<String> unknown = new ArrayList<>();
+                    String unknowns = String.join(", ", unknown);
+
                     World w = Bukkit.getWorld("SuperNW");
                     Integer onlineammount = Bukkit.getOnlinePlayers().size();
 
                     for (Player all : Bukkit.getOnlinePlayers()) {
 
-                        if (all.hasPermission("displayname.owner")) {
+                        if (all. hasPermission("meta.rank.owner")) {
                             owners.add(all.getName());
-                        } else if (all.hasPermission("displayname.dev")) {
+                        } else if (all.hasPermission("meta.rank.dev")) {
                             devs.add(all.getName());
-                        } else if (all.hasPermission("displayname.builder")) {
+                        } else if (all.hasPermission("meta.rank.builder")) {
                             builders.add(all.getName());
-                        } else if (all.hasPermission("displayname.staff")) {
+                        } else if (all.hasPermission("meta.rank.staff")) {
                             staff.add(all.getName());
-                        } else if (all.hasPermission("displayname.supporter")) {
+                        } else if (all.hasPermission("meta.rank.supporter")) {
                             supporters.add(all.getName());
-                        } else if (all.hasPermission("displayname.visitor")) {
+                        } else if (all.hasPermission("meta.rank.visitor")) {
                             visitors.add(all.getName());
                         } else {
                             unknown.add(all.getName());
                         }
 
 
-                        String result = String.join(" ", owners);
                     }
                     player.sendMessage("§3§l============= §f" + onlineammount + " §d§oOnline Players §3§l=============\n" +
-                            " \n" +
-                            "§3\uE006 §d»§f " + owners + "\n" +
-                            "§e\uE002 §d»§f " + devs + "\n" +
-                            "§c\uE001 §d»§f " + builders + "\n" +
-                            "§a\uE005 §d»§f " + staff + "\n" +
-                            "§d\uE008 §d»§f " + supporters + "\n" +
-                            "§7\uE00A §d»§f " + visitors + "\n" );
+                            " \n");
+
+                    if (!owners.isEmpty()) {player.sendMessage(
+                            "§3\uE006 §d»§f " + owners + "\n");
+                    }
+                    if (!devs.isEmpty()) {player.sendMessage(
+                            "§e\uE002 §d»§f " + devss + "\n");
+                    }
+                    if (!builders.isEmpty()) {player.sendMessage(
+                            "§c\uE001 §d»§f " + builderss + "\n");
+                    }
+                    if (!staff.isEmpty()) {player.sendMessage(
+                            "§a\uE005 §d»§f " + staffs + "\n");
+                    }
+                    if (!supporters.isEmpty()) {player.sendMessage(
+                            "§d\uE008 §d»§f " + supporterss + "\n");
+                    }
+                    if (!visitors.isEmpty()) {player.sendMessage(
+                            "§7\uE00A §d»§f " + visitorss + "\n");
+                    }
+
 
                 } else {player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command."); }
                 return true;
@@ -775,11 +817,28 @@ public class snwcommands implements CommandExecutor {
                 if (player.hasPermission("snw.currenttime")) {
                     String ampm = null;
                     Long ct = player.getWorld().getTime();
-                    if (ct<1200) {
+                    if (ct<12000) {
                         ampm = "AM";
                     } else { ampm = "PM";}
 
-                    player.sendMessage("It is currently " + ct + " " + ampm);
+
+                    Double ctdouble = ct.doubleValue();
+
+
+                    Long currenthour = (ct%12000)/1000;
+                    Double currentminute = ((ctdouble%1000)/16.6);
+              //      String[] currentminutesplit = currentminute.toString().split(".", 1);
+            //        String currentminute1 = currentminutesplit[0];
+
+                    DecimalFormat format = new DecimalFormat("#00");
+
+
+                    player.sendMessage("§3[§dParadisu §bツ§3] §fIt is currently §3" + currenthour + "§f:§3" + format.format(currentminute) + " " + "§f§l" + ampm + "§f.");
+
+            //        player.sendMessage("Current Tick Time: " + ct);
+            //        player.sendMessage("Current Hour Time: " + currenthour);
+            //        player.sendMessage("Current Minute Time: " + format.format(currentminute));
+            //        player.sendMessage("It is currently " + currenthour + ":" + currentminute + " " + ampm);
 
 
                 } else {player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command."); }

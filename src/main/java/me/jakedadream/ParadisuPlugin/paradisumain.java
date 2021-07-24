@@ -51,6 +51,7 @@ public class paradisumain extends JavaPlugin {
         getCommand("mhat").setExecutor(new snwcommands());
         getCommand("idlist").setExecutor(new snwcommands());
         getCommand("sc").setExecutor(new snwcommands());
+        getCommand("ac").setExecutor(new snwcommands());
         getCommand("gmc").setExecutor(new snwcommands());
         getCommand("gms").setExecutor(new snwcommands());
         getCommand("gmsp").setExecutor(new snwcommands());
@@ -77,7 +78,6 @@ public class paradisumain extends JavaPlugin {
         getCommand("speed").setExecutor(new snwcommands());
         getCommand("sudo").setExecutor(new snwcommands());
         getCommand("whomademe").setExecutor(new snwcommands());
-        getCommand("tempcmd").setExecutor(new snwcommands());
         getCommand("list").setExecutor(new snwcommands());
         getCommand("findplayercords").setExecutor(new snwcommands());
         getCommand("currenttime").setExecutor(new snwcommands());
