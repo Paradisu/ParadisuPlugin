@@ -98,6 +98,27 @@ public class warps implements CommandExecutor {
                 player.sendMessage("§3[§dParadisu §bツ§3] §fDeleted warp " + ChatColor.DARK_AQUA + delname + ChatColor.WHITE + ".");
                 break;
 
+            case "warpdisplay":
+            case "wdisplay":
+                if (!(player.hasPermission("snw.warp.display"))){
+                    player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");
+                    return true;
+                }
+                String displayname = "";
+//                String sourcewarp = args[0];
+                for (int i = 0; i < args.length; i++){
+                    if (i == 0) continue;
+                    if (i == args.length - 1){
+                        displayname += args[i];
+                        continue;
+                    }
+                    displayname += args[i] + " ";
+                }
+                paradisumain.fileWarpConfig.getConfigurationSection(args[0].toLowerCase()).set("display", displayname);
+                paradisumain.saveWarpConfig();
+                player.sendMessage("§3[§dParadisu §bツ§3] §fCreated warp display name " + ChatColor.DARK_AQUA + displayname);
+                break;
+
             case "w":
             case "warp":
                 if(args.length == 0){
@@ -132,8 +153,15 @@ public class warps implements CommandExecutor {
                 l.setYaw((float) d.getDouble("Yaw"));
                 l.setWorld(Bukkit.getServer().getWorld(d.getString("World")));
 
-                String wstring = d.getName();
-                wstring = wstring.substring(0,1).toUpperCase() + wstring.substring(1);
+                //
+
+                String wstring;
+                if (d.getString("display") != null){
+                    wstring = d.getString("display");
+                } else {
+                    wstring = d.getName();
+                    wstring = wstring.substring(0,1).toUpperCase() + wstring.substring(1);
+                }
 
                 player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20, 1));
                 player.teleport(l);

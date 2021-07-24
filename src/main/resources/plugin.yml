@@ -1,9 +1,12 @@
 name: ParadisuPlugin
-version: 2.4.4
+version: 2.4.5
 authors: [JakeDaDream, RealInstantRamen, andyinnie, _Kastle]
 main: me.jakedadream.ParadisuPlugin.paradisumain
 api-version: 1.16
 commands:
+  warpdisplay:
+    description: sets a display name for a warp
+    aliases: [wdisplay]
   warps:
     description: gives a list of all warps
   reloadwarp:

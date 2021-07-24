@@ -93,6 +93,7 @@ public class paradisumain extends JavaPlugin {
         getCommand("delalias").setExecutor(new warps());
         getCommand("reloadwarp").setExecutor(new warps());
         getCommand("warps").setExecutor(new warps());
+        getCommand("warpdisplay").setExecutor(new warps());
         //
         //
         getConfig().options().copyDefaults();
