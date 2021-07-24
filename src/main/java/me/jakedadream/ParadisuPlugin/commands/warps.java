@@ -212,12 +212,15 @@ public class warps implements CommandExecutor {
                 Set<String> s = paradisumain.fileWarpConfig.getKeys(false);
                 s.remove("aliases");
                 String mes = "§3[§dParadisu §bツ§3] §fCurrent Warps:" + ChatColor.DARK_AQUA;
+                FileConfiguration warplist = paradisumain.fileWarpConfig;
                 for (String i : s){
-//                    player.sendMessage(i);
-                    i = i.substring(0,1).toUpperCase() + i.substring(1);
-//                    player.sendMessage(i);
-                    mes = mes.concat("\n" + i);
-//                    player.sendMessage(mes);
+//                      player.sendMessage(mes);
+                    if(warplist.getConfigurationSection(i).getString("display") != null){
+                        mes = mes.concat("\n" + ChatColor.WHITE + "- "  + ChatColor.DARK_AQUA + warplist.getConfigurationSection(i).getString("display"));
+                    } else {
+                        i = i.substring(0,1).toUpperCase() + i.substring(1);
+                        mes = mes.concat("\n" + ChatColor.WHITE + "- " + ChatColor.DARK_AQUA + i);
+                    }
                 }
                 player.sendMessage(mes);
                 break;
