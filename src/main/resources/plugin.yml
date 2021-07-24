@@ -1,9 +1,21 @@
 name: ParadisuPlugin
-version: 2.4.2
+version: 2.4.4
 authors: [JakeDaDream, RealInstantRamen, andyinnie, _Kastle]
 main: me.jakedadream.ParadisuPlugin.paradisumain
 api-version: 1.16
 commands:
+  warps:
+    description: gives a list of all warps
+  reloadwarp:
+    description: reloads warp config file if edited manually
+    aliases: [reloadwarps]
+    permission: snw.warp.reload
+  setalias:
+    description: creates an alias for a warp
+    permission: snw.warp.setalias
+  delalias:
+    description: deleates an alias for a warp
+    permission: snw.warp.delalias
   setwarp:
     description: sets a warp
   delwarp:
@@ -158,6 +170,9 @@ commands:
     usage: /<command> <args>
   whomademe:
     description: tells you the creators of the plugin
+    usage: /<command>
+  tempcmd:
+    description: made for testing stuff idk
     usage: /<command>
   list:
     description: makes a list of all online players

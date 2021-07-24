@@ -12,6 +12,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.io.IOException;
 
+//uploadtest
+
 public class paradisumain extends JavaPlugin {
 
     public static void main(String[] args) {
@@ -87,6 +89,10 @@ public class paradisumain extends JavaPlugin {
         getCommand("setwarp").setExecutor(new warps());
         getCommand("delwarp").setExecutor(new warps());
         getCommand("warp").setExecutor(new warps());
+        getCommand("setalias").setExecutor(new warps());
+        getCommand("delalias").setExecutor(new warps());
+        getCommand("reloadwarp").setExecutor(new warps());
+        getCommand("warps").setExecutor(new warps());
         //
         //
         getConfig().options().copyDefaults();
@@ -159,6 +165,9 @@ public class paradisumain extends JavaPlugin {
             fileWarpConfig.load(sourceWarpFile);
         } catch (IOException | InvalidConfigurationException e) {
             e.printStackTrace();
+        }
+        if (fileWarpConfig.getConfigurationSection("aliases") == null){
+            fileWarpConfig.createSection("aliases");
         }
     }
 
