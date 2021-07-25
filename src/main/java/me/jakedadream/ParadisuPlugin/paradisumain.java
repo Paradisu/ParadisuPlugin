@@ -1,5 +1,6 @@
 package me.jakedadream.ParadisuPlugin;
 
+import me.jakedadream.ParadisuPlugin.commands.modelcommands;
 import me.jakedadream.ParadisuPlugin.commands.snwcommands;
 import me.jakedadream.ParadisuPlugin.commands.warps;
 import me.jakedadream.ParadisuPlugin.events.*;
@@ -45,8 +46,9 @@ public class paradisumain extends JavaPlugin {
     @Override
     public void onEnable() {
 
-
-//        ArrayList createCommand = getCommand(().setExecutor(new snwcommands()));
+        // =================
+        // SNW COMMANDS
+        // =================
         getCommand("givecoin").setExecutor(new snwcommands());
         getCommand("givestarcoin").setExecutor(new snwcommands());
         getCommand("mgive").setExecutor(new snwcommands());
@@ -84,8 +86,9 @@ public class paradisumain extends JavaPlugin {
         getCommand("findplayercords").setExecutor(new snwcommands());
         getCommand("currenttime").setExecutor(new snwcommands());
         //
-        //
-     //   getCommand("XYZ").setExecutor(new generalcommands());
+        // =================
+        // WARPS COMMANDS
+        // =================
         getCommand("setwarp").setExecutor(new warps());
         getCommand("delwarp").setExecutor(new warps());
         getCommand("warp").setExecutor(new warps());
@@ -94,6 +97,19 @@ public class paradisumain extends JavaPlugin {
         getCommand("reloadwarp").setExecutor(new warps());
         getCommand("warps").setExecutor(new warps());
         //
+        // =================
+        // GENERAL COMMANDS
+        // =================
+        // getCommand("cmd").setExecutor(new generalcommands());
+        //
+        // =================
+        // MODEL COMMANDS
+        // =================
+        getCommand("mgive").setExecutor(new modelcommands());
+        getCommand("hgive").setExecutor(new modelcommands());
+        getCommand("mhat").setExecutor(new modelcommands());
+        getCommand("createmodelcfsection").setExecutor(new modelcommands());
+        //
         //
         getConfig().options().copyDefaults();
         saveDefaultConfig();
@@ -101,15 +117,14 @@ public class paradisumain extends JavaPlugin {
         createWarpFiles();
         saveWarpConfig();
 
-        //
-        //
+        // =================
+        // EVENTS
+        // =================
         getServer().getPluginManager().registerEvents(new luckyblocks(), this);
         getServer().getPluginManager().registerEvents(new entityedits(), this);
         getServer().getPluginManager().registerEvents(new toys(), this);
         getServer().getPluginManager().registerEvents(new chatevents(), this);
         getServer().getPluginManager().registerEvents(new snwevents(), this);
-        //
-        //
         getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[Paradisu] Plugin is now enabled");
         //
         //
@@ -142,8 +157,8 @@ public class paradisumain extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        getServer().getConsoleSender().sendMessage(ChatColor.RED + "[Paradisu] Plugin is now disabled :(");
-        getServer().getConsoleSender().sendMessage(ChatColor.RED + "[Paradisu] Fuck you");
+        getServer().getConsoleSender().sendMessage(ChatColor.RED + "[Paradisu] Plugin is now disabled.");
+        getServer().getConsoleSender().sendMessage(ChatColor.RED + "[Paradisu] Goodbye!");
     }
 
 

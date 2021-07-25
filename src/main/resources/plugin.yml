@@ -1,5 +1,5 @@
 name: ParadisuPlugin
-version: 2.4.4
+version: 2.5.0
 authors: [JakeDaDream, RealInstantRamen, andyinnie, _Kastle]
 main: me.jakedadream.ParadisuPlugin.paradisumain
 api-version: 1.16
@@ -29,12 +29,6 @@ commands:
   givestarcoin:
       description: Gives player a Star coin
       usage: /<command>
-  mhat:
-    description: Puts a model on your head
-    usage: /<command> <number>
-  mgive:
-    description: Puts a model in your inventory
-    usage: /<command> <number>
   idlist:
     description: Gives list of Model IDs
     usage: /<command>
@@ -183,3 +177,16 @@ commands:
   currenttime:
     description: tells you da time
     usage: /<commands>
+  mgive:
+    description: gives you a diamond axe model
+    usage: /<command> <args>
+  hgive:
+    description: gives you a carved pumpkin model
+    usage: /<command> <args>
+  mhat:
+    description: puts a diamond axe model on your head
+    usage: /<command> <args>
+  createmodelcfsection:
+    description: Creates a new template for you to use for a new model
+    usage: /<command>
+

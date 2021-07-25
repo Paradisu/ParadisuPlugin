@@ -728,65 +728,59 @@ public class snwcommands implements CommandExecutor {
             case "list":
                 if (player.hasPermission("snw.list")) {
 
-                    ArrayList<String> owners = new ArrayList<String>();;
-                    ArrayList<String> devs = new ArrayList<>();
-                    String devss = String.join(", ", devs);
-                    ArrayList<String> builders = new ArrayList<>();
-                    String builderss = String.join(", ", builders);
-                    ArrayList<String> staff = new ArrayList<>();
-                    String staffs = String.join(", ", staff);
-                    ArrayList<String> supporters = new ArrayList<>();
-                    String supporterss = String.join(", ", supporters);
-                    ArrayList<String> visitors = new ArrayList<>();
-                    String visitorss = String.join(", ", visitors);
-                    ArrayList<String> unknown = new ArrayList<>();
-                    String unknowns = String.join(", ", unknown);
-
-                    World w = Bukkit.getWorld("SuperNW");
+                    String owners = "";
+                    String devs = "";
+                    String builders = "";
+                    String staff = "";
+                    String supporters = "";
+                    String visitors = "";
                     Integer onlineammount = Bukkit.getOnlinePlayers().size();
 
-                    for (Player all : Bukkit.getOnlinePlayers()) {
 
-                        if (all. hasPermission("meta.rank.owner")) {
-                            owners.add(all.getName());
-                        } else if (all.hasPermission("meta.rank.dev")) {
-                            devs.add(all.getName());
-                        } else if (all.hasPermission("meta.rank.builder")) {
-                            builders.add(all.getName());
-                        } else if (all.hasPermission("meta.rank.staff")) {
-                            staff.add(all.getName());
-                        } else if (all.hasPermission("meta.rank.supporter")) {
-                            supporters.add(all.getName());
-                        } else if (all.hasPermission("meta.rank.visitor")) {
-                            visitors.add(all.getName());
+                    for (int i = 0; i < Bukkit.getOnlinePlayers().size(); i++) {
+
+                        String name = player.getName();
+
+                        name.concat(", ");
+
+                        if (player.hasPermission("meta.rank.owner")) {
+                            owners.concat(name);
+                        } else if (player.hasPermission("meta.rank.dev")) {
+                            devs.concat(name);
+                        } else if  (player.hasPermission("meta.rank.builders")) {
+                            builders.concat(name);
+                        } else if (player.hasPermission("meta.rank.staff")) {
+                            staff.concat(name);
+                        } else if (player.hasPermission("meta.rank.supporters")) {
+                            supporters.concat(name);
                         } else {
-                            unknown.add(all.getName());
+                            visitors.concat(name);
                         }
 
-
                     }
+
+
+                    owners = owners.substring(0, owners.length());
+                    devs = devs.substring(0, devs.length());
+                    builders = builders.substring(0, builders.length());
+                    staff = staff.substring(0, staff.length());
+                    supporters = supporters.substring(0, supporters.length());
+                    visitors = visitors.substring(0, visitors.length());
+
                     player.sendMessage("§3§l============= §f" + onlineammount + " §d§oOnline Players §3§l=============\n" +
                             " \n");
 
-                    if (!owners.isEmpty()) {player.sendMessage(
-                            "§3\uE006 §d»§f " + owners + "\n");
-                    }
-                    if (!devs.isEmpty()) {player.sendMessage(
-                            "§e\uE002 §d»§f " + devss + "\n");
-                    }
-                    if (!builders.isEmpty()) {player.sendMessage(
-                            "§c\uE001 §d»§f " + builderss + "\n");
-                    }
-                    if (!staff.isEmpty()) {player.sendMessage(
-                            "§a\uE005 §d»§f " + staffs + "\n");
-                    }
-                    if (!supporters.isEmpty()) {player.sendMessage(
-                            "§d\uE008 §d»§f " + supporterss + "\n");
-                    }
-                    if (!visitors.isEmpty()) {player.sendMessage(
-                            "§7\uE00A §d»§f " + visitorss + "\n");
-                    }
+                    if (owners.length() != 0) {player.sendMessage("§3\uE006 §d»§f " + owners + "\n");}
 
+                    if (devs.length() != 0) {player.sendMessage("§e\uE002 §d»§f " + devs + "\n");}
+
+                    if (builders.length() != 0) {player.sendMessage("§c\uE001 §d»§f " + builders + "\n");}
+
+                    if (staff.length() != 0) {player.sendMessage("§c\uE007 §d»§f " + staff + "\n");}
+
+                    if (supporters.length() != 0) {player.sendMessage("§d\uE008 §d»§f " + supporters + "\n");}
+
+                    if (visitors.length() != 0) {player.sendMessage("§7\uE00A §d»§f " + visitors + "\n");}
 
                 } else {player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command."); }
                 return true;
@@ -817,7 +811,7 @@ public class snwcommands implements CommandExecutor {
                 if (player.hasPermission("snw.currenttime")) {
                     String ampm = null;
                     Long ct = player.getWorld().getTime();
-                    if (ct<12000) {
+                    if (ct<6000 || ct>18000) {
                         ampm = "AM";
                     } else { ampm = "PM";}
 
@@ -828,7 +822,7 @@ public class snwcommands implements CommandExecutor {
                     Long currenthour = (ct%12000)/1000;
                     Double currentminute = ((ctdouble%1000)/16.6);
               //      String[] currentminutesplit = currentminute.toString().split(".", 1);
-            //        String currentminute1 = currentminutesplit[0];
+              //      String currentminute1 = currentminutesplit[0];
 
                     DecimalFormat format = new DecimalFormat("#00");
 
