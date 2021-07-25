@@ -1,6 +1,6 @@
 package me.jakedadream.ParadisuPlugin;
 
-import me.jakedadream.ParadisuPlugin.commands.modelcommands;
+import me.jakedadream.ParadisuPlugin.modelmanager.modelcommands;
 import me.jakedadream.ParadisuPlugin.commands.snwcommands;
 import me.jakedadream.ParadisuPlugin.commands.warps;
 import me.jakedadream.ParadisuPlugin.events.*;
@@ -163,8 +163,17 @@ public class paradisumain extends JavaPlugin {
     }
 
 
+
+
     public static File sourceWarpFile;
     public static FileConfiguration fileWarpConfig;
+
+    public static File sourcePropModelsFile;
+    public static FileConfiguration filePropModelsConfig;
+
+    public static File sourceHatModelsFile;
+    public static FileConfiguration fileHatModelsConfig;
+
 
     public void createWarpFiles() {
 
@@ -187,11 +196,60 @@ public class paradisumain extends JavaPlugin {
         }
     }
 
+    public void createPropModelsFiles() {
+
+        sourcePropModelsFile = new File(getDataFolder(), "propmodels.yml");
+
+        if (!sourcePropModelsFile.exists()) {
+            sourcePropModelsFile.getParentFile().mkdirs();
+            saveResource("propmodels.yml", false);
+        }
+
+        filePropModelsConfig = new YamlConfiguration();
+
+        try {
+            filePropModelsConfig.load(sourcePropModelsFile);
+        } catch (IOException | InvalidConfigurationException e) {
+            e.printStackTrace();
+        }
+     //   if (filePropModelsConfig.getConfigurationSection("aliases") == null){
+     //       filePropModelsConfig.createSection("aliases");
+     //   }
+    }
+
+    public void createHatModelsFiles() {
+
+        sourceHatModelsFile = new File(getDataFolder(), "hatmodels.yml");
+
+        if (!sourceHatModelsFile.exists()) {
+            sourceHatModelsFile.getParentFile().mkdirs();
+            saveResource("hatmodels.yml", false);
+        }
+
+        fileHatModelsConfig = new YamlConfiguration();
+
+        try {
+            fileHatModelsConfig.load(sourceHatModelsFile);
+        } catch (IOException | InvalidConfigurationException e) {
+            e.printStackTrace();
+        }
+        //   if (fileHatModelsConfig.getConfigurationSection("aliases") == null){
+        //       fileHatModelsConfig.createSection("aliases");
+        //   }
+    }
+
+
+
 
     //gets fileWarpConfig
     public static FileConfiguration getWarpConfig() {
         return fileWarpConfig;
     }
+    public static FileConfiguration getPropModelsConfig() {
+        return filePropModelsConfig;
+    }
+    public static FileConfiguration getHatModelsConfig() {return fileHatModelsConfig;}
+
 
     //use if edited through commands
     public static void saveWarpConfig(){
@@ -202,10 +260,32 @@ public class paradisumain extends JavaPlugin {
         }
     }
 
+    public static void savePropModelsConfig(){
+        try {
+            filePropModelsConfig.save(sourcePropModelsFile);
+        } catch (IOException e){
+            System.out.println("couldn't save file");
+        }
+    }
+
+    public static void saveHatModelsConfig(){
+        try {
+            fileHatModelsConfig.save(sourceHatModelsFile);
+        } catch (IOException e){
+            System.out.println("couldn't save file");
+        }
+    }
+
     //use if edited file through text editor
     public static void reloadWarpConfig(){
-        fileWarpConfig = YamlConfiguration.loadConfiguration(sourceWarpFile);
-    }
+        fileWarpConfig = YamlConfiguration.loadConfiguration(sourceWarpFile);}
+
+    public static void reloadPropModelsConfig(){
+        filePropModelsConfig = YamlConfiguration.loadConfiguration(sourcePropModelsFile);}
+
+    public static void reloadHatModelsConfig(){
+        filePropModelsConfig = YamlConfiguration.loadConfiguration(sourcePropModelsFile);}
+
 }
 
 
