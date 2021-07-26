@@ -14,8 +14,8 @@ public class modelcommands implements CommandExecutor {
 
     private String getParsedName(String[] args) {
         String name = "";
-        for (int i = 0; i < args.length; i++) {
-            name = name.concat(args[i]);
+        for (String arg : args) {
+            name = name.concat(arg);
             name = name.concat(" ");
         }
         return ChatColor.translateAlternateColorCodes('&', name);
@@ -64,26 +64,28 @@ public class modelcommands implements CommandExecutor {
                 if (player.hasPermission("snw.model")) {
                     //
                     Random rand = new Random(); Integer upperbound = 1000; Integer int_random = rand.nextInt(upperbound);
-                    String randstring = int_random.toString();
+//                    String randstring = int_random.toString();
                     //
-                    if (args.length > 1) {
+                    if (args.length < 2) {
                         player.sendMessage("§3[§dParadisu §f§lMODELS §bツ§3] §7Please add an argument & specify between Props & Hats.");
-                    } else if (args.length == 1) {
+                    } else if (args.length == 2) {
                         // ------------------------------------------------------------------------------------------------------------------------------------------------
-                        if (args[1] == "prop") {
+                        if (args[0].equals("prop")) {
                             //
-                            String sectionname = "new_model_template_" + randstring;
+                            String sectionname = args[1];
                             paradisumain.getPropModelsConfig().createSection(sectionname);
                             ConfigurationSection cs = paradisumain.filePropModelsConfig.getConfigurationSection(sectionname);
+
+                            cs.set("custommodeldata", int_random);
 
                             cs.set("displayname", "Unset Model Name");
                             cs.set("enchantslot1", "Enchantment.LUCK");
                             cs.set("enchantslot2", "Enchantment.LUCK");
                             cs.set("enchantslot3", "Enchantment.LUCK");
 
-                            cs.set("enchantslot1level", "0");
-                            cs.set("enchantslot2level", "0");
-                            cs.set("enchantslot3level", "0");
+                            cs.set("enchantslot1level", 0);
+                            cs.set("enchantslot2level", 0);
+                            cs.set("enchantslot3level", 0);
 
                             cs.set("lore1", "DEFAULT LORE 1");
                             cs.set("lore2", "DEFAULT LORE 2");
@@ -96,15 +98,15 @@ public class modelcommands implements CommandExecutor {
                             cs.set("lore9", "DEFAULT LORE 9");
                             cs.set("lore10", "DEFAULT LORE 10");
 
-                            cs.set("unbreakable", "false");
-                            cs.set("hideunbreakable", "false");
-                            cs.set("hideenchants", "false");
+                            cs.set("unbreakable", false);
+                            cs.set("hideunbreakable", false);
+                            cs.set("hideenchants", false);
                             //
                             paradisumain.savePropModelsConfig();
                             //
                             player.sendMessage("§3[§dParadisu §f§lMODELS §bツ§3] §fNew Model Section created!");
                             //
-                        } else if (args[1] == "hat") {
+                        } else if (args[0].equals("hat")) {
                             //
 
 
