@@ -23,8 +23,4 @@ mvn clean package
 * Limited item NBT editing
 * Obtain player skulls
 
-### Reporting Bugs
-* Minor bugs may be reported with Issues
-* Please report any Major/Game-breaking bugs privately to any of the devs
-
 Contributions are welcomed & appreciated!
