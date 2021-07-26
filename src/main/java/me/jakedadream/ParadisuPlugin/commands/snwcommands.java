@@ -745,31 +745,31 @@ public class snwcommands implements CommandExecutor {
 
                         String name = player.getName();
 
-                        name = name.concat(", ");
+                        name.concat(", ");
 
                         if (player.hasPermission("meta.rank.owner")) {
-                            owners = owners.concat(name);
+                            owners.concat(name);
                         } else if (player.hasPermission("meta.rank.dev")) {
-                            devs = devs.concat(name);
+                            devs.concat(name);
                         } else if  (player.hasPermission("meta.rank.builders")) {
-                            builders = builders.concat(name);
+                            builders.concat(name);
                         } else if (player.hasPermission("meta.rank.staff")) {
-                            staff = staff.concat(name);
+                            staff.concat(name);
                         } else if (player.hasPermission("meta.rank.supporters")) {
-                             supporters = supporters.concat(name);
+                            supporters.concat(name);
                         } else {
-                             visitors = visitors.concat(name);
+                            visitors.concat(name);
                         }
 
                     }
 
 
-                    owners = owners.substring(0, owners.length() -2);
-                    devs = devs.substring(0, devs.length() -2);
-                    builders = builders.substring(0, builders.length() -2);
-                    staff = staff.substring(0, staff.length() -2);
-                    supporters = supporters.substring(0, supporters.length() -2);
-                    visitors = visitors.substring(0, visitors.length() -2);
+                    owners = owners.substring(0, owners.length());
+                    devs = devs.substring(0, devs.length());
+                    builders = builders.substring(0, builders.length());
+                    staff = staff.substring(0, staff.length());
+                    supporters = supporters.substring(0, supporters.length());
+                    visitors = visitors.substring(0, visitors.length());
 
                     player.sendMessage("§3§l============= §f" + onlineammount + " §d§oOnline Players §3§l=============\n" +
                             " \n");
