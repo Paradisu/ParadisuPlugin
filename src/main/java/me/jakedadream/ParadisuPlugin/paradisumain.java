@@ -1,5 +1,6 @@
 package me.jakedadream.ParadisuPlugin;
 
+import me.jakedadream.ParadisuPlugin.modelmanager.PropModelInv;
 import me.jakedadream.ParadisuPlugin.modelmanager.modelcommands;
 import me.jakedadream.ParadisuPlugin.commands.snwcommands;
 import me.jakedadream.ParadisuPlugin.commands.warps;
@@ -110,6 +111,7 @@ public class paradisumain extends JavaPlugin {
         getCommand("hgive").setExecutor(new modelcommands());
         getCommand("mhat").setExecutor(new modelcommands());
         getCommand("createmodelcfsection").setExecutor(new modelcommands());
+        getCommand("reloadprops").setExecutor(new modelcommands());
         //
         //
         getConfig().options().copyDefaults();
@@ -117,6 +119,14 @@ public class paradisumain extends JavaPlugin {
 
         createWarpFiles();
         saveWarpConfig();
+
+        createPropModelsFiles();
+        savePropModelsConfig();
+
+        createHatModelsFiles();
+        saveHatModelsConfig();
+
+        PropModelInv.createInvs();
 
         // =================
         // EVENTS
@@ -126,6 +136,7 @@ public class paradisumain extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new toys(), this);
         getServer().getPluginManager().registerEvents(new chatevents(), this);
         getServer().getPluginManager().registerEvents(new snwevents(), this);
+        getServer().getPluginManager().registerEvents(new GuiListeners(), this);
         getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[Paradisu] Plugin is now enabled");
         //
         //

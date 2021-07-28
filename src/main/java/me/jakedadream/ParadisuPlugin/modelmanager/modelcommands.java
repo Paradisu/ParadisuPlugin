@@ -7,6 +7,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
 import java.util.Random;
 
@@ -35,7 +37,17 @@ public class modelcommands implements CommandExecutor {
 
             case "mgive":
                 if (player.hasPermission("snw.model")) {
-                    // model menu
+                    if(args.length == 0){
+                        player.openInventory(PropModelInv.getInvs().get(0));
+                    } else if (args.length == 1){
+                        PlayerInventory inv = player.getInventory();
+                        int firstEmpty = inv.firstEmpty();
+                        if (firstEmpty == -1){
+                            player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have space in your inventory.");
+                            return false;
+                        }
+                        player.getInventory().addItem(modelitemmanager.createPropModel(Integer.parseInt(args[0])));
+                    }
                     player.sendMessage("§3[§dParadisu §f§lMODELS §bツ§3] §fOpening the Catalog of Default Models!");
                 } else { player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command."); }
                 return true;
@@ -59,24 +71,28 @@ public class modelcommands implements CommandExecutor {
                 } else { player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command."); }
                 return true;
 
+            case "reloadprops":
+                paradisumain.reloadPropModelsConfig();
+                player.sendMessage("ok");
+                break;
 
             case "createmodelcfsection":
                 if (player.hasPermission("snw.model")) {
                     //
                     Random rand = new Random(); Integer upperbound = 1000; Integer int_random = rand.nextInt(upperbound);
-//                    String randstring = int_random.toString();
+                    String randstring = int_random.toString();
                     //
-                    if (args.length < 2) {
+                    if (args.length < 1) {
                         player.sendMessage("§3[§dParadisu §f§lMODELS §bツ§3] §7Please add an argument & specify between Props & Hats.");
-                    } else if (args.length == 2) {
+                    } else if (args.length == 1) {
                         // ------------------------------------------------------------------------------------------------------------------------------------------------
                         if (args[0].equals("prop")) {
                             //
-                            String sectionname = args[1];
+                            String sectionname = randstring;
                             paradisumain.getPropModelsConfig().createSection(sectionname);
                             ConfigurationSection cs = paradisumain.filePropModelsConfig.getConfigurationSection(sectionname);
 
-                            cs.set("custommodeldata", int_random);
+//                            cs.set("custommodeldata", int_random);
 
                             cs.set("displayname", "Unset Model Name");
                             cs.set("enchantslot1", "Enchantment.LUCK");
@@ -126,6 +142,7 @@ public class modelcommands implements CommandExecutor {
             default:
                 return false;
         }
+        return false;
     }
 }
 
