@@ -32,18 +32,14 @@ public class paradisumain extends JavaPlugin {
  |_____/ \__,_| .__/ \___|_|    |_| \_|_|_| |_|\__\___|_| |_|\__,_|\___/      \/  \/ \___/|_|  |_|\__,_|
               | |
               |_|
-.  .   .  .     .  .             .          .---.      .
- \  \ /  /   o _|__|_            |              |      |
-  \  \  /.--..  |  |  .-. .--.   |.-. .  .      | .-.  |.-. .-. .  .
-   \/ \/ |   |  |  | (.-' |  |   |   )|  |      ;(   ) |-.'(.-' |  |
-    ' '  ' -' `-`-'`-'`--''  `-  '`-' `--|  `--'  `-'`-'  `-`--'`--|
-                                         ;                         ;     & cyto
-                                      `-'                       `-'
+        __                 __      __           ___        ______      __
+       / /_  __  __       / /___ _/ /_____     ( _ )      / ____/_  __/ /_____
+      / __ \/ / / /  __  / / __ `/ //_/ _ \   / __ \/|   / /   / / / / __/ __ \
+     / /_/ / /_/ /  / /_/ / /_/ / ,< /  __/  / /_/  <   / /___/ /_/ / /_/ /_/ /
+    /_.___/\__, /   \____/\__,_/_/|_|\___/   \____/\/   \____/\__, /\__/\____/
+          /____/                                             /____/
 
-        With help from RealInstantRamen, Andyinnie, & Kastle yelling in my ear.
-*/
-
-    int sched;
+    */
 
     @Override
     public void onEnable() {
@@ -140,7 +136,10 @@ public class paradisumain extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new chatevents(), this);
         getServer().getPluginManager().registerEvents(new snwevents(), this);
         getServer().getPluginManager().registerEvents(new GuiListeners(), this);
-        getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[Paradisu] Plugin is now enabled");
+        getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "\n" + ChatColor.GREEN +
+                "|------------------------------|\n" + ChatColor.GREEN +
+                "| [Paradisu] Plugin now Active |\n" + ChatColor.GREEN +
+                "|------------------------------|");
         //
         //
 
