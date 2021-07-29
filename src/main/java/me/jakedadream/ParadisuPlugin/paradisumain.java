@@ -262,7 +262,9 @@ public class paradisumain extends JavaPlugin {
     public static FileConfiguration getPropModelsConfig() {
         return filePropModelsConfig;
     }
-    public static FileConfiguration getHatModelsConfig() {return fileHatModelsConfig;}
+    public static FileConfiguration getHatModelsConfig() {
+        return fileHatModelsConfig;
+    }
 
 
     //use if edited through commands
@@ -298,7 +300,7 @@ public class paradisumain extends JavaPlugin {
         filePropModelsConfig = YamlConfiguration.loadConfiguration(sourcePropModelsFile);}
 
     public static void reloadHatModelsConfig(){
-        filePropModelsConfig = YamlConfiguration.loadConfiguration(sourcePropModelsFile);}
+        fileHatModelsConfig = YamlConfiguration.loadConfiguration(sourceHatModelsFile);}
 
 }
 
