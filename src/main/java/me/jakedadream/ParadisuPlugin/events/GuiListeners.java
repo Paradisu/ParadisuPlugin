@@ -1,5 +1,6 @@
 package me.jakedadream.ParadisuPlugin.events;
 
+import me.jakedadream.ParadisuPlugin.modelmanager.HatModelInv;
 import me.jakedadream.ParadisuPlugin.modelmanager.PropModelInv;
 import me.jakedadream.ParadisuPlugin.modelmanager.modelitemmanager;
 import org.bukkit.entity.HumanEntity;
@@ -22,96 +23,100 @@ public class GuiListeners implements Listener {
             player.sendMessage("no");
             return;
         }
-        switch (player.getOpenInventory().getTitle()){
-            case "§3§lProp Models Give GUI":
+        switch (player.getOpenInventory().getTitle()) {
+            case "§3§lProp Models Give GUI" -> {
 //                PropModelInv props = new PropModelInv();
                 List<Inventory> invss = PropModelInv.getInvs();
-                switch (e.getRawSlot()){
-                    case 48:
+                switch (e.getRawSlot()) {
+                    case 48 -> {
                         e.setCancelled(true);
                         Inventory currinva = e.getInventory();
-
-
                         int indexa = invss.indexOf(currinva);
                         indexa -= 1;
-                        if(indexa == -1) {
+                        if (indexa == -1) {
                             e.setCancelled(true);
                             break;
                         }
                         player.closeInventory();
                         player.openInventory(invss.get(indexa));
-
-                        break;
-                    case 50:
+                    }
+                    case 50 -> {
                         e.setCancelled(true);
                         Inventory currinvb = e.getInventory();
-
                         int indexb = invss.indexOf(currinvb);
                         indexb += 1;
-                        if (indexb == invss.size()){
+                        if (indexb == invss.size()) {
                             e.setCancelled(true);
                             break;
                         }
                         player.closeInventory();
                         player.openInventory(invss.get(indexb));
-
-                        break;
-                    case 9:
-                    case 10:
-                    case 11:
-                    case 12:
-                    case 13:
-                    case 14:
-                    case 15:
-                    case 16:
-                    case 17:
-                    case 18:
-                    case 19:
-                    case 20:
-                    case 21:
-                    case 22:
-                    case 23:
-                    case 24:
-                    case 25:
-                    case 26:
-                    case 27:
-                    case 28:
-                    case 29:
-                    case 30:
-                    case 31:
-                    case 32:
-                    case 33:
-                    case 34:
-                    case 35:
-                    case 36:
-                    case 37:
-                    case 38:
-                    case 39:
-                    case 40:
-                    case 41:
-                    case 42:
-                    case 43:
-                    case 44:
-                        if(e.getCurrentItem() == null){
+                    }
+                    case 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44 -> {
+                        if (e.getCurrentItem() == null) {
                             e.setCancelled(true);
                             return;
                         }
                         int modelData = e.getCurrentItem().getItemMeta().getCustomModelData();
                         PlayerInventory inv = player.getInventory();
                         int firstEmpty = inv.firstEmpty();
-                        if (firstEmpty == -1){
+                        if (firstEmpty == -1) {
                             player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have space in your inventory.");
                             e.setCancelled(true);
                             return;
                         }
                         player.getInventory().addItem(modelitemmanager.createPropModel(modelData));
                         e.setCancelled(true);
-                        break;
-
-                    default:
-                        e.setCancelled(true);
-                        break;
+                    }
+                    default -> e.setCancelled(true);
                 }
+            }
+            case "§3§lHat Models Give GUI" -> {
+                List<Inventory> invss = HatModelInv.getInvs();
+                switch (e.getRawSlot()) {
+                    case 48 -> {
+                        e.setCancelled(true);
+                        Inventory currinva = e.getInventory();
+                        int indexa = invss.indexOf(currinva);
+                        indexa -= 1;
+                        if (indexa == -1){
+                            e.setCancelled(true);
+                            break;
+                        }
+                        player.closeInventory();
+                        player.openInventory(invss.get(indexa));
+                    }
+                    case 50 -> {
+                        e.setCancelled(true);
+                        Inventory currinvb = e.getInventory();
+                        int indexb = invss.indexOf(currinvb);
+                        indexb += 1;
+                        if (indexb == invss.size()) {
+                            e.setCancelled(true);
+                            break;
+                        }
+                        player.closeInventory();
+                        player.openInventory(invss.get(indexb));
+                    }
+                    case 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44 -> {
+                        if (e.getCurrentItem() == null) {
+                            e.setCancelled(true);
+                            return;
+                        }
+                        int modelData = e.getCurrentItem().getItemMeta().getCustomModelData();
+                        PlayerInventory inv = player.getInventory();
+                        int firstEmpty = inv.firstEmpty();
+                        if (firstEmpty == -1) {
+                            player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have space in your inventory.");
+                            e.setCancelled(true);
+                            return;
+                        }
+                        player.getInventory().addItem(modelitemmanager.createHatModel(modelData));
+                        e.setCancelled(true);
+                    }
+                    default -> e.setCancelled(true);
+                }
+            }
         }
     }
 }

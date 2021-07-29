@@ -56,7 +56,17 @@ public class modelcommands implements CommandExecutor {
             case "hgive":
                 if (player.hasPermission("snw.model")) {
 
-                    // hat menu
+                    if (args.length == 0) {
+                        player.openInventory(HatModelInv.getInvs().get(0));
+                    }  else if (args.length == 1){
+                         PlayerInventory inv = player.getInventory();
+                         int firstEmpty = inv.firstEmpty();
+                         if (firstEmpty == -1){
+                             player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have space in your inventory.");
+                             return false;
+                         }
+                         player.getInventory().addItem(modelitemmanager.createHatModel(Integer.parseInt(args[0])));
+                    }
                     player.sendMessage("§3[§dParadisu §f§lMODELS §bツ§3] §fOpening the Catalog of Hat Models!");
                 } else { player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command."); }
                 return true;
@@ -72,7 +82,22 @@ public class modelcommands implements CommandExecutor {
                 return true;
 
             case "reloadprops":
+                if(!(player.hasPermission("snw.model.reload"))){
+                    player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");
+                    break;
+                }
                 paradisumain.reloadPropModelsConfig();
+                PropModelInv.createInvs();
+                player.sendMessage("ok");
+                break;
+
+            case "reloadhats":
+                if(!(player.hasPermission("snw.model.reload"))){
+                    player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");
+                    break;
+                }
+                paradisumain.reloadHatModelsConfig();
+                HatModelInv.createInvs();
                 player.sendMessage("ok");
                 break;
 
@@ -88,9 +113,8 @@ public class modelcommands implements CommandExecutor {
                         // ------------------------------------------------------------------------------------------------------------------------------------------------
                         if (args[0].equals("prop")) {
                             //
-                            String sectionname = randstring;
-                            paradisumain.getPropModelsConfig().createSection(sectionname);
-                            ConfigurationSection cs = paradisumain.filePropModelsConfig.getConfigurationSection(sectionname);
+                            paradisumain.getPropModelsConfig().createSection(randstring);
+                            ConfigurationSection cs = paradisumain.filePropModelsConfig.getConfigurationSection(randstring);
 
 //                            cs.set("custommodeldata", int_random);
 
@@ -124,11 +148,43 @@ public class modelcommands implements CommandExecutor {
                             //
                         } else if (args[0].equals("hat")) {
                             //
+                            paradisumain.getHatModelsConfig().createSection(randstring);
+//                            paradisumain.getPropModelsConfig().createSection(sectionname);
+//                            ConfigurationSection cs = paradisumain.filePropModelsConfig.getConfigurationSection(sectionname);
+                            ConfigurationSection cs = paradisumain.getHatModelsConfig().getConfigurationSection(randstring);
+//                            cs.set("custommodeldata", int_random);
+
+                            cs.set("displayname", "Unset Hat Name");
+                            cs.set("enchantslot1", "Enchantment.LUCK");
+                            cs.set("enchantslot2", "Enchantment.LUCK");
+                            cs.set("enchantslot3", "Enchantment.LUCK");
+
+                            cs.set("enchantslot1level", 0);
+                            cs.set("enchantslot2level", 0);
+                            cs.set("enchantslot3level", 0);
+
+                            cs.set("lore1", "DEFAULT LORE 1");
+                            cs.set("lore2", "DEFAULT LORE 2");
+                            cs.set("lore3", "DEFAULT LORE 3");
+                            cs.set("lore4", "DEFAULT LORE 4");
+                            cs.set("lore5", "DEFAULT LORE 5");
+                            cs.set("lore6", "DEFAULT LORE 6");
+                            cs.set("lore7", "DEFAULT LORE 7");
+                            cs.set("lore8", "DEFAULT LORE 8");
+                            cs.set("lore9", "DEFAULT LORE 9");
+                            cs.set("lore10", "DEFAULT LORE 10");
+
+                            cs.set("unbreakable", false);
+                            cs.set("hideunbreakable", false);
+                            cs.set("hideenchants", false);
+                            //
+                            paradisumain.saveHatModelsConfig();
+                            //
+                            player.sendMessage("§3[§dParadisu §f§lMODELS §bツ§3] §fNew hat Section created!");
 
 
 
 
-                            player.sendMessage("§3[§dParadisu §f§lMODELS §bツ§3] §fNew Model Section created!");
                             //
                         } else {player.sendMessage("§3[§dParadisu §f§lMODELS §bツ§3] §7Please specify between Props & Hats.");}
                     } else {player.sendMessage("§3[§dParadisu §f§lMODELS §bツ§3] §7Too many args.");}

@@ -1,5 +1,6 @@
 package me.jakedadream.ParadisuPlugin;
 
+import me.jakedadream.ParadisuPlugin.modelmanager.HatModelInv;
 import me.jakedadream.ParadisuPlugin.modelmanager.PropModelInv;
 import me.jakedadream.ParadisuPlugin.modelmanager.modelcommands;
 import me.jakedadream.ParadisuPlugin.commands.snwcommands;
@@ -36,7 +37,7 @@ public class paradisumain extends JavaPlugin {
   \  \  /.--..  |  |  .-. .--.   |.-. .  .      | .-.  |.-. .-. .  .
    \/ \/ |   |  |  | (.-' |  |   |   )|  |      ;(   ) |-.'(.-' |  |
     ' '  ' -' `-`-'`-'`--''  `-  '`-' `--|  `--'  `-'`-'  `-`--'`--|
-                                         ;                         ;
+                                         ;                         ;     & cyto
                                       `-'                       `-'
 
         With help from RealInstantRamen, Andyinnie, & Kastle yelling in my ear.
@@ -112,6 +113,7 @@ public class paradisumain extends JavaPlugin {
         getCommand("mhat").setExecutor(new modelcommands());
         getCommand("createmodelcfsection").setExecutor(new modelcommands());
         getCommand("reloadprops").setExecutor(new modelcommands());
+        getCommand("reloadhats").setExecutor(new modelcommands());
         //
         //
         getConfig().options().copyDefaults();
@@ -127,6 +129,7 @@ public class paradisumain extends JavaPlugin {
         saveHatModelsConfig();
 
         PropModelInv.createInvs();
+        HatModelInv.createInvs();
 
         // =================
         // EVENTS

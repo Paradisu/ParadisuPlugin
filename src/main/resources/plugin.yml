@@ -4,6 +4,8 @@ authors: [JakeDaDream, RealInstantRamen, andyinnie, _Kastle]
 main: me.jakedadream.ParadisuPlugin.paradisumain
 api-version: 1.16
 commands:
+  reloadhats:
+    description: reload hat config
   reloadprops:
      description: reload prop config
   warpdisplay:

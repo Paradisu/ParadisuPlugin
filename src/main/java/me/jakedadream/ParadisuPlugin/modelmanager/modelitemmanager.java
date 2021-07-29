@@ -86,7 +86,7 @@ public class modelitemmanager {
     }
 
     public static ItemStack createHatModel(Integer modelid) {
-        ItemStack hatmodelitem = new ItemStack(Material.DIAMOND_AXE, 1);
+        ItemStack hatmodelitem = new ItemStack(Material.CARVED_PUMPKIN, 1);
         ItemMeta meta = hatmodelitem.getItemMeta();
         //
         List<String> hatmodellore = new ArrayList<>();
@@ -96,7 +96,7 @@ public class modelitemmanager {
         //
         assert meta != null;
         assert gs != null;
-        meta.setCustomModelData(gs.getInt("custommodeldata"));
+        meta.setCustomModelData(Integer.parseInt(gs.getName()));
         //
         meta.setDisplayName(gs.getString("displayname")); // displayname
         //s
@@ -104,24 +104,46 @@ public class modelitemmanager {
 //        meta.addEnchant(Enchantment.getByKey(NamespacedKey.minecraft(gs.getString("enchantslot2"))), gs.getInt("enchantslot2level"), true);
 //        meta.addEnchant(Enchantment.getByKey(NamespacedKey.minecraft(gs.getString("enchantslot3"))), gs.getInt("enchantslot3level"), true);
 //      //
-        hatmodellore.add(gs.getString("lore1")); // lore line 1
-        hatmodellore.add(gs.getString("lore2")); // lore line 2
-        hatmodellore.add(gs.getString("lore3")); // lore line 3
-        hatmodellore.add(gs.getString("lore4")); // lore line 4
-        hatmodellore.add(gs.getString("lore5")); // lore line 5
-        hatmodellore.add(gs.getString("lore6")); // lore line 6
-        hatmodellore.add(gs.getString("lore7")); // lore line 7
-        hatmodellore.add(gs.getString("lore8")); // lore line 8
-        hatmodellore.add(gs.getString("lore9")); // lore line 9
-        hatmodellore.add(gs.getString("lore10")); // lore line 10
+
+        int lorelines = 0;
+        for (int i = 1; i < 11; i++){
+            if (gs.getString("lore" + i) == null){
+                break;
+            }
+            lorelines++;
+        }
+
+        for (int j = 0; j < lorelines; j++){
+            hatmodellore.add(gs.getString("lore" + Math.addExact(j, 1)));
+        }
+//        hatmodellore.add(gs.getString("lore1")); // lore line 1
+//        hatmodellore.add(gs.getString("lore2")); // lore line 2
+//        hatmodellore.add(gs.getString("lore3")); // lore line 3
+//        hatmodellore.add(gs.getString("lore4")); // lore line 4
+//        hatmodellore.add(gs.getString("lore5")); // lore line 5
+//        hatmodellore.add(gs.getString("lore6")); // lore line 6
+//        hatmodellore.add(gs.getString("lore7")); // lore line 7
+//        hatmodellore.add(gs.getString("lore8")); // lore line 8
+//        hatmodellore.add(gs.getString("lore9")); // lore line 9
+//        hatmodellore.add(gs.getString("lore10")); // lore line 10
         //
         meta.setLore(hatmodellore); // sets prop lore
         //
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         meta.setUnbreakable(Boolean.parseBoolean(gs.getString("unbreakable"))); // unbreakable? true/false
-        meta.addItemFlags(ItemFlag.valueOf(gs.getString("hideunbreakable"))); // hide unbreakable? true/false
-        meta.addItemFlags(ItemFlag.valueOf(gs.getString("hideenchants"))); // hide enchants? true/false
+
+        if (gs.getBoolean("hideunbreakable")){
+            meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+        }
+        if (gs.getBoolean("hideenchants")){
+            meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        }
+//
+//        meta.addItemFlags(ItemFlag.valueOf(gs.getString("hideunbreakable"))); // hide unbreakable? true/false
+//        meta.addItemFlags(ItemFlag.valueOf(gs.getString("hideenchants"))); // hide enchants? true/false
         //
+
+        hatmodelitem.setItemMeta(meta);
 
         return hatmodelitem;
     }

@@ -1,9 +1,7 @@
 package me.jakedadream.ParadisuPlugin.modelmanager;
 
-import me.jakedadream.ParadisuPlugin.items.ItemManager;
 import me.jakedadream.ParadisuPlugin.paradisumain;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.Inventory;
@@ -13,29 +11,24 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PropModelInv {
+public class HatModelInv {
     public static List<Inventory> inventories = new ArrayList<>();
 
     public static void createInvs(){
-
         modelitemmanager models = new modelitemmanager();
         double dinvSize = 36;
         int invSize = 36;
 
-        double neededInventories = (paradisumain.getPropModelsConfig().getKeys(false).size() / dinvSize);
+        double neededInventories = (paradisumain.getHatModelsConfig().getKeys(false).size() / dinvSize);
         int intneededInventories = (int) Math.ceil(neededInventories);
 
-        System.out.println("keys: " + paradisumain.getPropModelsConfig().getKeys(false).size());
-        System.out.println("div: " + paradisumain.getPropModelsConfig().getKeys(false).size() / dinvSize);
-        System.out.println("invs: " + neededInventories);
-        System.out.println("intinvs " + intneededInventories);
-        for (int i = 0; i < intneededInventories; i++){
-            Inventory inv = Bukkit.createInventory(null, 54, "§3§lProp Models Give GUI");
+        for (int i = 0; i < intneededInventories; i ++){
+            Inventory inv  = Bukkit.createInventory(null, 54, "§3§lHat Models Give GUI");
             inventories.add(inv);
         }
         int modelindex = 1;
         for (Inventory i : inventories){
-            ItemStack previous = new ItemStack(Material.DIAMOND_AXE, 1);
+            ItemStack previous = new ItemStack(Material.DIAMOND_AXE,1 );
 
             ItemMeta prevMeta = previous.getItemMeta();
             assert prevMeta != null;
@@ -79,28 +72,19 @@ public class PropModelInv {
 
             int pageindex = 9;
             int stop = modelindex + 36;
-            for (int a = modelindex; a < stop; a++) {
-                if (a > paradisumain.getPropModelsConfig().getKeys(false).size()){
+            for (int a = modelindex; a < stop; a++){
+                if (a > paradisumain.getHatModelsConfig().getKeys(false).size()){
                     break;
                 }
-                ItemStack item = modelitemmanager.createPropModel(a);
+                ItemStack item = modelitemmanager.createHatModel(a);
                 ItemMeta meta = item.getItemMeta();
                 meta.setDisplayName(meta.getDisplayName() + " (" + a + ")");
                 item.setItemMeta(meta);
                 i.setItem(pageindex, item);
                 pageindex++;
-
             }
             modelindex += 36;
         }
-
     }
-    public static List<Inventory> getInvs(){
-        return inventories;
-    }
-
-
-//    List<Inventory> inventories = new ArrayList<>();
-
-
+    public static List<Inventory> getInvs() {return inventories;}
 }
