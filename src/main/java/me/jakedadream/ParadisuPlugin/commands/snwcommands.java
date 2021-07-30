@@ -602,36 +602,52 @@ public class snwcommands implements CommandExecutor {
                     String visitors = "";
                     Integer onlineammount = Bukkit.getOnlinePlayers().size();
 
-
-                    for (int i = 0; i < Bukkit.getOnlinePlayers().size(); i++) {
-
-                        String name = player.getName();
+                    for (Player p : Bukkit.getOnlinePlayers()){
+                        String name = p.getName();
 
                         name = name.concat(", ");
 
-                        if (player.hasPermission("meta.rank.owner")) {
+                        if (p.hasPermission("meta.rank.owner")) {
                             owners = owners.concat(name);
-                        } else if (player.hasPermission("meta.rank.dev")) {
+                        } else if (p.hasPermission("meta.rank.dev")) {
                             devs = devs.concat(name);
-                        } else if  (player.hasPermission("meta.rank.builders")) {
+                        } else if  (p.hasPermission("meta.rank.builders")) {
                             builders = builders.concat(name);
-                        } else if (player.hasPermission("meta.rank.staff")) {
+                        } else if (p.hasPermission("meta.rank.staff")) {
                             staff = staff.concat(name);
-                        } else if (player.hasPermission("meta.rank.supporters")) {
+                        } else if (p.hasPermission("meta.rank.supporters")) {
                             supporters = supporters.concat(name);
                         } else {
                             visitors = visitors.concat(name);
                         }
+                    }
+
+                    if (owners.length() != 0){
+                        owners = owners.substring(0, owners.length() -2);
+                    }
+                    if (devs.length() != 0){
+                        devs = devs.substring(0, devs.length() -2);
+
+                    }
+                    if (builders.length() != 0){
+                        builders = builders.substring(0, builders.length() -2);
+
+                    }
+                    if (staff.length() != 0){
+                        staff = staff.substring(0, staff.length() -2);
+
+                    }
+                    if (supporters.length() != 0){
+                        supporters = supporters.substring(0, supporters.length() -2);
+
+                    }
+                    if (visitors.length() != 0){
+                        visitors = visitors.substring(0, visitors.length() -2);
 
                     }
 
 
-                    owners = owners.substring(0, owners.length() -2);
-                    devs = devs.substring(0, devs.length() -2);
-                    builders = builders.substring(0, builders.length() -2);
-                    staff = staff.substring(0, staff.length() -2);
-                    supporters = supporters.substring(0, supporters.length() -2);
-                    visitors = visitors.substring(0, visitors.length() -2);
+
 
                     player.sendMessage("§3§l============= §f" + onlineammount + " §d§oOnline Players §3§l=============\n" +
                             " \n");
