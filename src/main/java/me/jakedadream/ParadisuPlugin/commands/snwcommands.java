@@ -65,37 +65,6 @@ public class snwcommands implements CommandExecutor {
                 return true;
 
 
-            case "mgive":
-                if (player.hasPermission("snw.models")) {
-                    try {
-                        id = Short.parseShort(args[0]);
-                        player.getInventory().addItem(ItemManager.createmodel(id));
-                    } catch (Exception ex) {
-                        player.sendMessage("§e§l<!> §cDumbass, this isn't a registered number. Please try again, or don't.");
-                    }
-                } else {
-                    player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");
-                }
-                return true;
-
-            case "mhat":
-                if (player.hasPermission("snw.models")) {
-                    try {
-                        id = Short.parseShort(args[0]);
-
-                        ItemStack[] armor = player.getInventory().getArmorContents();
-                        armor[3] = ItemManager.createmodel(id);
-                        player.getInventory().setArmorContents(armor);
-
-                    } catch (Exception ex) {
-                        player.sendMessage("§e§l<!> §cDumbass, this isn't a registered number. Please try again, or don't.");
-
-                    }
-                } else {
-                    player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");
-                }
-                return true;
-
             case "sc":
                 if (player.hasPermission("snw.sc")) {
                     if (args.length == 0) {
@@ -137,7 +106,7 @@ public class snwcommands implements CommandExecutor {
                         for (World w : Bukkit.getWorlds()) {
                             for (Player p : w.getPlayers()) {
                                 if (p.hasPermission("snw.ac")) {
-                                    p.sendMessage("§c『§4§l§oSC§c』 §c" + player.getDisplayName() + " §f»§3 " + allArgs);
+                                    p.sendMessage("§c『§4§l§oAC§c』 §c" + player.getDisplayName() + " §f»§3 " + allArgs);
                                     // /AC <message>;
                                 }
                             }

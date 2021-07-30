@@ -1,11 +1,13 @@
 package me.jakedadream.ParadisuPlugin;
 
+import com.google.common.util.concurrent.AbstractScheduledService;
 import me.jakedadream.ParadisuPlugin.modelmanager.HatModelInv;
 import me.jakedadream.ParadisuPlugin.modelmanager.PropModelInv;
 import me.jakedadream.ParadisuPlugin.modelmanager.modelcommands;
 import me.jakedadream.ParadisuPlugin.commands.snwcommands;
 import me.jakedadream.ParadisuPlugin.commands.warps;
 import me.jakedadream.ParadisuPlugin.events.*;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -41,6 +43,8 @@ public class paradisumain extends JavaPlugin {
 
     */
 
+    Integer sched;
+
     @Override
     public void onEnable() {
 
@@ -49,9 +53,6 @@ public class paradisumain extends JavaPlugin {
         // =================
         getCommand("givecoin").setExecutor(new snwcommands());
         getCommand("givestarcoin").setExecutor(new snwcommands());
-        getCommand("mgive").setExecutor(new snwcommands());
-        getCommand("mhat").setExecutor(new snwcommands());
-        getCommand("idlist").setExecutor(new snwcommands());
         getCommand("sc").setExecutor(new snwcommands());
         getCommand("ac").setExecutor(new snwcommands());
         getCommand("gmc").setExecutor(new snwcommands());
@@ -133,7 +134,6 @@ public class paradisumain extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new luckyblocks(), this);
         getServer().getPluginManager().registerEvents(new entityedits(), this);
         getServer().getPluginManager().registerEvents(new toys(), this);
-        getServer().getPluginManager().registerEvents(new chatevents(), this);
         getServer().getPluginManager().registerEvents(new snwevents(), this);
         getServer().getPluginManager().registerEvents(new GuiListeners(), this);
         getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "\n" + ChatColor.GREEN +
@@ -157,8 +157,9 @@ public class paradisumain extends JavaPlugin {
 
      */
 
+/*
 
- /*       if (!Bukkit.getScheduler().isCurrentlyRunning(sched)) {
+      if (!Bukkit.getScheduler().isCurrentlyRunning(sched)) {
             sched = Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
                 @Override
                 public void run() {

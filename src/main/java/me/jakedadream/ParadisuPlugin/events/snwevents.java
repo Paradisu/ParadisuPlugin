@@ -56,13 +56,13 @@ public class snwevents implements Listener {
         }
     }
 
+
     @EventHandler
     public static void WearHatEvent(PlayerInteractEvent wearhat) {
         Player player = wearhat.getPlayer();
 
         if (player.getInventory().getItemInMainHand().getType() == Material.AIR) return;
         if (wearhat.getAction() == Action.RIGHT_CLICK_AIR) {
-
             if (wearhat.getItem() != null && wearhat.getItem().getType() == Material.CARVED_PUMPKIN) {
                 ItemStack[] armor = player.getInventory().getArmorContents();
                 ItemStack swap = armor[3];
@@ -103,24 +103,8 @@ public class snwevents implements Listener {
                 return;
             }
 
-            if (item.getItemMeta().equals(ItemManager.acceptbutton.getItemMeta())) {
-                player.getOpenInventory().getTopInventory().clear();
-                // Delete the items and reopen a new Trashcan inv using 'trashcans.TrashCanInv(player);'
-            }
-
-            if (item.getItemMeta().equals(ItemManager.denybutton.getItemMeta())) {
-                for (int i = 0; i < 27; i++) {
-                    player.getInventory().addItem(open.getItem(i));
-                }
-                event.setCancelled(true);
-                // GIVES ALL THE ITEMS BACK AND CLOSES TRASHCAN
-            }
-
-            if (item.getItemMeta().equals(ItemManager.blankbutton.getItemMeta())) {
-                event.setCancelled(true);
             }
         }
-    }
 /*
     @EventHandler
     public void onPlayerCloseInventory(InventoryCloseEvent event) {
