@@ -6,6 +6,8 @@ import me.jakedadream.ParadisuPlugin.modelmanager.modelcommands;
 import me.jakedadream.ParadisuPlugin.commands.snwcommands;
 import me.jakedadream.ParadisuPlugin.commands.warps;
 import me.jakedadream.ParadisuPlugin.events.*;
+import me.jakedadream.ParadisuPlugin.shops.ShopCommands;
+import me.jakedadream.ParadisuPlugin.shops.ShopGuis;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -111,6 +113,19 @@ public class paradisumain extends JavaPlugin {
         getCommand("reloadprops").setExecutor(new modelcommands());
         getCommand("reloadhats").setExecutor(new modelcommands());
         //
+        // =================
+        // SHOP GUI COMMANDS
+        // =================
+        //
+        //
+        //
+        getCommand("reloadshops").setExecutor(new ShopCommands());
+        getCommand("getshop").setExecutor(new ShopCommands());
+        //
+        //
+        //
+        //
+        //
         //
         getConfig().options().copyDefaults();
         saveDefaultConfig();
@@ -124,8 +139,13 @@ public class paradisumain extends JavaPlugin {
         createHatModelsFiles();
         saveHatModelsConfig();
 
+        createShopGuiFiles();
+        saveShopGuiConfig();
+
         PropModelInv.createInvs();
         HatModelInv.createInvs();
+
+        ShopGuis.initShops();
 
         // =================
         // EVENTS
@@ -186,6 +206,9 @@ public class paradisumain extends JavaPlugin {
 
     public static File sourceHatModelsFile;
     public static FileConfiguration fileHatModelsConfig;
+
+    public static File sourceShopGuiFile;
+    public static FileConfiguration fileShopGuiConfig;
 
 
     public void createWarpFiles() {
@@ -251,6 +274,22 @@ public class paradisumain extends JavaPlugin {
         //   }
     }
 
+    public void createShopGuiFiles(){
+        sourceShopGuiFile = new File(getDataFolder(), "shopgui.yml");
+
+        if (!sourceShopGuiFile.exists()) {
+            sourceShopGuiFile.getParentFile().mkdirs();
+            saveResource("shopgui.yml", false);
+        }
+
+        fileShopGuiConfig = new YamlConfiguration();
+
+        try {
+            fileShopGuiConfig.load(sourceShopGuiFile);
+        } catch (IOException | InvalidConfigurationException e) {
+            e.printStackTrace();
+        }
+    }
 
 
 
@@ -264,6 +303,7 @@ public class paradisumain extends JavaPlugin {
     public static FileConfiguration getHatModelsConfig() {
         return fileHatModelsConfig;
     }
+    public static FileConfiguration getFileShopGuiConfig() {return fileShopGuiConfig; }
 
 
     //use if edited through commands
@@ -291,6 +331,14 @@ public class paradisumain extends JavaPlugin {
         }
     }
 
+    public static void saveShopGuiConfig() {
+        try {
+            fileShopGuiConfig.save(sourceShopGuiFile);
+        } catch (IOException e) {
+            System.out.println("couldn't save file");
+        }
+    }
+
     //use if edited file through text editor
     public static void reloadWarpConfig(){
         fileWarpConfig = YamlConfiguration.loadConfiguration(sourceWarpFile);}
@@ -300,6 +348,8 @@ public class paradisumain extends JavaPlugin {
 
     public static void reloadHatModelsConfig(){
         fileHatModelsConfig = YamlConfiguration.loadConfiguration(sourceHatModelsFile);}
+
+    public static void reloadShopGuiConfig() { fileShopGuiConfig = YamlConfiguration.loadConfiguration(sourceShopGuiFile); }
 
 }
 

@@ -4,6 +4,10 @@ authors: [JakeDaDream, RealInstantRamen, andyinnie, _Kastle, cytocracy]
 main: me.jakedadream.ParadisuPlugin.paradisumain
 api-version: 1.16
 commands:
+  reloadshops:
+    description: reloads shops
+  getshop:
+    description: gets shop
   reloadhats:
     description: reload hat config
   reloadprops:
