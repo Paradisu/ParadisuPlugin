@@ -157,7 +157,7 @@ public class paradisumain extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new luckyblocks(), this);
         getServer().getPluginManager().registerEvents(new entityedits(), this);
         getServer().getPluginManager().registerEvents(new toys(), this);
-        getServer().getPluginManager().registerEvents(new chatevents(), this);
+//        getServer().getPluginManager().registerEvents(new chatevents(), this);
         getServer().getPluginManager().registerEvents(new snwevents(), this);
         getServer().getPluginManager().registerEvents(new GuiListeners(), this);
         getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "\n" + ChatColor.GREEN +
