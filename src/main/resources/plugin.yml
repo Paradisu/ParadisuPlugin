@@ -1,5 +1,5 @@
 name: ParadisuPlugin
-version: 2.6.5
+version: 2.7.0
 authors: [JakeDaDream, RealInstantRamen, andyinnie, _Kastle, cytocracy]
 main: me.jakedadream.ParadisuPlugin.paradisumain
 api-version: 1.16
@@ -40,9 +40,6 @@ commands:
   givestarcoin:
       description: Gives player a Star coin
       usage: /<command>
-  idlist:
-    description: Gives list of Model IDs
-    usage: /<command>
   sc:
     description: Communicate to other staff
     usage: /<command> <message>

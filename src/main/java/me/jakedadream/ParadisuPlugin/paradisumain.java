@@ -1,5 +1,6 @@
 package me.jakedadream.ParadisuPlugin;
 
+import com.google.common.util.concurrent.AbstractScheduledService;
 import me.jakedadream.ParadisuPlugin.modelmanager.HatModelInv;
 import me.jakedadream.ParadisuPlugin.modelmanager.PropModelInv;
 import me.jakedadream.ParadisuPlugin.modelmanager.modelcommands;
@@ -8,6 +9,7 @@ import me.jakedadream.ParadisuPlugin.commands.warps;
 import me.jakedadream.ParadisuPlugin.events.*;
 import me.jakedadream.ParadisuPlugin.shops.ShopCommands;
 import me.jakedadream.ParadisuPlugin.shops.ShopGuis;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -42,6 +44,8 @@ public class paradisumain extends JavaPlugin {
           /____/                                             /____/
 
     */
+
+    Integer sched;
 
     @Override
     public void onEnable() {

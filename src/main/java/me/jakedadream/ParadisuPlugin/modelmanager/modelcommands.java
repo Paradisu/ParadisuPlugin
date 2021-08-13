@@ -3,13 +3,17 @@ package me.jakedadream.ParadisuPlugin.modelmanager;
 import me.jakedadream.ParadisuPlugin.paradisumain;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.Action;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Random;
 
@@ -25,7 +29,6 @@ public class modelcommands implements CommandExecutor {
     }
 
 
-
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (!(sender instanceof Player)) {
@@ -38,13 +41,13 @@ public class modelcommands implements CommandExecutor {
 
             case "mgive":
                 if (player.hasPermission("snw.model")) {
-                    if(args.length == 0){
+                    if (args.length == 0) {
                         player.openInventory(PropModelInv.getInvs().get(0));
                         player.sendMessage("§3[§dParadisu §f§lMODELS §bツ§3] §fOpening the Catalog of Default Models!");
-                    } else if (args.length == 1){
+                    } else if (args.length == 1) {
                         PlayerInventory inv = player.getInventory();
                         int firstEmpty = inv.firstEmpty();
-                        if (firstEmpty == -1){
+                        if (firstEmpty == -1) {
                             player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have space in your inventory.");
                             return false;
                         }
@@ -54,14 +57,18 @@ public class modelcommands implements CommandExecutor {
                         Player target = Bukkit.getPlayerExact(args[1]);
                         PlayerInventory inv = target.getInventory();
                         int firstEmpty = inv.firstEmpty();
-                        if (firstEmpty == -1){
+                        if (firstEmpty == -1) {
                             player.sendMessage("§3[§dParadisu §bツ§3] §7They do not have space their your inventory.");
                             return false;
                         }
                         target.getInventory().addItem(modelitemmanager.createPropModel(Integer.parseInt(args[0])));
                         player.sendMessage("§3[§dParadisu §f§lMODELS §bツ§3] §fWe gave them the model §3#" + args[0] + "§f!");
-                    } else { player.sendMessage("§3[§dParadisu §f§lMODELS §bツ§3] §7Not Enough or too many args");}
-                } else { player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command."); }
+                    } else {
+                        player.sendMessage("§3[§dParadisu §f§lMODELS §bツ§3] §7Not Enough or too many args");
+                    }
+                } else {
+                    player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");
+                }
                 return true;
 
 
@@ -71,39 +78,70 @@ public class modelcommands implements CommandExecutor {
                     if (args.length == 0) {
                         player.openInventory(HatModelInv.getInvs().get(0));
                         player.sendMessage("§3[§dParadisu §f§lMODELS §bツ§3] §fOpening the Catalog of Hat Models!");
-                    }  else if (args.length == 1){
-                         PlayerInventory inv = player.getInventory();
-                         int firstEmpty = inv.firstEmpty();
-                         if (firstEmpty == -1){
-                             player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have space in your inventory.");
-                             return false;
-                         }
-                         player.getInventory().addItem(modelitemmanager.createHatModel(Integer.parseInt(args[0])));
+                    } else if (args.length == 1) {
+                        PlayerInventory inv = player.getInventory();
+                        int firstEmpty = inv.firstEmpty();
+                        if (firstEmpty == -1) {
+                            player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have space in your inventory.");
+                            return false;
+                        }
+                        player.getInventory().addItem(modelitemmanager.createHatModel(Integer.parseInt(args[0])));
                         player.sendMessage("§3[§dParadisu §f§lMODELS §bツ§3] §fWe gave you the model §3#" + args[0] + "§f!");
                     } else if (args.length == 2) {
                         Player target = Bukkit.getPlayerExact(args[1]);
                         PlayerInventory inv = target.getInventory();
                         int firstEmpty = inv.firstEmpty();
-                        if (firstEmpty == -1){
+                        if (firstEmpty == -1) {
                             player.sendMessage("§3[§dParadisu §bツ§3] §7They do not have space their your inventory.");
                             return false;
                         }
                         target.getInventory().addItem(modelitemmanager.createHatModel(Integer.parseInt(args[0])));
                         player.sendMessage("§3[§dParadisu §f§lMODELS §bツ§3] §fWe gave them the model §3#" + args[0] + "§f!");
 
-                    } else { player.sendMessage("§3[§dParadisu §f§lMODELS §bツ§3] §7Not Enough or too many args");}
-                } else { player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command."); }
+                    } else {
+                        player.sendMessage("§3[§dParadisu §f§lMODELS §bツ§3] §7Not Enough or too many args");
+                    }
+                } else {
+                    player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");
+                }
                 return true;
-
 
             case "mhat":
                 if (player.hasPermission("snw.model")) {
 
-                    // model on head
+                    if (args.length == 1) {
 
-                    player.sendMessage("§3[§dParadisu §f§lMODELS §bツ§3] §fPlaced the model <display name> on your head!");
+                        if (player.getInventory().getHelmet() != null) {
+                            ItemStack[] armor = player.getInventory().getArmorContents();
+                            ItemStack helmet = player.getEquipment().getHelmet();
+                            ItemMeta hmeta = helmet.getItemMeta();
+                            helmet.setItemMeta(hmeta);
+                            player.getInventory().addItem(helmet);
+                        }
+
+                        player.getInventory().setHelmet(modelitemmanager.createPropModel(Integer.parseInt(args[0])));
+                        player.sendMessage("§3[§dParadisu §f§lMODELS §bツ§3] §fWe set the model as your helmet.");
+                    } else if (args.length == 0) {
+                        player.sendMessage("§3[§dParadisu §f§lMODELS §bツ§3] §7Not enough args.");
+                    } else if (args.length >= 2) {
+                        Player target = Bukkit.getPlayerExact(args[1]);
+
+                        if (target.getInventory().getHelmet() != null) {
+                            ItemStack[] armor = target.getInventory().getArmorContents();
+                            ItemStack helmet = target.getEquipment().getHelmet();
+                            ItemMeta hmeta = helmet.getItemMeta();
+                            helmet.setItemMeta(hmeta);
+                            target.getInventory().addItem(helmet);
+                        }
+
+                        target.getInventory().setHelmet(modelitemmanager.createPropModel(Integer.parseInt(args[0])));
+                        player.sendMessage("§3[§dParadisu §f§lMODELS §bツ§3] §fWe set the model as their helmet.");
+                        target.sendMessage("§3[§dParadisu §f§lMODELS §bツ§3] §fYour helmet has been set to a model by an admin.");
+                    }
+
                 } else { player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command."); }
                 return true;
+
 
             case "reloadprops":
                 if(!(player.hasPermission("snw.model.reload"))){
