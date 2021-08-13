@@ -55,9 +55,9 @@ public class paradisumain extends JavaPlugin {
         // =================
         getCommand("givecoin").setExecutor(new snwcommands());
         getCommand("givestarcoin").setExecutor(new snwcommands());
-        getCommand("mgive").setExecutor(new snwcommands());
-        getCommand("mhat").setExecutor(new snwcommands());
-        getCommand("idlist").setExecutor(new snwcommands());
+//        getCommand("mgive").setExecutor(new snwcommands());
+//        getCommand("mhat").setExecutor(new snwcommands());
+//        getCommand("idlist").setExecutor(new snwcommands());
         getCommand("sc").setExecutor(new snwcommands());
         getCommand("ac").setExecutor(new snwcommands());
         getCommand("gmc").setExecutor(new snwcommands());
