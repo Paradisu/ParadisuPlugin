@@ -3,14 +3,18 @@ package me.jakedadream.ParadisuPlugin.events;
 import me.jakedadream.ParadisuPlugin.modelmanager.HatModelInv;
 import me.jakedadream.ParadisuPlugin.modelmanager.PropModelInv;
 import me.jakedadream.ParadisuPlugin.modelmanager.modelitemmanager;
+import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GuiListeners implements Listener {
@@ -115,6 +119,47 @@ public class GuiListeners implements Listener {
                         e.setCancelled(true);
                     }
                     default -> e.setCancelled(true);
+                }
+            }
+
+            case "§3✮ §dTRASHCAN §3✮"  -> {
+                switch (e.getRawSlot()) {
+                    case 27, 28, 29, 30, 31, 32, 33, 34 -> {
+                        if (e.getCurrentItem() == null) {
+                            e.setCancelled(true);
+                            return;
+                        }
+                    }
+
+                    case 35 -> {
+                        e.setCancelled(true);
+                        for (ItemStack item: e.getInventory().getContents()) {
+                            for (ItemStack items : e.getInventory().getContents()) {
+                                if (items != null) {
+                                    if (e.getRawSlot() < 27) {
+                                        Material slotsmat = e.getCurrentItem().getType();
+                                        Integer numbermat = e.getCurrentItem().getAmount();
+                                        ItemMeta metamat = e.getCurrentItem().getItemMeta();
+
+                                        item.setAmount(numbermat);
+                                        item.setType(slotsmat);
+                                        item.setItemMeta(metamat);
+
+
+
+                                        player.getInventory().addItem(items);
+                                    }
+                                }
+                            }
+                        }
+                        return;
+                    }
+
+
+
+
+
+                    default -> e.setCancelled(false);
                 }
             }
         }

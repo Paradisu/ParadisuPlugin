@@ -1,6 +1,7 @@
 package me.jakedadream.ParadisuPlugin;
 
 import com.google.common.util.concurrent.AbstractScheduledService;
+import me.jakedadream.ParadisuPlugin.invs.trashcanINV;
 import me.jakedadream.ParadisuPlugin.modelmanager.HatModelInv;
 import me.jakedadream.ParadisuPlugin.modelmanager.PropModelInv;
 import me.jakedadream.ParadisuPlugin.modelmanager.modelcommands;
@@ -12,6 +13,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;

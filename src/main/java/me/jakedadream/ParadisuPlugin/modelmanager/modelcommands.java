@@ -122,7 +122,12 @@ public class modelcommands implements CommandExecutor {
                         player.getInventory().setHelmet(modelitemmanager.createPropModel(Integer.parseInt(args[0])));
                         player.sendMessage("§3[§dParadisu §f§lMODELS §bツ§3] §fWe set the model as your helmet.");
                     } else if (args.length == 0) {
-                        player.sendMessage("§3[§dParadisu §f§lMODELS §bツ§3] §7Not enough args.");
+                        ItemStack[] armor = player.getInventory().getArmorContents();
+                        ItemStack swap = armor[3];
+                        armor[3] = player.getEquipment().getItemInMainHand();
+                        player.getInventory().setArmorContents(armor);
+                        player.getInventory().setItemInMainHand(swap);
+                        player.sendMessage("§3[§dParadisu §f§lMODELS §bツ§3] §fWe set the model as your helmet.");
                     } else if (args.length >= 2) {
                         Player target = Bukkit.getPlayerExact(args[1]);
 

@@ -1,6 +1,7 @@
 package me.jakedadream.ParadisuPlugin.events;
 
 import me.jakedadream.ParadisuPlugin.items.ItemManager;
+import me.jakedadream.ParadisuPlugin.invs.trashcanINV;
 import me.jakedadream.ParadisuPlugin.items.PluginInventories;
 import me.jakedadream.ParadisuPlugin.paradisumain;
 import org.bukkit.*;
@@ -78,9 +79,8 @@ public class snwevents implements Listener {
         Player player = intEvent.getPlayer();
         if (intEvent.getRightClicked().getType() == EntityType.ARMOR_STAND) {
             if (intEvent.getRightClicked().getName().equals("TRASHCAN")) {
-                PluginInventories inv = new PluginInventories();
 
-                inv.TrashCanInv(player);
+                player.openInventory(trashcanINV.TrashcanGUI());
             }
         }
     }
@@ -105,24 +105,7 @@ public class snwevents implements Listener {
 
             }
         }
-/*
-    @EventHandler
-    public void onPlayerCloseInventory(InventoryCloseEvent event) {
-        Player player = (Player) event.getPlayer();
-        if (player.getOpenInventory().getTitle().equals("§3§lWaste Bin")) {
-            ItemStack[] invcontents = event.getInventory().getContents();
-            PluginInventories inv = new PluginInventories();
-            inv.TrashCanInv(player);
-            player.getOpenInventory().getTopInventory().setContents(invcontents);
 
-            // Ramen help im in pain
-
-        } else {
-            return;
-        }
-    }    //////////////////// FIX THIS
-
-*/
     @EventHandler
     public void onPlayerChat(AsyncPlayerChatEvent e) {
         if (paradisumain.getPlugin(paradisumain.class).getConfig().getString(e.getPlayer().getName()) != null) {
@@ -201,4 +184,11 @@ public class snwevents implements Listener {
             p.sendMessage("§3[§dParadisu §bツ§3] §fYou consumed a drink/food item and were given speed for§3 " + seconds/60 + "§f minutes.");
         }
     }
+
+
+
+
+
+
+
 }

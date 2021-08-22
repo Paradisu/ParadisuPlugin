@@ -1,13 +1,10 @@
 package me.jakedadream.ParadisuPlugin.items;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ItemManager {
 
@@ -29,6 +26,12 @@ public class ItemManager {
             return item;
     }
 
- // end
-
+        public static ItemStack BlankItemSlot() {
+            ItemStack item = new ItemStack(Material.BLACK_STAINED_GLASS_PANE, 1);
+            ItemMeta meta =item.getItemMeta();
+            meta.setDisplayName("§0");
+            meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+            item.setItemMeta(meta);
+            return item;
+        }
 }

@@ -2,7 +2,6 @@ package me.jakedadream.ParadisuPlugin.commands;
 
 import me.jakedadream.ParadisuPlugin.items.ItemManager;
 import me.jakedadream.ParadisuPlugin.items.PluginInventories;
-import org.apache.commons.lang.StringUtils;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -16,9 +15,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 
 public class snwcommands implements CommandExecutor {
@@ -35,6 +31,9 @@ public class snwcommands implements CommandExecutor {
         return ChatColor.translateAlternateColorCodes('&', name);
     }
 
+
+
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (!(sender instanceof Player)) {
@@ -43,14 +42,37 @@ public class snwcommands implements CommandExecutor {
         }
         Player player = (Player) sender;
 
-        short id;
 
         switch (cmd.getName().toLowerCase()) {
 
 
             case "givecoin":
                 if (player.hasPermission("snw.givecoin")) {
-                    player.getInventory().addItem(ItemManager.createCoin());
+                    if (args.length == 0) {
+                        player.getInventory().addItem(ItemManager.createCoin());
+                        player.sendMessage("§3[§dParadisu §bツ§3] §fWe gave you a coin!");
+                    } else if (args.length == 1) {
+                        ItemStack coins = new ItemStack(ItemManager.createCoin());
+                        ItemMeta coinmeta = ItemManager.createCoin().getItemMeta();
+                        coins.setAmount(Integer.parseInt(args[0]));
+                        coins.setItemMeta(coinmeta);
+
+                        player.getInventory().addItem(coins);
+                        player.sendMessage("§3[§dParadisu §bツ§3] §fWe gave you §3" + args[0] +  " §fcoins!");
+
+                    } else if (args.length == 2) {
+
+                        ItemStack coins = new ItemStack(ItemManager.createCoin());
+                        ItemMeta coinmeta = ItemManager.createCoin().getItemMeta();
+                        coins.setAmount(Integer.parseInt(args[0]));
+                        coins.setItemMeta(coinmeta);
+
+                        Player target = Bukkit.getPlayerExact(args[1]);
+                        target.getInventory().addItem(coins);
+                        player.sendMessage("§3[§dParadisu §bツ§3] §fWe gave them §3" + args[0] +  " §fcoins!");
+
+
+                    } else {player.sendMessage("§3[§dParadisu §bツ§3] §7Too many arguments");}
                 } else {
                     player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");
                 }
@@ -58,10 +80,32 @@ public class snwcommands implements CommandExecutor {
 
             case "givestarcoin":
                 if (player.hasPermission("snw.givestarcoin")) {
-                    player.getInventory().addItem(ItemManager.createStarCoin());
-                } else {
-                    player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");
-                }
+                    if (args.length == 0) {
+                        player.getInventory().addItem(ItemManager.createStarCoin());
+                        player.sendMessage("§3[§dParadisu §bツ§3] §fWe gave you a Star Coin!");
+                    } else if (args.length == 1) {
+                        ItemStack starcoins = new ItemStack(ItemManager.createStarCoin());
+                        ItemMeta starcoinmeta = ItemManager.createStarCoin().getItemMeta();
+                        starcoins.setAmount(Integer.parseInt(args[0]));
+                        starcoins.setItemMeta(starcoinmeta);
+
+                        player.getInventory().addItem(starcoins);
+                        player.sendMessage("§3[§dParadisu §bツ§3] §fWe gave you §3" + args[0] +  " §fstar coins!");
+
+                    } else if (args.length == 2) {
+
+                        ItemStack starcoins = new ItemStack(ItemManager.createStarCoin());
+                        ItemMeta starcoinmeta = ItemManager.createStarCoin().getItemMeta();
+                        starcoins.setAmount(Integer.parseInt(args[0]));
+                        starcoins.setItemMeta(starcoinmeta);
+
+                        Player target = Bukkit.getPlayerExact(args[1]);
+                        target.getInventory().addItem(starcoins);
+                        player.sendMessage("§3[§dParadisu §bツ§3] §fWe gave them §3" + args[0] +  " §fstar coins!");
+
+
+                    } else {player.sendMessage("§3[§dParadisu §bツ§3] §7Too many arguments");}
+                } else {player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");}
                 return true;
 
 
@@ -106,7 +150,7 @@ public class snwcommands implements CommandExecutor {
                         for (World w : Bukkit.getWorlds()) {
                             for (Player p : w.getPlayers()) {
                                 if (p.hasPermission("snw.ac")) {
-                                    p.sendMessage("§c『§4§l§oAC§c』 §c" + player.getDisplayName() + " §f»§3 " + allArgs);
+                                    p.sendMessage("§c『§4§l§oAC§c』 §4" + player.getDisplayName() + " §f»§3 " + allArgs);
                                     // /AC <message>;
                                 }
                             }
@@ -243,7 +287,7 @@ public class snwcommands implements CommandExecutor {
                     if (args.length == 1) {
                         Player target = Bukkit.getPlayerExact((args[0]));
                         target.teleport((player.getLocation()));
-                        player.sendMessage("§3[§dParadisu §bツ§3] §fSuccessfully teleported §3" + target + "§fto you.");
+                        player.sendMessage("§3[§dParadisu §bツ§3] §fSuccessfully teleported §3" + target.getName() + "§fto you.");
 
                     } else {
                         player.sendMessage("§3[§dParadisu §bツ§3] §fPlease do /tphere (player)");
@@ -278,7 +322,7 @@ public class snwcommands implements CommandExecutor {
 
                         try {
                             PlayerToSend.teleport(target.getLocation());
-                            player.sendMessage("§3[§dParadisu §bツ§3] §fSuccessfully teleported §3" + PlayerToSend + "§fto §3" + target + "§f.");
+                            player.sendMessage("§3[§dParadisu §bツ§3] §fSuccessfully teleported §3" + PlayerToSend.getName() + "§fto §3" + target.getInventory() + "§f.");
                         } catch (NullPointerException e) {
                             player.sendMessage("§3[§dParadisu §bツ§3] §fOne of these players do not exist or are offline.");
                         }
