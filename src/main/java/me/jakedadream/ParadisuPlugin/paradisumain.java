@@ -91,6 +91,7 @@ public class paradisumain extends JavaPlugin {
         getCommand("list").setExecutor(new snwcommands());
         getCommand("findplayercords").setExecutor(new snwcommands());
         getCommand("currenttime").setExecutor(new snwcommands());
+        getCommand("mkill").setExecutor(new snwcommands());
         //
         // =================
         // WARPS COMMANDS

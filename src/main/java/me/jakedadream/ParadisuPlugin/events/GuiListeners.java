@@ -202,12 +202,32 @@ public class GuiListeners implements Listener {
                         return;
                     }
 
-
-
-
-
                     default -> e.setCancelled(false);
                 }
+            }
+        }
+        if (player.getOpenInventory().getTitle().contains("'s §3Inventory")) {
+            switch (e.getRawSlot()) {
+                    case 36, 37, 38, 39, 40, 41, 42, 43, 44, 46, 48, 49:
+                        e.setCancelled(true);
+                        break;
+
+                    case 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,31,32,33,34,35:
+                        if (player.hasPermission("snw.invsee")) {
+                            e.setCancelled(true);
+                        } else if (player.hasPermission("snw.invsee.take")) {
+                            break;
+                        }
+
+                    case 45,47,50,51,52,53:
+                        if (player.hasPermission("snw.invsee")) {
+                            e.setCancelled(true);
+                        } else if (player.hasPermission("snw.invsee.take")) {
+                            break;
+                        }
+
+                default:
+                    return;
             }
         }
     }

@@ -4,6 +4,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
+import me.jakedadream.ParadisuPlugin.commands.snwcommands;
+
 public class PluginInventories {
 
     public static void TrashCanInv(Player player) {

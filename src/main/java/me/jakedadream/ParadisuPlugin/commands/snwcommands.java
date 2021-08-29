@@ -2,19 +2,24 @@ package me.jakedadream.ParadisuPlugin.commands;
 
 import me.jakedadream.ParadisuPlugin.items.ItemManager;
 import me.jakedadream.ParadisuPlugin.items.PluginInventories;
+import me.jakedadream.ParadisuPlugin.modelmanager.modelitemmanager;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.potion.PotionEffectType;
 
+import java.lang.reflect.Member;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class snwcommands implements CommandExecutor {
@@ -225,13 +230,189 @@ public class snwcommands implements CommandExecutor {
                     }
                     if (args.length >= 1) {
                         Player target = Bukkit.getPlayerExact(args[0]);
-                        try {
-                            Inventory targetinv = target.getInventory();
-                            player.openInventory(targetinv);
-                            player.sendMessage("§3[§dParadisu §bツ§3] §fNow opening the inventory of §3" + target.getName() + "");
-                        } catch (NullPointerException e) {
-                            player.sendMessage("§3[§dParadisu §bツ§3] §fThis player does not exist or is offline.");
+                   //     try {
+                          //  Inventory targetinv = target.getInventory();
+                        Inventory inv = Bukkit.createInventory(null, 54, "§3§l" + target.getName() + "'s §3Inventory");
+
+                                ItemStack[] targetinv = target.getInventory().getStorageContents();
+                                inv.setContents(targetinv);
+
+                                inv.setItem(36, ItemManager.BlankItemSlot());
+                                inv.setItem(37, ItemManager.BlankItemSlot());
+                                inv.setItem(38, ItemManager.BlankItemSlot());
+                                inv.setItem(39, ItemManager.BlankItemSlot());
+                                inv.setItem(40, ItemManager.BlankItemSlot());
+                                inv.setItem(41, ItemManager.BlankItemSlot());
+                                inv.setItem(42, ItemManager.BlankItemSlot());
+                                inv.setItem(43, ItemManager.BlankItemSlot());
+                                inv.setItem(44, ItemManager.BlankItemSlot());
+
+                                inv.setItem(49, ItemManager.BlankItemSlot());
+
+                        ItemStack skull = new ItemStack(Material.PLAYER_HEAD, 1);
+                        SkullMeta sm = (SkullMeta)skull.getItemMeta();
+                        sm.setOwningPlayer(target);
+                        sm.setDisplayName("§3§l§o" + target.getName());
+                        skull.setItemMeta(sm);
+
+                                inv.setItem(46, skull);
+
+
+
+
+                        // ==================================
+                        if (target.getInventory().getItemInOffHand() == null || target.getInventory().getItemInOffHand().getType() == Material.AIR) {
+
+                            ItemStack nullitem = new ItemStack(ItemManager.ItemNoExist().getType(), 1);
+                            ItemMeta nullitemmeta = new ItemManager().ItemNoExist().getItemMeta();
+                            String prevname = nullitemmeta.getDisplayName();
+                            nullitemmeta.setDisplayName(prevname + " §7(off hand)");
+                            nullitem.setItemMeta(nullitemmeta);
+
+                            inv.setItem(45, nullitem);
+                        } else {
+
+                            Material offhandtype = target.getInventory().getItemInOffHand().getType();
+                            ItemMeta offhandmeta = target.getInventory().getItemInOffHand().getItemMeta();
+                            Integer offhandammount = target.getInventory().getItemInOffHand().getAmount();
+                            ItemStack targetoffhand = new ItemStack(offhandtype, offhandammount);
+                            targetoffhand.setItemMeta(offhandmeta);
+
+                            inv.setItem(45, targetoffhand);
                         }
+                        // ==================================
+                        if (target.getInventory().getHelmet() == null || target.getInventory().getHelmet().getType() == Material.AIR) {
+
+                            ItemStack nullitem = new ItemStack(ItemManager.ItemNoExist().getType(), 1);
+                            ItemMeta nullitemmeta = new ItemManager().ItemNoExist().getItemMeta();
+                            String prevname = nullitemmeta.getDisplayName();
+                            nullitemmeta.setDisplayName(prevname + " §7(helmet)");
+                            nullitem.setItemMeta(nullitemmeta);
+
+                            inv.setItem(50, nullitem);
+                        } else {
+                            Material helmettype = target.getInventory().getHelmet().getType();
+                            ItemMeta helmetmeta = target.getInventory().getHelmet().getItemMeta();
+                            Integer helmetamount = target.getInventory().getHelmet().getAmount();
+                            ItemStack targethelmet = new ItemStack(helmettype, helmetamount);
+                            targethelmet.setItemMeta(helmetmeta);
+                            inv.setItem(50, targethelmet);
+                        }
+                        // ==================================
+                        if (target.getInventory().getChestplate() == null || target.getInventory().getChestplate().getType() == Material.AIR) {
+
+                            ItemStack nullitem = new ItemStack(ItemManager.ItemNoExist().getType(), 1);
+                            ItemMeta nullitemmeta = new ItemManager().ItemNoExist().getItemMeta();
+                            String prevname = nullitemmeta.getDisplayName();
+                            nullitemmeta.setDisplayName(prevname + " §7(chestplate)");
+                            nullitem.setItemMeta(nullitemmeta);
+
+                            inv.setItem(51, nullitem);
+                        } else {
+                            Material chesttype = target.getInventory().getChestplate().getType();
+                            ItemMeta chestmeta = target.getInventory().getChestplate().getItemMeta();
+                            ItemStack targetchest = new ItemStack(chesttype, 1);
+                            targetchest.setItemMeta(chestmeta);
+                            inv.setItem(51, targetchest);
+                        }
+                        // ==================================
+                        if (target.getInventory().getLeggings() == null || target.getInventory().getLeggings().getType() == Material.AIR) {
+
+                            ItemStack nullitem = new ItemStack(ItemManager.ItemNoExist().getType(), 1);
+                            ItemMeta nullitemmeta = new ItemManager().ItemNoExist().getItemMeta();
+                            String prevname = nullitemmeta.getDisplayName();
+                            nullitemmeta.setDisplayName(prevname + " §7(leggings)");
+                            nullitem.setItemMeta(nullitemmeta);
+
+                            inv.setItem(52, nullitem);
+                        } else {
+                            Material legtype = target.getInventory().getLeggings().getType();
+                            ItemMeta legmeta = target.getInventory().getLeggings().getItemMeta();
+                            ItemStack targetleg = new ItemStack(legtype, 1);
+                            targetleg.setItemMeta(legmeta);
+                            inv.setItem(52, targetleg);
+                        }
+                        // ==================================
+                        if (target.getInventory().getBoots() == null || target.getInventory().getBoots().getType() == Material.AIR) {
+
+                            ItemStack nullitem = new ItemStack(ItemManager.ItemNoExist().getType(), 1);
+                            ItemMeta nullitemmeta = new ItemManager().ItemNoExist().getItemMeta();
+                            String prevname = nullitemmeta.getDisplayName();
+                            nullitemmeta.setDisplayName(prevname + " §7(boots)");
+                            nullitem.setItemMeta(nullitemmeta);
+
+                            inv.setItem(53, nullitem);
+                        } else {
+                            Material boottype = target.getInventory().getBoots().getType();
+                            ItemMeta bootmeta = target.getInventory().getBoots().getItemMeta();
+                            ItemStack targetboot = new ItemStack(boottype, 1);
+                            targetboot.setItemMeta(bootmeta);
+                            inv.setItem(53, targetboot);
+                        }
+                        // ==================================
+                        if (target.getInventory().getItemInMainHand() == null || target.getInventory().getItemInMainHand().getType() == Material.AIR) {
+
+                            ItemStack nullitem = new ItemStack(ItemManager.ItemNoExist().getType(), 1);
+                            ItemMeta nullitemmeta = new ItemManager().ItemNoExist().getItemMeta();
+                            String prevname = nullitemmeta.getDisplayName();
+                            nullitemmeta.setDisplayName(prevname + " §7(main hand)");
+                            nullitem.setItemMeta(nullitemmeta);
+
+                            inv.setItem(47, nullitem);
+                        } else {
+                            Material mainhandtype = target.getInventory().getItemInMainHand().getType();
+                            ItemMeta mainhandmeta = target.getInventory().getItemInMainHand().getItemMeta();
+                            Integer mainhandammount = target.getInventory().getItemInMainHand().getAmount();
+                            ItemStack targetmainhand = new ItemStack(mainhandtype, mainhandammount);
+                            targetmainhand.setItemMeta(mainhandmeta);
+                            inv.setItem(47, targetmainhand);
+                        }
+                        // ==================================
+                        if (player.hasPotionEffect(PotionEffectType.SPEED) || player.hasPotionEffect(PotionEffectType.JUMP) || player.hasPotionEffect(PotionEffectType.INVISIBILITY)) {
+                            ItemStack potioneffects = new ItemStack(Material.SLIME_BALL, 1);
+                            ItemMeta potionmeta = potioneffects.getItemMeta();
+                            potionmeta.setDisplayName("§a§lPlayer Potion Effects");
+                            ArrayList<String> lore = new ArrayList<>();
+                            lore.add("§f§o");
+
+                            if (player.hasPotionEffect(PotionEffectType.SPEED)) {
+                                int speednum = player.getPotionEffect(PotionEffectType.SPEED).getAmplifier();
+                                speednum++;
+                                lore.add("§f§oSpeed§3 \uE00D §f§l" + speednum);
+                            }
+                            if (player.hasPotionEffect(PotionEffectType.JUMP)) {
+                                int jumpnum = player.getPotionEffect(PotionEffectType.JUMP).getAmplifier();
+                                jumpnum++;
+                                lore.add("§f§oJump§3 \uE00D §f§l" + jumpnum);
+                            }
+                            if (player.hasPotionEffect(PotionEffectType.INVISIBILITY)) {
+                                int invisnum = player.getPotionEffect(PotionEffectType.INVISIBILITY).getAmplifier();
+                                invisnum++;
+                                lore.add("§f§oInvisibility§3 \uE00D §f§l" + invisnum);
+                            }
+                            potionmeta.setLore(lore);
+                            potioneffects.setItemMeta(potionmeta);
+
+                            inv.setItem(48, potioneffects);
+                        } else {
+                            ItemStack potioneffects = new ItemStack(Material.SLIME_BALL, 1);
+                            ItemMeta potionmeta = potioneffects.getItemMeta();
+                            potionmeta.setDisplayName("§a§lPlayer Potion Effects");
+                            ArrayList<String> lore = new ArrayList<>();
+                            lore.add("§f");
+                            lore.add("§f§oNo potion Effects");
+                            potionmeta.setLore(lore);
+                            potioneffects.setItemMeta(potionmeta);
+
+                            inv.setItem(48, potioneffects);
+                        }
+
+
+                        player.openInventory(inv);
+                            player.sendMessage("§3[§dParadisu §bツ§3] §fNow opening the inventory of §3" + target.getName() + "");
+              //          } catch (NullPointerException e) {
+              //              player.sendMessage("§3[§dParadisu §bツ§3] §fThis player does not exist or is offline.");
+              //          }
                     }
 
                 } else {player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");}
@@ -274,7 +455,6 @@ public class snwcommands implements CommandExecutor {
                 }
                 return true;
 
-
             case "sex":
                 if (player.hasPermission("snw.sex")) {
                     player.sendMessage("§3[§dParadisu §bツ§3] §fYou are now having sex!!!!!");
@@ -285,10 +465,13 @@ public class snwcommands implements CommandExecutor {
                 if (player.hasPermission("snw.tphere") || player.hasPermission("snw.tp.*")) {
 
                     if (args.length == 1) {
-                        Player target = Bukkit.getPlayerExact((args[0]));
-                        target.teleport((player.getLocation()));
-                        player.sendMessage("§3[§dParadisu §bツ§3] §fSuccessfully teleported §3" + target.getName() + "§fto you.");
-
+                        try {
+                            Player target = Bukkit.getPlayerExact((args[0]));
+                            target.teleport((player.getLocation()));
+                            player.sendMessage("§3[§dParadisu §bツ§3] §fSuccessfully teleported §3" + target.getName() + " §fto you.");
+                        } catch (NullPointerException e) {
+                            player.sendMessage("§3[§dParadisu §bツ§3] §fThis player does not exist or is offline.");
+                    }
                     } else {
                         player.sendMessage("§3[§dParadisu §bツ§3] §fPlease do /tphere (player)");
                     }
@@ -764,6 +947,48 @@ public class snwcommands implements CommandExecutor {
                 } else {player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command."); }
                 return true;
 
+
+            case "mkill":
+                if (player.hasPermission("snw.mkill")) {
+
+                    if (args.length == 0) {
+                        player.sendMessage("§3[§dParadisu §bツ§3] §fPlease provide a valid radius");
+                    } else if (args.length == 1) {
+                        String radiusstring = args[0];
+                        Integer radius = Integer.parseInt(radiusstring);
+
+                        if (radius > 0 && radius < 11) {
+                            Location playerloc = player.getLocation();
+                            double px = playerloc.getX();
+                            double py = playerloc.getY();
+                            double pz = playerloc.getZ();
+
+                            World world = player.getWorld();
+
+                            for (Entity e : world.getEntities()) {
+                                Location minecartlocation = e.getLocation();
+                                double mx = minecartlocation.getX();
+                                double my = minecartlocation.getY();
+                                double mz = minecartlocation.getZ();
+
+
+                                if ((mx == px + radius || mx == px - radius) && (my == py + radius || mx == py - radius) && (mz == pz + radius || mz == pz - radius)) {
+                                    if (e.getType() == EntityType.MINECART) {
+                                        e.remove();
+                                        player.sendMessage("§3[§dParadisu §bツ§3] §fWe removed all minecarts within the radius provided.");
+                                    }
+                                } else {
+                                    player.sendMessage("§3[§dParadisu §bツ§3] §fThere were no minecarts within the radius.");
+                                }
+                            }
+                        } else {
+                            player.sendMessage("§3[§dParadisu §bツ§3] §fPlease provide a valid radius between §31-10§f.");
+                        }
+                    } else {
+                        player.sendMessage("§3[§dParadisu §bツ§3] §fPlease provide 1 argument");
+                    }
+                } else { player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command."); }
+                return true;
 
             default:
                     return false;

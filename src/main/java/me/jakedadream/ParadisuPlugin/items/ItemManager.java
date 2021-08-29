@@ -28,9 +28,19 @@ public class ItemManager {
 
         public static ItemStack BlankItemSlot() {
             ItemStack item = new ItemStack(Material.BLACK_STAINED_GLASS_PANE, 1);
-            ItemMeta meta =item.getItemMeta();
+            ItemMeta meta = item.getItemMeta();
             meta.setDisplayName("§0");
             meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+            item.setItemMeta(meta);
+            return item;
+        }
+
+        public static ItemStack ItemNoExist() {
+            ItemStack item = new ItemStack(Material.DIAMOND_AXE, 1);
+            ItemMeta meta = item.getItemMeta();
+            meta.setDisplayName("§4§l❌ §c§lEmpty Slot §4§l❌");
+            meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+            meta.setCustomModelData(76);
             item.setItemMeta(meta);
             return item;
         }

@@ -1,5 +1,5 @@
 name: ParadisuPlugin
-version: 2.9.0
+version: 2.10.0
 authors: [JakeDaDream, RealInstantRamen, andyinnie, _Kastle, cytocracy]
 main: me.jakedadream.ParadisuPlugin.paradisumain
 api-version: 1.16
@@ -197,4 +197,9 @@ commands:
   createmodelcfsection:
     description: Creates a new template for you to use for a new model
     usage: /<command>
+  mkill:
+    description: kills minecart
+    usage: /<command> <args>
+    aliases:
+      - minecartkill
 
