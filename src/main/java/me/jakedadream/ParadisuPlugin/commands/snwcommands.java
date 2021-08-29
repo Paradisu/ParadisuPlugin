@@ -520,7 +520,16 @@ public class snwcommands implements CommandExecutor {
 
             case "skull":
                 if (player.hasPermission("snw.skull")) {
-                    if (args.length == 1) {
+                    if (args.length == 0) {
+                        ItemStack itemSkull = new ItemStack(Material.PLAYER_HEAD, 1);
+                        SkullMeta sm = (SkullMeta)itemSkull.getItemMeta();
+                        sm.setOwningPlayer(player);
+                        sm.setDisplayName("§7§lSkull of §3" + player.getName());
+                        itemSkull.setItemMeta(sm);
+
+                        player.getInventory().addItem(itemSkull);
+
+                    } else if (args.length == 1) {
 
                         String owner = args[0];
                         ItemStack itemSkull = new ItemStack(Material.PLAYER_HEAD, 1);
