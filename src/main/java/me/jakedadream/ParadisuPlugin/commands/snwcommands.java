@@ -230,8 +230,8 @@ public class snwcommands implements CommandExecutor {
                     }
                     if (args.length >= 1) {
                         Player target = Bukkit.getPlayerExact(args[0]);
-                   //     try {
-                          //  Inventory targetinv = target.getInventory();
+                        try {
+
                         Inventory inv = Bukkit.createInventory(null, 54, "§3§l" + target.getName() + "'s §3Inventory");
 
                                 ItemStack[] targetinv = target.getInventory().getStorageContents();
@@ -410,9 +410,9 @@ public class snwcommands implements CommandExecutor {
 
                         player.openInventory(inv);
                             player.sendMessage("§3[§dParadisu §bツ§3] §fNow opening the inventory of §3" + target.getName() + "");
-              //          } catch (NullPointerException e) {
-              //              player.sendMessage("§3[§dParadisu §bツ§3] §fThis player does not exist or is offline.");
-              //          }
+                        } catch (NullPointerException e) {
+                            player.sendMessage("§3[§dParadisu §bツ§3] §fThis player does not exist or is offline.");
+                        }
                     }
 
                 } else {player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");}
@@ -524,13 +524,12 @@ public class snwcommands implements CommandExecutor {
 
                         String owner = args[0];
                         ItemStack itemSkull = new ItemStack(Material.PLAYER_HEAD, 1);
-                        SkullMeta metaSkull = null;
-                        metaSkull = (SkullMeta) itemSkull.getItemMeta();
-                        ItemMeta meta = itemSkull.getItemMeta();
-                        metaSkull.setOwner(owner);
-                        meta.setDisplayName("§7§lSkull of §3" + owner + "§f!");
+                        SkullMeta sm = (SkullMeta)itemSkull.getItemMeta();
+                        sm.setOwner(owner);
+                        sm.setDisplayName("§7§lSkull of §3" + owner);
+                        itemSkull.setItemMeta(sm);
 
-                        itemSkull.setItemMeta(metaSkull);
+
                         player.getInventory().addItem(itemSkull);
 
                         player.sendMessage("§3[§dParadisu §bツ§3] §fWe successfully gave you the head of §3§n" + owner + "§f!");

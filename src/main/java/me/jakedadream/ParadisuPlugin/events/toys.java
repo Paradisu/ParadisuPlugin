@@ -27,21 +27,29 @@ public class toys implements Listener {
                 if (e.getItem() == null) return;
 
                 if (e.getItem().getType() == Material.DIAMOND_AXE) {
-                    if (e.getItem().getItemMeta().getCustomModelData() == 146) {
+                    if (e.getItem().getItemMeta().hasCustomModelData()) {
+                        if (e.getItem().getItemMeta().getCustomModelData() == 146) {
 
-                        ItemStack item = new ItemStack(Material.DEAD_TUBE_CORAL_BLOCK, 1);
-                        Snowball s = e.getPlayer().launchProjectile(Snowball.class);
-                        s.setItem(item);
+                            ItemStack item = new ItemStack(Material.DEAD_TUBE_CORAL_BLOCK, 1);
+                            Snowball s = e.getPlayer().launchProjectile(Snowball.class);
+                            s.setItem(item);
 
 
-                        Random rd = new Random();
-                        Float rpitch = rd.nextFloat();
-                        p.getWorld().playSound(p.getLocation(), Sound.BLOCK_RESPAWN_ANCHOR_DEPLETE, 1F, rpitch);
+                            Random rd = new Random();
+                            Float rpitch = rd.nextFloat();
+                            p.getWorld().playSound(p.getLocation(), Sound.BLOCK_RESPAWN_ANCHOR_DEPLETE, 1F, rpitch);
+                        } else {
+                            return;
+                        }
+                    } else {
+                        return;
                     }
                 }
             }
         }
     }
+
+
 
 
     // Finado
