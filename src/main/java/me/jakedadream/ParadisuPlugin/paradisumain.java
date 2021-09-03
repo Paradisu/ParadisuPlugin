@@ -45,7 +45,7 @@ public class paradisumain extends JavaPlugin {
     */
 
     public static String CommandPrefix() {
-        String cmdprefix = "§x§e§9§2§8§2§9\uE015§x§f§d§d§0§2§3\uE00D ";
+        String cmdprefix = "\uE016 ";
         return cmdprefix;
     }
     public static String CommandEmph() {
@@ -53,7 +53,7 @@ public class paradisumain extends JavaPlugin {
         return cmdemph;
     }
     public static String NoPermsMessage() {
-        String nopermsmsg = "§x§e§9§2§8§2§9\uE015§x§f§d§d§0§2§3\uE00D §fYou do not have permission to use that command.";
+        String nopermsmsg = "\uE016 §fYou do not have permission to use that command.";
         return nopermsmsg;
     }
 
