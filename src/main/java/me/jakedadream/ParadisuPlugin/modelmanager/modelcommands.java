@@ -56,7 +56,7 @@ public class modelcommands implements CommandExecutor {
                             return false;
                         }
                         player.getInventory().addItem(modelitemmanager.createPropModel(Integer.parseInt(args[0])));
-                        player.sendMessage(cmdprefix + "§fWe gave you the model " cmdemph + "#" + args[0] + "§f!");
+                        player.sendMessage(cmdprefix + "§fWe gave you the model " + cmdemph + "#" + args[0] + "§f!");
                     } else if (args.length == 2) {
                         Player target = Bukkit.getPlayerExact(args[1]);
                         PlayerInventory inv = target.getInventory();
