@@ -10,6 +10,7 @@ public class ShopCommands implements CommandExecutor {
 
     String cmdprefix = paradisumain.CommandPrefix();
     String cmdemph = paradisumain.CommandEmph();
+    String nopermsmsg = paradisumain.NoPermsMessage(); 
 
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {

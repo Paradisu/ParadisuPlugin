@@ -52,7 +52,10 @@ public class paradisumain extends JavaPlugin {
         String cmdemph = "§x§f§d§d§0§2§3";
         return cmdemph;
     }
-
+    public static String NoPermsMessage() {
+        String nopermsmsg = "§x§e§9§2§8§2§9\uE015§x§f§d§d§0§2§3\uE00D §fYou do not have permission to use that command.";
+        return nopermsmsg;
+    }
 
     @Override
     public void onEnable() {
@@ -364,4 +367,3 @@ public class paradisumain extends JavaPlugin {
     public static void reloadShopGuiConfig() { fileShopGuiConfig = YamlConfiguration.loadConfiguration(sourceShopGuiFile); }
 
 }
-

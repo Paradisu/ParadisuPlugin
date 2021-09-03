@@ -39,7 +39,7 @@ public class warps implements CommandExecutor {
 
     String cmdprefix = paradisumain.CommandPrefix();
     String cmdemph = paradisumain.CommandEmph();
-
+    String nopermsmsg = paradisumain.NoPermsMessage();
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 
@@ -54,11 +54,11 @@ public class warps implements CommandExecutor {
 
             case "setwarp":
                 if (!(player.hasPermission("snw.warp.set"))){
-                    player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");
+                    player.sendMessage(nopermsmsg);
                     return true;
                 }
                 if (args.length == 0) {
-                    player.sendMessage("§3[§dParadisu §bツ§3] §fUsage: /setwarp <warp name>");
+                    player.sendMessage(cmdprefix + "§fUsage: /setwarp <warp name>");
                     return true;
                 }
 
@@ -76,16 +76,16 @@ public class warps implements CommandExecutor {
                 cs.set("Permission", "snw.warp.default");
 
                 paradisumain.saveWarpConfig();
-                player.sendMessage("§3[§dParadisu §bツ§3] §fCreated warp " + ChatColor.DARK_AQUA + args[0] + ChatColor.WHITE + " at your location");
+                player.sendMessage(cmdprefix + "§fCreated warp " + cmdemph + args[0] + "&f at your location");
                 break;
 
             case "delwarp":
                 if(!(player.hasPermission("snw.warp.del"))){
-                    player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");
+                    player.sendMessage(nopermsmsg);
                     return true;
                 }
                 if (args.length == 0) {
-                    player.sendMessage("§3[§dParadisu §bツ§3] §f Usage: /delwarp <warp name>");
+                    player.sendMessage(cmdprefix + "§fUsage: /delwarp <warp name>");
                     return true;
                 }
                 paradisumain.fileWarpConfig.set(args[0], null);
@@ -95,13 +95,13 @@ public class warps implements CommandExecutor {
                 delname = delname.substring(0,1).toUpperCase() + delname.substring(1);
 
 
-                player.sendMessage("§3[§dParadisu §bツ§3] §fDeleted warp " + ChatColor.DARK_AQUA + delname + ChatColor.WHITE + ".");
+                player.sendMessage(cmdprefix + "§fDeleted warp " + cmdemph + delname + "§f.");
                 break;
 
             case "warpdisplay":
             case "wdisplay":
                 if (!(player.hasPermission("snw.warp.display"))){
-                    player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");
+                    player.sendMessage(nopermsmsg);
                     return true;
                 }
                 String displayname = "";
@@ -116,13 +116,13 @@ public class warps implements CommandExecutor {
                 }
                 paradisumain.fileWarpConfig.getConfigurationSection(args[0].toLowerCase()).set("display", displayname);
                 paradisumain.saveWarpConfig();
-                player.sendMessage("§3[§dParadisu §bツ§3] §fCreated warp display name " + ChatColor.DARK_AQUA + displayname);
+                player.sendMessage(cmdprefix + "§fCreated warp display name " + cmdemph + displayname);
                 break;
 
             case "w":
             case "warp":
                 if(args.length == 0){
-                    player.sendMessage("§3[§dParadisu §bツ§3] §fUsage: /warp <place>");
+                    player.sendMessage(cmdprefix + "§fUsage: /warp <warp name>");
                     return true;
                 }
                 ConfigurationSection d = paradisumain.fileWarpConfig.getConfigurationSection(args[0].toLowerCase());
@@ -131,12 +131,12 @@ public class warps implements CommandExecutor {
                         String w = paradisumain.fileWarpConfig.getString("aliases." + args[0].toLowerCase());
                         d = paradisumain.fileWarpConfig.getConfigurationSection(w);
                     } else {
-                        player.sendMessage("§3[§dParadisu §bツ§3] §fThat warp doesn't exist.");
+                        player.sendMessage(cmdprefix + "§fThat warp doesn't exist.");
                         return true;
                     }
                 }
-                if (!(player.hasPermission(d.getString("Permission")))){
-                    player.sendMessage("§3[§dParadisu §bツ§3] §7You cannot warp here.");
+                if (!(player.has(d.getString("")))){
+                    player.sendMessage(cmdprefix + "§fYou cannot warp here.");
                     return true;
                 }
 
@@ -166,60 +166,60 @@ public class warps implements CommandExecutor {
                 player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20, 1));
                 player.teleport(l);
                 player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 10, 29);
-                player.sendMessage("§3[§dParadisu §bツ§3] §fWelcome to " + ChatColor.DARK_AQUA +  wstring + ChatColor.WHITE + "!");
+                player.sendMessage(cmdprefix + "§fWelcome to " + cmdemph +  wstring + "§f!");
                 break;
 
             case "reloadwarp":
             case "reloadwarps":
-                if(!(player.hasPermission("snw.warp.reload"))){
-                    player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");
+                if(!(player.has("snw.warp.reload"))){
+                    player.sendMessage(nopermsmsg);
                     return true;
                 }
                 paradisumain.reloadWarpConfig();
-                player.sendMessage("§3[§dParadisu §bツ§3] §fReloaded warps.");
+                player.sendMessage(cmdprefix + "§fReloaded warps.");
                 break;
 
             case "setalias":
                 if(!(player.hasPermission("snw.warp.setalias"))){
-                    player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");
+                    player.sendMessage(nopermsmsg);
                     return true;
                 }
                 if(args.length < 2 || paradisumain.fileWarpConfig.getConfigurationSection(args[0].toLowerCase()) == null){
-                    player.sendMessage("§3[§dParadisu §bツ§3] §fPlease use /setalias <warp> <alias>");
+                    player.sendMessage(cmdprefix + "§fUsage: /setalias <warp> <alias>");
                     return true;
                 }
                 ConfigurationSection al = paradisumain.fileWarpConfig.getConfigurationSection("aliases");
                 al.set(args[1].toLowerCase(), args[0].toLowerCase());
                 paradisumain.saveWarpConfig();
-                player.sendMessage("§3[§dParadisu §bツ§3] §f" + ChatColor.DARK_AQUA + args[1] + ChatColor.WHITE + " is now a warp alias for " + ChatColor.DARK_AQUA + args[0] + ChatColor.WHITE + "!");
+                player.sendMessage(cmdprefix + cmdemph + args[1] + "§f is now a warp alias for " + cmdemph + args[0] + "§f!");
                 break;
 
             case "delalias":
                 if(!(player.hasPermission("snw.warp.delalias"))){
-                    player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");
+                    player.sendMessage(nopermsmsg);
                     return true;
                 }
                 if(args.length < 2 || paradisumain.fileWarpConfig.getConfigurationSection(args[0].toLowerCase()) == null || paradisumain.fileWarpConfig.getString("aliases." + args[1].toLowerCase()) == null){
-                    player.sendMessage("§3[§dParadisu §bツ§3] §fPlease use /delalias <warp> <alias>");
+                    player.sendMessage(cmdprefix + "§fUsage: use /delalias <warp> <alias>");
                     return true;
                 }
                 paradisumain.fileWarpConfig.getConfigurationSection("aliases").set(args[1].toLowerCase(), null);
                 paradisumain.saveWarpConfig();
-                player.sendMessage("§3[§dParadisu §bツ§3] §fDeleted warp alias " + ChatColor.DARK_AQUA + args[1]);
+                player.sendMessage(cmdprefix + "§fDeleted warp alias " + cmdemph + args[1]);
                 break;
 
             case "warps":
                 Set<String> s = paradisumain.fileWarpConfig.getKeys(false);
                 s.remove("aliases");
-                String mes = "§3[§dParadisu §bツ§3] §fCurrent Warps:" + ChatColor.DARK_AQUA;
+                String mes = cmdprefix + "§fCurrent Warps:" + cmdemph;
                 FileConfiguration warplist = paradisumain.fileWarpConfig;
                 for (String i : s){
 //                      player.sendMessage(mes);
                     if(warplist.getConfigurationSection(i).getString("display") != null){
-                        mes = mes.concat("\n" + ChatColor.WHITE + "- "  + ChatColor.DARK_AQUA + warplist.getConfigurationSection(i).getString("display"));
+                        mes = mes.concat("\n" + "§f- "  + cmdemph + warplist.getConfigurationSection(i).getString("display"));
                     } else {
                         i = i.substring(0,1).toUpperCase() + i.substring(1);
-                        mes = mes.concat("\n" + ChatColor.WHITE + "- " + ChatColor.DARK_AQUA + i);
+                        mes = mes.concat("\n" + "§f- " + cmdemph + i);
                     }
                 }
                 player.sendMessage(mes);
