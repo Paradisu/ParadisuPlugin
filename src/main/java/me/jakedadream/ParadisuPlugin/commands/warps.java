@@ -135,7 +135,7 @@ public class warps implements CommandExecutor {
                         return true;
                     }
                 }
-                if (!(player.has(d.getString("")))){
+                if (!(player.hasPermission(d.getString("Permission")))){
                     player.sendMessage(cmdprefix + "§fYou cannot warp here.");
                     return true;
                 }
@@ -171,7 +171,7 @@ public class warps implements CommandExecutor {
 
             case "reloadwarp":
             case "reloadwarps":
-                if(!(player.has("snw.warp.reload"))){
+                if(!(player.hasPermission("snw.warp.reload"))){
                     player.sendMessage(nopermsmsg);
                     return true;
                 }
