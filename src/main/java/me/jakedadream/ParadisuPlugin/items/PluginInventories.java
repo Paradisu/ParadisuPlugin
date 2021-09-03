@@ -1,5 +1,6 @@
 package me.jakedadream.ParadisuPlugin.items;
 
+import me.jakedadream.ParadisuPlugin.paradisumain;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -7,6 +8,9 @@ import org.bukkit.inventory.Inventory;
 import me.jakedadream.ParadisuPlugin.commands.snwcommands;
 
 public class PluginInventories {
+
+    String cmdprefix = paradisumain.CommandPrefix();
+    String cmdemph = paradisumain.CommandEmph();
 
     public static void TrashCanInv(Player player) {
         Inventory inv = Bukkit.createInventory(null, 36, "§3§lWaste Bin"); //4 Rows

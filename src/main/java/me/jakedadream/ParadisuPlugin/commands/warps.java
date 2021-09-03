@@ -16,8 +16,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.io.File;
-import java.io.ObjectInputFilter;
-import java.util.Locale;
 import java.util.Set;
 
 public class warps implements CommandExecutor {
@@ -39,6 +37,8 @@ public class warps implements CommandExecutor {
         return ChatColor.translateAlternateColorCodes('&', name);
     }
 
+    String cmdprefix = paradisumain.CommandPrefix();
+    String cmdemph = paradisumain.CommandEmph();
 
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {

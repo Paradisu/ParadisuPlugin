@@ -10,11 +10,14 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ShopGuis {
+
+    String cmdprefix = paradisumain.CommandPrefix();
+    String cmdemph = paradisumain.CommandEmph();
+
 
     public static List<Inventory> inventories = new ArrayList<>();
 

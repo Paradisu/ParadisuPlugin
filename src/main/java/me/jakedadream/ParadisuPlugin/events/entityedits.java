@@ -1,5 +1,6 @@
 package me.jakedadream.ParadisuPlugin.events;
 
+import me.jakedadream.ParadisuPlugin.paradisumain;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -8,6 +9,11 @@ import org.bukkit.entity.Entity;
 import org.bukkit.event.Listener;
 
 public class entityedits implements Listener {
+
+
+
+    String cmdprefix = paradisumain.CommandPrefix();
+    String cmdemph = paradisumain.CommandEmph();
 
 
 

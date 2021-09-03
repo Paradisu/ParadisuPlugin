@@ -28,6 +28,9 @@ public class modelcommands implements CommandExecutor {
         return ChatColor.translateAlternateColorCodes('&', name);
     }
 
+    String cmdprefix = paradisumain.CommandPrefix();
+    String cmdemph = paradisumain.CommandEmph();
+
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {

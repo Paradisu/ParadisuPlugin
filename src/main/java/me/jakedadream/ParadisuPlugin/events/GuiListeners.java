@@ -25,6 +25,11 @@ import java.util.Locale;
 
 public class GuiListeners implements Listener {
 
+
+    String cmdprefix = paradisumain.CommandPrefix();
+    String cmdemph = paradisumain.CommandEmph();
+
+
     @EventHandler
     public void onClick(InventoryClickEvent e){
 

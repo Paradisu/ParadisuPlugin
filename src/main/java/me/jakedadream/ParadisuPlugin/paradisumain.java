@@ -1,7 +1,5 @@
 package me.jakedadream.ParadisuPlugin;
 
-import com.google.common.util.concurrent.AbstractScheduledService;
-import me.jakedadream.ParadisuPlugin.invs.trashcanINV;
 import me.jakedadream.ParadisuPlugin.modelmanager.HatModelInv;
 import me.jakedadream.ParadisuPlugin.modelmanager.PropModelInv;
 import me.jakedadream.ParadisuPlugin.modelmanager.modelcommands;
@@ -10,12 +8,11 @@ import me.jakedadream.ParadisuPlugin.commands.warps;
 import me.jakedadream.ParadisuPlugin.events.*;
 import me.jakedadream.ParadisuPlugin.shops.ShopCommands;
 import me.jakedadream.ParadisuPlugin.shops.ShopGuis;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -47,7 +44,15 @@ public class paradisumain extends JavaPlugin {
 
     */
 
-    Integer sched;
+    public static String CommandPrefix() {
+        String cmdprefix = "§x§e§9§2§8§2§9\uE015§x§f§d§d§0§2§3\uE00D ";
+        return cmdprefix;
+    }
+    public static String CommandEmph() {
+        String cmdemph = "§x§f§d§d§0§2§3";
+        return cmdemph;
+    }
+
 
     @Override
     public void onEnable() {
@@ -359,5 +364,4 @@ public class paradisumain extends JavaPlugin {
     public static void reloadShopGuiConfig() { fileShopGuiConfig = YamlConfiguration.loadConfiguration(sourceShopGuiFile); }
 
 }
-
 

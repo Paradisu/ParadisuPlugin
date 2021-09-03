@@ -1,5 +1,6 @@
 package me.jakedadream.ParadisuPlugin.events;
 
+import me.jakedadream.ParadisuPlugin.paradisumain;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -13,6 +14,11 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Random;
 
 public class toys implements Listener {
+
+
+    String cmdprefix = paradisumain.CommandPrefix();
+    String cmdemph = paradisumain.CommandEmph();
+
 
     @EventHandler
     public void dslauncher(final PlayerInteractEvent e) {

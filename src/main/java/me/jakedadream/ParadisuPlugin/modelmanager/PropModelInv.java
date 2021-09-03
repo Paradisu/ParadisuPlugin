@@ -16,6 +16,11 @@ import java.util.List;
 public class PropModelInv {
     public static List<Inventory> inventories = new ArrayList<>();
 
+
+    String cmdprefix = paradisumain.CommandPrefix();
+    String cmdemph = paradisumain.CommandEmph();
+
+
     public static void createInvs(){
 
         modelitemmanager models = new modelitemmanager();

@@ -26,6 +26,11 @@ public class snwevents implements Listener {
 
     private static HashMap<Player, ItemStack> ident = new HashMap<>();
 
+    String cmdprefix = paradisumain.CommandPrefix();
+    String cmdemph = paradisumain.CommandEmph();
+
+
+
     @EventHandler
     public static void onJoin(PlayerJoinEvent jEvent) {
         Player joiner = jEvent.getPlayer();

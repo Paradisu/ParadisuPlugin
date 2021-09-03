@@ -8,6 +8,9 @@ import org.bukkit.entity.Player;
 
 public class ShopCommands implements CommandExecutor {
 
+    String cmdprefix = paradisumain.CommandPrefix();
+    String cmdemph = paradisumain.CommandEmph();
+
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
         if (!(commandSender instanceof Player)){

@@ -1,5 +1,6 @@
 package me.jakedadream.ParadisuPlugin.items;
 
+import me.jakedadream.ParadisuPlugin.paradisumain;
 import org.bukkit.Material;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemFlag;
@@ -7,6 +8,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class ItemManager {
+
+    String cmdprefix = paradisumain.CommandPrefix();
+    String cmdemph = paradisumain.CommandEmph();
+
 
         public static ItemStack createCoin() {
             ItemStack item = new ItemStack(Material.GOLD_NUGGET, 1);

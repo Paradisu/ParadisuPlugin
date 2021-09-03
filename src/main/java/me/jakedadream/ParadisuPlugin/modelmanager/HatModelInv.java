@@ -14,6 +14,10 @@ import java.util.List;
 public class HatModelInv {
     public static List<Inventory> inventories = new ArrayList<>();
 
+    String cmdprefix = paradisumain.CommandPrefix();
+    String cmdemph = paradisumain.CommandEmph();
+
+
     public static void createInvs(){
         modelitemmanager models = new modelitemmanager();
         double dinvSize = 36;

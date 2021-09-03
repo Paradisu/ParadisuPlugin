@@ -1,5 +1,6 @@
 package me.jakedadream.ParadisuPlugin.commands;
 
+import me.jakedadream.ParadisuPlugin.paradisumain;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -17,6 +18,10 @@ public class generalcommands implements CommandExecutor {
         }
         return ChatColor.translateAlternateColorCodes('&', name);
     }
+
+
+    String cmdprefix = paradisumain.CommandPrefix();
+    String cmdemph = paradisumain.CommandEmph();
 
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {

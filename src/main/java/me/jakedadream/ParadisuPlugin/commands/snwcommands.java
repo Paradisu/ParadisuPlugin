@@ -3,7 +3,9 @@ package me.jakedadream.ParadisuPlugin.commands;
 import me.jakedadream.ParadisuPlugin.items.ItemManager;
 import me.jakedadream.ParadisuPlugin.items.PluginInventories;
 import me.jakedadream.ParadisuPlugin.modelmanager.modelitemmanager;
+import me.jakedadream.ParadisuPlugin.paradisumain;
 import org.bukkit.*;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -16,13 +18,15 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.potion.PotionEffectType;
 
-import java.lang.reflect.Member;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class snwcommands implements CommandExecutor {
+
+    String cmdprefix = paradisumain.CommandPrefix();
+    String cmdemph = paradisumain.CommandEmph();
+
 
 
     private String getParsedName(String[] args) {
@@ -180,7 +184,7 @@ public class snwcommands implements CommandExecutor {
             case "gms":
                 if (player.hasPermission("snw.gms") || player.hasPermission("snw.gm.*")) {
                     player.setGameMode(GameMode.SURVIVAL);
-                    player.sendMessage("§3[§dParadisu §bツ§3] §fYour gamemode has been set to §3Survival§f!");
+                    player.sendMessage(cmdprefix + "§fYour gamemode has been set to" + cmdemph + "Survival§f!");
                 } else {
                     player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");
                 }
@@ -409,7 +413,7 @@ public class snwcommands implements CommandExecutor {
 
 
                         player.openInventory(inv);
-                            player.sendMessage("§3[§dParadisu §bツ§3] §fNow opening the inventory of §3" + target.getName() + "");
+                            player.sendMessage("§3[§dParadisu §bツ§3] §fOpening the inventory of §3" + target.getName() + "");
                         } catch (NullPointerException e) {
                             player.sendMessage("§3[§dParadisu §bツ§3] §fThis player does not exist or is offline.");
                         }
@@ -473,7 +477,7 @@ public class snwcommands implements CommandExecutor {
                             player.sendMessage("§3[§dParadisu §bツ§3] §fThis player does not exist or is offline.");
                     }
                     } else {
-                        player.sendMessage("§3[§dParadisu §bツ§3] §fPlease do /tphere (player)");
+                        player.sendMessage("§3[§dParadisu §bツ§3] §fPlease do §3/tphere User");
                     }
                 } else {
                     player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command.");
@@ -483,8 +487,8 @@ public class snwcommands implements CommandExecutor {
             case "tp":
                 if (player.hasPermission("snw.tp") || player.hasPermission("snw.tp.*")) {
                     if (args.length < 1) {
-                        player.sendMessage("§3[§dParadisu §bツ§3] §fPlease do §3§o/tp User §f§lOR");
-                        player.sendMessage("§3[§dParadisu §bツ§3] §fPlease do §3§o/tp User User");
+                        player.sendMessage("§3[§dParadisu §bツ§3] §fPlease do §3/tp User §f§oor");
+                        player.sendMessage("§3[§dParadisu §bツ§3] §fPlease do §3/tp User User");
 
                         // TP TO A SINGLE PLAYER
                     } else if (args.length == 1) {
@@ -997,6 +1001,20 @@ public class snwcommands implements CommandExecutor {
                     }
                 } else { player.sendMessage("§3[§dParadisu §bツ§3] §7You do not have permission to use that command."); }
                 return true;
+
+            case "lightblocks":
+                if (player.hasPermission("snw.lightblocks")) {
+                    Inventory inv = Bukkit.createInventory(null, 18, "§3§lLight Blocks");
+
+                    ItemStack lightblocks = new ItemStack(Material.LIGHT);
+                    ItemMeta lightmeta = lightblocks.getItemMeta();
+                    BlockData lightdata = lightblocks.getType().createBlockData();
+                    lightmeta.setDisplayName("§e§lLight Block");
+
+
+                }
+
+
 
             default:
                     return false;

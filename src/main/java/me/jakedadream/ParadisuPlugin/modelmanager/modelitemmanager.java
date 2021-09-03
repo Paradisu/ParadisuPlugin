@@ -15,6 +15,10 @@ import java.util.List;
 
 public class modelitemmanager {
 
+    String cmdprefix = paradisumain.CommandPrefix();
+    String cmdemph = paradisumain.CommandEmph();
+
+
     public static ItemStack createPropModel(Integer modelid) {
         ItemStack propmodelitem = new ItemStack(Material.DIAMOND_AXE, 1);
         ItemMeta meta = propmodelitem.getItemMeta();
