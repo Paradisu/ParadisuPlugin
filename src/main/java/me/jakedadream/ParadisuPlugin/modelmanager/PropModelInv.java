@@ -45,7 +45,7 @@ public class PropModelInv {
             ItemMeta prevMeta = previous.getItemMeta();
             assert prevMeta != null;
             prevMeta.setCustomModelData(28);
-            prevMeta.setDisplayName("§b§l←§d§l Go Left");
+            prevMeta.setDisplayName("§x§e§8§1§e§2§6§l←§x§f§8§9§9§1§d§l Go Left");
             List<String> prevLore = new ArrayList<>();
             prevLore.add("§7Go left a page.");
             prevMeta.setLore(prevLore);
@@ -56,7 +56,7 @@ public class PropModelInv {
             assert nextMeta != null;
             nextMeta.setCustomModelData(48);
 
-            nextMeta.setDisplayName("§d§lGo Right §b§l→");
+            nextMeta.setDisplayName("§x§e§8§1§e§2§6§lGo Right §x§f§8§9§9§1§d§l→");
             List<String> nextLore = new ArrayList<>();
             nextLore.add("§7Go right a page.");
             nextMeta.setLore(nextLore);
