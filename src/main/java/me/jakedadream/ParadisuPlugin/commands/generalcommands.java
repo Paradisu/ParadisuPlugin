@@ -23,7 +23,6 @@ public class generalcommands implements CommandExecutor {
     String cmdprefix = paradisumain.CommandPrefix();
     String cmdemph = paradisumain.CommandEmph();
 
-
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 
 

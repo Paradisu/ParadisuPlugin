@@ -35,7 +35,7 @@ public class PropModelInv {
         System.out.println("invs: " + neededInventories);
         System.out.println("intinvs " + intneededInventories);
         for (int i = 0; i < intneededInventories; i++){
-            Inventory inv = Bukkit.createInventory(null, 54, "§3§lProp Models Give GUI");
+            Inventory inv = Bukkit.createInventory(null, 54, "§x§f§8§9§9§1§d§lProp Models Give GUI");
             inventories.add(inv);
         }
         int modelindex = 1;

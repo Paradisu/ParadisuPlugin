@@ -27,7 +27,7 @@ public class HatModelInv {
         int intneededInventories = (int) Math.ceil(neededInventories);
 
         for (int i = 0; i < intneededInventories; i ++){
-            Inventory inv  = Bukkit.createInventory(null, 54, "§3§lHat Models Give GUI");
+            Inventory inv  = Bukkit.createInventory(null, 54, "§x§f§8§9§9§1§d§lHat Models Give GUI");
             inventories.add(inv);
         }
         int modelindex = 1;

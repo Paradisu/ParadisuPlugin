@@ -27,6 +27,7 @@ public class snwcommands implements CommandExecutor {
     String cmdprefix = paradisumain.CommandPrefix();
     String cmdemph = paradisumain.CommandEmph();
     String nopermsmsg = paradisumain.NoPermsMessage();
+    String noargsmsg = paradisumain.NoArgsMessage();
 
 
 
@@ -257,7 +258,19 @@ public class snwcommands implements CommandExecutor {
                         ItemStack skull = new ItemStack(Material.PLAYER_HEAD, 1);
                         SkullMeta sm = (SkullMeta)skull.getItemMeta();
                         sm.setOwningPlayer(target);
-                        sm.setDisplayName("§3§l§o" + target.getName());
+                            if (player.hasPermission("meta.rank.owner")) {
+                                sm.setDisplayName("§3\ue006 §f" + target.getName());
+                            } else if (player.hasPermission("meta.rank.dev")) {
+                                sm.setDisplayName("§x§f§8§9§9§1§d\ue002 §f" + target.getName());
+                            } else if  (player.hasPermission("meta.rank.builders")) {
+                                sm.setDisplayName("§x§f§3§6§c§3§6\ue001 §f" + target.getName());
+                            } else if (player.hasPermission("meta.rank.staff")) {
+                                sm.setDisplayName("§3\ue007 §f" + target.getName());
+                            } else if (player.hasPermission("meta.rank.supporters")) {
+                                sm.setDisplayName("§d\ue008 §f" + target.getName());
+                            } else {
+                                sm.setDisplayName("§7\ue00a §f" + target.getName());
+                            }
                         skull.setItemMeta(sm);
 
                                 inv.setItem(46, skull);
@@ -889,20 +902,20 @@ public class snwcommands implements CommandExecutor {
 
 
 
-                    player.sendMessage("§3§l============= §f" + onlineammount + " §d§oOnline Players §3§l=============\n" +
-                            " \n");
+                    player.sendMessage("\uE013 " + cmdemph + onlineammount + " §fOnline Players \uE013" +
+                            "§r\n");
 
-                    if (owners.length() != 0) {player.sendMessage("§3\uE006 §d»§f " + owners + "\n");}
+                    if (owners.length() != 0) {player.sendMessage("§3\uE006 " + cmdemph + "\ue00d§f " + owners + "\n");}
 
-                    if (devs.length() != 0) {player.sendMessage("§e\uE002 §d»§f " + devs + "\n");}
+                    if (devs.length() != 0) {player.sendMessage("§x§f§8§9§9§1§d\uE002 " + cmdemph + "\ue00d§f " + devs + "\n");}
 
-                    if (builders.length() != 0) {player.sendMessage("§c\uE001 §d»§f " + builders + "\n");}
+                    if (builders.length() != 0) {player.sendMessage("§x§f§3§6§c§3§6\uE001 " + cmdemph + "\ue00d§f " + builders + "\n");}
 
-                    if (staff.length() != 0) {player.sendMessage("§c\uE007 §d»§f " + staff + "\n");}
+                    if (staff.length() != 0) {player.sendMessage("§c\uE007 " + cmdemph + "\ue00d§f " + staff + "\n");}
 
-                    if (supporters.length() != 0) {player.sendMessage("§d\uE008 §d»§f " + supporters + "\n");}
+                    if (supporters.length() != 0) {player.sendMessage("§d\uE008 " + cmdemph + "\ue00d§f " + supporters + "\n");}
 
-                    if (visitors.length() != 0) {player.sendMessage("§7\uE00A §d»§f " + visitors + "\n");}
+                    if (visitors.length() != 0) {player.sendMessage("§7\uE00A " + cmdemph + "\ue00d§f " + visitors + "\n");}
 
                 } else {player.sendMessage(nopermsmsg); }
                 return true;
@@ -1014,6 +1027,60 @@ public class snwcommands implements CommandExecutor {
 
 
                 }
+                return true;
+
+
+            case "ptime":
+                if (player.hasPermission("snw.ptime")) {
+                    if (args.length == 0) {
+                        player.sendMessage(noargsmsg);
+                    } else if (args.length == 1) {
+
+                        if (args[0] == "reset") {
+                            player.resetPlayerTime();
+                        }
+
+                        Long providedtime = Long.valueOf(args[0]);
+
+                        if (providedtime > 0 && providedtime < 24000) {
+                            player.setPlayerTime(providedtime, false);
+                            player.sendMessage(cmdprefix + "§fYour player time has been set to " + cmdemph + args[0] + "§f.");
+
+
+                        } else {
+                            player.sendMessage(cmdprefix + "§fPlease provide a time between " + cmdemph + "0§f-" + cmdemph + "24000§f.");
+                        }
+                    } else if (args.length == 2) {
+                        Player target = Bukkit.getPlayerExact(args[0]);
+                        try {
+
+                            if (args[0] == "reset") {
+                                target.resetPlayerTime();
+                            }
+
+                            Long providedtime = Long.valueOf(args[0]);
+                            if (providedtime > 0 && providedtime < 24000) {
+                                target.setPlayerTime(providedtime, false);
+                                target.sendMessage(cmdprefix + "§fYour player time has been set to " + cmdemph + args[0] + "§f.");
+                                player.sendMessage(cmdprefix + "§fTheir player time has been set to " + cmdemph + args[0] + "§f.");
+                            } else {
+                                player.sendMessage(cmdprefix + "§fPlease provide a time between " + cmdemph + "0§f-" + cmdemph + "24000§f.");
+                            }
+
+
+
+                        } catch (NullPointerException e) {
+                            player.sendMessage(cmdprefix + "§fThis player does not exist or is offline.");
+                        }
+
+
+
+                    }
+
+                } else {
+                    player.sendMessage(nopermsmsg);
+                }
+                return true;
 
 
 

@@ -56,6 +56,10 @@ public class paradisumain extends JavaPlugin {
         String nopermsmsg = "\uE016 §fYou do not have permission to use that command.";
         return nopermsmsg;
     }
+    public static String NoArgsMessage() {
+        String noargsmsg = "\uE016 §fNot enough arguments provided.";
+        return noargsmsg;
+    }
 
     @Override
     public void onEnable() {

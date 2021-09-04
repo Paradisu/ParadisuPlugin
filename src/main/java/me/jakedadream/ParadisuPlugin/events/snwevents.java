@@ -32,11 +32,11 @@ public class snwevents implements Listener {
 
 
     @EventHandler
-    public static void onJoin(PlayerJoinEvent jEvent) {
+    public void onJoin(PlayerJoinEvent jEvent) {
         Player joiner = jEvent.getPlayer();
         joiner.sendMessage("§f§l----------------------------");
-        joiner.sendMessage("§3[§dParadisu §bツ§3] §fWelcome to §f§lSuper Nintendo World!");
-        joiner.sendMessage("§3[§dParadisu §bツ§3] §fBe sure to do §e/rp §f& §e/audio§f!");
+        joiner.sendMessage("\uE016 §fWelcome to " + cmdemph + "\ue00f");
+        joiner.sendMessage("\uE016 §fBe sure to do " + cmdemph + "/audio§f.");
         joiner.sendMessage("§f§l----------------------------");
 
         if (!joiner.hasPermission("snw.nospawnonjoin")) {
