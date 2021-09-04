@@ -34,10 +34,10 @@ public class snwevents implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent jEvent) {
         Player joiner = jEvent.getPlayer();
-        joiner.sendMessage("§f§l----------------------------");
+        joiner.sendMessage("\uE013 §f| \uE013");
         joiner.sendMessage("\uE016 §fWelcome to " + cmdemph + "\ue00f");
         joiner.sendMessage("\uE016 §fBe sure to do " + cmdemph + "/audio§f.");
-        joiner.sendMessage("§f§l----------------------------");
+        joiner.sendMessage("\uE013 §f| \uE013");
 
         if (!joiner.hasPermission("snw.nospawnonjoin")) {
             Location loc = new Location((Bukkit.getWorld("SuperNW")), 82.5, 86.1, -741.5, 75, 0);    // 82.5 86.1 -741.5

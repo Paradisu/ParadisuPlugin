@@ -1,6 +1,6 @@
 name: ParadisuPlugin
-version: 2.12.5
-authors: [JakeDaDream, RealInstantRamen, andyinnie, _Kastle, cytocracy]
+version: 2.12.6
+authors: [JakeDaDream, _Kastle, cytocracy]
 main: me.jakedadream.ParadisuPlugin.paradisumain
 api-version: 1.16
 commands:
