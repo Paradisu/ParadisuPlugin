@@ -8,8 +8,10 @@ import me.jakedadream.ParadisuPlugin.commands.warps;
 import me.jakedadream.ParadisuPlugin.events.*;
 import me.jakedadream.ParadisuPlugin.shops.ShopCommands;
 import me.jakedadream.ParadisuPlugin.shops.ShopGuis;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
+import org.bukkit.World;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -17,14 +19,14 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.Time;
+import java.util.Calendar;
+import java.util.TimeZone;
 
 //uploadtest
 
 public class paradisumain extends JavaPlugin {
 
-    public static void main(String[] args) {
-        System.out.println("[Paradisu] Starting...");
-    }
 
     /*
      _____                    _ _             _____  _             _
@@ -173,7 +175,6 @@ public class paradisumain extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new luckyblocks(), this);
         getServer().getPluginManager().registerEvents(new entityedits(), this);
         getServer().getPluginManager().registerEvents(new toys(), this);
-//        getServer().getPluginManager().registerEvents(new chatevents(), this);
         getServer().getPluginManager().registerEvents(new snwevents(), this);
         getServer().getPluginManager().registerEvents(new GuiListeners(), this);
         getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "\n" + ChatColor.GREEN +
@@ -183,19 +184,25 @@ public class paradisumain extends JavaPlugin {
         //
         //
 
-     /*
+
+        Calendar calTokyo = Calendar.getInstance();
+        calTokyo.setTimeZone(TimeZone.getTimeZone("Asia/Tokyo"));
+        long tokyohour = calTokyo.get(Calendar.HOUR_OF_DAY);
+        long tokyominute = calTokyo.get(Calendar.MINUTE);
+
+        long tokyohourstick = (tokyohour * 1000) - 6000;
+        long tokyomintick = (tokyominute * 10) - 60;
+
+
+        long tokyoticks = tokyohourstick + tokyomintick;
+
+
+        Bukkit.getServer().getWorld("Paradisu").setTime(tokyoticks);
+        getServer().getConsoleSender().sendMessage(ChatColor.GOLD + "[Paradisu] We succesfully set the time to " + tokyoticks);
 
 
 
 
-
-
-
-
-
-
-
-     */
 
 
  /*       if (!Bukkit.getScheduler().isCurrentlyRunning(sched)) {

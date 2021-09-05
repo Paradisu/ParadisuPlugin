@@ -40,7 +40,7 @@ public class snwevents implements Listener {
         joiner.sendMessage("\uE013 §f| \uE013");
 
         if (!joiner.hasPermission("snw.nospawnonjoin")) {
-            Location loc = new Location((Bukkit.getWorld("SuperNW")), 82.5, 86.1, -741.5, 75, 0);    // 82.5 86.1 -741.5
+            Location loc = new Location((Bukkit.getWorld("Paradisu")), 82.5, 86.1, -741.5, 75, 0);    // 82.5 86.1 -741.5
             joiner.setGameMode(GameMode.ADVENTURE);
             joiner.teleport(loc);
         }
