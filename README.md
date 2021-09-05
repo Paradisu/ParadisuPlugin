@@ -15,13 +15,18 @@ mvn clean package
 ```
 
 ### Features
-* Spawn, warp, and teleportation system
+* Teleportation Commands
 * Fly mode for non-creative players
-* Lists and obtain available custom models
+* Lists and obtain available custom models with GUI
 * Gamemode management system
 * Inventory management system
 * Limited item NBT editing
 * Obtain player skulls
+* Automatic server time syncing to Japan
+* Player information commands
+* Admin & Staff chat
+* Custom Trash Cans
+* Custom Shops
 
 ### Reporting Bugs
 * Minor bugs may be reported with Issues
