@@ -947,31 +947,41 @@ public class snwcommands implements CommandExecutor {
 
             case "currenttime":
                 if (player.hasPermission("snw.currenttime")) {
-                    String ampm = null;
                     Long ct = player.getWorld().getTime();
-                    if (ct<6000 || ct>18000) {
+
+                    // Converting time to Millitary
+                    long gameTime = ct;
+                    long hours = gameTime / 1000 + 6;
+                    hours %= 24;
+                    if (hours == 24) hours = 0;
+                    long minutes = (gameTime % 1000) * 60 / 1000;
+                    String mm = "0" + minutes;
+                    mm = mm.substring(mm.length() - 2, mm.length());
+
+                    // Converting to normal time
+                    long hoursparsed;
+                    String ampm;
+                    if (hours > 12) {
+                        ampm = "PM";
+                        hoursparsed = hours - 12;
+                    } else if (hours < 12 && hours > 0) {
                         ampm = "AM";
-                    } else { ampm = "PM";}
+                        hoursparsed = hours;
+                    } else if (hours == 0) {
+                        hoursparsed = 1;
+                        ampm = "AM";
+                    } else if (hours == 12) {
+                        hoursparsed = 1;
+                        ampm = "PM";
+                    } else {
+                        hoursparsed = 123;
+                        ampm = "Error";
+                    }
 
 
-                    Double ctdouble = ct.doubleValue();
 
 
-                    Long currenthour = (ct%12000)/1000;
-                    Double currentminute = ((ctdouble%1000)/16.6);
-              //      String[] currentminutesplit = currentminute.toString().split(".", 1);
-              //      String currentminute1 = currentminutesplit[0];
-
-                    DecimalFormat format = new DecimalFormat("#00");
-
-
-                    player.sendMessage(cmdprefix + "§fIt is currently §3" + currenthour + "§f:§3" + format.format(currentminute) + " " + "§f§l" + ampm + "§f.");
-
-            //        player.sendMessage("Current Tick Time: " + ct);
-            //        player.sendMessage("Current Hour Time: " + currenthour);
-            //        player.sendMessage("Current Minute Time: " + format.format(currentminute));
-            //        player.sendMessage("It is currently " + currenthour + ":" + currentminute + " " + ampm);
-
+                    player.sendMessage(cmdprefix + "§fThe current time in" + cmdemph + " §lJapan §f§o(ingame)§f is " + cmdemph + hoursparsed + "§f:" + cmdemph + mm + " " + ampm + "§f.");
 
                 } else {player.sendMessage(nopermsmsg); }
                 return true;
