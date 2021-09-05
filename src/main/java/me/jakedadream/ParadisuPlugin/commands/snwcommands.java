@@ -23,6 +23,8 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.TimeZone;
 
 
 public class snwcommands implements CommandExecutor {
@@ -1100,6 +1102,29 @@ public class snwcommands implements CommandExecutor {
                 return true;
 
 
+            case "syncjapantime":
+                if (player.hasPermission("snw.synctime")) {
+
+                    Calendar calTokyo = Calendar.getInstance();
+                    calTokyo.setTimeZone(TimeZone.getTimeZone("Asia/Tokyo"));
+                    long tokyohour = calTokyo.get(Calendar.HOUR_OF_DAY);
+                    double tokyominute = calTokyo.get(Calendar.MINUTE);
+                    double tokyoseconds = calTokyo.get(Calendar.SECOND);
+
+                    long tokyohourtick;
+                    if (tokyohour >= 6) { tokyohourtick = (tokyohour * 1000) - 6000; } else {
+                        tokyohourtick = (tokyohour * 1000) + 18000; }
+                    double tokyominsec = (tokyominute * 60d) + tokyoseconds;
+                    double tokyosecondstick = (tokyominsec/3600d) * 1000d;
+                    long tokyotimeticks = (long) (tokyosecondstick + tokyohourtick);
+
+                    Bukkit.getServer().getWorld(player.getWorld().getName()).setTime(tokyotimeticks);
+                    player.sendMessage(cmdprefix + "§fWe set the server time to " + cmdemph + tokyotimeticks + "§f ticks.");
+
+
+                } else {
+                    player.sendMessage(nopermsmsg);
+                }
 
 
 

@@ -1,5 +1,5 @@
 name: ParadisuPlugin
-version: 2.13.0
+version: 2.14.0
 authors: [JJakee, cytocracy, _Kastle, CookieCrafted]
 main: me.jakedadream.ParadisuPlugin.paradisumain
 api-version: 1.16
@@ -205,3 +205,5 @@ commands:
   lightblocks:
     description: light blocks
     usage: /<command>
+  syncjapantime:
+    description: syncs time to japan

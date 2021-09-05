@@ -71,9 +71,6 @@ public class paradisumain extends JavaPlugin {
         // =================
         getCommand("givecoin").setExecutor(new snwcommands());
         getCommand("givestarcoin").setExecutor(new snwcommands());
-//        getCommand("mgive").setExecutor(new snwcommands());
-//        getCommand("mhat").setExecutor(new snwcommands());
-//        getCommand("idlist").setExecutor(new snwcommands());
         getCommand("sc").setExecutor(new snwcommands());
         getCommand("ac").setExecutor(new snwcommands());
         getCommand("gmc").setExecutor(new snwcommands());
@@ -107,6 +104,7 @@ public class paradisumain extends JavaPlugin {
         getCommand("currenttime").setExecutor(new snwcommands());
         getCommand("mkill").setExecutor(new snwcommands());
         getCommand("lightblocks").setExecutor(new snwcommands());
+        getCommand("syncjapantime").setExecutor(new snwcommands());
         //
         // =================
         // WARPS COMMANDS
@@ -169,6 +167,8 @@ public class paradisumain extends JavaPlugin {
 
         ShopGuis.initShops();
 
+        setJapanTime();
+
         // =================
         // EVENTS
         // =================
@@ -185,20 +185,6 @@ public class paradisumain extends JavaPlugin {
         //
 
 
-        Calendar calTokyo = Calendar.getInstance();
-        calTokyo.setTimeZone(TimeZone.getTimeZone("Asia/Tokyo"));
-        long tokyohour = calTokyo.get(Calendar.HOUR_OF_DAY);
-        long tokyominute = calTokyo.get(Calendar.MINUTE);
-
-        long tokyohourstick = (tokyohour * 1000) - 6000;
-        long tokyomintick = (tokyominute * 10) - 60;
-
-
-        long tokyoticks = tokyohourstick + tokyomintick;
-
-
-        Bukkit.getServer().getWorld("Paradisu").setTime(tokyoticks);
-        getServer().getConsoleSender().sendMessage(ChatColor.GOLD + "[Paradisu] We succesfully set the time to " + tokyoticks);
 
 
 
@@ -222,6 +208,26 @@ public class paradisumain extends JavaPlugin {
         getServer().getConsoleSender().sendMessage(ChatColor.RED + "[Paradisu] Goodbye!");
     }
 
+    public void setJapanTime() {
+
+        Calendar calTokyo = Calendar.getInstance();
+        calTokyo.setTimeZone(TimeZone.getTimeZone("Asia/Tokyo"));
+        long tokyohour = calTokyo.get(Calendar.HOUR_OF_DAY);
+        double tokyominute = calTokyo.get(Calendar.MINUTE);
+        double tokyoseconds = calTokyo.get(Calendar.SECOND);
+
+        long tokyohourtick;
+        if (tokyohour >= 6) { tokyohourtick = (tokyohour * 1000) - 6000; } else {
+            tokyohourtick = (tokyohour * 1000) + 18000; }
+        double tokyominsec = (tokyominute * 60d) + tokyoseconds;
+        double tokyosecondstick = (tokyominsec/3600d) * 1000d;
+        long tokyotimeticks = (long) (tokyosecondstick + tokyohourtick);
+
+
+        Bukkit.getServer().getWorld("Paradisu").setTime(tokyotimeticks);
+        getServer().getConsoleSender().sendMessage(ChatColor.GOLD + "[Paradisu] We succesfully set the time to " + tokyotimeticks);
+
+    }
 
 
 
