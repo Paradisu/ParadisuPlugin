@@ -5,6 +5,7 @@ import me.jakedadream.ParadisuPlugin.items.PluginInventories;
 import me.jakedadream.ParadisuPlugin.modelmanager.modelitemmanager;
 import me.jakedadream.ParadisuPlugin.paradisumain;
 import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -14,8 +15,10 @@ import org.bukkit.entity.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.material.MaterialData;
 import org.bukkit.potion.PotionEffectType;
 
 import java.text.DecimalFormat;
@@ -1018,13 +1021,17 @@ public class snwcommands implements CommandExecutor {
 
             case "lightblocks":
                 if (player.hasPermission("snw.lightblocks")) {
-                    Inventory inv = Bukkit.createInventory(null, 18, "§3§lLight Blocks");
+         //           Inventory inv = Bukkit.createInventory(null, 18, "§3§lLight Blocks");
 
                     ItemStack lightblocks = new ItemStack(Material.LIGHT);
-                    ItemMeta lightmeta = lightblocks.getItemMeta();
-                    BlockData lightdata = lightblocks.getType().createBlockData();
-                    lightmeta.setDisplayName("§e§lLight Block");
 
+                    String dataString = "[level=10]";
+
+                    //BlockData lightdata = Bukkit.createBlockData(dataString);
+
+                    BlockData t = lightblocks.getType().createBlockData(dataString);
+
+                    player.getInventory().addItem(lightblocks);
 
                 }
                 return true;
@@ -1081,6 +1088,8 @@ public class snwcommands implements CommandExecutor {
                     player.sendMessage(nopermsmsg);
                 }
                 return true;
+
+
 
 
 

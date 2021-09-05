@@ -80,7 +80,7 @@ public class GuiListeners implements Listener {
             }
         }
         switch (player.getOpenInventory().getTitle()) {
-            case "§3§lProp Models Give GUI" -> {
+            case "§x§f§8§9§9§1§d§lProp Models Give GUI" -> {
 //                PropModelInv props = new PropModelInv();
                 List<Inventory> invss = PropModelInv.getInvs();
                 switch (e.getRawSlot()) {
@@ -127,7 +127,7 @@ public class GuiListeners implements Listener {
                     default -> e.setCancelled(true);
                 }
             }
-            case "§3§lHat Models Give GUI" -> {
+            case "§x§f§8§9§9§1§d§lHat Models Give GUI" -> {
                 List<Inventory> invss = HatModelInv.getInvs();
                 switch (e.getRawSlot()) {
                     case 48 -> {

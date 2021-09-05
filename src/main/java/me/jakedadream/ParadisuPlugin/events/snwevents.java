@@ -112,13 +112,6 @@ public class snwevents implements Listener {
         }
 
     @EventHandler
-    public void onPlayerChat(AsyncPlayerChatEvent e) {
-        if (paradisumain.getPlugin(paradisumain.class).getConfig().getString(e.getPlayer().getName()) != null) {
-            e.getPlayer().setDisplayName(paradisumain.getPlugin(paradisumain.class).getConfig().getString(e.getPlayer().getName()));
-        }
-    }    //////////////////// FIX THIS
-
-    @EventHandler
     public void leaveEvent(PlayerQuitEvent e) {
         Player leaver = e.getPlayer();
 
