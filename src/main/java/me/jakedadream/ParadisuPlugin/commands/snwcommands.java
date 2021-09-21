@@ -191,7 +191,7 @@ public class snwcommands implements CommandExecutor {
             case "gms":
                 if (player.hasPermission("snw.gms") || player.hasPermission("snw.gm.*")) {
                     player.setGameMode(GameMode.SURVIVAL);
-                    player.sendMessage(cmdprefix + "§fYour gamemode has been set to" + cmdemph + "Survival§f!");
+                    player.sendMessage(cmdprefix + "§fYour gamemode has been set to " + cmdemph + "Survival§f!");
                 } else {
                     player.sendMessage(nopermsmsg);
                 }
@@ -279,7 +279,6 @@ public class snwcommands implements CommandExecutor {
                         skull.setItemMeta(sm);
 
                                 inv.setItem(46, skull);
-
 
 
 
@@ -482,63 +481,6 @@ public class snwcommands implements CommandExecutor {
                 if (player.hasPermission("snw.sex")) {
                     player.sendMessage(cmdprefix + "§fYou are now having sex!!!!!");
                 } else { player.sendMessage("Unknown command. Tyle \"/help\" for help."); }
-                return true;
-
-            case "tphere":
-                if (player.hasPermission("snw.tphere") || player.hasPermission("snw.tp.*")) {
-
-                    if (args.length == 1) {
-                        try {
-                            Player target = Bukkit.getPlayerExact((args[0]));
-                            target.teleport((player.getLocation()));
-                            player.sendMessage(cmdprefix + "§fSuccessfully teleported §3" + target.getName() + " §fto you.");
-                        } catch (NullPointerException e) {
-                            player.sendMessage(cmdprefix + "§fThis player does not exist or is offline.");
-                    }
-                    } else {
-                        player.sendMessage(cmdprefix + "§fPlease do §3/tphere User");
-                    }
-                } else {
-                    player.sendMessage(nopermsmsg);
-                }
-                return true;
-
-            case "tp":
-                if (player.hasPermission("snw.tp") || player.hasPermission("snw.tp.*")) {
-                    if (args.length < 1) {
-                        player.sendMessage(cmdprefix + "§fPlease do §3/tp User §f§oor");
-                        player.sendMessage(cmdprefix + "§fPlease do §3/tp User User");
-
-                        // TP TO A SINGLE PLAYER
-                    } else if (args.length == 1) {
-                        Player target = Bukkit.getPlayerExact((args[0]));
-
-                        try {
-                            player.teleport((target.getLocation()));
-                            player.sendMessage(cmdprefix + "§fSuccessfully teleported to§3 " + args[0] + "§f.");
-                        } catch (NullPointerException e) {
-                            player.sendMessage(cmdprefix + "§fThis player does not exist or is offline.");
-                        }
-
-                        // TP ANOTHER PLAYER TO ANOTHER PLAYER
-                    }
-                    if (args.length == 2) {
-                        Player PlayerToSend = Bukkit.getPlayerExact(args[0]);
-                        Player target = Bukkit.getPlayerExact(args[1]);
-
-                        try {
-                            PlayerToSend.teleport(target.getLocation());
-                            player.sendMessage(cmdprefix + "§fSuccessfully teleported §3" + PlayerToSend.getName() + "§fto §3" + target.getInventory() + "§f.");
-                        } catch (NullPointerException e) {
-                            player.sendMessage(cmdprefix + "§fOne of these players do not exist or are offline.");
-                        }
-                        // TOO MANY ARGS
-                    } else if (args.length > 2) {
-                        player.sendMessage(cmdprefix + "§fPlease do `/tp (player)` OR `/tp (player1) (player2)`");
-                    }
-                } else {
-                    player.sendMessage(nopermsmsg);
-                }
                 return true;
 
             case "skull":
@@ -1070,7 +1012,7 @@ public class snwcommands implements CommandExecutor {
                             player.sendMessage(cmdprefix + "§fPlease provide a time between " + cmdemph + "0§f-" + cmdemph + "24000§f.");
                         }
                     } else if (args.length == 2) {
-                        Player target = Bukkit.getPlayerExact(args[0]);
+                        Player target = Bukkit.getPlayerExact(args[1]);
                         try {
 
                             if (args[0] == "reset") {
@@ -1125,6 +1067,7 @@ public class snwcommands implements CommandExecutor {
                 } else {
                     player.sendMessage(nopermsmsg);
                 }
+                return true;
 
 
 

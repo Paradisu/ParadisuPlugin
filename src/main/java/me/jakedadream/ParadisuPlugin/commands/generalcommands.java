@@ -18,7 +18,7 @@ public class generalcommands implements CommandExecutor {
         }
         return ChatColor.translateAlternateColorCodes('&', name);
     }
-
+//
 
     String cmdprefix = paradisumain.CommandPrefix();
     String cmdemph = paradisumain.CommandEmph();

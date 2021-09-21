@@ -1,5 +1,6 @@
 package me.jakedadream.ParadisuPlugin;
 
+import me.jakedadream.ParadisuPlugin.commands.teleportationcmds;
 import me.jakedadream.ParadisuPlugin.modelmanager.HatModelInv;
 import me.jakedadream.ParadisuPlugin.modelmanager.PropModelInv;
 import me.jakedadream.ParadisuPlugin.modelmanager.modelcommands;
@@ -10,7 +11,6 @@ import me.jakedadream.ParadisuPlugin.shops.ShopCommands;
 import me.jakedadream.ParadisuPlugin.shops.ShopGuis;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Color;
 import org.bukkit.World;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -19,7 +19,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.Time;
 import java.util.Calendar;
 import java.util.TimeZone;
 
@@ -85,8 +84,6 @@ public class paradisumain extends JavaPlugin {
         getCommand("noon").setExecutor(new snwcommands());
         getCommand("spawn").setExecutor(new snwcommands());
         getCommand("sex").setExecutor(new snwcommands());
-        getCommand("tphere").setExecutor(new snwcommands());
-        getCommand("tp").setExecutor(new snwcommands());
         getCommand("skull").setExecutor(new snwcommands());
         getCommand("clearinventory").setExecutor(new snwcommands());
         getCommand("trashcan").setExecutor(new snwcommands());
@@ -105,6 +102,13 @@ public class paradisumain extends JavaPlugin {
         getCommand("mkill").setExecutor(new snwcommands());
         getCommand("lightblocks").setExecutor(new snwcommands());
         getCommand("syncjapantime").setExecutor(new snwcommands());
+        //
+        // =================
+        // TPING COMMANDS
+        // =================
+        getCommand("tphere").setExecutor(new teleportationcmds());
+        getCommand("tp").setExecutor(new teleportationcmds());
+        getCommand("cordstp").setExecutor(new teleportationcmds());
         //
         // =================
         // WARPS COMMANDS
@@ -223,8 +227,9 @@ public class paradisumain extends JavaPlugin {
         double tokyosecondstick = (tokyominsec/3600d) * 1000d;
         long tokyotimeticks = (long) (tokyosecondstick + tokyohourtick);
 
+        World overworld = Bukkit.getWorlds().get(0);
+        Bukkit.getServer().getWorld(overworld.getName()).setTime(tokyotimeticks);
 
-        Bukkit.getServer().getWorld("Paradisu").setTime(tokyotimeticks);
         getServer().getConsoleSender().sendMessage(ChatColor.GOLD + "[Paradisu] We succesfully set the time to " + tokyotimeticks);
 
     }
