@@ -1,26 +1,23 @@
 package me.jakedadream.ParadisuPlugin;
 
-import me.jakedadream.ParadisuPlugin.commands.teleportationcmds;
-import me.jakedadream.ParadisuPlugin.modelmanager.HatModelInv;
-import me.jakedadream.ParadisuPlugin.modelmanager.PropModelInv;
-import me.jakedadream.ParadisuPlugin.modelmanager.modelcommands;
-import me.jakedadream.ParadisuPlugin.commands.snwcommands;
-import me.jakedadream.ParadisuPlugin.commands.warps;
+import me.jakedadream.ParadisuPlugin.commands.*;
+import me.jakedadream.ParadisuPlugin.modelmanager.*;
+import me.jakedadream.ParadisuPlugin.invs.*;
+import me.jakedadream.ParadisuPlugin.items.*;
 import me.jakedadream.ParadisuPlugin.events.*;
-import me.jakedadream.ParadisuPlugin.shops.ShopCommands;
-import me.jakedadream.ParadisuPlugin.shops.ShopGuis;
-import org.bukkit.Bukkit;
+import me.jakedadream.ParadisuPlugin.shops.*;
+import me.jakedadream.ParadisuPlugin.wrappers.*;
 import org.bukkit.ChatColor;
-import org.bukkit.World;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Calendar;
-import java.util.TimeZone;
 
 //uploadtest
 
@@ -171,7 +168,7 @@ public class paradisumain extends JavaPlugin {
 
         ShopGuis.initShops();
 
-        setJapanTime();
+        japantime.setJapanTime();
 
         // =================
         // EVENTS
@@ -188,22 +185,25 @@ public class paradisumain extends JavaPlugin {
         //
         //
 
+       /* getServer().getPluginManager().regist erEvents(PlayerJoinEvent, (Plugin)this);
+        (new BukkitRunnable() {
+            public void run() {
 
+                spinningcoins.spineffect();
 
-
-
-
-
-
- /*       if (!Bukkit.getScheduler().isCurrentlyRunning(sched)) {
-            sched = Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
-                @Override
-                public void run() {
-                    new entityedits().load();
-                }
-            }, 1, 1);
-        } */
+            }}).runTaskTimer((Plugin) this, 0, 2); */
     }
+
+/*
+    int id = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
+        @Override
+        public void run() {
+
+            spinningcoins.spineffect();
+
+        }}, 0, 2);
+*/
+
 
 
     @Override
@@ -212,30 +212,13 @@ public class paradisumain extends JavaPlugin {
         getServer().getConsoleSender().sendMessage(ChatColor.RED + "[Paradisu] Goodbye!");
     }
 
-    public void setJapanTime() {
-
-        Calendar calTokyo = Calendar.getInstance();
-        calTokyo.setTimeZone(TimeZone.getTimeZone("Asia/Tokyo"));
-        long tokyohour = calTokyo.get(Calendar.HOUR_OF_DAY);
-        double tokyominute = calTokyo.get(Calendar.MINUTE);
-        double tokyoseconds = calTokyo.get(Calendar.SECOND);
-
-        long tokyohourtick;
-        if (tokyohour >= 6) { tokyohourtick = (tokyohour * 1000) - 6000; } else {
-            tokyohourtick = (tokyohour * 1000) + 18000; }
-        double tokyominsec = (tokyominute * 60d) + tokyoseconds;
-        double tokyosecondstick = (tokyominsec/3600d) * 1000d;
-        long tokyotimeticks = (long) (tokyosecondstick + tokyohourtick);
-
-        World overworld = Bukkit.getWorlds().get(0);
-        Bukkit.getServer().getWorld(overworld.getName()).setTime(tokyotimeticks);
-
-        getServer().getConsoleSender().sendMessage(ChatColor.GOLD + "[Paradisu] We succesfully set the time to " + tokyotimeticks);
-
-    }
 
 
 
+
+    //
+    //
+    //
     public static File sourceWarpFile;
     public static FileConfiguration fileWarpConfig;
 
