@@ -5,27 +5,45 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
-public class spinningcoins {
+import java.util.ArrayList;
+import java.util.List;
+
+public class spinningcoins extends BukkitRunnable {
+
+
+
+    public void run(){
+
+    }
 
     public static void spineffect() {
 
+        //System.out.println("in runnable");
         Bukkit.getWorlds();
         for (World w : Bukkit.getWorlds()) {
             for (Entity e : w.getEntities()) {
 
-                if (e instanceof ArmorStand) {
-                    ArmorStand as = (ArmorStand) e;
+                //if (e.getType() == EntityType.ARMOR_STAND) {
 
-                    if (as.getName().equalsIgnoreCase("CoinSpin")) {
+                   // ArmorStand as = (ArmorStand) e;
+                    if(e.getCustomName() == null) return;
 
-                        Location asloc = as.getLocation();
+
+                    //vvvv @ JAKE THIS IS WHAT ISN'T WORKING
+                    if (e.getCustomName().equalsIgnoreCase("CoinSpin")) {
+
+                        Location asloc = e.getLocation();
                         Float yawvar = 6.0F;
-                        asloc.setYaw(as.getLocation().getYaw() + yawvar);
-                        as.teleport(asloc);
+                        asloc.setYaw(e.getLocation().getYaw() + yawvar);
+                        e.teleport(asloc);
 
-                    } else return;
-                } else return;
+
+                   } else return;
+                //} else return;
             }
         }
     }
