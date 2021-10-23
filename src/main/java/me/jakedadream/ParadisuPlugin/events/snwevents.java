@@ -133,7 +133,9 @@ public class snwevents implements Listener {
 
     @EventHandler
     public void PlayerCraft(CraftItemEvent cie) {
-        cie.setCancelled(true);
+        if (!cie.getWhoClicked().hasPermission("snw.allowcraft")) {
+            cie.setCancelled(true);
+        }
     }
 
     @EventHandler

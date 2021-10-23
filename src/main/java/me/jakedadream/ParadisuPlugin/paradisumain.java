@@ -7,14 +7,20 @@ import me.jakedadream.ParadisuPlugin.items.*;
 import me.jakedadream.ParadisuPlugin.events.*;
 import me.jakedadream.ParadisuPlugin.shops.*;
 import me.jakedadream.ParadisuPlugin.wrappers.*;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitScheduler;
 
 import java.io.File;
 import java.io.IOException;
@@ -99,6 +105,8 @@ public class paradisumain extends JavaPlugin {
         getCommand("mkill").setExecutor(new snwcommands());
         getCommand("lightblocks").setExecutor(new snwcommands());
         getCommand("syncjapantime").setExecutor(new snwcommands());
+        getCommand("admininvsee").setExecutor(new snwcommands());
+        getCommand("unname").setExecutor(new snwcommands());
         //
         // =================
         // TPING COMMANDS
@@ -185,25 +193,17 @@ public class paradisumain extends JavaPlugin {
         //
         //
 
-       /* getServer().getPluginManager().regist erEvents(PlayerJoinEvent, (Plugin)this);
-        (new BukkitRunnable() {
+        BukkitScheduler scheduler = getServer().getScheduler();
+        scheduler.scheduleSyncRepeatingTask(this, new Runnable() {
+            @Override
             public void run() {
-
                 spinningcoins.spineffect();
 
-            }}).runTaskTimer((Plugin) this, 0, 2); */
+
+
+            }
+        }, 0L, 2L);
     }
-
-/*
-    int id = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
-        @Override
-        public void run() {
-
-            spinningcoins.spineffect();
-
-        }}, 0, 2);
-*/
-
 
 
     @Override

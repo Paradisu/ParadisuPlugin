@@ -2,7 +2,7 @@ package me.jakedadream.ParadisuPlugin.commands;
 
 import me.jakedadream.ParadisuPlugin.items.ItemManager;
 import me.jakedadream.ParadisuPlugin.items.PluginInventories;
-import me.jakedadream.ParadisuPlugin.modelmanager.modelitemmanager;
+import me.jakedadream.ParadisuPlugin.wrappers.*;
 import me.jakedadream.ParadisuPlugin.paradisumain;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -431,13 +431,34 @@ public class snwcommands implements CommandExecutor {
 
 
                         player.openInventory(inv);
-                            player.sendMessage(cmdprefix + "§fOpening the inventory of §3" + target.getName() + "");
+                            player.sendMessage(cmdprefix + "§fOpening the inventory of §3" + target.getName() + ".");
                         } catch (NullPointerException e) {
                             player.sendMessage(cmdprefix + "§fThis player does not exist or is offline.");
                         }
                     }
 
                 } else {player.sendMessage(nopermsmsg);}
+                return true;
+
+            case "admininvsee":
+                if (player.hasPermission("snw.invsee.admin")) {
+
+                    if (args.length >= 1) {
+                        Player target = Bukkit.getPlayerExact(args[0]);
+                        try {
+
+                            player.openInventory(target.getInventory());
+                            player.sendMessage(cmdprefix + "§fOpening the inventory of §3" + target.getName() + ".");
+
+
+                        } catch (NullPointerException e) {
+                            player.sendMessage(cmdprefix + "§fThis player does not exist or is offline.");
+                        }
+
+                    } else {
+                        player.sendMessage(noargsmsg);
+                    }
+                }
                 return true;
 
 
@@ -619,6 +640,19 @@ public class snwcommands implements CommandExecutor {
                     player.sendMessage(nopermsmsg);
                 }
                 return true;
+
+
+            case "unname":
+                if (player.hasPermission("snw.rename")) {
+                    ItemStack item = player.getInventory().getItemInMainHand();
+                    ItemMeta meta = item.getItemMeta();
+                    meta.setDisplayName(null);
+                    item.setItemMeta(meta);
+                } else {
+                    player.sendMessage(nopermsmsg);
+                }
+                return true;
+
 
 
             case "srename":
@@ -1067,6 +1101,10 @@ public class snwcommands implements CommandExecutor {
                 } else {
                     player.sendMessage(nopermsmsg);
                 }
+                return true;
+
+            case "staffannouncement":
+                announcementwrapper.permannoucne("snw.sex", cmdprefix + " §fYo you wildin' bro.");
                 return true;
 
 

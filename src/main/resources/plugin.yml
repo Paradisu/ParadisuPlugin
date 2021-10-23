@@ -4,6 +4,12 @@ authors: [JJakee, cytocracy, _Kastle, CookieCrafted]
 main: me.jakedadream.ParadisuPlugin.paradisumain
 api-version: 1.16
 commands:
+  unname:
+    description: unnames items
+    usage: /<command>
+  admininvsee:
+    description: admin invsee lol
+    usage: /<command> <player>
   reloadshops:
     description: reloads shops
   getshop:
