@@ -107,6 +107,7 @@ public class paradisumain extends JavaPlugin {
         getCommand("syncjapantime").setExecutor(new snwcommands());
         getCommand("admininvsee").setExecutor(new snwcommands());
         getCommand("unname").setExecutor(new snwcommands());
+        getCommand("stack").setExecutor(new snwcommands());
         //
         // =================
         // TPING COMMANDS
@@ -131,6 +132,7 @@ public class paradisumain extends JavaPlugin {
         // GENERAL COMMANDS
         // =================
         // getCommand("cmd").setExecutor(new generalcommands());
+
         //
         // =================
         // MODEL COMMANDS

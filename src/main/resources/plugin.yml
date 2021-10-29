@@ -1,9 +1,12 @@
 name: ParadisuPlugin
-version: 2.15.0
+version: 2.15.1
 authors: [JJakee, cytocracy, _Kastle, CookieCrafted]
 main: me.jakedadream.ParadisuPlugin.paradisumain
 api-version: 1.16
 commands:
+  stack:
+    description: stack a player on another player
+    usage: /<command> <player(s)>
   unname:
     description: unnames items
     usage: /<command>

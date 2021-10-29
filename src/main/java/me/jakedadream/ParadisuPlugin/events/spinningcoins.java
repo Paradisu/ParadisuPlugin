@@ -33,7 +33,7 @@ public class spinningcoins extends BukkitRunnable {
                     ArmorStand as = (ArmorStand) e;
                     if (as.getName().equalsIgnoreCase("spin")) {
                         Location loc = as.getLocation();
-                        loc.setYaw(as.getLocation().getYaw() + 6.0F);
+                        loc.setYaw(as.getLocation().getYaw() + 12.0F);
                         as.teleport(loc);
                     }
                 }

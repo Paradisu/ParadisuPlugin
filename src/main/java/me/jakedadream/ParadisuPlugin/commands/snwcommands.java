@@ -1107,6 +1107,27 @@ public class snwcommands implements CommandExecutor {
                 announcementwrapper.permannoucne("snw.sex", cmdprefix + " §fYo you wildin' bro.");
                 return true;
 
+            case "stack":
+                if(args.length == 0) {
+                    player.sendMessage(cmdprefix + "§fIncorrect usage; Please use '/stack <player on me> or /stack <player> <on another player>'");
+                    return false;
+                }
+                else if(args.length == 1){
+                    if(Bukkit.getPlayer(args[0]) == null) {
+                        player.sendMessage(cmdprefix + "§fIncorrect usage; Please use '/stack <player on me> or /stack <player> <on another player>'");
+                        return false;
+                    }
+                    player.addPassenger(Bukkit.getPlayer(args[0]));
+                }
+                else if (args.length == 2) {
+                    if(Bukkit.getPlayer(args[1]) == null) {
+                        player.sendMessage(cmdprefix + "§fIncorrect usage; Please use '/stack <player on me> or /stack <player> <on another player>'");
+                        return false;
+                    }
+                    Bukkit.getPlayer(args[1]).addPassenger(Bukkit.getPlayer(args[0]));
+                }
+                return true;
+
 
 
             default:
