@@ -162,3 +162,4 @@ local.properties
 *.workspace
 .classpath
 .project
+build.bat

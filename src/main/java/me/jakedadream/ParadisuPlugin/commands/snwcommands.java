@@ -3,9 +3,14 @@ package me.jakedadream.ParadisuPlugin.commands;
 import me.jakedadream.ParadisuPlugin.items.ItemManager;
 import me.jakedadream.ParadisuPlugin.items.PluginInventories;
 import me.jakedadream.ParadisuPlugin.wrappers.*;
+import net.md_5.bungee.api.ChatColor;
 import me.jakedadream.ParadisuPlugin.paradisumain;
-import org.bukkit.*;
-import org.bukkit.block.Block;
+
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -1081,7 +1086,7 @@ public class snwcommands implements CommandExecutor {
             case "syncjapantime":
                 if (player.hasPermission("snw.synctime")) {
 
-                    Calendar calTokyo = Calendar.getInstance();
+                    /*Calendar calTokyo = Calendar.getInstance();
                     calTokyo.setTimeZone(TimeZone.getTimeZone("Asia/Tokyo"));
                     long tokyohour = calTokyo.get(Calendar.HOUR_OF_DAY);
                     double tokyominute = calTokyo.get(Calendar.MINUTE);
@@ -1094,14 +1099,45 @@ public class snwcommands implements CommandExecutor {
                     double tokyosecondstick = (tokyominsec/3600d) * 1000d;
                     long tokyotimeticks = (long) (tokyosecondstick + tokyohourtick);
 
-                    Bukkit.getServer().getWorld(player.getWorld().getName()).setTime(tokyotimeticks);
-                    player.sendMessage(cmdprefix + "§fWe set the server time to " + cmdemph + tokyotimeticks + "§f ticks.");
+                    Bukkit.getServer().getWorld(player.getWorld().getName()).setTime(tokyotimeticks);*/ 
+                    japantime.setJapanTime();
+                    player.sendMessage(cmdprefix + "§fWe set the server time to " + cmdemph + "Japanese §ftime.");
+                    
 
 
                 } else {
                     player.sendMessage(nopermsmsg);
                 }
                 return true;
+
+
+            case "synctimezone":
+                if (player.hasPermission("snw.synctime")) {
+                
+                    if (args.length == 0) {
+
+                        player.sendMessage(noargsmsg);
+
+                    } else {
+                        String timezone = args[0];
+                
+                        try {
+
+                            japantime.setAnyTime(timezone);
+                            player.sendMessage(cmdprefix + "§fWe set the server time to " + cmdemph + timezone + " §ftime.");
+
+                        } catch (Exception e) {
+
+                            player.sendMessage(cmdprefix + "§fTimezone does not exist");
+
+                    }
+                }
+
+                } else {
+                    player.sendMessage(nopermsmsg);
+                }
+                return true;
+
 
             case "staffannouncement":
                 announcementwrapper.permannoucne("snw.sex", cmdprefix + " §fYo you wildin' bro.");

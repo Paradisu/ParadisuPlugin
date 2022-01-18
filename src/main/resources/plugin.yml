@@ -216,6 +216,8 @@ commands:
     usage: /<command>
   syncjapantime:
     description: syncs time to japan
+  synctimezone:
+    description: syncs to timezone
   cordstp:
     description: tp to cords
     aliases:

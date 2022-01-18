@@ -105,6 +105,7 @@ public class paradisumain extends JavaPlugin {
         getCommand("mkill").setExecutor(new snwcommands());
         getCommand("lightblocks").setExecutor(new snwcommands());
         getCommand("syncjapantime").setExecutor(new snwcommands());
+        getCommand("synctimezone").setExecutor(new snwcommands());
         getCommand("admininvsee").setExecutor(new snwcommands());
         getCommand("unname").setExecutor(new snwcommands());
         getCommand("stack").setExecutor(new snwcommands());
