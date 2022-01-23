@@ -23,9 +23,9 @@ public class DBConnections {
     public void Paradisu_Connect() throws ClassNotFoundException, SQLException {
         if (!Paradisu_IsConnected()) {
 
-            String jdbc = dotenv_load.get("PLAYER_DATA_ENDPOINT");
-            String username = dotenv_load.get("PLAYER_DATA_USERNAME");
-            String password = dotenv_load.get("PLAYER_DATA_PASSWORD");
+            String jdbc = dotenv_load.get("PARADISU_ENDPOINT");
+            String username = dotenv_load.get("PARADISU_USERNAME");
+            String password = dotenv_load.get("PARADISU_PASSWORD");
 
             Paradisu_Connection = DriverManager.getConnection(jdbc, username, password);
 
