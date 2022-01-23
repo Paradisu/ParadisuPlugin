@@ -1,9 +1,8 @@
 package me.jakedadream.ParadisuPlugin.wrappers;
 
-import org.bukkit.block.data.type.Switch;
 import org.bukkit.entity.Player;
 
-public class toprank {
+public class PlayerDataGetter {
 
     public String GetPlayerTopRank(Player player) {
         String TOP_RANK = "";
