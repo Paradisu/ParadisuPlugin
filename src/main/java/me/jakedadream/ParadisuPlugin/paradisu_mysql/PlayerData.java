@@ -50,6 +50,25 @@ public class PlayerData {
     public static void updatePlayer(Player player) {
         establishConnection();
         //write code to check all columns of the player data table and update them if they are different/null
+        try{
+            PreparedStatement playerQuery = connection.prepareStatement("SELECT * FROM PlayerData WHERE UUID = ?");
+            playerQuery.setString(1, player.getUniqueId().toString());
+
+            ResultSet playerResult = playerQuery.executeQuery();
+            playerResult.next();
+            //loop through playerRestult to see if any are null
+            if(playerResult.getString("first_played") == null){
+                Bukkit.getConsoleSender().sendMessage(ChatColor.AQUA + "Updating first_played player data for " + player.getName());
+                PreparedStatement updatePlayer = connection.prepareStatement("UPDATE PlayerData SET first_played = ? WHERE UUID = ?");
+                updatePlayer.setLong(1, player.getFirstPlayed());
+                updatePlayer.setString(2, player.getUniqueId().toString());
+                updatePlayer.executeUpdate();
+            }
+    
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public static boolean exists (UUID uuid) {

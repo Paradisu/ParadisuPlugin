@@ -49,7 +49,7 @@ public class snwevents implements Listener {
         }
 
         PlayerData.createPlayer(joiner);
-
+        PlayerData.updatePlayer(joiner);
 
 
     }
