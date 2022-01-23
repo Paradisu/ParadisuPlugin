@@ -31,7 +31,7 @@ public class snwevents implements Listener {
     String cmdprefix = paradisumain.CommandPrefix();
     String cmdemph = paradisumain.CommandEmph();
 
-    PlayerData playerdata = new PlayerData();
+    //PlayerData playerdata = new PlayerData();
 
     @EventHandler
     public void onJoin(PlayerJoinEvent jEvent) {
@@ -42,12 +42,13 @@ public class snwevents implements Listener {
         joiner.sendMessage("\uE013 §f| \uE013");
 
         if (!joiner.hasPermission("snw.nospawnonjoin")) {
-            Location loc = new Location((Bukkit.getWorld("Paradisu")), 82.5, 86.1, -741.5, 75, 0);    // 82.5 86.1 -741.5
+            World world = joiner.getWorld();
+            Location loc = new Location(world, 82.5, 86.1, -741.5, 75, 0);    // 82.5 86.1 -741.5
             joiner.setGameMode(GameMode.ADVENTURE);
             joiner.teleport(loc);
         }
 
-        playerdata.createPlayer(joiner);
+        PlayerData.createPlayer(joiner);
 
 
 
