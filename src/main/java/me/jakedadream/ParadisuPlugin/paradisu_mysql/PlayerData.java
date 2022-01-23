@@ -1,6 +1,7 @@
 package me.jakedadream.ParadisuPlugin.paradisu_mysql;
 
 import me.jakedadream.ParadisuPlugin.paradisu_mysql.DBConnections;
+import me.jakedadream.ParadisuPlugin.wrappers.PlayerDataGetter;
 import net.md_5.bungee.api.ChatColor;
 
 import java.sql.Connection;
@@ -49,6 +50,7 @@ public class PlayerData {
 
     public static void updatePlayer(Player player) {
         establishConnection();
+        PlayerDataGetter data = new PlayerDataGetter();
         //write code to check all columns of the player data table and update them if they are different/null
         try{
             PreparedStatement playerQuery = connection.prepareStatement("SELECT * FROM PlayerData WHERE UUID = ?");
@@ -57,6 +59,7 @@ public class PlayerData {
             ResultSet playerResult = playerQuery.executeQuery();
             playerResult.next();
             //loop through playerRestult to see if any are null
+            
             if(playerResult.getString("first_played") == null){
                 Bukkit.getConsoleSender().sendMessage(ChatColor.AQUA + "Updating first_played player data for " + player.getName());
                 PreparedStatement updatePlayer = connection.prepareStatement("UPDATE PlayerData SET first_played = ? WHERE UUID = ?");
@@ -64,6 +67,16 @@ public class PlayerData {
                 updatePlayer.setString(2, player.getUniqueId().toString());
                 updatePlayer.executeUpdate();
             }
+
+            //check top_rank
+            if(playerResult.getString("top_rank") == null || !(playerResult.getString("top_rank").equals(data.GetPlayerTopRank(player)))){
+                Bukkit.getConsoleSender().sendMessage(ChatColor.AQUA + "Updating top_rank player data for " + player.getName());
+                PreparedStatement updatePlayer = connection.prepareStatement("UPDATE PlayerData SET top_rank = ? WHERE UUID = ?");
+                updatePlayer.setString(1, data.GetPlayerTopRank(player));
+                updatePlayer.setString(2, player.getUniqueId().toString());
+                updatePlayer.executeUpdate();
+            }
+                
     
 
         } catch (SQLException e) {
