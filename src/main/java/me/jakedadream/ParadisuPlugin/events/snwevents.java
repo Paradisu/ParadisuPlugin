@@ -191,7 +191,7 @@ public class snwevents implements Listener {
             p.sendMessage("§3[§dParadisu §bツ§3] §fYou consumed a drink/food item and were given speed for§3 " + seconds/60 + "§f minutes.");
         }
     }
-
+    /*
     @EventHandler
     public void PlayerBackPackEvent(PlayerInteractEvent e) {
         Player p = e.getPlayer();
@@ -210,7 +210,7 @@ public class snwevents implements Listener {
 
             }
         }
-    }
+    }*/
 
 
 
