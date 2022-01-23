@@ -1,11 +1,11 @@
 package me.jakedadream.ParadisuPlugin.events;
 
-import me.jakedadream.ParadisuPlugin.items.ItemManager;
 import me.jakedadream.ParadisuPlugin.invs.trashcanINV;
-import me.jakedadream.ParadisuPlugin.items.PluginInventories;
+import me.jakedadream.ParadisuPlugin.items.ItemManager;
 import me.jakedadream.ParadisuPlugin.paradisumain;
 import org.bukkit.*;
-import org.bukkit.entity.*;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -15,12 +15,13 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.HashMap;
 
-import static org.bukkit.Bukkit.*;
+import static org.bukkit.Bukkit.getServer;
 
 public class snwevents implements Listener {
 
@@ -185,6 +186,25 @@ public class snwevents implements Listener {
         }
     }
 
+    @EventHandler
+    public void PlayerBackPackEvent(PlayerInteractEvent e) {
+        Player p = e.getPlayer();
+        ItemMeta p_item = p.getInventory().getItemInMainHand().getItemMeta();
+        Material mat = p.getInventory().getItemInMainHand().getType();
+        Integer matCMD = p_item.getCustomModelData();
+
+        if (e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+            if (mat == Material.CHAINMAIL_CHESTPLATE && mat != null && matCMD != 0) {
+
+                Integer Vault_ID = (matCMD - 1);
+
+                p.openInventory(p.getEnderChest()); // replace with pv
+
+
+
+            }
+        }
+    }
 
 
 

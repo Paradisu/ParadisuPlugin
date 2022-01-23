@@ -7,6 +7,9 @@ import me.jakedadream.ParadisuPlugin.items.*;
 import me.jakedadream.ParadisuPlugin.events.*;
 import me.jakedadream.ParadisuPlugin.shops.*;
 import me.jakedadream.ParadisuPlugin.wrappers.*;
+import me.jakedadream.ParadisuPlugin.paradisu_mysql.DBConnections;
+
+import static me.jakedadream.ParadisuPlugin.paradisu_mysql.DBConnections.PDisConnectedStatic;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -24,6 +27,8 @@ import org.bukkit.scheduler.BukkitScheduler;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.*;
+
 
 //uploadtest
 
@@ -68,6 +73,9 @@ public class paradisumain extends JavaPlugin {
     @Override
     public void onEnable() {
 
+
+        PDisConnectedStatic();
+
         // =================
         // SNW COMMANDS
         // =================
@@ -96,6 +104,10 @@ public class paradisumain extends JavaPlugin {
         getCommand("glow").setExecutor(new snwcommands());
         getCommand("unglow").setExecutor(new snwcommands());
         getCommand("broadcast").setExecutor(new snwcommands());
+        getCommand("staffbroadcast").setExecutor(new snwcommands());
+        getCommand("adminbroadcast").setExecutor(new snwcommands());
+        getCommand("supporterbroadcast").setExecutor(new snwcommands());
+        getCommand("permbroadcast").setExecutor(new snwcommands());
         getCommand("speed").setExecutor(new snwcommands());
         getCommand("sudo").setExecutor(new snwcommands());
         getCommand("whomademe").setExecutor(new snwcommands());
@@ -109,7 +121,7 @@ public class paradisumain extends JavaPlugin {
         getCommand("admininvsee").setExecutor(new snwcommands());
         getCommand("unname").setExecutor(new snwcommands());
         getCommand("stack").setExecutor(new snwcommands());
-        //
+        getCommand("estack").setExecutor(new snwcommands());
         // =================
         // TPING COMMANDS
         // =================
@@ -154,8 +166,10 @@ public class paradisumain extends JavaPlugin {
         getCommand("reloadshops").setExecutor(new ShopCommands());
         getCommand("getshop").setExecutor(new ShopCommands());
         //
-        //
-        //
+        // =================
+        // SHOP GUI COMMANDS
+        // =================
+
         //
         //
         //
@@ -178,7 +192,9 @@ public class paradisumain extends JavaPlugin {
         HatModelInv.createInvs();
 
         ShopGuis.initShops();
-
+        //
+        //
+        //
         japantime.setJapanTime();
 
         // =================
@@ -202,8 +218,6 @@ public class paradisumain extends JavaPlugin {
             public void run() {
                 spinningcoins.spineffect();
 
-
-
             }
         }, 0L, 2L);
     }
@@ -214,9 +228,6 @@ public class paradisumain extends JavaPlugin {
         getServer().getConsoleSender().sendMessage(ChatColor.RED + "[Paradisu] Plugin is now disabled.");
         getServer().getConsoleSender().sendMessage(ChatColor.RED + "[Paradisu] Goodbye!");
     }
-
-
-
 
 
     //
