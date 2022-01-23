@@ -3,9 +3,14 @@ package me.jakedadream.ParadisuPlugin.commands;
 import me.jakedadream.ParadisuPlugin.items.ItemManager;
 import me.jakedadream.ParadisuPlugin.items.PluginInventories;
 import me.jakedadream.ParadisuPlugin.wrappers.*;
+import net.md_5.bungee.api.ChatColor;
 import me.jakedadream.ParadisuPlugin.paradisumain;
-import org.bukkit.*;
-import org.bukkit.block.Block;
+
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -728,23 +733,88 @@ public class snwcommands implements CommandExecutor {
 
             case "broadcast":
                 if (player.hasPermission("snw.broadcast")) {
-                    if (args.length == 0) {
-                        player.sendMessage(cmdprefix + "§fIncorrect usage; Please use '/broadcast <message>'");
-                    } else {
+                        if (args.length == 0) {
+                            player.sendMessage(noargsmsg);
+                        }
                         String allArgs = "";
-
                         for (String arg : args) {
                             allArgs += arg + " ";
                         }
-                        for (World w : Bukkit.getWorlds()) {
-                            for (Player p : w.getPlayers()) {
-                                    p.sendMessage((""));
-                                    p.sendMessage("§3§l[§dParadisu Broadcast §bツ§3§l] §f§l» " + allArgs);
-                                    p.sendMessage((""));
-                            }
-                        }
 
+                        announcementwrapper.everyoneannoucne(allArgs);
+
+                    
+                } else {
+                    player.sendMessage(nopermsmsg);
+                }
+                return true;
+
+            case "staffbroadcast":
+                if (player.hasPermission("snw.broadcast")) {
+                    /*if (args.length == 0) {
+                        player.sendMessage(noargsmsg);
+                    } */
+                    String allArgs = "";
+                    for (String arg : args) {
+                        allArgs += arg + " ";
                     }
+
+                    //announcementwrapper.staffannoucne(allArgs);
+                    player.sendMessage(allArgs);
+
+                } else {
+                    player.sendMessage(nopermsmsg);
+                }
+                return true;
+                
+            case "adminbroadcast":
+                if (player.hasPermission("*")) {
+                    if (args.length == 0) {
+                        player.sendMessage(noargsmsg);
+                    }
+                    String allArgs = "";
+                    for (String arg : args) {
+                        allArgs += arg + " ";
+                    }
+
+                    announcementwrapper.adminannoucne(allArgs);
+
+                } else {
+                    player.sendMessage(nopermsmsg);
+                }
+                return true;
+
+            case "supporterbroadcast":
+                if (player.hasPermission("snw.broadcast")) {
+                    if (args.length == 0) {
+                        player.sendMessage(noargsmsg);
+                    }
+                    String allArgs = "";
+                    for (String arg : args) {
+                        allArgs += arg + " ";
+                    }
+
+                    announcementwrapper.supportersannoucne(allArgs);
+
+                } else {
+                    player.sendMessage(nopermsmsg);
+                }
+                return true;
+
+            case "permbroadcast":
+                if (player.hasPermission("snw.broadcast")) {
+                    if (args.length <= 1) {
+                        player.sendMessage(noargsmsg);
+                    }
+                    String allArgs = "";
+                    String perms = args[0];
+                    for (int i = 1; i < args.length; i++) {
+                        allArgs = allArgs.concat(args[i]);
+                        allArgs = allArgs.concat(" ");
+                    }
+
+                    announcementwrapper.permannoucne(perms, allArgs);
+
                 } else {
                     player.sendMessage(nopermsmsg);
                 }
@@ -1081,7 +1151,7 @@ public class snwcommands implements CommandExecutor {
             case "syncjapantime":
                 if (player.hasPermission("snw.synctime")) {
 
-                    Calendar calTokyo = Calendar.getInstance();
+                    /*Calendar calTokyo = Calendar.getInstance();
                     calTokyo.setTimeZone(TimeZone.getTimeZone("Asia/Tokyo"));
                     long tokyohour = calTokyo.get(Calendar.HOUR_OF_DAY);
                     double tokyominute = calTokyo.get(Calendar.MINUTE);
@@ -1094,8 +1164,10 @@ public class snwcommands implements CommandExecutor {
                     double tokyosecondstick = (tokyominsec/3600d) * 1000d;
                     long tokyotimeticks = (long) (tokyosecondstick + tokyohourtick);
 
-                    Bukkit.getServer().getWorld(player.getWorld().getName()).setTime(tokyotimeticks);
-                    player.sendMessage(cmdprefix + "§fWe set the server time to " + cmdemph + tokyotimeticks + "§f ticks.");
+                    Bukkit.getServer().getWorld(player.getWorld().getName()).setTime(tokyotimeticks);*/ 
+                    japantime.setJapanTime();
+                    player.sendMessage(cmdprefix + "§fWe set the server time to " + cmdemph + "Japanese §ftime.");
+                    
 
 
                 } else {
@@ -1103,11 +1175,44 @@ public class snwcommands implements CommandExecutor {
                 }
                 return true;
 
-            case "staffannouncement":
-                announcementwrapper.permannoucne("snw.sex", cmdprefix + " §fYo you wildin' bro.");
+
+            case "synctimezone":
+                if (player.hasPermission("snw.synctime")) {
+                
+                    if (args.length == 0) {
+
+                        player.sendMessage(noargsmsg);
+
+                    } else {
+                        String timezone = args[0];
+                
+                        try {
+
+                            japantime.setAnyTime(timezone);
+                            player.sendMessage(cmdprefix + "§fWe set the server time to " + cmdemph + timezone + " §ftime.");
+
+                        } catch (Exception e) {
+
+                            player.sendMessage(cmdprefix + "§fTimezone does not exist");
+
+                    }
+                }
+
+                } else {
+                    player.sendMessage(nopermsmsg);
+                }
                 return true;
 
+ /*
+            case "staffannouncement":
+                if (player.hasPermission("snw.")) {
+                    String text = getParsedName(args);
+                    announcementwrapper.permannoucne("group.visitor", text);
+                    return true;
+                } */
+
             case "stack":
+                if (player.hasPermission("snw.stack")) {
                 if(args.length == 0) {
                     player.sendMessage(cmdprefix + "§fIncorrect usage; Please use '/stack <player on me> or /stack <player> <on another player>'");
                     return false;
@@ -1126,8 +1231,26 @@ public class snwcommands implements CommandExecutor {
                     }
                     Bukkit.getPlayer(args[1]).addPassenger(Bukkit.getPlayer(args[0]));
                 }
+            } else {
+                player.sendMessage(nopermsmsg);
+            }
                 return true;
 
+            case "estack":
+            if (player.hasPermission("snw.stack")) {
+
+                Entity entity = (Entity) player.getWorld().rayTraceEntities(player.getLocation(), player.getLocation().getDirection(), 5);
+
+                if (entity != null) {
+
+                    entity.addPassenger(player);
+
+                }
+
+            } else  {
+                player.sendMessage(nopermsmsg);
+            }
+            return true;
 
 
             default:

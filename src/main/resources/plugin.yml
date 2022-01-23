@@ -1,5 +1,5 @@
 name: ParadisuPlugin
-version: 2.15.1
+version: 2.17.0
 authors: [JJakee, cytocracy, _Kastle, CookieCrafted]
 main: me.jakedadream.ParadisuPlugin.paradisumain
 api-version: 1.16
@@ -7,6 +7,9 @@ commands:
   stack:
     description: stack a player on another player
     usage: /<command> <player(s)>
+  estack:
+    description: stack on an entity
+    usage: /<command>
   unname:
     description: unnames items
     usage: /<command>
@@ -173,6 +176,7 @@ commands:
     aliases:
       - bc
       - snwbc
+      - announce
   speed:
     description: changes how fast your player movement is
     usage: /<command> <args>
@@ -216,9 +220,21 @@ commands:
     usage: /<command>
   syncjapantime:
     description: syncs time to japan
+  synctimezone:
+    description: syncs to timezone
   cordstp:
     description: tp to cords
     aliases:
       - ctp
       - cordteleport
       - cteleport
+  staffbroadcast:
+    description: broadcast to staff
+  adminbroadcast:
+    description: broadcast to admin
+  supporterbroadcast:
+    description: broadcast to supporter
+  permbroadcast:
+    description: broadcast to perm
+  gmessage:
+    description: lol
