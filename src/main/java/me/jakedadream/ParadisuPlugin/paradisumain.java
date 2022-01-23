@@ -1,33 +1,26 @@
 package me.jakedadream.ParadisuPlugin;
 
-import me.jakedadream.ParadisuPlugin.commands.*;
-import me.jakedadream.ParadisuPlugin.modelmanager.*;
+import me.jakedadream.ParadisuPlugin.commands.snwcommands;
+import me.jakedadream.ParadisuPlugin.commands.teleportationcmds;
+import me.jakedadream.ParadisuPlugin.commands.warps;
 import me.jakedadream.ParadisuPlugin.invs.*;
 import me.jakedadream.ParadisuPlugin.items.*;
 import me.jakedadream.ParadisuPlugin.events.*;
-import me.jakedadream.ParadisuPlugin.shops.*;
-import me.jakedadream.ParadisuPlugin.wrappers.*;
-import me.jakedadream.ParadisuPlugin.paradisu_mysql.DBConnections;
-
-import static me.jakedadream.ParadisuPlugin.paradisu_mysql.DBConnections.PDisConnectedStatic;
-import org.bukkit.Bukkit;
+import me.jakedadream.ParadisuPlugin.modelmanager.HatModelInv;
+import me.jakedadream.ParadisuPlugin.modelmanager.PropModelInv;
+import me.jakedadream.ParadisuPlugin.modelmanager.modelcommands;
+import me.jakedadream.ParadisuPlugin.shops.ShopCommands;
+import me.jakedadream.ParadisuPlugin.shops.ShopGuis;
+import me.jakedadream.ParadisuPlugin.wrappers.japantime;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.*;
 
 
 //uploadtest
@@ -73,8 +66,6 @@ public class paradisumain extends JavaPlugin {
     @Override
     public void onEnable() {
 
-
-        PDisConnectedStatic();
 
         // =================
         // SNW COMMANDS

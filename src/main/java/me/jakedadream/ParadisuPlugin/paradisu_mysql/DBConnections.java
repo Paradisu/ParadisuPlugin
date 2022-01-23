@@ -14,67 +14,23 @@ public class DBConnections {
 
     Dotenv dotenv_load = Dotenv.load();
 
-    private Connection player_data_connection;
-    private Connection warps_connection;
-    private Connection shops_connection;
+    private Connection Paradisu_Connection;
 
-    private static Connection static_player_data_connection;
-
-    public boolean PDisConnected() {
-        return (player_data_connection == null ? false : true);
+    public boolean Paradisu_IsConnected() {
+        return (Paradisu_Connection != null);
     }
 
-    public boolean WisConnected() {
-        return (warps_connection == null ? false : true);
-    }
-
-    public boolean SisConnected() {
-        return (shops_connection == null ? false : true);
-    }
-
-    public static void PDisConnectedStatic() {
-        Boolean test = static_player_data_connection == null ? false : true;
-        getServer().getConsoleSender().sendMessage(ChatColor.AQUA + "IS THE DATABASE FOR PLAYERS CONNECTED? (BEFORE) : " + String.valueOf(test));
-    }
-
-    public void PLAYER_DATA_connect() throws ClassNotFoundException, SQLException {
-        if (!PDisConnected()) {
+    public void Paradisu_Connect() throws ClassNotFoundException, SQLException {
+        if (!Paradisu_IsConnected()) {
 
             String jdbc = dotenv_load.get("PLAYER_DATA_ENDPOINT");
             String username = dotenv_load.get("PLAYER_DATA_USERNAME");
             String password = dotenv_load.get("PLAYER_DATA_PASSWORD");
 
-            player_data_connection = DriverManager.getConnection(jdbc, username, password);
+            Paradisu_Connection = DriverManager.getConnection(jdbc, username, password);
 
+            getServer().getConsoleSender().sendMessage(ChatColor.AQUA + "[Paradisu] Now connected to the Player Data DB");
 
-
-            Boolean test = static_player_data_connection == null ? false : true;
-            getServer().getConsoleSender().sendMessage(ChatColor.AQUA + "IS THE DATABASE FOR PLAYERS CONNECTED? (AFTER) : " + String.valueOf(test));
         }
     }
-
-
-    public void WARPS_connect() throws ClassNotFoundException, SQLException {
-        if (!WisConnected()) {
-
-            String jdbc = dotenv_load.get("WARPS_ENDPOINT");
-            String username = dotenv_load.get("WARPS_USERNAME");
-            String password = dotenv_load.get("WARPS_PASSWORD");
-
-            warps_connection = DriverManager.getConnection(jdbc, username, password);
-        }
-    }
-
-
-    public void SHOPS_connect() throws ClassNotFoundException, SQLException {
-        if (!SisConnected()) {
-
-            String jdbc = dotenv_load.get("SHOP_ENDPOINT");
-            String username = dotenv_load.get("SHOP_USERNAME");
-            String password = dotenv_load.get("SHOP_PASSWORD");
-
-            shops_connection = DriverManager.getConnection(jdbc, username, password);
-        }
-    }
-
 }
