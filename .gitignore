@@ -162,3 +162,6 @@ local.properties
 *.workspace
 .classpath
 .project
+.VSCode
+
+build.bat
