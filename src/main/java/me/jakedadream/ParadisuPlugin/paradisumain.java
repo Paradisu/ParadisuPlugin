@@ -1,5 +1,6 @@
 package me.jakedadream.ParadisuPlugin;
 
+import me.jakedadream.ParadisuPlugin.paradisu_mysql.DBConnections;
 import me.jakedadream.ParadisuPlugin.commands.snwcommands;
 import me.jakedadream.ParadisuPlugin.commands.teleportationcmds;
 import me.jakedadream.ParadisuPlugin.commands.warps;
@@ -9,6 +10,7 @@ import me.jakedadream.ParadisuPlugin.events.*;
 import me.jakedadream.ParadisuPlugin.modelmanager.HatModelInv;
 import me.jakedadream.ParadisuPlugin.modelmanager.PropModelInv;
 import me.jakedadream.ParadisuPlugin.modelmanager.modelcommands;
+import me.jakedadream.ParadisuPlugin.paradisu_mysql.DBConnections;
 import me.jakedadream.ParadisuPlugin.shops.ShopCommands;
 import me.jakedadream.ParadisuPlugin.shops.ShopGuis;
 import me.jakedadream.ParadisuPlugin.wrappers.japantime;
@@ -21,6 +23,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 
 
 //uploadtest
@@ -65,6 +68,16 @@ public class paradisumain extends JavaPlugin {
 
     @Override
     public void onEnable() {
+
+        try {
+            DBConnections.Paradisu_Connect();
+        } catch (ClassNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
 
         // =================
@@ -211,6 +224,11 @@ public class paradisumain extends JavaPlugin {
 
             }
         }, 0L, 2L);
+
+
+
+
+
     }
 
 

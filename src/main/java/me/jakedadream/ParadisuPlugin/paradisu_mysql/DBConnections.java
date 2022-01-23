@@ -11,24 +11,37 @@ import static org.bukkit.Bukkit.getServer;
 
 public class DBConnections {
 
+    private static Connection Paradisu_Connection;
+    
+    public static Connection ParadisuSQLCon() { 
+        if(Paradisu_Connection == null){
+            try {
+                Paradisu_Connect();
+            } catch (ClassNotFoundException e) {
+               
+                e.printStackTrace();
+            } catch (SQLException e) {
+                
+                e.printStackTrace();
+            }
 
-    Dotenv dotenv_load = Dotenv.load();
-
-    private Connection Paradisu_Connection;
-    public Connection ParadisuSQLCon() { return Paradisu_Connection; }
-
+        }
+        return Paradisu_Connection; 
+    }
 
 
-    public boolean Paradisu_IsConnected() {
+
+    public static boolean Paradisu_IsConnected() {
         return (Paradisu_Connection != null);
     }
 
-    public void Paradisu_Connect() throws ClassNotFoundException, SQLException {
+    public static void Paradisu_Connect() throws ClassNotFoundException, SQLException {
         if (!Paradisu_IsConnected()) {
+            Dotenv dotenv_load = Dotenv.load();
 
             String jdbc = dotenv_load.get("Paradisu_JDBC");
-            String username = dotenv_load.get("PARADISU_USERNAME");
-            String password = dotenv_load.get("PARADISU_PASSWORD");
+            String username = dotenv_load.get("Paradisu_USERNAME");
+            String password = dotenv_load.get("Paradisu_PASSWORD");
 
             Paradisu_Connection = DriverManager.getConnection(jdbc, username, password);
             
@@ -37,7 +50,7 @@ public class DBConnections {
         }
     }
 
-    public void Paradius_Disconnect() {
+    public static void Paradius_Disconnect() {
         if (Paradisu_IsConnected()) {
             try {
                 Paradisu_Connection.close();

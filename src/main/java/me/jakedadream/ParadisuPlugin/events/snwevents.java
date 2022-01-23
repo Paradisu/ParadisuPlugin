@@ -31,7 +31,7 @@ public class snwevents implements Listener {
     String cmdprefix = paradisumain.CommandPrefix();
     String cmdemph = paradisumain.CommandEmph();
 
-    PlayerData playerdata = new PlayerData();
+    //PlayerData playerdata = new PlayerData();
 
     @EventHandler
     public void onJoin(PlayerJoinEvent jEvent) {
@@ -48,7 +48,7 @@ public class snwevents implements Listener {
             joiner.teleport(loc);
         }
 
-        playerdata.createPlayer(joiner);
+        PlayerData.createPlayer(joiner);
 
 
 
