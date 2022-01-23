@@ -42,7 +42,8 @@ public class snwevents implements Listener {
         joiner.sendMessage("\uE013 §f| \uE013");
 
         if (!joiner.hasPermission("snw.nospawnonjoin")) {
-            Location loc = new Location((Bukkit.getWorld("Paradisu")), 82.5, 86.1, -741.5, 75, 0);    // 82.5 86.1 -741.5
+            World world = joiner.getWorld();
+            Location loc = new Location(world, 82.5, 86.1, -741.5, 75, 0);    // 82.5 86.1 -741.5
             joiner.setGameMode(GameMode.ADVENTURE);
             joiner.teleport(loc);
         }
@@ -131,7 +132,7 @@ public class snwevents implements Listener {
         boolean hasjoined = joiner.hasPlayedBefore();
 
         if (!hasjoined) {
-            e.setJoinMessage("§2[§a§l+§2]§f " + joiner.getName() + " joined for the first time; Make sure to answer their questions!");
+            e.setJoinMessage("§2[§a§l+§2]§f " + joiner.getName() + " joined for the first time!");
         } else {
             e.setJoinMessage("§2[§a§l+§2]§f " + joiner.getName() + " joined!");
         }

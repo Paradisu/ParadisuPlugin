@@ -2,6 +2,7 @@ package me.jakedadream.ParadisuPlugin.items;
 
 import me.jakedadream.ParadisuPlugin.paradisumain;
 import org.bukkit.Bukkit;
+import org.bukkit.block.data.type.EndPortalFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
@@ -27,8 +28,6 @@ public class PluginInventories {
 */
         player.openInventory(inv);
     } // yuh
-
-
 
 
 }
