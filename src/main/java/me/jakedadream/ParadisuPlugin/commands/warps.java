@@ -63,9 +63,9 @@ public class warps implements CommandExecutor {
                 }
 
                 Location loc = player.getLocation();
+
                 paradisumain.fileWarpConfig.createSection(args[0].toLowerCase());
                 ConfigurationSection cs = paradisumain.fileWarpConfig.getConfigurationSection(args[0].toLowerCase());
-
 
                 cs.set("X", loc.getX());
                 cs.set("Y", loc.getY());

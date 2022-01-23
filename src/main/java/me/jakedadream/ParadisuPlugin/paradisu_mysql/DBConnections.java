@@ -15,6 +15,9 @@ public class DBConnections {
     Dotenv dotenv_load = Dotenv.load();
 
     private Connection Paradisu_Connection;
+    public Connection ParadisuSQLCon() { return Paradisu_Connection; }
+
+
 
     public boolean Paradisu_IsConnected() {
         return (Paradisu_Connection != null);
@@ -23,14 +26,26 @@ public class DBConnections {
     public void Paradisu_Connect() throws ClassNotFoundException, SQLException {
         if (!Paradisu_IsConnected()) {
 
-            String jdbc = dotenv_load.get("PARADISU_ENDPOINT");
+            String jdbc = dotenv_load.get("Paradisu_JDBC");
             String username = dotenv_load.get("PARADISU_USERNAME");
             String password = dotenv_load.get("PARADISU_PASSWORD");
 
             Paradisu_Connection = DriverManager.getConnection(jdbc, username, password);
-
-            getServer().getConsoleSender().sendMessage(ChatColor.AQUA + "[Paradisu] Now connected to the Player Data DB");
+            
+            getServer().getConsoleSender().sendMessage(ChatColor.AQUA + "[Paradisu] Now connected to the Database");
 
         }
     }
+
+    public void Paradius_Disconnect() {
+        if (Paradisu_IsConnected()) {
+            try {
+                Paradisu_Connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
 }

@@ -2,6 +2,7 @@ package me.jakedadream.ParadisuPlugin.events;
 
 import me.jakedadream.ParadisuPlugin.invs.trashcanINV;
 import me.jakedadream.ParadisuPlugin.items.ItemManager;
+import me.jakedadream.ParadisuPlugin.paradisu_mysql.PlayerData;
 import me.jakedadream.ParadisuPlugin.paradisumain;
 import org.bukkit.*;
 import org.bukkit.entity.EntityType;
@@ -30,7 +31,7 @@ public class snwevents implements Listener {
     String cmdprefix = paradisumain.CommandPrefix();
     String cmdemph = paradisumain.CommandEmph();
 
-
+    PlayerData playerdata = new PlayerData();
 
     @EventHandler
     public void onJoin(PlayerJoinEvent jEvent) {
@@ -45,6 +46,10 @@ public class snwevents implements Listener {
             joiner.setGameMode(GameMode.ADVENTURE);
             joiner.teleport(loc);
         }
+
+        playerdata.createPlayer(joiner);
+
+
 
     }
 
