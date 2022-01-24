@@ -13,6 +13,7 @@ import me.jakedadream.ParadisuPlugin.modelmanager.modelcommands;
 import me.jakedadream.ParadisuPlugin.paradisu_mysql.DBConnections;
 import me.jakedadream.ParadisuPlugin.shops.ShopCommands;
 import me.jakedadream.ParadisuPlugin.shops.ShopGuis;
+import me.jakedadream.ParadisuPlugin.wrappers.PlayerDataEvents;
 import me.jakedadream.ParadisuPlugin.wrappers.japantime;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -209,6 +210,7 @@ public class paradisumain extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new toys(), this);
         getServer().getPluginManager().registerEvents(new snwevents(), this);
         getServer().getPluginManager().registerEvents(new GuiListeners(), this);
+        getServer().getPluginManager().registerEvents(new PlayerDataEvents(), this);
         getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "\n" + ChatColor.GREEN +
                 "|------------------------------|\n" + ChatColor.GREEN +
                 "| [Paradisu] Plugin now Active |\n" + ChatColor.GREEN +
