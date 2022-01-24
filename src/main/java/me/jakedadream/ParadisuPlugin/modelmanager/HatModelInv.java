@@ -8,6 +8,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,13 +19,30 @@ public class HatModelInv {
     String cmdprefix = paradisumain.CommandPrefix();
     String cmdemph = paradisumain.CommandEmph();
 
+    private static int getRows(ResultSet r){
+        if(r == null) return 0;
+        try{
+            r.last();
+            return r.getRow();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally{
+            try {
+                r.beforeFirst();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return 0;
+    }
 
     public static void createInvs(){
-        modelitemmanager models = new modelitemmanager();
         double dinvSize = 36;
-        int invSize = 36;
+        
+        int rows = getRows(modelitemmanager.returnHatData());
 
-        double neededInventories = (paradisumain.getHatModelsConfig().getKeys(false).size() / dinvSize);
+        double neededInventories = (rows / dinvSize);
         int intneededInventories = (int) Math.ceil(neededInventories);
 
         for (int i = 0; i < intneededInventories; i ++){
@@ -77,7 +96,7 @@ public class HatModelInv {
             int pageindex = 9;
             int stop = modelindex + 36;
             for (int a = modelindex; a < stop; a++){
-                if (a > paradisumain.getHatModelsConfig().getKeys(false).size()){
+                if (a > rows){
                     break;
                 }
                 ItemStack item = modelitemmanager.createHatModel(a);

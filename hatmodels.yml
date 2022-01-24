@@ -1,0 +1,339 @@
+#    This is the Hat Models config file
+'1':
+  displayname: §716 Bit §c§lMario §9§lCap
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'2':
+  displayname: §c §e§lHard Hat
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  lore1: §f§oAcquired by being a §3Paradisu §f§oBuilder
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'3':
+  displayname: §716 Bit §a§lLuigi §9§lCap
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'4':
+  displayname: §dPeach's §eCrown
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'5':
+  displayname: §3Sailor §bMoons §ehair
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'6':
+  displayname: §7§lShark §f§lCap
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'7':
+  displayname: §eGoodbye §b20§f20 §eGlasses
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'8':
+  displayname: §fZero §4Twos §cHeadband
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'9':
+  displayname: §4§lWanda's Headband
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  lore1: §f
+  lore2: §c§oWandaVision Wa-WandaVision
+  lore3: §f§oWandaVision Wa-WandaVision
+  lore4: §c§oWandaVision Wa-WandaVision
+  lore5: §f§o✯ WandaVision ✯
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'10':
+  displayname: §0§lMais §8§lBunny Ears
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'11':
+  displayname: §6§lLlama Hat
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'12':
+  displayname: §2§lJ§a§lW §2§lW§a§lr§2§lan§a§lgle§2§lr §a§lH§2§lat
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'13':
+  displayname: §f§lIncredi's Captain Hat
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'14':
+  displayname: §e§lSuper §6§lSilly §e§lEntertaining §6§lIllogical §e§lAmusing§6§l
+    Dope §e§lLively §6§lEnjoyable §e§lFoolish §6§lPropeller §e§lHat
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'15':
+  displayname: §f§lIMod's §6§lDimmadome Hat §7(But Larger)
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'16':
+  displayname: §8§lBlack §7Cat Ear Headband
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  lore1: §0
+  lore2: §8§onya ichi ni san nya
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'17':
+  displayname: §f§lWhite §7Cat Ear Headband
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  lore1: §0
+  lore2: §8§onya ichi ni san nya
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'18':
+  displayname: §9§lBlue §7Cat Ear Headband
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  lore1: §0
+  lore2: §8§onya ichi ni san nya
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'19':
+  displayname: §d§lPink §7Cat Ear Headband
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  lore1: §0
+  lore2: §8§onya ichi ni san nya
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'20':
+  displayname: §c§lR§6§la§e§li§a§ln§b§lb§d§lo§6§lw §7Cat Ear Headband
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  lore1: §0
+  lore2: §8§onya ichi ni san nya
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'21':
+  displayname: §7§lBlack Parade Marching Band Hat
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  lore1: §0
+  lore2: §8§o*  When I was a young boy
+  lore3: §8§o*  My father took me into the city
+  lore4: §8§o*  To see a marching band
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'22':
+  displayname: §6§oReindeer Antlers
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'23':
+  displayname: §3§lHuggy Wuggy Mask
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  lore1: §f
+  lore2: §7Halloween 2021
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'24':
+  displayname: §f§l§oClown Mask
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  lore1: §f
+  lore2: §7Halloween 2021
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'25':
+  displayname: §6§lCopper Hat
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'26':
+  displayname: §x§9§6§4§B§0§0§lBrown §x§9§3§e§d§e§4§lBear Ears
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'27':
+  displayname: §x§f§b§6§f§9§2§lPink §x§9§3§e§d§e§4§lBear Ears
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'28':
+  displayname: §x§c§4§9§f§6§8§lStack of Goombas
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  lore1: §f
+  lore2: §x§c§4§6§9§c§7§oMai §x§c§4§9§f§6§8the Goomba
+  lore3: §x§f§9§a§3§f§f§oDaze §x§c§4§9§f§6§8the Goomba
+  lore4: §x§2§e§1§4§d§b§oSonic §x§c§4§9§f§6§8the Goomba
+  lore5: §x§F§F§E§D§0§0§oLego §x§c§4§9§f§6§8the Goomba
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false

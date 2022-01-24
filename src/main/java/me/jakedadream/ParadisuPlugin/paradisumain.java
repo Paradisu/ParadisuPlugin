@@ -158,9 +158,9 @@ public class paradisumain extends JavaPlugin {
         getCommand("mgive").setExecutor(new modelcommands());
         getCommand("hgive").setExecutor(new modelcommands());
         getCommand("mhat").setExecutor(new modelcommands());
-        getCommand("createmodelcfsection").setExecutor(new modelcommands());
-        getCommand("reloadprops").setExecutor(new modelcommands());
-        getCommand("reloadhats").setExecutor(new modelcommands());
+        // getCommand("createmodelcfsection").setExecutor(new modelcommands());
+        // getCommand("reloadprops").setExecutor(new modelcommands());
+        // getCommand("reloadhats").setExecutor(new modelcommands());
         //
         // =================
         // SHOP GUI COMMANDS
@@ -184,11 +184,11 @@ public class paradisumain extends JavaPlugin {
         createWarpFiles();
         saveWarpConfig();
 
-        createPropModelsFiles();
-        savePropModelsConfig();
+        // createPropModelsFiles();
+        // savePropModelsConfig();
 
-        createHatModelsFiles();
-        saveHatModelsConfig();
+        // createHatModelsFiles();
+        // saveHatModelsConfig();
 
         createShopGuiFiles();
         saveShopGuiConfig();
@@ -247,11 +247,11 @@ public class paradisumain extends JavaPlugin {
     public static File sourceWarpFile;
     public static FileConfiguration fileWarpConfig;
 
-    public static File sourcePropModelsFile;
-    public static FileConfiguration filePropModelsConfig;
+    // public static File sourcePropModelsFile;
+    // public static FileConfiguration filePropModelsConfig;
 
-    public static File sourceHatModelsFile;
-    public static FileConfiguration fileHatModelsConfig;
+    // public static File sourceHatModelsFile;
+    // public static FileConfiguration fileHatModelsConfig;
 
     public static File sourceShopGuiFile;
     public static FileConfiguration fileShopGuiConfig;
@@ -278,47 +278,47 @@ public class paradisumain extends JavaPlugin {
         }
     }
 
-    public void createPropModelsFiles() {
+    // public void createPropModelsFiles() {
 
-        sourcePropModelsFile = new File(getDataFolder(), "propmodels.yml");
+    //     sourcePropModelsFile = new File(getDataFolder(), "propmodels.yml");
 
-        if (!sourcePropModelsFile.exists()) {
-            sourcePropModelsFile.getParentFile().mkdirs();
-            saveResource("propmodels.yml", false);
-        }
+    //     if (!sourcePropModelsFile.exists()) {
+    //         sourcePropModelsFile.getParentFile().mkdirs();
+    //         saveResource("propmodels.yml", false);
+    //     }
 
-        filePropModelsConfig = new YamlConfiguration();
+    //     filePropModelsConfig = new YamlConfiguration();
 
-        try {
-            filePropModelsConfig.load(sourcePropModelsFile);
-        } catch (IOException | InvalidConfigurationException e) {
-            e.printStackTrace();
-        }
-     //   if (filePropModelsConfig.getConfigurationSection("aliases") == null){
-     //       filePropModelsConfig.createSection("aliases");
-     //   }
-    }
+    //     try {
+    //         filePropModelsConfig.load(sourcePropModelsFile);
+    //     } catch (IOException | InvalidConfigurationException e) {
+    //         e.printStackTrace();
+    //     }
+    //  //   if (filePropModelsConfig.getConfigurationSection("aliases") == null){
+    //  //       filePropModelsConfig.createSection("aliases");
+    //  //   }
+    // }
 
-    public void createHatModelsFiles() {
+    // public void createHatModelsFiles() {
 
-        sourceHatModelsFile = new File(getDataFolder(), "hatmodels.yml");
+    //     sourceHatModelsFile = new File(getDataFolder(), "hatmodels.yml");
 
-        if (!sourceHatModelsFile.exists()) {
-            sourceHatModelsFile.getParentFile().mkdirs();
-            saveResource("hatmodels.yml", false);
-        }
+    //     if (!sourceHatModelsFile.exists()) {
+    //         sourceHatModelsFile.getParentFile().mkdirs();
+    //         saveResource("hatmodels.yml", false);
+    //     }
 
-        fileHatModelsConfig = new YamlConfiguration();
+    //     fileHatModelsConfig = new YamlConfiguration();
 
-        try {
-            fileHatModelsConfig.load(sourceHatModelsFile);
-        } catch (IOException | InvalidConfigurationException e) {
-            e.printStackTrace();
-        }
-        //   if (fileHatModelsConfig.getConfigurationSection("aliases") == null){
-        //       fileHatModelsConfig.createSection("aliases");
-        //   }
-    }
+    //     try {
+    //         fileHatModelsConfig.load(sourceHatModelsFile);
+    //     } catch (IOException | InvalidConfigurationException e) {
+    //         e.printStackTrace();
+    //     }
+    //     //   if (fileHatModelsConfig.getConfigurationSection("aliases") == null){
+    //     //       fileHatModelsConfig.createSection("aliases");
+    //     //   }
+    // }
 
     public void createShopGuiFiles(){
         sourceShopGuiFile = new File(getDataFolder(), "shopgui.yml");
@@ -343,12 +343,12 @@ public class paradisumain extends JavaPlugin {
     public static FileConfiguration getWarpConfig() {
         return fileWarpConfig;
     }
-    public static FileConfiguration getPropModelsConfig() {
-        return filePropModelsConfig;
-    }
-    public static FileConfiguration getHatModelsConfig() {
-        return fileHatModelsConfig;
-    }
+    // public static FileConfiguration getPropModelsConfig() {
+    //     return filePropModelsConfig;
+    // }
+    // public static FileConfiguration getHatModelsConfig() {
+    //     return fileHatModelsConfig;
+    // }
     public static FileConfiguration getFileShopGuiConfig() {return fileShopGuiConfig; }
 
 
@@ -361,21 +361,21 @@ public class paradisumain extends JavaPlugin {
         }
     }
 
-    public static void savePropModelsConfig(){
-        try {
-            filePropModelsConfig.save(sourcePropModelsFile);
-        } catch (IOException e){
-            System.out.println("couldn't save file");
-        }
-    }
+    // public static void savePropModelsConfig(){
+    //     try {
+    //         filePropModelsConfig.save(sourcePropModelsFile);
+    //     } catch (IOException e){
+    //         System.out.println("couldn't save file");
+    //     }
+    // }
 
-    public static void saveHatModelsConfig(){
-        try {
-            fileHatModelsConfig.save(sourceHatModelsFile);
-        } catch (IOException e){
-            System.out.println("couldn't save file");
-        }
-    }
+    // public static void saveHatModelsConfig(){
+    //     try {
+    //         fileHatModelsConfig.save(sourceHatModelsFile);
+    //     } catch (IOException e){
+    //         System.out.println("couldn't save file");
+    //     }
+    // }
 
     public static void saveShopGuiConfig() {
         try {
@@ -389,11 +389,11 @@ public class paradisumain extends JavaPlugin {
     public static void reloadWarpConfig(){
         fileWarpConfig = YamlConfiguration.loadConfiguration(sourceWarpFile);}
 
-    public static void reloadPropModelsConfig(){
-        filePropModelsConfig = YamlConfiguration.loadConfiguration(sourcePropModelsFile);}
+    // public static void reloadPropModelsConfig(){
+    //     filePropModelsConfig = YamlConfiguration.loadConfiguration(sourcePropModelsFile);}
 
-    public static void reloadHatModelsConfig(){
-        fileHatModelsConfig = YamlConfiguration.loadConfiguration(sourceHatModelsFile);}
+    // public static void reloadHatModelsConfig(){
+    //     fileHatModelsConfig = YamlConfiguration.loadConfiguration(sourceHatModelsFile);}
 
     public static void reloadShopGuiConfig() { fileShopGuiConfig = YamlConfiguration.loadConfiguration(sourceShopGuiFile); }
 

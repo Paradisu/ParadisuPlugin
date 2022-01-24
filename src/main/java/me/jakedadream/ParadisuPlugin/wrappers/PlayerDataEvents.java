@@ -63,7 +63,7 @@ public class PlayerDataEvents implements Listener {
             
             
         } catch (SQLException e) {
-            // complain
+            e.printStackTrace();
         }
         
 
