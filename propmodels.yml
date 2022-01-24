@@ -1,0 +1,2083 @@
+#    This is the Prop Models config file
+
+'1':
+  displayname: §x§5§9§f§7§7§b§lWarp Pipe
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'2':
+  displayname: §x§5§9§f§7§7§b§l1/2 Warp Pipe
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'3':
+  displayname: §7Spawn Lights
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  lore1: §7§oAll of the lights all of the lights
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'4':
+  displayname: §cRed §fLollipop
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'5':
+  displayname: §cPirahna §aPlant §fUrinal
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  lore1: §f§o*Gnom*
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'6':
+  displayname: §eStar §cPost
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'7':
+  displayname: §4Ribbon
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'8':
+  displayname: §dPeach's Castle §bStained Glass Window
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'9':
+  displayname: §f§lNint Sign
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'10':
+  displayname: §f§lSuper Sign
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'11':
+  displayname: Unset Model Name
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  lore1: DEFAULT LORE 1
+  lore2: DEFAULT LORE 2
+  lore3: DEFAULT LORE 3
+  lore4: DEFAULT LORE 4
+  lore5: DEFAULT LORE 5
+  lore6: DEFAULT LORE 6
+  lore7: DEFAULT LORE 7
+  lore8: DEFAULT LORE 8
+  lore9: DEFAULT LORE 9
+  lore10: DEFAULT LORE 10
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'12':
+  displayname: §f§lWorld Sign
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'13':
+  displayname: §f§lJake's §7§lLong §8§lSword
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  lore1: §f
+  lore2: §fForged in flames by the greatest of men.
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'14':
+  displayname: §e§lQuestion Block
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'15':
+  displayname: §bPeach's Castle §eWindow
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'16':
+  displayname: §6Pirahana Plant Spike
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'17':
+  displayname: §6(NOT CURRENCY) §eGold Coin Prop
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  lore1: §6
+  lore2: §cDO NOT USE AS CURRENCY
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'18':
+  displayname: §e§lQUESTION MARK COIN
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'19':
+  displayname: §3§lSNW Light Post (Bottom)
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'20':
+  displayname: §3§lSNW Light Post (Top)
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'21':
+  displayname: §x§e§8§1§e§2§6§l↙§x§f§8§9§9§1§d§l Go Bottom Left
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  lore1: §7Go down & left.
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'22':
+  displayname: §x§e§8§1§e§2§6§l↘§x§f§8§9§9§1§d§l Go Bottom Right
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  lore1: §7Go down & right.
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'23':
+  displayname: §aGreen §2Shell
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'24':
+  displayname: §2✔ §a§lAccept
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'25':
+  displayname: §x§e§8§1§e§2§6§l●/●§x§f§8§9§9§1§d§l Divide
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'26':
+  displayname: §x§e§8§1§e§2§6§l↓§x§f§8§9§9§1§d§l Go Down
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  lore1: §7Go down.
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'27':
+  displayname: §x§e§8§1§e§2§6§l=§x§f§8§9§9§1§d§l Equals
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'28':
+  displayname: §x§e§8§1§e§2§6§l←§x§f§8§9§9§1§d§l Go Left
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  lore1: §7Go left a page.
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'29':
+  displayname: §x§e§8§1§e§2§6§l-§x§f§8§9§9§1§d§l Subtract
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'30':
+  displayname: §3Jaws Boat §fFront
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'31':
+  displayname: §3Jaws Boat §fBack
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'32':
+  displayname: §c§lMushroom §f§lTable §7(Medium)
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'33':
+  displayname: §c§lMushroom §f§lTable §7(Small)
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'34':
+  displayname: §c§lMushroom §f§lTable §7(Large)
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'35':
+  displayname: §fClouds ☻
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  lore1: §f
+  lore2: §7fluffy
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'36':
+  displayname: §7§lBullet Bill
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'37':
+  displayname: §a3 Way Warp Pipe
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'38':
+  displayname: §cMario §eFlag
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'39':
+  displayname: §cF§6i§er§ce §6F§el§co§6w§ee§cr
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'40':
+  displayname: §6§lKey §e§lCoin
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'41':
+  displayname: §x§e§8§1§e§2§6§l-§x§f§8§9§9§1§d§l Go back
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  lore1: §7Go back a menu.
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'42':
+  displayname: §7§lDarksaber
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'43':
+  displayname: §6§lPOW! §4§lBlock
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'44':
+  displayname: §b§lPOW! §3§lBlock
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'45':
+  displayname: §7§lJaws §f§lDisplay Shark
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'46':
+  displayname: §x§e§8§1§e§2§6§l✖§x§f§8§9§9§1§d§l Exit
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  lore1: §7Exit the menu.
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'47':
+  displayname: §x§e§8§1§e§2§6§l+§x§f§8§9§9§1§d§l Add
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  lore1: §7Add the numbers.
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'48':
+  displayname: §x§e§8§1§e§2§6§l→§x§f§8§9§9§1§d§l Go Right
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  lore1: §7Go left a page.
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'49':
+  displayname: §7§lBullet §7Bill Cannon
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'50':
+  displayname: §c§lMario §9§lWristband
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  lore1: §c
+  lore2: §7§oUse this around the park!
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'51':
+  displayname: §a§lLuigi §9§lWristband
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  lore1: §c
+  lore2: §7§oUse this around the park!
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'52':
+  displayname: §a§lYoshi's §f§lEgg
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'53':
+  displayname: §a§lYoshi's
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'54':
+  displayname: §7§lThwomp!
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  lore1: §7
+  lore2: §7§oOOOHGH
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'55':
+  displayname: §c§lMario's §9§lCap §fStrawberry Shortcake sandwich
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  lore1: §f--------------------
+  lore2: §aRight click to eat!
+  lore3: §6(Effects you with Speed)
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'56':
+  displayname: §a§lLuigi's §9§lCap §fNo-Bake Cheesecake sandwhich
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  lore1: §f--------------------
+  lore2: §aRight click to eat!
+  lore3: §6(Effects you with Speed)
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'57':
+  displayname: §c§lMario's §f§lStrawberry Soda
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  lore1: §f--------------------
+  lore2: §aRight click to drink!
+  lore3: §6(Effects you with Speed)
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'58':
+  displayname: §a§lLuigi's §f§lGreen Apple Soda
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  lore1: §f--------------------
+  lore2: §aRight click to drink!
+  lore3: §6(Effects you with Speed)
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'59':
+  displayname: §e§lPrincess Peach's §f§lPeach Soda
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  lore1: §f--------------------
+  lore2: §aRight click to drink!
+  lore3: §6(Effects you with Speed)
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'60':
+  displayname: §x§e§8§1§e§2§6§l↖§x§f§8§9§9§1§d§l Go Top Left
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  lore1: §7Go up & left.
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'61':
+  displayname: §aPalutena's §6Magic §3Staff
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'62':
+  displayname: §7ODM §2Gear
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'63':
+  displayname: §7ODM §2Gear §7Blade
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'64':
+  displayname: §eElizabeth §fthe §5§lGoomba
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'65':
+  displayname: §eBrad §fthe §c§lGoomba
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'66':
+  displayname: §eIzzy §fthe §2§lGoomba
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'67':
+  displayname: §cPirahna §aPlant §fJaw
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'68':
+  displayname: §cPirahna §aPlant §fStem
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'69':
+  displayname: §cPirahna §aPlant §fMouth
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'70':
+  displayname: §fTex's §dSimp §6Compass
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  lore1: §f
+  lore2: §7§o"I am deeply in love with Maiiiiiiiii" §7- Texy
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'71':
+  displayname: §x§e§8§1§e§2§6§l↗§x§f§8§9§9§1§d§l Go Top Right
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  lore1: §7Go up & right
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'72':
+  displayname: Unset Model Name
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  lore1: DEFAULT LORE 1
+  lore2: DEFAULT LORE 2
+  lore3: DEFAULT LORE 3
+  lore4: DEFAULT LORE 4
+  lore5: DEFAULT LORE 5
+  lore6: DEFAULT LORE 6
+  lore7: DEFAULT LORE 7
+  lore8: DEFAULT LORE 8
+  lore9: DEFAULT LORE 9
+  lore10: DEFAULT LORE 10
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'73':
+  displayname: §fEboy's §dSimp §6Compass
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  lore1: §f
+  lore2: §7§o"Palutena is best girl." §7- Eboyyyyy
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'74':
+  displayname: §fJake's §dSimp §6Compass
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  lore1: §f
+  lore2: §7§o"Live, Laugh, Love traps." §7- Jakey
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'75':
+  displayname: §4§lShy §f§lGuy
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'76':
+  displayname: §4§l❌ §c§lDeny
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'77':
+  displayname: §9§lArm Tone 6 (Stone)
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'78':
+  displayname: §3§lincredi §f§lmini toy
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'79':
+  displayname: §b§lLight Blue §fYoshi Ride Cart
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'80':
+  displayname: §a§lLight Green §fYoshi Ride Cart
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'81':
+  displayname: §5§lPurple §fYoshi Ride Cart
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'82':
+  displayname: §6§lOrange §fYoshi Ride Cart
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'83':
+  displayname: §c§lRed §fYoshi Ride Cart
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'84':
+  displayname: §d§lPink §fYoshi Ride Cart
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'85':
+  displayname: §3§lBlue §fYoshi Ride Cart
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'86':
+  displayname: §e§lYellow §fYoshi Ride Cart
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'87':
+  displayname: §fYoshi Ride Cart §cBars
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'88':
+  displayname: §8§lBowser's Castle §7Recycle Can
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'89':
+  displayname: §8§lBowser's Castle §7Trash Can
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'90':
+  displayname: §3§lSuper Nintendo World §fRecycle Can
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'91':
+  displayname: §3§lSuper Nintendo World §fTrash Can
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'92':
+  displayname: §a§lYoshi §fMerchandise §aKart
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'93':
+  displayname: §3§lWater§9§lWorld §f§lSpinner
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'94':
+  displayname: §3§lAmity §c§lIsland §6§lSign
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'95':
+  displayname: §c§lMav's Surfboard
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'96':
+  displayname: §fPirahana Plant Spike
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'97':
+  displayname: §6§lSpace §f§lShuttle
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'98':
+  displayname: §7§lCasino Slot Machine Housing
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'99':
+  displayname: §4Guidance §fArrow
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'100':
+  displayname: §4§lJurrasic §e§lPark §fSign
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'101':
+  displayname: §3§oSNW §b§oEntrance Lamps
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'102':
+  displayname: §7§nTerminator Skull
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'103':
+  displayname: §7§nTerminator Torso
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'104':
+  displayname: §7§nTerminator Limb
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'105':
+  displayname: §7§nTerminator Limb
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'106':
+  displayname: §7§nTerminator Limb
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'107':
+  displayname: §7§nTerminator Limb
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'108':
+  displayname: §7§nTerminator Limb
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'109':
+  displayname: §7§nTerminator Limb
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'110':
+  displayname: §7§nTerminator Limb
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'111':
+  displayname: §f§l§oStack of §9§lHydro§f§lCoins
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'112':
+  displayname: §2§lBattery Park §fClock Tower §7(Bottom)
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'113':
+  displayname: §2§lBattery Park §fClock Tower §7(Top)
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'114':
+  displayname: §2§lBattery Park §fClock Tower
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'115':
+  displayname: §2§lBattery Park §fSpeaker Towers & Lamp
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'116':
+  displayname: §b§k-------- §f§lITS THE MF TRAVIS SCOTT MEAL BABYYYYY §b§k--------
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'117':
+  displayname: §9§lHuggy Wuggy Neutral
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'118':
+  displayname: §a§lPulse §7§oScanner
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'119':
+  displayname: §f§l§oMusic Note Block
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'120':
+  displayname: §f§l§oMusic Note Block §d§l§oPink
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'121':
+  displayname: §f§l§oMusic Note Block §c§l§oRed
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'122':
+  displayname: §2§lBattery Park §fSpeaker Towers
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'123':
+  displayname: §7USJ FOUNTAIN
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'124':
+  displayname: §e§l§oJurrasic §c§l§oPark §f§l§oBoat §7(front)
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'125':
+  displayname: §e§l§oJurrasic §c§l§oPark §f§l§oBoat §7(Back)
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'126':
+  displayname: §e§l§oJurrasic §c§l§oPark §f§l§oBoat Toy
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'127':
+  displayname: §9§lHuggy Wuggy Neutral
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'128':
+  displayname: §c§lSlurpee §f§lMachine
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'129':
+  displayname: §7Plaque
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'130':
+  displayname: §f§lSoda Fountain
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'131':
+  displayname: §c§lRed §8§lDragon Wings
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'132':
+  displayname: §9§lBlue §8§lDragon Wings
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'133':
+  displayname: §7§lGray §8§lDragon Wings
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'134':
+  displayname: §2§lGreen §8§lDragon Wings
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'135':
+  displayname: §d§lPink §8§lDragon Wings
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'136':
+  displayname: §f§lWhite §8§lDragon Wings
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'137':
+  displayname: §6§lYellow §8§lDragon Wings
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'138':
+  displayname: §c§lR§6§la§e§li§a§ln§b§lb§d§lo§6§lw §8§lDragon Wings
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'139':
+  displayname: §f§l§oMusic Note Block §e§l§oYellow
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'140':
+  displayname: Unset Model Name
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  lore1: DEFAULT LORE 1
+  lore2: DEFAULT LORE 2
+  lore3: DEFAULT LORE 3
+  lore4: DEFAULT LORE 4
+  lore5: DEFAULT LORE 5
+  lore6: DEFAULT LORE 6
+  lore7: DEFAULT LORE 7
+  lore8: DEFAULT LORE 8
+  lore9: DEFAULT LORE 9
+  lore10: DEFAULT LORE 10
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'141':
+  displayname: §f§l§oMusic Note Block §b§l§oBlue
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'142':
+  displayname: §9§lHuggy Wuggy Angry
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'143':
+  displayname: Unset Model Name
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  lore1: DEFAULT LORE 1
+  lore2: DEFAULT LORE 2
+  lore3: DEFAULT LORE 3
+  lore4: DEFAULT LORE 4
+  lore5: DEFAULT LORE 5
+  lore6: DEFAULT LORE 6
+  lore7: DEFAULT LORE 7
+  lore8: DEFAULT LORE 8
+  lore9: DEFAULT LORE 9
+  lore10: DEFAULT LORE 10
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'144':
+  displayname: §6§lYoshi's Golden Egg
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'145':
+  displayname: §a§lFlying Dinosaur Model Test
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'146':
+  displayname: §x§f§b§0§0§0§0§lE§x§f§c§1§c§0§0§ll§x§f§c§3§7§0§0§le§x§f§d§5§3§0§0§lc§x§f§c§7§0§0§0§lt§x§f§8§9§7§0§1§lr§x§f§3§b§e§0§2§li§x§e§e§e§5§0§3§lc §x§d§7§f§f§0§4§lB§x§9§b§f§f§0§3§lo§x§5§f§f§f§0§2§lo§x§2§3§f§f§0§1§lg§x§0§4§f§7§2§1§la§x§0§3§e§7§6§4§ll§x§0§2§d§7§a§6§lo §x§0§0§c§7§e§9§lE§x§2§6§a§0§f§f§lq§x§5§f§6§e§f§f§lu§x§9§8§3§b§f§f§la§x§d§1§0§8§f§f§ll§x§c§b§0§0§f§a§li§x§b§7§0§0§f§4§lz§x§a§4§0§0§e§f§le§x§9§0§0§0§e§9§lr
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'147':
+  displayname: §7§osus bookshelf
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'148':
+  displayname: §6Columbus Pillar
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'149':
+  displayname: §9§lArm Tone 1
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'150':
+  displayname: §9§lArm Tone 2
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'151':
+  displayname: §9§lArm Tone 3
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'152':
+  displayname: §9§lArm Tone 4
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'153':
+  displayname: §9§lArm Tone 5
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'154':
+  displayname: §2§lSpringtrap's Head
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'155':
+  displayname: §7§lSink Top
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'156':
+  displayname: §7Tower Of Terror Cart
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'157':
+  displayname: §x§d§1§6§4§c§1§ljakey §f§lmini toy
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'158':
+  displayname: §2§lSpringtrap's Torso
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'159':
+  displayname: §cV Cake
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  lore1: §2
+  lore2: §fwow he really lost his virginity
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'160':
+  displayname: §2§lSpringtrap's Leg
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'161':
+  displayname: §2§lSpringtrap's Arm
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'162':
+  displayname: §x§5§9§f§7§7§b§lMount Beanpole Cake
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  lore1: §f--------------------
+  lore2: §aRight click to eat!
+  lore3: §6(Effects you with Speed)
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'163':
+  displayname: §x§5§9§f§7§7§b§lLonger Warp Pipe
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'164':
+  displayname: §d§lYoshi's §f§lEgg
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'165':
+  displayname: §c§lYoshi's §f§lEgg
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'166':
+  displayname: §e§lYoshi's §f§lEgg
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'167':
+  displayname: §f§lElectric Trolly Front
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'168':
+  displayname: §f§lElectric Trolly Back
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'169':
+  displayname: §f§lElectric Trolly Wheels
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'170':
+  displayname: §7§lBomb-omb
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'171':
+  displayname: §7§lDisney Sea Lamp
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'172':
+  displayname: §a§leboy §f§lmini toy
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'173':
+  displayname: §c§lRed §f§lPower-Up Mushroom
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'174':
+  displayname: §a§lGreen §f§l1-Up Mushroom
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'175':
+  displayname: §a§lYoshi §c§lApple §f§lBasket
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'176':
+  displayname: §c§o§lBoswer Jr §e§oPaint §6§oBrush
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'177':
+  displayname: §f§lMoving Yoshi Lucky Blocks & Pow Block
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'178':
+  displayname: §x§c§4§6§9§c§7§lMai §x§c§4§9§f§6§8the Goomba
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'179':
+  displayname: §x§f§9§a§3§f§f§lDaze §x§c§4§9§f§6§8the Goomba
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'180':
+  displayname: §x§2§e§1§4§d§b§lSonic §x§c§4§9§f§6§8the Goomba
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
+'181':
+  displayname: §x§F§F§E§D§0§0§lLego §x§c§4§9§f§6§8the Goomba
+  enchantslot1: Enchantment.LUCK
+  enchantslot2: Enchantment.LUCK
+  enchantslot3: Enchantment.LUCK
+  enchantslot1level: 0
+  enchantslot2level: 0
+  enchantslot3level: 0
+  unbreakable: false
+  hideunbreakable: false
+  hideenchants: false
