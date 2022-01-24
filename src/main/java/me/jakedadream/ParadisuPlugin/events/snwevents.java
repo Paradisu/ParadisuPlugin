@@ -47,11 +47,6 @@ public class snwevents implements Listener {
             joiner.setGameMode(GameMode.ADVENTURE);
             joiner.teleport(loc);
         }
-
-        PlayerData.createPlayer(joiner);
-        PlayerData.updatePlayer(joiner);
-
-
     }
 
 
