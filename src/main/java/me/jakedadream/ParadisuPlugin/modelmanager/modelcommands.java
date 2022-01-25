@@ -3,14 +3,12 @@ package me.jakedadream.ParadisuPlugin.modelmanager;
 import me.jakedadream.ParadisuPlugin.paradisumain;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
-import org.bukkit.event.block.Action;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -152,7 +150,7 @@ public class modelcommands implements CommandExecutor {
                 return true;
 
 
-            case "reloadprops":
+            /*case "reloadprops":
                 if(!(player.hasPermission("snw.model.reload"))){
                     player.sendMessage(nopermsmsg);
                     break;
@@ -170,8 +168,8 @@ public class modelcommands implements CommandExecutor {
                 paradisumain.reloadHatModelsConfig();
                 HatModelInv.createInvs();
                 player.sendMessage(cmdprefix + "§fReloaded Hats");
-                break;
-
+                break;*/
+/*
             case "createmodelcfsection":
                 if (player.hasPermission("snw.model")) {
                     //
@@ -267,7 +265,7 @@ public class modelcommands implements CommandExecutor {
 
 
             default:
-                return false;
+                return false;           */
         }
         return false;
     }

@@ -50,22 +50,11 @@ public class paradisumain extends JavaPlugin {
 
 
 
-    public static String CommandPrefix() {
-        String cmdprefix = "\uE016 ";
-        return cmdprefix;
-    }
-    public static String CommandEmph() {
-        String cmdemph = "§x§f§d§d§0§2§3";
-        return cmdemph;
-    }
-    public static String NoPermsMessage() {
-        String nopermsmsg = "\uE016 §fYou do not have permission to use that command.";
-        return nopermsmsg;
-    }
-    public static String NoArgsMessage() {
-        String noargsmsg = "\uE016 §fNot enough arguments provided.";
-        return noargsmsg;
-    }
+    public static String CommandPrefix() { String cmdprefix = "\uE016 "; return cmdprefix; }
+    public static String CommandEmph() { String cmdemph = "§x§f§d§d§0§2§3"; return cmdemph; }
+    public static String NoPermsMessage() { String nopermsmsg = "\uE016 §fYou do not have permission to use that command."; return nopermsmsg; }
+    public static String NoArgsMessage() { String noargsmsg = "\uE016 §fNot enough arguments provided."; return noargsmsg; }
+    public static String PlayerCooldownMessage() { String cooldownmsg = "\uE016 §fYou are currently on a §x§f§d§d§0§2§3cooldown§f." ; return cooldownmsg; }
 
     @Override
     public void onEnable() {
