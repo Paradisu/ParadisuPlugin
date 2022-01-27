@@ -2,6 +2,7 @@ package me.jakedadream.ParadisuPlugin.events;
 
 import me.jakedadream.ParadisuPlugin.invs.trashcanINV;
 import me.jakedadream.ParadisuPlugin.items.ItemManager;
+import me.jakedadream.ParadisuPlugin.paradisu_mysql.DBConnections;
 import me.jakedadream.ParadisuPlugin.paradisu_mysql.PlayerData;
 import me.jakedadream.ParadisuPlugin.paradisumain;
 import org.bukkit.*;
@@ -16,11 +17,15 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.UUID;
 
 import static org.bukkit.Bukkit.getServer;
 
@@ -31,7 +36,10 @@ public class snwevents implements Listener {
     String cmdprefix = paradisumain.CommandPrefix();
     String cmdemph = paradisumain.CommandEmph();
 
-    //PlayerData playerdata = new PlayerData();
+    private static Connection connection;
+    private static void establishConnection(){
+        if(connection == null)  connection = DBConnections.ParadisuSQLCon();
+    }
 
     @EventHandler
     public void onJoin(PlayerJoinEvent jEvent) {
@@ -52,7 +60,9 @@ public class snwevents implements Listener {
 
     @EventHandler
     public void onPlayerInteractAtEntity(PlayerInteractAtEntityEvent intEvent) {
+        establishConnection();
         Player p = intEvent.getPlayer();
+        String playeruuid = p.getUniqueId().toString();
         if (intEvent.getRightClicked().getType() == EntityType.ARMOR_STAND) {                    // Tests if you right click an armorstand
             if (intEvent.getRightClicked().getName().equals("CoinPickup")) {                     // Tests if the name is "CoinPickup"
                 getServer().getConsoleSender().sendMessage(ChatColor.YELLOW + "A player picked up a coin");     // Triggers a message in chat
@@ -61,24 +71,28 @@ public class snwevents implements Listener {
                 intEvent.getPlayer().getInventory().addItem(ItemManager.createCoin());                             // Adds an item into your inv (Can be used to trigger anything, like a gui)
                 intEvent.getRightClicked().remove();
                 
-                
-                                int amount_of_coins = null;
-                PreparedStatement PlayerCoinQuery = connection.prepareStatement("SELECT * FROM PlayerData WHERE UUID =?");
-                PlayerCoinQuery.setString(1, playeruuid);
-                ResultSet PlayerCoinQueryResult = PlayerCoinQuery.executeQuery();
-                PlayerCoinQueryResult.next();
-        
-                int number_of_coins = PlayerCoinQueryResult.getInt("picked_up_coin_amount");
-                int number_of_coins_before = number_of_coins;
-                number_of_coins++;
-                
-        
-                PreparedStatement UpdatePlayerCoin = connection.prepareStatement("UPDATE PlayerData SET picked_up_coin_amount =? WHERE UUID =?");
-                UpdatePlayerCoin.setInt(1, number_of_coins);
-                UpdatePlayerCoin.setString(2, playeruuid);
-                UpdatePlayerCoin.executeUpdate();
-        
-                Bukkit.getConsoleSender().sendMessage(ChatColor.AQUA + "Changed a player's amount of deaths from " + number_of_coins_before + " to " + number_of_coins);
+                try {
+                    int amount_of_coins = 0;
+                    PreparedStatement PlayerCoinQuery = connection.prepareStatement("SELECT * FROM PlayerData WHERE UUID =?");
+                    PlayerCoinQuery.setString(1, playeruuid);
+                    ResultSet PlayerCoinQueryResult = PlayerCoinQuery.executeQuery();
+                    PlayerCoinQueryResult.next();
+
+                    int number_of_coins = PlayerCoinQueryResult.getInt("picked_up_coin_amount");
+                    int number_of_coins_before = number_of_coins;
+                    number_of_coins++;
+
+
+                    PreparedStatement UpdatePlayerCoin = connection.prepareStatement("UPDATE PlayerData SET picked_up_coin_amount =? WHERE UUID =?");
+                    UpdatePlayerCoin.setInt(1, number_of_coins);
+                    UpdatePlayerCoin.setString(2, playeruuid);
+                    UpdatePlayerCoin.executeUpdate();
+
+                    Bukkit.getConsoleSender().sendMessage(ChatColor.AQUA + "Changed a player's amount of coins from " + number_of_coins_before + " to " + number_of_coins);
+
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
 
             }
         }
