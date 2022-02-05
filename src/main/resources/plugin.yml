@@ -238,3 +238,5 @@ commands:
     description: broadcast to perm
   gmessage:
     description: lol
+  entitycontrol:
+    description: allows to control entity lmao

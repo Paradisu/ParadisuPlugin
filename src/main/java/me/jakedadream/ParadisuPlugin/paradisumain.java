@@ -4,13 +4,11 @@ import me.jakedadream.ParadisuPlugin.paradisu_mysql.DBConnections;
 import me.jakedadream.ParadisuPlugin.commands.snwcommands;
 import me.jakedadream.ParadisuPlugin.commands.teleportationcmds;
 import me.jakedadream.ParadisuPlugin.commands.warps;
-import me.jakedadream.ParadisuPlugin.invs.*;
-import me.jakedadream.ParadisuPlugin.items.*;
+import me.jakedadream.ParadisuPlugin.paradisu_protocollib.*;
 import me.jakedadream.ParadisuPlugin.events.*;
 import me.jakedadream.ParadisuPlugin.modelmanager.HatModelInv;
 import me.jakedadream.ParadisuPlugin.modelmanager.PropModelInv;
 import me.jakedadream.ParadisuPlugin.modelmanager.modelcommands;
-import me.jakedadream.ParadisuPlugin.paradisu_mysql.DBConnections;
 import me.jakedadream.ParadisuPlugin.shops.ShopCommands;
 import me.jakedadream.ParadisuPlugin.shops.ShopGuis;
 import me.jakedadream.ParadisuPlugin.wrappers.PlayerDataEvents;
@@ -163,7 +161,7 @@ public class paradisumain extends JavaPlugin {
         // =================
         // SHOP GUI COMMANDS
         // =================
-
+        getCommand("entitycontrol").setExecutor(new ProtoLib_Basic_Commands());
         //
         //
         //
