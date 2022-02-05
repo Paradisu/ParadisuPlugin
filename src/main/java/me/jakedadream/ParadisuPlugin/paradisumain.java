@@ -233,8 +233,8 @@ public class paradisumain extends JavaPlugin {
     //
     //
     //
-    public static File sourceWarpFile;
-    public static FileConfiguration fileWarpConfig;
+    private static File sourceWarpFile;
+    private static FileConfiguration fileWarpConfig;
 
     // public static File sourcePropModelsFile;
     // public static FileConfiguration filePropModelsConfig;
@@ -242,8 +242,8 @@ public class paradisumain extends JavaPlugin {
     // public static File sourceHatModelsFile;
     // public static FileConfiguration fileHatModelsConfig;
 
-    public static File sourceShopGuiFile;
-    public static FileConfiguration fileShopGuiConfig;
+    private static File sourceShopGuiFile;
+    private static FileConfiguration fileShopGuiConfig;
 
 
     public void createWarpFiles() {
