@@ -1,0 +1,136 @@
+#    This is the warps config file
+
+
+snw:
+  X: 82.30866408526053
+  Y: 86.0
+  Z: -741.4889230521925
+  Yaw: 74.3306
+  Pitch: 0.09043792
+  World: Paradisu
+  Permission: snw.warp.default
+  display: Super Nintendo World
+spawn:
+  X: 82.30866408526053
+  Y: 86.0
+  Z: -741.4889230521925
+  Yaw: 74.3306
+  Pitch: 0.09043792
+  World: Paradisu
+  Permission: snw.warp.default
+jurassicpark:
+  X: 328.5
+  Y: 82.0
+  Z: -663.5
+  Yaw: -36.500496
+  Pitch: -3.116249
+  World: Paradisu
+  Permission: snw.warp.default
+jaws:
+  X: 304.9474764011471
+  Y: 81.0
+  Z: -821.4536460098685
+  Yaw: -301.65164
+  Pitch: 8.708486
+  World: Paradisu
+  Permission: snw.warp.default
+amity:
+  X: 332.63759119968876
+  Y: 82.0
+  Z: -819.4888072543994
+  Yaw: -236.91574
+  Pitch: -0.31015566
+  World: Paradisu
+  Permission: snw.warp.default
+attackontitan:
+  X: 549.6489369755512
+  Y: 83.0
+  Z: -1096.5146190581986
+  Yaw: -137.90936
+  Pitch: -0.51057166
+  World: Paradisu
+  Permission: snw.warp.default
+mels:
+  X: 395.79225646317406
+  Y: 82.0
+  Z: -975.7302376760834
+  Yaw: 214.2236
+  Pitch: -0.21285087
+  World: Paradisu
+  Permission: snw.warp.default
+gramercypark:
+  X: 610.5362587502665
+  Y: 83.0
+  Z: -1027.528135583656
+  Yaw: -25.676325
+  Pitch: -0.21286231
+  World: Paradisu
+  Permission: snw.warp.default
+batterypark:
+  X: 449.5
+  Y: 83.0
+  Z: -962.5
+  Yaw: -45.0
+  Pitch: 0.0
+  World: Paradisu
+  Permission: snw.warp.default
+  display: Battery Park
+centralpark:
+  X: 397.5
+  Y: 82.0
+  Z: -940.5
+  Yaw: -25.0
+  Pitch: 0.0
+  World: Paradisu
+  Permission: snw.warp.default
+  display: Central Park
+flyingdinosaur:
+  X: 522.5
+  Y: 82.0
+  Z: -620.5
+  Yaw: 42.5
+  Pitch: 0.0
+  World: Paradisu
+  Permission: snw.warp.default
+  display: Flying Dinosaurs
+disneysea:
+  X: 664.5
+  Y: 83.5
+  Z: 667.5
+  Yaw: -140.0
+  Pitch: 0.0
+  World: Paradisu
+  Permission: snw.warp.disneysea
+  display: Disney Sea
+waterfront:
+  X: 944.3822591799338
+  Y: 88.0
+  Z: 366.40395738145537
+  Yaw: 135.21855
+  Pitch: -4.038492
+  World: Paradisu
+  Permission: snw.warp.disneysea
+tot:
+  X: 870.492892592376
+  Y: 85.0
+  Z: 198.4819297001703
+  Yaw: 135.06862
+  Pitch: -0.30001783
+  World: Paradisu
+  Permission: snw.warp.disneysea
+towerofterror:
+  X: 870.492892592376
+  Y: 85.0
+  Z: 198.4819297001703
+  Yaw: 135.06862
+  Pitch: -0.30001783
+  World: Paradisu
+  Permission: snw.warp.disneysea
+texhouse:
+  X: 331.8241479747356
+  Y: 88.0
+  Z: -3363.91538770272
+  Yaw: 24.740723
+  Pitch: 17.525398
+  World: Paradisu
+  Permission: snw.warp.default
