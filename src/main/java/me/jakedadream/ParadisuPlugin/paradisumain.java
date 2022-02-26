@@ -13,6 +13,8 @@ import me.jakedadream.ParadisuPlugin.shops.ShopCommands;
 import me.jakedadream.ParadisuPlugin.shops.ShopGuis;
 import me.jakedadream.ParadisuPlugin.wrappers.PlayerDataEvents;
 import me.jakedadream.ParadisuPlugin.wrappers.japantime;
+
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -23,6 +25,8 @@ import org.bukkit.scheduler.BukkitScheduler;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+
+import com.comphenix.protocol.PacketType.Handshake.Server;
 
 
 //uploadtest
@@ -57,6 +61,10 @@ public class paradisumain extends JavaPlugin {
     @Override
     public void onEnable() {
 
+        
+        createEnvFiles();
+        saveEnvConfig();
+
         try {
             DBConnections.Paradisu_Connect();
         } catch (ClassNotFoundException e) {
@@ -66,7 +74,6 @@ public class paradisumain extends JavaPlugin {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
 
         // =================
         // SNW COMMANDS
@@ -171,6 +178,8 @@ public class paradisumain extends JavaPlugin {
         createWarpFiles();
         saveWarpConfig();
 
+        
+
         // createPropModelsFiles();
         // savePropModelsConfig();
 
@@ -216,7 +225,7 @@ public class paradisumain extends JavaPlugin {
 
 
 
-
+        
 
     }
 
@@ -231,6 +240,10 @@ public class paradisumain extends JavaPlugin {
     //
     //
     //
+    
+    private static File envValues;
+    private static FileConfiguration envConfig;
+    
     private static File sourceWarpFile;
     private static FileConfiguration fileWarpConfig;
 
@@ -242,6 +255,20 @@ public class paradisumain extends JavaPlugin {
 
     private static File sourceShopGuiFile;
     private static FileConfiguration fileShopGuiConfig;
+
+    public void createEnvFiles(){
+        envValues = new File(getDataFolder(), "env.yml");
+        if (!envValues.exists()) {
+            try {
+                envValues.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        envConfig = YamlConfiguration.loadConfiguration(envValues);
+        Bukkit.getConsoleSender().sendMessage("end of createEnvFiles");
+
+    }
 
 
     public void createWarpFiles() {
@@ -330,6 +357,10 @@ public class paradisumain extends JavaPlugin {
     public static FileConfiguration getWarpConfig() {
         return fileWarpConfig;
     }
+
+    public static FileConfiguration getEnvConfig(){
+        return envConfig;
+    }
     // public static FileConfiguration getPropModelsConfig() {
     //     return filePropModelsConfig;
     // }
@@ -348,6 +379,14 @@ public class paradisumain extends JavaPlugin {
         }
     }
 
+
+    public static void saveEnvConfig(){
+        try {
+            envConfig.save(envValues);
+        } catch (IOException e){
+            System.out.println("couldn't save file");
+        }
+    }
     // public static void savePropModelsConfig(){
     //     try {
     //         filePropModelsConfig.save(sourcePropModelsFile);
@@ -375,6 +414,11 @@ public class paradisumain extends JavaPlugin {
     //use if edited file through text editor
     public static void reloadWarpConfig(){
         fileWarpConfig = YamlConfiguration.loadConfiguration(sourceWarpFile);}
+
+    public static void reloadEnvConfig(){
+        envConfig = YamlConfiguration.loadConfiguration(envValues);
+
+    }
 
     // public static void reloadPropModelsConfig(){
     //     filePropModelsConfig = YamlConfiguration.loadConfiguration(sourcePropModelsFile);}

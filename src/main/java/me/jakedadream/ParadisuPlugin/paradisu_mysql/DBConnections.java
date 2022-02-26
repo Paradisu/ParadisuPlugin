@@ -4,7 +4,10 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import io.github.cdimascio.dotenv.Dotenv;
+import me.jakedadream.ParadisuPlugin.paradisumain;
+
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.file.FileConfiguration;
 
 import static org.bukkit.Bukkit.getServer;
 
@@ -37,11 +40,19 @@ public class DBConnections {
 
     public static void Paradisu_Connect() throws ClassNotFoundException, SQLException {
         if (!Paradisu_IsConnected()) {
-            Dotenv dotenv_load = Dotenv.load();
+            
+            //get values from env config
+            FileConfiguration config = paradisumain.getEnvConfig();
 
-            String jdbc = dotenv_load.get("Paradisu_JDBC");
-            String username = dotenv_load.get("Paradisu_USERNAME");
-            String password = dotenv_load.get("Paradisu_PASSWORD");
+            String jdbc = config.getString("Paradisu_JDBC");
+            String username = config.getString("Paradisu_USERNAME");
+            String password = config.getString("Paradisu_PASSWORD");
+            
+            //Dotenv dotenv_load = Dotenv.load();
+
+            // String jdbc = dotenv_load.get("Paradisu_JDBC");
+            // String username = dotenv_load.get("Paradisu_USERNAME");
+            // String password = dotenv_load.get("Paradisu_PASSWORD");
 
             Paradisu_Connection = DriverManager.getConnection(jdbc, username, password);
             
