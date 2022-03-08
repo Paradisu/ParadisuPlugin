@@ -23,7 +23,7 @@ public class PropModelInv {
     String cmdemph = paradisumain.CommandEmph();
 
 
-    private static int getRows(ResultSet r){
+    public static int getRows(ResultSet r){
         if(r == null) return 0;
         try{
             r.last();

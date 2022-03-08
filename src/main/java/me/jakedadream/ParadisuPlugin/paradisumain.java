@@ -1,5 +1,6 @@
 package me.jakedadream.ParadisuPlugin;
 
+import me.jakedadream.ParadisuPlugin.modelmanager.modelscroller.modelscroller_events;
 import me.jakedadream.ParadisuPlugin.paradisu_mysql.DBConnections;
 import me.jakedadream.ParadisuPlugin.commands.snwcommands;
 import me.jakedadream.ParadisuPlugin.commands.teleportationcmds;
@@ -207,6 +208,7 @@ public class paradisumain extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new snwevents(), this);
         getServer().getPluginManager().registerEvents(new GuiListeners(), this);
         getServer().getPluginManager().registerEvents(new PlayerDataEvents(), this);
+        getServer().getPluginManager().registerEvents(new modelscroller_events(), this);
         getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "\n" + ChatColor.GREEN +
                 "|------------------------------|\n" + ChatColor.GREEN +
                 "| [Paradisu] Plugin now Active |\n" + ChatColor.GREEN +
