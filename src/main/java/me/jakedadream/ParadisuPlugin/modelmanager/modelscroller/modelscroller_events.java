@@ -56,16 +56,16 @@ public class modelscroller_events implements Listener {
         Player player = event.getPlayer();
         String ENTITY_NAME = "ms_controller";
 
-        player.sendMessage("[EVENT] EVENT REGISTERED");
+        //player.sendMessage("[EVENT] EVENT REGISTERED");
 
         if (entity.getType() == EntityType.ARMOR_STAND) {
-            player.sendMessage("[EVENT] ARMOR STAND REGISTERED");
+            //player.sendMessage("[EVENT] ARMOR STAND REGISTERED");
             if (entity.getName().contains(ENTITY_NAME)) {
-                player.sendMessage("[EVENT] NAME REGISTERED");
+                //player.sendMessage("[EVENT] NAME REGISTERED");
 
                 for (Entity e : world.getEntities()) {
                     if (e.getName().contains("modelscroller_props")) {
-                        player.sendMessage("[EVENT] FOUND SCROLLER REGISTERED");
+                        //player.sendMessage("[EVENT] FOUND SCROLLER REGISTERED");
 
                         int modelid = getAmountRandomModel();
 
