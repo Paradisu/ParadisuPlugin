@@ -1,13 +1,11 @@
 name: ParadisuPlugin
-version: 2.22.1
+version: 2.22.2
 authors: [JJakee, cytocracy, _Kastle, CookieCrafted]
 main: me.jakedadream.ParadisuPlugin.paradisumain
 api-version: 1.16
 commands:
   dbconnect:
     description: connects to db
-  dbreset:
-    description: disconnects from db
   stack:
     description: stack a player on another player
     usage: /<command> <player(s)>
@@ -62,6 +60,8 @@ commands:
   ac:
     description: Communicate to other admins
     usage: /<command> <message>
+  dbreset:
+    description: disconnects from db
   gms:
     description: Changes your gamemode to Survival
     usage: /<command>
