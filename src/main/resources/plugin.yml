@@ -240,3 +240,9 @@ commands:
     description: lol
   entitycontrol:
     description: allows to control entity lmao
+  dbconnect:
+    description: connects to db
+  dbreset:
+    description: disconnects from db
+  dbdisconnectrememberthisisreallyunsafedontdoit:
+    description: please dont do this command
