@@ -1,9 +1,13 @@
 name: ParadisuPlugin
-version: 2.22.0
+version: 2.22.1
 authors: [JJakee, cytocracy, _Kastle, CookieCrafted]
 main: me.jakedadream.ParadisuPlugin.paradisumain
 api-version: 1.16
 commands:
+  dbconnect:
+    description: connects to db
+  dbreset:
+    description: disconnects from db
   stack:
     description: stack a player on another player
     usage: /<command> <player(s)>
@@ -240,9 +244,5 @@ commands:
     description: lol
   entitycontrol:
     description: allows to control entity lmao
-  dbconnect:
-    description: connects to db
-  dbreset:
-    description: disconnects from db
   dbdisconnectrememberthisisreallyunsafedontdoit:
     description: please dont do this command
