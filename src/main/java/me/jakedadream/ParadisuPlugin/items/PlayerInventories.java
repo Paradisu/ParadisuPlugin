@@ -1,20 +1,15 @@
 package me.jakedadream.ParadisuPlugin.items;
 
-import me.jakedadream.ParadisuPlugin.paradisumain;
+import me.jakedadream.ParadisuPlugin.ParadisuMain;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 public class PlayerInventories {
 
 
-    String cmdprefix = paradisumain.CommandPrefix();
-    String cmdemph = paradisumain.CommandEmph();
+    String cmdprefix = ParadisuMain.CommandPrefix();
+    String cmdemph = ParadisuMain.CommandEmph();
 
 
 

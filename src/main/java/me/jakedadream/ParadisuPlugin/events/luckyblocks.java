@@ -1,12 +1,12 @@
 package me.jakedadream.ParadisuPlugin.events;
 
-import me.jakedadream.ParadisuPlugin.paradisumain;
+import me.jakedadream.ParadisuPlugin.ParadisuMain;
 import org.bukkit.event.Listener;
 
 public class luckyblocks implements Listener {
 
-    String cmdprefix = paradisumain.CommandPrefix();
-    String cmdemph = paradisumain.CommandEmph();
+    String cmdprefix = ParadisuMain.CommandPrefix();
+    String cmdemph = ParadisuMain.CommandEmph();
 
 
     public void run() {

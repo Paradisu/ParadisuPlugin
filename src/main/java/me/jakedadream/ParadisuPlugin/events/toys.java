@@ -1,29 +1,27 @@
 package me.jakedadream.ParadisuPlugin.events;
 
-import me.jakedadream.ParadisuPlugin.paradisumain;
-import me.jakedadream.ParadisuPlugin.wrappers.EventCooldowns;
-import org.bukkit.Bukkit;
+import java.util.Random;
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Snowball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Random;
-import java.util.UUID;
+import me.jakedadream.ParadisuPlugin.ParadisuMain;
+import me.jakedadream.ParadisuPlugin.wrappers.EventCooldowns;
 
 public class toys implements Listener {
 
 
-    String cmdprefix = paradisumain.CommandPrefix();
-    String cmdemph = paradisumain.CommandEmph();
-    String cooldownmsg = paradisumain.PlayerCooldownMessage();
+    String cmdprefix = ParadisuMain.CommandPrefix();
+    String cmdemph = ParadisuMain.CommandEmph();
+    String cooldownmsg = ParadisuMain.PlayerCooldownMessage();
 
 
     EventCooldowns eventCooldowns = new EventCooldowns();

@@ -1,11 +1,10 @@
 package me.jakedadream.ParadisuPlugin.modelmanager;
 
-import me.jakedadream.ParadisuPlugin.items.ItemManager;
-import me.jakedadream.ParadisuPlugin.paradisumain;
+import me.jakedadream.ParadisuPlugin.ParadisuMain;
+import net.md_5.bungee.api.ChatColor;
+
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.entity.Item;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -19,8 +18,8 @@ public class PropModelInv {
     public static List<Inventory> inventories = new ArrayList<>();
 
 
-    String cmdprefix = paradisumain.CommandPrefix();
-    String cmdemph = paradisumain.CommandEmph();
+    String cmdprefix = ParadisuMain.CommandPrefix();
+    String cmdemph = ParadisuMain.CommandEmph();
 
 
     public static int getRows(ResultSet r){
@@ -43,11 +42,9 @@ public class PropModelInv {
 
     public static void createInvs(){
 
-        modelitemmanager models = new modelitemmanager();
         double dinvSize = 36;
-        int invSize = 36;
-
-        int rows = getRows(modelitemmanager.returnPropData());
+        
+        int rows = getRows(modelitemmanager.getPropData());
 
         
         double neededInventories = (rows) / dinvSize;
@@ -113,7 +110,7 @@ public class PropModelInv {
                 }
                 ItemStack item = modelitemmanager.createPropModel(a);
                 ItemMeta meta = item.getItemMeta();
-                meta.setDisplayName(meta.getDisplayName() + " (" + a + ")");
+                meta.setDisplayName(meta.getDisplayName() + ChatColor.GOLD + " (" + a + ")");
                 item.setItemMeta(meta);
                 i.setItem(pageindex, item);
                 pageindex++;

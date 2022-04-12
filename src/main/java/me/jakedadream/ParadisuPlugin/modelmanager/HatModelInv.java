@@ -1,9 +1,10 @@
 package me.jakedadream.ParadisuPlugin.modelmanager;
 
-import me.jakedadream.ParadisuPlugin.paradisumain;
+import me.jakedadream.ParadisuPlugin.ParadisuMain;
+import net.md_5.bungee.api.ChatColor;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.entity.Item;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -16,8 +17,8 @@ import java.util.List;
 public class HatModelInv {
     public static List<Inventory> inventories = new ArrayList<>();
 
-    String cmdprefix = paradisumain.CommandPrefix();
-    String cmdemph = paradisumain.CommandEmph();
+    String cmdprefix = ParadisuMain.CommandPrefix();
+    String cmdemph = ParadisuMain.CommandEmph();
 
     private static int getRows(ResultSet r){
         if(r == null) return 0;
@@ -40,7 +41,7 @@ public class HatModelInv {
     public static void createInvs(){
         double dinvSize = 36;
         
-        int rows = getRows(modelitemmanager.returnHatData());
+        int rows = getRows(modelitemmanager.getHatData());
 
         double neededInventories = (rows / dinvSize);
         int intneededInventories = (int) Math.ceil(neededInventories);
@@ -101,7 +102,7 @@ public class HatModelInv {
                 }
                 ItemStack item = modelitemmanager.createHatModel(a);
                 ItemMeta meta = item.getItemMeta();
-                meta.setDisplayName(meta.getDisplayName() + " (" + a + ")");
+                meta.setDisplayName(meta.getDisplayName() + ChatColor.GOLD + " (" + a + ")");
                 item.setItemMeta(meta);
                 i.setItem(pageindex, item);
                 pageindex++;

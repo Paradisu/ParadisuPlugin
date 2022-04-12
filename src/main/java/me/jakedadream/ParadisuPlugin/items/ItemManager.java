@@ -1,16 +1,15 @@
 package me.jakedadream.ParadisuPlugin.items;
 
-import me.jakedadream.ParadisuPlugin.paradisumain;
+import me.jakedadream.ParadisuPlugin.ParadisuMain;
 import org.bukkit.Material;
-import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class ItemManager {
 
-    String cmdprefix = paradisumain.CommandPrefix();
-    String cmdemph = paradisumain.CommandEmph();
+    String cmdprefix = ParadisuMain.CommandPrefix();
+    String cmdemph = ParadisuMain.CommandEmph();
 
 
         public static ItemStack createCoin() {

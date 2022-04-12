@@ -2,14 +2,14 @@ package me.jakedadream.ParadisuPlugin.invs;
 
 import me.jakedadream.ParadisuPlugin.items.ItemManager;
 import me.jakedadream.ParadisuPlugin.modelmanager.modelitemmanager;
-import me.jakedadream.ParadisuPlugin.paradisumain;
+import me.jakedadream.ParadisuPlugin.ParadisuMain;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.Inventory;
 
 public class trashcanINV {
 
-    String cmdprefix = paradisumain.CommandPrefix();
-    String cmdemph = paradisumain.CommandEmph();
+    String cmdprefix = ParadisuMain.CommandPrefix();
+    String cmdemph = ParadisuMain.CommandEmph();
 
 
     public static Inventory TrashcanGUI() {

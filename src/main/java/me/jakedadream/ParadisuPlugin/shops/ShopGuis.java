@@ -1,7 +1,7 @@
 package me.jakedadream.ParadisuPlugin.shops;
 
 import me.jakedadream.ParadisuPlugin.modelmanager.modelitemmanager;
-import me.jakedadream.ParadisuPlugin.paradisumain;
+import me.jakedadream.ParadisuPlugin.ParadisuMain;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -15,8 +15,8 @@ import java.util.List;
 
 public class ShopGuis {
 
-    String cmdprefix = paradisumain.CommandPrefix();
-    String cmdemph = paradisumain.CommandEmph();
+    String cmdprefix = ParadisuMain.CommandPrefix();
+    String cmdemph = ParadisuMain.CommandEmph();
 
 
     public static List<Inventory> inventories = new ArrayList<>();
@@ -25,7 +25,7 @@ public class ShopGuis {
 
     public static void initShops(){
         inventories.clear();
-        FileConfiguration config = paradisumain.getFileShopGuiConfig();
+        FileConfiguration config = ParadisuMain.getFileShopGuiConfig();
 //        modelitemmanager models = new modelitemmanager();
         Inventory blankinv = Bukkit.createInventory(null, 54, "placeholder");
 

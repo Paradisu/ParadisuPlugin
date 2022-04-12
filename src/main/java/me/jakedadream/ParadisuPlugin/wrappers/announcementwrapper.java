@@ -1,12 +1,10 @@
 package me.jakedadream.ParadisuPlugin.wrappers;
 
-import me.jakedadream.ParadisuPlugin.paradisumain;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
-public class announcementwrapper {
-
+public class AnnouncementWrapper {
 
     public static void permannoucne(String permission, String message) {
         for (World w : Bukkit.getWorlds()) {

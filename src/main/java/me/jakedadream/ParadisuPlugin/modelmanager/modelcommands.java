@@ -1,34 +1,30 @@
 package me.jakedadream.ParadisuPlugin.modelmanager;
 
-import me.jakedadream.ParadisuPlugin.paradisumain;
+import me.jakedadream.ParadisuPlugin.ParadisuMain;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.Random;
-
 public class modelcommands implements CommandExecutor {
 
-    private String getParsedName(String[] args) {
-        String name = "";
-        for (String arg : args) {
-            name = name.concat(arg);
-            name = name.concat(" ");
-        }
-        return ChatColor.translateAlternateColorCodes('&', name);
-    }
+    // private String getParsedName(String[] args) {
+    //     String name = "";
+    //     for (String arg : args) {
+    //         name = name.concat(arg);
+    //         name = name.concat(" ");
+    //     }
+    //     return ChatColor.translateAlternateColorCodes('&', name);
+    // }
 
-    String cmdprefix = paradisumain.CommandPrefix();
-    String cmdemph = paradisumain.CommandEmph();
-    String nopermsmsg = paradisumain.NoPermsMessage();
+    String cmdprefix = ParadisuMain.CommandPrefix();
+    String cmdemph = ParadisuMain.CommandEmph();
+    String nopermsmsg = ParadisuMain.NoPermsMessage();
 
 
     @Override
@@ -114,7 +110,7 @@ public class modelcommands implements CommandExecutor {
                     if (args.length == 1) {
 
                         if (player.getInventory().getHelmet() != null) {
-                            ItemStack[] armor = player.getInventory().getArmorContents();
+                            // ItemStack[] armor = player.getInventory().getArmorContents();
                             ItemStack helmet = player.getEquipment().getHelmet();
                             ItemMeta hmeta = helmet.getItemMeta();
                             helmet.setItemMeta(hmeta);
@@ -134,7 +130,7 @@ public class modelcommands implements CommandExecutor {
                         Player target = Bukkit.getPlayerExact(args[1]);
 
                         if (target.getInventory().getHelmet() != null) {
-                            ItemStack[] armor = target.getInventory().getArmorContents();
+                            // ItemStack[] armor = target.getInventory().getArmorContents();
                             ItemStack helmet = target.getEquipment().getHelmet();
                             ItemMeta hmeta = helmet.getItemMeta();
                             helmet.setItemMeta(hmeta);
@@ -155,7 +151,7 @@ public class modelcommands implements CommandExecutor {
                     player.sendMessage(nopermsmsg);
                     break;
                 }
-                paradisumain.reloadPropModelsConfig();
+                ParadisuMain.reloadPropModelsConfig();
                 PropModelInv.createInvs();
                 player.sendMessage(cmdprefix + "§fReloaded Props");
                 break;
@@ -165,7 +161,7 @@ public class modelcommands implements CommandExecutor {
                     player.sendMessage(nopermsmsg);
                     break;
                 }
-                paradisumain.reloadHatModelsConfig();
+                ParadisuMain.reloadHatModelsConfig();
                 HatModelInv.createInvs();
                 player.sendMessage(cmdprefix + "§fReloaded Hats");
                 break;*/
@@ -182,8 +178,8 @@ public class modelcommands implements CommandExecutor {
                         // ------------------------------------------------------------------------------------------------------------------------------------------------
                         if (args[0].equals("prop")) {
                             //
-                            paradisumain.getPropModelsConfig().createSection(randstring);
-                            ConfigurationSection cs = paradisumain.filePropModelsConfig.getConfigurationSection(randstring);
+                            ParadisuMain.getPropModelsConfig().createSection(randstring);
+                            ConfigurationSection cs = ParadisuMain.filePropModelsConfig.getConfigurationSection(randstring);
 
 //                            cs.set("custommodeldata", int_random);
 
@@ -211,16 +207,16 @@ public class modelcommands implements CommandExecutor {
                             cs.set("hideunbreakable", false);
                             cs.set("hideenchants", false);
                             //
-                            paradisumain.savePropModelsConfig();
+                            ParadisuMain.savePropModelsConfig();
                             //
                             player.sendMessage(cmdprefix + "§fNew Model Section created!");
                             //
                         } else if (args[0].equals("hat")) {
                             //
-                            paradisumain.getHatModelsConfig().createSection(randstring);
-//                            paradisumain.getPropModelsConfig().createSection(sectionname);
-//                            ConfigurationSection cs = paradisumain.filePropModelsConfig.getConfigurationSection(sectionname);
-                            ConfigurationSection cs = paradisumain.getHatModelsConfig().getConfigurationSection(randstring);
+                            ParadisuMain.getHatModelsConfig().createSection(randstring);
+//                            ParadisuMain.getPropModelsConfig().createSection(sectionname);
+//                            ConfigurationSection cs = ParadisuMain.filePropModelsConfig.getConfigurationSection(sectionname);
+                            ConfigurationSection cs = ParadisuMain.getHatModelsConfig().getConfigurationSection(randstring);
 //                            cs.set("custommodeldata", int_random);
 
                             cs.set("displayname", "Unset Hat Name");
@@ -247,7 +243,7 @@ public class modelcommands implements CommandExecutor {
                             cs.set("hideunbreakable", false);
                             cs.set("hideenchants", false);
                             //
-                            paradisumain.saveHatModelsConfig();
+                            ParadisuMain.saveHatModelsConfig();
                             //
                             player.sendMessage(cmdprefix + "§fNew hat Section created!");
 

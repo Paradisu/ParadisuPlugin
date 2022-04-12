@@ -1,11 +1,21 @@
 package me.jakedadream.ParadisuPlugin.events;
 
-import me.jakedadream.ParadisuPlugin.invs.trashcanINV;
-import me.jakedadream.ParadisuPlugin.items.ItemManager;
-import me.jakedadream.ParadisuPlugin.paradisu_mysql.DBConnections;
-import me.jakedadream.ParadisuPlugin.paradisu_mysql.PlayerData;
-import me.jakedadream.ParadisuPlugin.paradisumain;
-import org.bukkit.*;
+import static org.bukkit.Bukkit.getServer;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.HashMap;
+
+import javax.sql.DataSource;
+
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -14,32 +24,33 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.*;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemConsumeEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.UUID;
+import me.jakedadream.ParadisuPlugin.ParadisuMain;
+import me.jakedadream.ParadisuPlugin.invs.trashcanINV;
+import me.jakedadream.ParadisuPlugin.items.ItemManager;
 
-import static org.bukkit.Bukkit.getServer;
-
-public class snwevents implements Listener {
+public class SnwEvents implements Listener {
 
     private static HashMap<Player, ItemStack> ident = new HashMap<>();
 
-    String cmdprefix = paradisumain.CommandPrefix();
-    String cmdemph = paradisumain.CommandEmph();
+    String cmdprefix = ParadisuMain.CommandPrefix();
+    String cmdemph = ParadisuMain.CommandEmph();
 
-    private static Connection connection;
-    private static void establishConnection(){
-        if(connection == null)  connection = DBConnections.ParadisuSQLCon();
+    private DataSource dataSource;
+
+    public SnwEvents(){
+        dataSource = ParadisuMain.getDBCon();
     }
+    
 
     @EventHandler
     public void onJoin(PlayerJoinEvent jEvent) {
@@ -60,7 +71,6 @@ public class snwevents implements Listener {
 
     @EventHandler
     public void onPlayerInteractAtEntity(PlayerInteractAtEntityEvent intEvent) {
-        establishConnection();
         Player p = intEvent.getPlayer();
         String playeruuid = p.getUniqueId().toString();
         if (intEvent.getRightClicked().getType() == EntityType.ARMOR_STAND) {                    // Tests if you right click an armorstand
@@ -71,24 +81,13 @@ public class snwevents implements Listener {
                 intEvent.getPlayer().getInventory().addItem(ItemManager.createCoin());                             // Adds an item into your inv (Can be used to trigger anything, like a gui)
                 intEvent.getRightClicked().remove();
                 
-                try {
-                    int amount_of_coins = 0;
-                    PreparedStatement PlayerCoinQuery = connection.prepareStatement("SELECT * FROM PlayerData WHERE UUID =?");
-                    PlayerCoinQuery.setString(1, playeruuid);
-                    ResultSet PlayerCoinQueryResult = PlayerCoinQuery.executeQuery();
-                    PlayerCoinQueryResult.next();
+                try (Connection connection = dataSource.getConnection(); 
+                     PreparedStatement statement = connection.prepareStatement("UPDATE player_data SET picked_up_coin_amount = picked_up_coin_amount + 1 WHERE uuid = ?")) {
+                    
+                    statement.setString(1, playeruuid);
+                    statement.executeQuery();
 
-                    int number_of_coins = PlayerCoinQueryResult.getInt("picked_up_coin_amount");
-                    int number_of_coins_before = number_of_coins;
-                    number_of_coins++;
-
-
-                    PreparedStatement UpdatePlayerCoin = connection.prepareStatement("UPDATE PlayerData SET picked_up_coin_amount =? WHERE UUID =?");
-                    UpdatePlayerCoin.setInt(1, number_of_coins);
-                    UpdatePlayerCoin.setString(2, playeruuid);
-                    UpdatePlayerCoin.executeUpdate();
-
-                    Bukkit.getConsoleSender().sendMessage(ChatColor.AQUA + "Changed a player's amount of coins from " + number_of_coins_before + " to " + number_of_coins);
+                    Bukkit.getConsoleSender().sendMessage(ChatColor.AQUA + "Changed a player's amount of coins");
 
                 } catch (SQLException e) {
                     e.printStackTrace();
@@ -210,8 +209,8 @@ public class snwevents implements Listener {
     @EventHandler
     public void EatFoodEvent(PlayerItemConsumeEvent e) {
         Player p = e.getPlayer();
-        ItemStack items = e.getItem();
-        String itemconsumed = items.getItemMeta().getLocalizedName();
+        // ItemStack items = e.getItem();
+        // String itemconsumed = items.getItemMeta().getLocalizedName();
         if (e.getItem().getType() == Material.HONEY_BOTTLE) {
 
             Integer seconds = 600; // 10 minutes in seconds

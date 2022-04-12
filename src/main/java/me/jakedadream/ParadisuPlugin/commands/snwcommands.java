@@ -1,18 +1,19 @@
 package me.jakedadream.ParadisuPlugin.commands;
 
-import me.jakedadream.ParadisuPlugin.items.ItemManager;
-import me.jakedadream.ParadisuPlugin.items.PluginInventories;
-import me.jakedadream.ParadisuPlugin.wrappers.*;
-import net.md_5.bungee.api.ChatColor;
-import me.jakedadream.ParadisuPlugin.paradisumain;
+import java.util.ArrayList;
 
-import org.bukkit.*;
-import org.bukkit.block.data.BlockData;
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -20,18 +21,20 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import me.jakedadream.ParadisuPlugin.ParadisuMain;
+import me.jakedadream.ParadisuPlugin.items.ItemManager;
+import me.jakedadream.ParadisuPlugin.items.PluginInventories;
+import me.jakedadream.ParadisuPlugin.wrappers.AnnouncementWrapper;
+import me.jakedadream.ParadisuPlugin.wrappers.japantime;
+import net.md_5.bungee.api.ChatColor;
 
 
 public class snwcommands implements CommandExecutor {
 
-    String cmdprefix = paradisumain.CommandPrefix();
-    String cmdemph = paradisumain.CommandEmph();
-    String nopermsmsg = paradisumain.NoPermsMessage();
-    String noargsmsg = paradisumain.NoArgsMessage();
+    String cmdprefix = ParadisuMain.CommandPrefix();
+    String cmdemph = ParadisuMain.CommandEmph();
+    String nopermsmsg = ParadisuMain.NoPermsMessage();
+    String noargsmsg = ParadisuMain.NoArgsMessage();
 
 
 
@@ -285,7 +288,7 @@ public class snwcommands implements CommandExecutor {
                         if (target.getInventory().getItemInOffHand() == null || target.getInventory().getItemInOffHand().getType() == Material.AIR) {
 
                             ItemStack nullitem = new ItemStack(ItemManager.ItemNoExist().getType(), 1);
-                            ItemMeta nullitemmeta = new ItemManager().ItemNoExist().getItemMeta();
+                            ItemMeta nullitemmeta = ItemManager.ItemNoExist().getItemMeta();
                             String prevname = nullitemmeta.getDisplayName();
                             nullitemmeta.setDisplayName(prevname + " §7(off hand)");
                             nullitem.setItemMeta(nullitemmeta);
@@ -305,7 +308,7 @@ public class snwcommands implements CommandExecutor {
                         if (target.getInventory().getHelmet() == null || target.getInventory().getHelmet().getType() == Material.AIR) {
 
                             ItemStack nullitem = new ItemStack(ItemManager.ItemNoExist().getType(), 1);
-                            ItemMeta nullitemmeta = new ItemManager().ItemNoExist().getItemMeta();
+                            ItemMeta nullitemmeta = ItemManager.ItemNoExist().getItemMeta();
                             String prevname = nullitemmeta.getDisplayName();
                             nullitemmeta.setDisplayName(prevname + " §7(helmet)");
                             nullitem.setItemMeta(nullitemmeta);
@@ -323,7 +326,7 @@ public class snwcommands implements CommandExecutor {
                         if (target.getInventory().getChestplate() == null || target.getInventory().getChestplate().getType() == Material.AIR) {
 
                             ItemStack nullitem = new ItemStack(ItemManager.ItemNoExist().getType(), 1);
-                            ItemMeta nullitemmeta = new ItemManager().ItemNoExist().getItemMeta();
+                            ItemMeta nullitemmeta = ItemManager.ItemNoExist().getItemMeta();
                             String prevname = nullitemmeta.getDisplayName();
                             nullitemmeta.setDisplayName(prevname + " §7(chestplate)");
                             nullitem.setItemMeta(nullitemmeta);
@@ -340,7 +343,7 @@ public class snwcommands implements CommandExecutor {
                         if (target.getInventory().getLeggings() == null || target.getInventory().getLeggings().getType() == Material.AIR) {
 
                             ItemStack nullitem = new ItemStack(ItemManager.ItemNoExist().getType(), 1);
-                            ItemMeta nullitemmeta = new ItemManager().ItemNoExist().getItemMeta();
+                            ItemMeta nullitemmeta = ItemManager.ItemNoExist().getItemMeta();
                             String prevname = nullitemmeta.getDisplayName();
                             nullitemmeta.setDisplayName(prevname + " §7(leggings)");
                             nullitem.setItemMeta(nullitemmeta);
@@ -357,7 +360,7 @@ public class snwcommands implements CommandExecutor {
                         if (target.getInventory().getBoots() == null || target.getInventory().getBoots().getType() == Material.AIR) {
 
                             ItemStack nullitem = new ItemStack(ItemManager.ItemNoExist().getType(), 1);
-                            ItemMeta nullitemmeta = new ItemManager().ItemNoExist().getItemMeta();
+                            ItemMeta nullitemmeta = ItemManager.ItemNoExist().getItemMeta();
                             String prevname = nullitemmeta.getDisplayName();
                             nullitemmeta.setDisplayName(prevname + " §7(boots)");
                             nullitem.setItemMeta(nullitemmeta);
@@ -374,7 +377,7 @@ public class snwcommands implements CommandExecutor {
                         if (target.getInventory().getItemInMainHand() == null || target.getInventory().getItemInMainHand().getType() == Material.AIR) {
 
                             ItemStack nullitem = new ItemStack(ItemManager.ItemNoExist().getType(), 1);
-                            ItemMeta nullitemmeta = new ItemManager().ItemNoExist().getItemMeta();
+                            ItemMeta nullitemmeta = ItemManager.ItemNoExist().getItemMeta();
                             String prevname = nullitemmeta.getDisplayName();
                             nullitemmeta.setDisplayName(prevname + " §7(main hand)");
                             nullitem.setItemMeta(nullitemmeta);
@@ -516,10 +519,11 @@ public class snwcommands implements CommandExecutor {
 
                     } else if (args.length == 1) {
 
-                        String owner = args[0];
+                        String name = args[0];
+                        Player owner = Bukkit.getPlayer(name);
                         ItemStack itemSkull = new ItemStack(Material.PLAYER_HEAD, 1);
                         SkullMeta sm = (SkullMeta)itemSkull.getItemMeta();
-                        sm.setOwner(owner);
+                        sm.setOwningPlayer(owner);
                         sm.setDisplayName("§7§lSkull of §3" + owner);
                         itemSkull.setItemMeta(sm);
 
@@ -562,8 +566,8 @@ public class snwcommands implements CommandExecutor {
 
             case "trashcan":
                 if (player.hasPermission("snw.trashcan")) {
-                    PluginInventories inv = new PluginInventories();
-                    inv.TrashCanInv(player);
+                    //PluginInventories inv = new PluginInventories();
+                    PluginInventories.TrashCanInv(player);
                     player.sendMessage(cmdprefix + "§fOpened a trashcan");
                 } else {
                     player.sendMessage(nopermsmsg);
@@ -735,7 +739,7 @@ public class snwcommands implements CommandExecutor {
                             allArgs += arg + " ";
                         }
 
-                        announcementwrapper.everyoneannoucne(allArgs);
+                        AnnouncementWrapper.everyoneannoucne(allArgs);
 
                     
                 } else {
@@ -753,7 +757,7 @@ public class snwcommands implements CommandExecutor {
                         allArgs += arg + " ";
                     }
 
-                    //announcementwrapper.staffannoucne(allArgs);
+                    //AnnouncementWrapper.staffannoucne(allArgs);
                     player.sendMessage(allArgs);
 
                 } else {
@@ -771,7 +775,7 @@ public class snwcommands implements CommandExecutor {
                         allArgs += arg + " ";
                     }
 
-                    announcementwrapper.adminannoucne(allArgs);
+                    AnnouncementWrapper.adminannoucne(allArgs);
 
                 } else {
                     player.sendMessage(nopermsmsg);
@@ -788,7 +792,7 @@ public class snwcommands implements CommandExecutor {
                         allArgs += arg + " ";
                     }
 
-                    announcementwrapper.supportersannoucne(allArgs);
+                    AnnouncementWrapper.supportersannoucne(allArgs);
 
                 } else {
                     player.sendMessage(nopermsmsg);
@@ -807,7 +811,7 @@ public class snwcommands implements CommandExecutor {
                         allArgs = allArgs.concat(" ");
                     }
 
-                    announcementwrapper.permannoucne(perms, allArgs);
+                    AnnouncementWrapper.permannoucne(perms, allArgs);
 
                 } else {
                     player.sendMessage(nopermsmsg);
@@ -1077,11 +1081,11 @@ public class snwcommands implements CommandExecutor {
 
                     ItemStack lightblocks = new ItemStack(Material.LIGHT);
 
-                    String dataString = "[level=10]";
+                    // String dataString = "[level=10]";
 
                     //BlockData lightdata = Bukkit.createBlockData(dataString);
 
-                    BlockData t = lightblocks.getType().createBlockData(dataString);
+                    // BlockData t = lightblocks.getType().createBlockData(dataString);
 
                     player.getInventory().addItem(lightblocks);
 
@@ -1201,7 +1205,7 @@ public class snwcommands implements CommandExecutor {
             case "staffannouncement":
                 if (player.hasPermission("snw.")) {
                     String text = getParsedName(args);
-                    announcementwrapper.permannoucne("group.visitor", text);
+                    AnnouncementWrapper.permannoucne("group.visitor", text);
                     return true;
                 } */
 

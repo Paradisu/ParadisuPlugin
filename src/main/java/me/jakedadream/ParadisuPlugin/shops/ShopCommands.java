@@ -1,6 +1,6 @@
 package me.jakedadream.ParadisuPlugin.shops;
 
-import me.jakedadream.ParadisuPlugin.paradisumain;
+import me.jakedadream.ParadisuPlugin.ParadisuMain;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -8,9 +8,9 @@ import org.bukkit.entity.Player;
 
 public class ShopCommands implements CommandExecutor {
 
-    String cmdprefix = paradisumain.CommandPrefix();
-    String cmdemph = paradisumain.CommandEmph();
-    String nopermsmsg = paradisumain.NoPermsMessage(); 
+    String cmdprefix = ParadisuMain.CommandPrefix();
+    String cmdemph = ParadisuMain.CommandEmph();
+    String nopermsmsg = ParadisuMain.NoPermsMessage(); 
 
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
@@ -21,7 +21,7 @@ public class ShopCommands implements CommandExecutor {
         Player player = (Player) commandSender;
         switch (command.getName()) {
             case ("reloadshops") -> {
-                paradisumain.reloadShopGuiConfig();
+                ParadisuMain.reloadShopGuiConfig();
                 ShopGuis.initShops();
             }
             case ("setshop") -> {

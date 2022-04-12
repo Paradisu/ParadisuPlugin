@@ -2,7 +2,7 @@ package me.jakedadream.ParadisuPlugin.paradisu_protocollib;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
-import me.jakedadream.ParadisuPlugin.paradisumain;
+import me.jakedadream.ParadisuPlugin.ParadisuMain;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -13,16 +13,16 @@ public class ProtoLib_Basic_Commands implements CommandExecutor {
 
     ProtocolManager pcmanager = ProtocolLibrary.getProtocolManager();
 
-    String cmdprefix = paradisumain.CommandPrefix();
-    String cmdemph = paradisumain.CommandEmph();
-    String nopermsmsg = paradisumain.NoPermsMessage();
-    String noargsmsg = paradisumain.NoArgsMessage();
+    String cmdprefix = ParadisuMain.CommandPrefix();
+    String cmdemph = ParadisuMain.CommandEmph();
+    String nopermsmsg = ParadisuMain.NoPermsMessage();
+    String noargsmsg = ParadisuMain.NoArgsMessage();
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
 
         if (!(sender instanceof Player)) { return false; }
-        Player player = (Player) sender;
+        //Player player = (Player) sender;
 
         /*
         switch (command.getName().toLowerCase()) {

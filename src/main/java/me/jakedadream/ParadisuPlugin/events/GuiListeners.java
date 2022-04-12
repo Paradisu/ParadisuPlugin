@@ -1,14 +1,9 @@
 package me.jakedadream.ParadisuPlugin.events;
 
-import me.jakedadream.ParadisuPlugin.items.PlayerInventories;
-import me.jakedadream.ParadisuPlugin.modelmanager.HatModelInv;
-import me.jakedadream.ParadisuPlugin.modelmanager.PropModelInv;
-import me.jakedadream.ParadisuPlugin.modelmanager.modelitemmanager;
-import me.jakedadream.ParadisuPlugin.paradisumain;
-import me.jakedadream.ParadisuPlugin.shops.ShopGuis;
+import java.util.List;
+
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,15 +14,18 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import me.jakedadream.ParadisuPlugin.ParadisuMain;
+import me.jakedadream.ParadisuPlugin.items.PlayerInventories;
+import me.jakedadream.ParadisuPlugin.modelmanager.HatModelInv;
+import me.jakedadream.ParadisuPlugin.modelmanager.PropModelInv;
+import me.jakedadream.ParadisuPlugin.modelmanager.modelitemmanager;
+import me.jakedadream.ParadisuPlugin.shops.ShopGuis;
 
 public class GuiListeners implements Listener {
 
 
-    String cmdprefix = paradisumain.CommandPrefix();
-    String cmdemph = paradisumain.CommandEmph();
+    String cmdprefix = ParadisuMain.CommandPrefix();
+    String cmdemph = ParadisuMain.CommandEmph();
 
 
     @EventHandler
@@ -56,7 +54,7 @@ public class GuiListeners implements Listener {
                     ItemStack playerItem;
                     int arrayIndex = ShopGuis.getShops().indexOf(e.getInventory());
                     // COME BACK TO HERE
-                    ConfigurationSection configSection = paradisumain.getFileShopGuiConfig().getConfigurationSection(Integer.toString(arrayIndex)).getConfigurationSection(Integer.toString(e.getRawSlot()));
+                    ConfigurationSection configSection = ParadisuMain.getFileShopGuiConfig().getConfigurationSection(Integer.toString(arrayIndex)).getConfigurationSection(Integer.toString(e.getRawSlot()));
 
                     if (pInvs.getGoldNuggets((Player) player) >= configSection.getInt("price")){
 //                        player.sendMessage("you have enough money");

@@ -1,11 +1,11 @@
 package me.jakedadream.ParadisuPlugin;
 
 import me.jakedadream.ParadisuPlugin.modelmanager.modelscroller.modelscroller_events;
-import me.jakedadream.ParadisuPlugin.paradisu_mysql.DBCommands;
-import me.jakedadream.ParadisuPlugin.paradisu_mysql.DBConnections;
 import me.jakedadream.ParadisuPlugin.commands.snwcommands;
 import me.jakedadream.ParadisuPlugin.commands.teleportationcmds;
 import me.jakedadream.ParadisuPlugin.commands.warps;
+import me.jakedadream.ParadisuPlugin.databaseHandlers.DBCommands;
+import me.jakedadream.ParadisuPlugin.databaseHandlers.DBConnections;
 import me.jakedadream.ParadisuPlugin.paradisu_protocollib.*;
 import me.jakedadream.ParadisuPlugin.events.*;
 import me.jakedadream.ParadisuPlugin.modelmanager.HatModelInv;
@@ -28,12 +28,12 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 
-import com.comphenix.protocol.PacketType.Handshake.Server;
+import javax.sql.DataSource;
 
 
 //uploadtest
 
-public class paradisumain extends JavaPlugin {
+public class ParadisuMain extends JavaPlugin {
 
 
     /*
@@ -60,6 +60,8 @@ public class paradisumain extends JavaPlugin {
     public static String NoArgsMessage() { String noargsmsg = "\uE016 §fNot enough arguments provided."; return noargsmsg; }
     public static String PlayerCooldownMessage() { String cooldownmsg = "\uE016 §fYou are currently on a §x§f§d§d§0§2§3cooldown§f." ; return cooldownmsg; }
 
+    private static DataSource dataSource;
+
     @Override
     public void onEnable() {
 
@@ -68,12 +70,8 @@ public class paradisumain extends JavaPlugin {
         saveEnvConfig();
 
         try {
-            DBConnections.Paradisu_Connect();
-        } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            dataSource = DBConnections.initParadisuSQLCon();
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -171,7 +169,7 @@ public class paradisumain extends JavaPlugin {
         // =================
         // SHOP GUI COMMANDS
         // =================
-        getCommand("entitycontrol").setExecutor(new ProtoLib_Basic_Commands());
+        //getCommand("entitycontrol").setExecutor(new ProtoLib_Basic_Commands());
         //
         //
         //
@@ -207,7 +205,7 @@ public class paradisumain extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new luckyblocks(), this);
         getServer().getPluginManager().registerEvents(new entityedits(), this);
         getServer().getPluginManager().registerEvents(new toys(), this);
-        getServer().getPluginManager().registerEvents(new snwevents(), this);
+        getServer().getPluginManager().registerEvents(new SnwEvents(), this);
         getServer().getPluginManager().registerEvents(new GuiListeners(), this);
         getServer().getPluginManager().registerEvents(new PlayerDataEvents(), this);
         getServer().getPluginManager().registerEvents(new modelscroller_events(), this);
@@ -227,10 +225,6 @@ public class paradisumain extends JavaPlugin {
 
             }
         }, 0L, 2L);
-
-
-
-        
 
     }
 
@@ -432,5 +426,5 @@ public class paradisumain extends JavaPlugin {
     //     fileHatModelsConfig = YamlConfiguration.loadConfiguration(sourceHatModelsFile);}
 
     public static void reloadShopGuiConfig() { fileShopGuiConfig = YamlConfiguration.loadConfiguration(sourceShopGuiFile); }
-
+    public static DataSource getDBCon(){return dataSource;}
 }

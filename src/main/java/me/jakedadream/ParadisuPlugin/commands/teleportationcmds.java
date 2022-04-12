@@ -1,6 +1,6 @@
 package me.jakedadream.ParadisuPlugin.commands;
 
-import me.jakedadream.ParadisuPlugin.paradisumain;
+import me.jakedadream.ParadisuPlugin.ParadisuMain;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -11,22 +11,22 @@ import org.bukkit.entity.Player;
 
 public class teleportationcmds implements CommandExecutor {
 
-    String cmdprefix = paradisumain.CommandPrefix();
-    String cmdemph = paradisumain.CommandEmph();
-    String nopermsmsg = paradisumain.NoPermsMessage();
-    String noargsmsg = paradisumain.NoArgsMessage();
+    String cmdprefix = ParadisuMain.CommandPrefix();
+    String cmdemph = ParadisuMain.CommandEmph();
+    String nopermsmsg = ParadisuMain.NoPermsMessage();
+    String noargsmsg = ParadisuMain.NoArgsMessage();
 
 
-    private String getParsedName(String[] args) {
-        String name = "";
+    // private String getParsedName(String[] args) {
+    //     String name = "";
 
-        // Concat all the args to a string
-        for (int i = 0; i < args.length; i++) {
-            name = name.concat(args[i]);
-            name = name.concat(" ");
-        }
-        return ChatColor.translateAlternateColorCodes('&', name);
-    }
+    //     // Concat all the args to a string
+    //     for (int i = 0; i < args.length; i++) {
+    //         name = name.concat(args[i]);
+    //         name = name.concat(" ");
+    //     }
+    //     return ChatColor.translateAlternateColorCodes('&', name);
+    // }
 
 
     @Override
