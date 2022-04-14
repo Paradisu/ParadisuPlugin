@@ -40,7 +40,8 @@ public class modelcommands implements CommandExecutor {
             case "mgive":
                 if (player.hasPermission("snw.model")) {
                     if (args.length == 0) {
-                        player.openInventory(PropModelInv.getInvs().get(0));
+                        player.openInventory(ModelInv.getFirstInv(true));
+                        // player.openInventory(PropModelInv.getInvs().get(0));
                         player.sendMessage(cmdprefix + "§fOpening the Catalog of Default Models!");
                     } else if (args.length == 1) {
                         PlayerInventory inv = player.getInventory();
@@ -74,7 +75,8 @@ public class modelcommands implements CommandExecutor {
                 if (player.hasPermission("snw.model")) {
 
                     if (args.length == 0) {
-                        player.openInventory(HatModelInv.getInvs().get(0));
+                        player.openInventory(ModelInv.getFirstInv(false));
+                        //player.openInventory(HatModelInv.getInvs().get(0));
                         player.sendMessage(cmdprefix + "§fOpening the Catalog of Hat Models!");
                     } else if (args.length == 1) {
                         PlayerInventory inv = player.getInventory();

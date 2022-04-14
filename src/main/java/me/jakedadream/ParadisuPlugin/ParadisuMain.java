@@ -6,11 +6,14 @@ import me.jakedadream.ParadisuPlugin.commands.teleportationcmds;
 import me.jakedadream.ParadisuPlugin.commands.warps;
 import me.jakedadream.ParadisuPlugin.databaseHandlers.DBCommands;
 import me.jakedadream.ParadisuPlugin.databaseHandlers.DBConnections;
+import me.jakedadream.ParadisuPlugin.databaseHandlers.WarpsDataHandler;
 import me.jakedadream.ParadisuPlugin.paradisu_protocollib.*;
 import me.jakedadream.ParadisuPlugin.events.*;
-import me.jakedadream.ParadisuPlugin.modelmanager.HatModelInv;
-import me.jakedadream.ParadisuPlugin.modelmanager.PropModelInv;
+// import me.jakedadream.ParadisuPlugin.modelmanager.HatModelInv;
+import me.jakedadream.ParadisuPlugin.modelmanager.ModelInv;
+// import me.jakedadream.ParadisuPlugin.modelmanager.PropModelInv;
 import me.jakedadream.ParadisuPlugin.modelmanager.modelcommands;
+import me.jakedadream.ParadisuPlugin.modelmanager.modelitemmanager;
 import me.jakedadream.ParadisuPlugin.shops.ShopCommands;
 import me.jakedadream.ParadisuPlugin.shops.ShopGuis;
 import me.jakedadream.ParadisuPlugin.wrappers.PlayerDataEvents;
@@ -75,6 +78,8 @@ public class ParadisuMain extends JavaPlugin {
             e.printStackTrace();
         }
 
+        
+
         // =================
         // SNW COMMANDS
         // =================
@@ -131,6 +136,10 @@ public class ParadisuMain extends JavaPlugin {
         // =================
         // WARPS COMMANDS
         // =================
+
+        WarpsDataHandler.updateWarpData();
+
+
         getCommand("setwarp").setExecutor(new warps());
         getCommand("delwarp").setExecutor(new warps());
         getCommand("warp").setExecutor(new warps());
@@ -190,8 +199,10 @@ public class ParadisuMain extends JavaPlugin {
         createShopGuiFiles();
         saveShopGuiConfig();
 
-        PropModelInv.createInvs();
-        HatModelInv.createInvs();
+        // PropModelInv.createInvs();
+        // HatModelInv.createInvs();
+        modelitemmanager.updateModelData();
+        ModelInv.createAllInvs();
 
         ShopGuis.initShops();
         //
@@ -265,7 +276,7 @@ public class ParadisuMain extends JavaPlugin {
             }
         }
         envConfig = YamlConfiguration.loadConfiguration(envValues);
-        Bukkit.getConsoleSender().sendMessage("end of createEnvFiles");
+        // Bukkit.getConsoleSender().sendMessage("end of createEnvFiles");
 
     }
 

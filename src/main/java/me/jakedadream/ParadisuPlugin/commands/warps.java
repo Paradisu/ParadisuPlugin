@@ -2,8 +2,8 @@ package me.jakedadream.ParadisuPlugin.commands;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Set;
 
 import javax.sql.DataSource;
@@ -23,6 +23,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import me.jakedadream.ParadisuPlugin.ParadisuMain;
 import me.jakedadream.ParadisuPlugin.databaseHandlers.WarpsDataHandler;
+import me.jakedadream.ParadisuPlugin.wrappers.Warp;
 
 public class warps implements CommandExecutor {
 
@@ -133,77 +134,16 @@ public class warps implements CommandExecutor {
 
             case "w":
             case "warp":
-                ResultSet rs = WarpsDataHandler.getWarpData();
+                ArrayList<Warp> warps = WarpsDataHandler.getWarpData();
+                
 
                 if (args.length == 0) {
                     player.sendMessage(cmdprefix + "§fUsage: /warp <warp name>");
                     return true;
                 }
 
-                try {
-                    
-                    //player.sendMessage("cursor at: " + rs.getString("WarpName"));
-                    rs.beforeFirst();
-                    boolean warpExists = false;
-                    while (rs.next()) {
-                        if (rs.getString("WarpName").equalsIgnoreCase(args[0])){
-                            warpExists = true;  
-                            break;
-                        }
-                    }
-                    
-                    
-                    if(!warpExists){
-                         player.sendMessage(cmdprefix + "§fWarp " + cmdemph + args[0] + "§f does not exist.");
-                         return true;
-                    }
-                    int x = rs.getInt("X_Pos");
-                    int y = rs.getInt("Y_Pos");
-                    int z = rs.getInt("Z_Pos");
-                    float pitch = rs.getFloat("Pitch");
-                    float yaw = rs.getFloat("Yaw");
-                    String world = rs.getString("World");
-                    String permission = rs.getString("Permission");
-                    String displayName = rs.getString("DisplayName");
-                    String warpName = rs.getString("WarpName");
-                    if (!player.hasPermission(permission)) {
-                        player.sendMessage(cmdprefix + "§fYou do not have permission to use this warp.");
-                        return true;
-                    }
+                return warp(player, warps, args);
 
-                    Location l = player.getLocation();
-
-                    // player.sendMessage(String.valueOf(d.getDouble("X")));
-
-                    l.setX(x);
-                    l.setY(y);
-                    l.setZ(z);
-                    l.setPitch(pitch);
-                    l.setYaw(yaw);
-                    if(Bukkit.getServer().getWorld(world) != null) {
-                        l.setWorld(Bukkit.getServer().getWorld(world));
-                    }
-
-                    //
-
-                    String wstring;
-                    if (displayName == null) {
-                        wstring = warpName;
-                    } else {
-                        wstring = displayName;
-                        wstring = wstring.substring(0, 1).toUpperCase() + wstring.substring(1);
-                    }
-
-                    player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20, 1));
-                    player.teleport(l);
-                    player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 10, 29);
-                    player.sendMessage(cmdprefix + "§fWelcome to " + cmdemph + wstring + "§f!");
-
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-
-                break;
 
             case "reloadwarp":
             case "reloadwarps":
@@ -272,5 +212,69 @@ public class warps implements CommandExecutor {
 
         }
         return false;
+    }
+
+
+    private boolean warp(Player player, ArrayList<Warp> warps, String[] args){
+        Warp w = findWarp(warps, args);
+        if(w == null){
+             player.sendMessage(cmdprefix + "§fWarp " + cmdemph + args[0] + "§f does not exist.");
+             return false;
+        }
+        int x = w.getXPos();
+        int y = w.getYPos();
+        int z = w.getZPos();
+        float pitch = (float) w.getPitch();
+        float yaw = (float) w.getYaw();
+        String world = w.getWorld();
+        String permission = w.getPermission();
+        String displayName = w.getDisplayName();
+        String warpName = w.getName();
+
+        if (!player.hasPermission(permission)) {
+            player.sendMessage(cmdprefix + "§fYou do not have permission to use this warp.");
+            return false;
+        }
+
+        Location l = player.getLocation();
+
+        l.setX(x);
+        l.setY(y);
+        l.setZ(z);
+        l.setPitch(pitch);
+        l.setYaw(yaw);
+        if(Bukkit.getServer().getWorld(world) != null) {
+            l.setWorld(Bukkit.getServer().getWorld(world));
+        }
+
+
+        String wstring = displayName == null ? warpName : displayName;
+
+
+        player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20, 1));
+        player.teleport(l);
+        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 10, 29);
+        player.sendMessage(cmdprefix + "§fWelcome to " + cmdemph + wstring + "§f!");
+        return true;
+        
+    }
+
+
+    private Warp findWarp(ArrayList<Warp> warps, String[] args){
+        for(Warp w : warps){
+            if(w.getName().equalsIgnoreCase(args[0])){
+                return w;
+            }
+            for(String s : w.getAliases()){
+                if(s.equalsIgnoreCase(args[0])){
+                    return w;
+                }
+            }
+        }
+
+
+
+
+        return null;
     }
 }

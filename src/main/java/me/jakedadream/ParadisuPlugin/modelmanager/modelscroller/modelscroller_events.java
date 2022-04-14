@@ -12,7 +12,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 
 import me.jakedadream.ParadisuPlugin.ParadisuMain;
-import me.jakedadream.ParadisuPlugin.modelmanager.PropModelInv;
+//import me.jakedadream.ParadisuPlugin.modelmanager.PropModelInv;
 import me.jakedadream.ParadisuPlugin.modelmanager.modelitemmanager;
 
 public class modelscroller_events implements Listener {
@@ -29,13 +29,14 @@ public class modelscroller_events implements Listener {
 
     public int getAmountRandomModel() {
         // int amountofmodels = 0000;
+        return 1;
 
-        int rows = PropModelInv.getRows(modelitemmanager.getHatData());
+        // int rows = PropModelInv.getRows(modelitemmanager.getHatData());
 
-        Random random = new Random();
-        int randommodel = random.nextInt(rows) + 1;
+        // Random random = new Random();
+        // int randommodel = random.nextInt(rows) + 1;
 
-        return randommodel;
+        // return randommodel;
     }
 
     @EventHandler

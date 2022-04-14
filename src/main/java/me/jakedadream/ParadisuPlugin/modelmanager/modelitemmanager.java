@@ -4,7 +4,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -17,91 +19,80 @@ public class modelitemmanager {
     String cmdprefix = ParadisuMain.CommandPrefix();
     String cmdemph = ParadisuMain.CommandEmph();
 
-    private static ResultSet propData;
-    private static ResultSet hatData;
+    private static ArrayList<ItemStack> props = new ArrayList<ItemStack>();
+    private static ArrayList<ItemStack> hats = new ArrayList<ItemStack>();
 
 
-    private static void fetchPropData() {
-        try (Connection c = ParadisuMain.getDBCon().getConnection(); PreparedStatement query = c.prepareStatement("SELECT * FROM PropModels", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY)) {    
-            propData = query.executeQuery();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
+    public static void updateModelData(){
+        props.clear();
+        hats.clear();
 
-    private static void fetchHatData(){
-        try (Connection c = ParadisuMain.getDBCon().getConnection(); PreparedStatement query = c.prepareStatement("SELECT * FROM HatModels", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY)) { 
-            hatData = query.executeQuery(); 
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
+        try (Connection c = ParadisuMain.getDBCon().getConnection())  {    
+            try(PreparedStatement query = c.prepareStatement("SELECT * FROM PropModels", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY); ResultSet rs = query.executeQuery()){
+                readData(rs, props, true);
+            } catch (SQLException e){
+                e.printStackTrace();
+            }
 
-
-    public static ItemStack createPropModel(Integer modelid) {
-
-        if(propData == null){
-            fetchPropData();
-        }
-
-        ItemStack propmodelitem = new ItemStack(Material.DIAMOND_AXE, 1);
-        ItemMeta meta = propmodelitem.getItemMeta();
-       
-        try {
-            propData.absolute(modelid);
-            meta.setCustomModelData(propData.getInt("customModelData"));
-            meta.setDisplayName(propData.getString("displayname"));
+            try(PreparedStatement query = c.prepareStatement("SELECT * FROM HatModels", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY); ResultSet rs = query.executeQuery()){
+                readData(rs, hats, false);
+            } catch (SQLException e){
+                e.printStackTrace();
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        
-        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-        meta.setUnbreakable(true); 
-        meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-        
-        propmodelitem.setItemMeta(meta);
-
-        return propmodelitem;
     }
-
     
 
-    public static ItemStack createHatModel(Integer modelid) {
+    private static void readData(ResultSet rs, ArrayList<ItemStack> list, boolean isProps) {
+        try{
+            rs.beforeFirst();
+            while(rs.next()){
+                Material material = isProps ? Material.DIAMOND_AXE : Material.CARVED_PUMPKIN;
 
-        if(hatData == null){
-            fetchHatData();
-        }
+                ItemStack i = new ItemStack(material, 1);
+                ItemMeta meta = i.getItemMeta();
 
-        ItemStack hatmodelitem = new ItemStack(Material.CARVED_PUMPKIN, 1);
-        ItemMeta meta = hatmodelitem.getItemMeta();
+                meta.setCustomModelData(rs.getInt("customModelData"));
+                meta.setDisplayName(rs.getString("displayname"));
 
-        try {
-            hatData.absolute(modelid);
-            meta.setCustomModelData(hatData.getInt("customModelData"));
-            meta.setDisplayName(hatData.getString("displayname"));
+                meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+                meta.setUnbreakable(true);
+                meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+                meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+
+                i.setItemMeta(meta);
+
+                
+
+                list.add(i);
+                //Bukkit.getConsoleSender().sendMessage("adding " + props.get(i.getItemMeta().getCustomModelData()-1).getItemMeta().getDisplayName());
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-     
-        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-        meta.setUnbreakable(true);
-        meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+    }
+
+    public static ItemStack createHatModel(int index){
+        if(hats.size()==0) updateModelData();
+
+        return hats.get(index-1).clone();
+    }
+
+    public static ItemStack createPropModel(int index){
         
-
-        hatmodelitem.setItemMeta(meta);
-
-        return hatmodelitem;
+        if(props.size()==0) 
+            updateModelData();
+        
+        return props.get(index-1).clone();
     }
 
-    public static ResultSet getPropData() {
-        if(propData == null) fetchPropData();
-        return propData;
+    public static int getHatCount(){
+        return hats.size();
     }
-    public static ResultSet getHatData(){
-        if(hatData == null) fetchHatData();
-        return hatData;
+    public static int getPropCount(){
+        return props.size();
     }
 }
