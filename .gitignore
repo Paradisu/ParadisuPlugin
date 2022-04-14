@@ -165,3 +165,5 @@ local.properties
 .VSCode
 build.bat
 .env
+.vscode/
+.idea/
