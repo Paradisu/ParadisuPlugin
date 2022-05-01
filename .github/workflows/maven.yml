@@ -4,10 +4,9 @@
 name: Java CI with Maven
 
 on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+    push:
+        paths:
+            - "src/main/resources/plugin.yml"
 
 jobs:
   build:
