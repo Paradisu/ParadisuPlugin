@@ -83,7 +83,7 @@ jobs:
           "978fd706"
           "978fd706"
         )
-        for ${id} in ${server_ids[@]}
+        for id in ${server_ids[@]}
         do
           upload_plugin ${id}
         done
