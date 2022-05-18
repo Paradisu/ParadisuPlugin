@@ -32,10 +32,10 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         tag_prefix: ''
         custom_tag: ${{ steps.lookupSNWVersion.outputs.result }}
-    - name: Set up JDK 11
+    - name: Set up JDK 17
       uses: actions/setup-java@v1
       with:
-        java-version: 16
+        java-version: 17
         java-package: jdk
         architecture: x86
     - name: Cache Maven packages
@@ -73,4 +73,17 @@ jobs:
       env:
         PTERODACTYL_TOKEN: ${{ secrets.PTERODACTYL_TOKEN }}
       run: |
-        cp staging/ParadisuPlugin-*.jar ParadisuPlugin.jar && upload_url=$(curl "https://panel.paradisu.net/api/client/servers/978fd706/files/upload" -H "Authorization: Bearer ${PTERODACTYL_TOKEN}" -X GET -s | jq -r .attributes.url) && curl -F files=@ParadisuPlugin.jar "${upload_url}&directory=/plugins"
+        cp staging/ParadisuPlugin-*.jar ParadisuPlugin.jar
+        upload_plugin () {
+          local upload_url=$(curl "https://panel.paradisu.net/api/client/servers/${1}/files/upload" -H "Authorization: Bearer ${PTERODACTYL_TOKEN}" -X GET -s | jq -r .attributes.url)
+          curl -F files=@ParadisuPlugin.jar "${upload_url}&directory=/plugins"
+        }
+        server_ids=(
+          "978fd706"
+          "978fd706"
+          "978fd706"
+        )
+        for ${id} in ${server_ids[@]}
+        do
+          upload_plugin ${id}
+        done
