@@ -80,8 +80,8 @@ jobs:
         }
         server_ids=(
           "978fd706"
-          "978fd706"
-          "978fd706"
+          "1b063a16"
+          "a0638f52"
         )
         for id in ${server_ids[@]}
         do
