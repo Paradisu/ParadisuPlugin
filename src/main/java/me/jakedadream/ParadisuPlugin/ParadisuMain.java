@@ -4,21 +4,17 @@ import me.jakedadream.ParadisuPlugin.modelmanager.modelscroller.modelscroller_ev
 import me.jakedadream.ParadisuPlugin.commands.snwcommands;
 import me.jakedadream.ParadisuPlugin.commands.teleportationcmds;
 import me.jakedadream.ParadisuPlugin.commands.warps;
-import me.jakedadream.ParadisuPlugin.databaseHandlers.DBCommands;
 import me.jakedadream.ParadisuPlugin.databaseHandlers.DBConnections;
 import me.jakedadream.ParadisuPlugin.databaseHandlers.WarpsDataHandler;
 import me.jakedadream.ParadisuPlugin.paradisu_protocollib.*;
 import me.jakedadream.ParadisuPlugin.events.*;
-// import me.jakedadream.ParadisuPlugin.modelmanager.HatModelInv;
 import me.jakedadream.ParadisuPlugin.modelmanager.ModelInv;
-// import me.jakedadream.ParadisuPlugin.modelmanager.PropModelInv;
 import me.jakedadream.ParadisuPlugin.modelmanager.modelcommands;
 import me.jakedadream.ParadisuPlugin.modelmanager.modelitemmanager;
 import me.jakedadream.ParadisuPlugin.shops.ShopCommands;
 import me.jakedadream.ParadisuPlugin.shops.ShopGuis;
 import me.jakedadream.ParadisuPlugin.wrappers.PlayerDataEvents;
 import me.jakedadream.ParadisuPlugin.wrappers.japantime;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -26,15 +22,10 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
-
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
-
 import javax.sql.DataSource;
-
-
-//uploadtest
 
 public class ParadisuMain extends JavaPlugin {
 
@@ -152,25 +143,20 @@ public class ParadisuMain extends JavaPlugin {
         // =================
         // DB COMMANDS
         // =================
-        getCommand("dbreset").setExecutor(new DBCommands());
-        getCommand("dbdisconnectrememberthisisreallyunsafedontdoit").setExecutor(new DBCommands());
-        getCommand("dbconnect").setExecutor(new DBCommands());
-        //
+        // getCommand("dbreset").setExecutor(new DBCommands());
+        // getCommand("dbdisconnectrememberthisisreallyunsafedontdoit").setExecutor(new DBCommands());
+        // getCommand("dbconnect").setExecutor(new DBCommands());
+        // 
         // =================
         // MODEL COMMANDS
         // =================
         getCommand("mgive").setExecutor(new modelcommands());
         getCommand("hgive").setExecutor(new modelcommands());
         getCommand("mhat").setExecutor(new modelcommands());
-        // getCommand("createmodelcfsection").setExecutor(new modelcommands());
-        // getCommand("reloadprops").setExecutor(new modelcommands());
-        // getCommand("reloadhats").setExecutor(new modelcommands());
-        //
+        
         // =================
         // SHOP GUI COMMANDS
         // =================
-        //
-        //
         //
         getCommand("reloadshops").setExecutor(new ShopCommands());
         getCommand("getshop").setExecutor(new ShopCommands());
@@ -188,26 +174,14 @@ public class ParadisuMain extends JavaPlugin {
         createWarpFiles();
         saveWarpConfig();
 
-        
-
-        // createPropModelsFiles();
-        // savePropModelsConfig();
-
-        // createHatModelsFiles();
-        // saveHatModelsConfig();
-
         createShopGuiFiles();
         saveShopGuiConfig();
 
-        // PropModelInv.createInvs();
-        // HatModelInv.createInvs();
         modelitemmanager.updateModelData();
         ModelInv.createAllInvs();
 
         ShopGuis.initShops();
-        //
-        //
-        //
+       
         japantime.setJapanTime();
 
         // =================
@@ -247,21 +221,12 @@ public class ParadisuMain extends JavaPlugin {
     }
 
 
-    //
-    //
-    //
     
     private static File envValues;
     private static FileConfiguration envConfig;
     
     private static File sourceWarpFile;
     private static FileConfiguration fileWarpConfig;
-
-    // public static File sourcePropModelsFile;
-    // public static FileConfiguration filePropModelsConfig;
-
-    // public static File sourceHatModelsFile;
-    // public static FileConfiguration fileHatModelsConfig;
 
     private static File sourceShopGuiFile;
     private static FileConfiguration fileShopGuiConfig;
@@ -276,8 +241,6 @@ public class ParadisuMain extends JavaPlugin {
             }
         }
         envConfig = YamlConfiguration.loadConfiguration(envValues);
-        // Bukkit.getConsoleSender().sendMessage("end of createEnvFiles");
-
     }
 
 
@@ -302,48 +265,6 @@ public class ParadisuMain extends JavaPlugin {
         }
     }
 
-    // public void createPropModelsFiles() {
-
-    //     sourcePropModelsFile = new File(getDataFolder(), "propmodels.yml");
-
-    //     if (!sourcePropModelsFile.exists()) {
-    //         sourcePropModelsFile.getParentFile().mkdirs();
-    //         saveResource("propmodels.yml", false);
-    //     }
-
-    //     filePropModelsConfig = new YamlConfiguration();
-
-    //     try {
-    //         filePropModelsConfig.load(sourcePropModelsFile);
-    //     } catch (IOException | InvalidConfigurationException e) {
-    //         e.printStackTrace();
-    //     }
-    //  //   if (filePropModelsConfig.getConfigurationSection("aliases") == null){
-    //  //       filePropModelsConfig.createSection("aliases");
-    //  //   }
-    // }
-
-    // public void createHatModelsFiles() {
-
-    //     sourceHatModelsFile = new File(getDataFolder(), "hatmodels.yml");
-
-    //     if (!sourceHatModelsFile.exists()) {
-    //         sourceHatModelsFile.getParentFile().mkdirs();
-    //         saveResource("hatmodels.yml", false);
-    //     }
-
-    //     fileHatModelsConfig = new YamlConfiguration();
-
-    //     try {
-    //         fileHatModelsConfig.load(sourceHatModelsFile);
-    //     } catch (IOException | InvalidConfigurationException e) {
-    //         e.printStackTrace();
-    //     }
-    //     //   if (fileHatModelsConfig.getConfigurationSection("aliases") == null){
-    //     //       fileHatModelsConfig.createSection("aliases");
-    //     //   }
-    // }
-
     public void createShopGuiFiles(){
         sourceShopGuiFile = new File(getDataFolder(), "shopgui.yml");
 
@@ -361,9 +282,6 @@ public class ParadisuMain extends JavaPlugin {
         }
     }
 
-
-
-    //gets fileWarpConfig
     public static FileConfiguration getWarpConfig() {
         return fileWarpConfig;
     }
@@ -371,12 +289,7 @@ public class ParadisuMain extends JavaPlugin {
     public static FileConfiguration getEnvConfig(){
         return envConfig;
     }
-    // public static FileConfiguration getPropModelsConfig() {
-    //     return filePropModelsConfig;
-    // }
-    // public static FileConfiguration getHatModelsConfig() {
-    //     return fileHatModelsConfig;
-    // }
+    
     public static FileConfiguration getFileShopGuiConfig() {return fileShopGuiConfig; }
 
 
@@ -397,22 +310,7 @@ public class ParadisuMain extends JavaPlugin {
             System.out.println("couldn't save file");
         }
     }
-    // public static void savePropModelsConfig(){
-    //     try {
-    //         filePropModelsConfig.save(sourcePropModelsFile);
-    //     } catch (IOException e){
-    //         System.out.println("couldn't save file");
-    //     }
-    // }
-
-    // public static void saveHatModelsConfig(){
-    //     try {
-    //         fileHatModelsConfig.save(sourceHatModelsFile);
-    //     } catch (IOException e){
-    //         System.out.println("couldn't save file");
-    //     }
-    // }
-
+   
     public static void saveShopGuiConfig() {
         try {
             fileShopGuiConfig.save(sourceShopGuiFile);
@@ -429,12 +327,6 @@ public class ParadisuMain extends JavaPlugin {
         envConfig = YamlConfiguration.loadConfiguration(envValues);
 
     }
-
-    // public static void reloadPropModelsConfig(){
-    //     filePropModelsConfig = YamlConfiguration.loadConfiguration(sourcePropModelsFile);}
-
-    // public static void reloadHatModelsConfig(){
-    //     fileHatModelsConfig = YamlConfiguration.loadConfiguration(sourceHatModelsFile);}
 
     public static void reloadShopGuiConfig() { fileShopGuiConfig = YamlConfiguration.loadConfiguration(sourceShopGuiFile); }
     public static DataSource getDBCon(){return dataSource;}
