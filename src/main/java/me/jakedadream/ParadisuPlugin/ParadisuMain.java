@@ -1,9 +1,9 @@
 package me.jakedadream.ParadisuPlugin;
 
 import me.jakedadream.ParadisuPlugin.modelmanager.modelscroller.modelscroller_events;
+import me.jakedadream.ParadisuPlugin.commands.WarpCommands;
 import me.jakedadream.ParadisuPlugin.commands.snwcommands;
 import me.jakedadream.ParadisuPlugin.commands.teleportationcmds;
-import me.jakedadream.ParadisuPlugin.commands.warps;
 import me.jakedadream.ParadisuPlugin.databaseHandlers.DBConnections;
 import me.jakedadream.ParadisuPlugin.databaseHandlers.WarpsDataHandler;
 import me.jakedadream.ParadisuPlugin.paradisu_protocollib.*;
@@ -17,14 +17,26 @@ import me.jakedadream.ParadisuPlugin.wrappers.PlayerDataEvents;
 import me.jakedadream.ParadisuPlugin.wrappers.japantime;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
+
+import cloud.commandframework.CommandManager;
+import cloud.commandframework.Description;
+import cloud.commandframework.annotations.AnnotationParser;
+import cloud.commandframework.bukkit.BukkitCommandManager;
+import cloud.commandframework.execution.CommandExecutionCoordinator;
+import cloud.commandframework.meta.SimpleCommandMeta;
+import cloud.commandframework.paper.PaperCommandManager;
+
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.function.Function;
+
 import javax.sql.DataSource;
 
 public class ParadisuMain extends JavaPlugin {
@@ -55,6 +67,8 @@ public class ParadisuMain extends JavaPlugin {
     public static String PlayerCooldownMessage() { String cooldownmsg = "\uE016 §fYou are currently on a §x§f§d§d§0§2§3cooldown§f." ; return cooldownmsg; }
 
     private static DataSource dataSource;
+    public static CommandManager<CommandSender> manager;
+    public static AnnotationParser<CommandSender> annotationParser;
 
     @Override
     public void onEnable() {
@@ -69,11 +83,27 @@ public class ParadisuMain extends JavaPlugin {
             e.printStackTrace();
         }
 
+        try {
+            manager = new PaperCommandManager<>(this, CommandExecutionCoordinator.simpleCoordinator(), Function.identity(), Function.identity());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         
+        annotationParser = new AnnotationParser<>(
+            manager,
+            CommandSender.class,
+            parameters -> SimpleCommandMeta.empty() 
+        );
+
+        
+
+        annotationParser.parse(new WarpCommands());
 
         // =================
         // SNW COMMANDS
         // =================
+        
+        
         getCommand("givecoin").setExecutor(new snwcommands());
         getCommand("givestarcoin").setExecutor(new snwcommands());
         getCommand("sc").setExecutor(new snwcommands());
@@ -127,18 +157,19 @@ public class ParadisuMain extends JavaPlugin {
         // =================
         // WARPS COMMANDS
         // =================
+        
 
         WarpsDataHandler.updateWarpData();
 
 
-        getCommand("setwarp").setExecutor(new warps());
-        getCommand("delwarp").setExecutor(new warps());
-        getCommand("warp").setExecutor(new warps());
-        getCommand("setalias").setExecutor(new warps());
-        getCommand("delalias").setExecutor(new warps());
-        getCommand("reloadwarp").setExecutor(new warps());
-        getCommand("warps").setExecutor(new warps());
-        getCommand("warpdisplay").setExecutor(new warps());
+        // getCommand("setwarp").setExecutor(new WarpCommands());
+        // getCommand("delwarp").setExecutor(new WarpCommands());
+        // // getCommand("warp").setExecutor(new WarpCommands());
+        // getCommand("setalias").setExecutor(new WarpCommands());
+        // getCommand("delalias").setExecutor(new WarpCommands());
+        // getCommand("reloadwarp").setExecutor(new WarpCommands());
+        // getCommand("warps").setExecutor(new WarpCommands());
+        // getCommand("warpdisplay").setExecutor(new WarpCommands());
         //
         // =================
         // DB COMMANDS

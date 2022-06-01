@@ -6,7 +6,7 @@ import me.jakedadream.ParadisuPlugin.ParadisuMain;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.Inventory;
 
-public class trashcanINV {
+public class TrashInv {
 
     String cmdprefix = ParadisuMain.CommandPrefix();
     String cmdemph = ParadisuMain.CommandEmph();

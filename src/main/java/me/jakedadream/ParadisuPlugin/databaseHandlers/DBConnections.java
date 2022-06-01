@@ -4,15 +4,11 @@ import static org.bukkit.Bukkit.getServer;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-
 import javax.sql.DataSource;
-
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.mariadb.jdbc.MariaDbDataSource;
-
 import me.jakedadream.ParadisuPlugin.ParadisuMain;
-
 
 public class DBConnections {
 

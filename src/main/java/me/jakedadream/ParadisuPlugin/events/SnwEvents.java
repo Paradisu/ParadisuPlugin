@@ -35,7 +35,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import me.jakedadream.ParadisuPlugin.ParadisuMain;
-import me.jakedadream.ParadisuPlugin.invs.trashcanINV;
+import me.jakedadream.ParadisuPlugin.invs.TrashInv;
 import me.jakedadream.ParadisuPlugin.items.ItemManager;
 
 public class SnwEvents implements Listener {
@@ -120,7 +120,7 @@ public class SnwEvents implements Listener {
         if (intEvent.getRightClicked().getType() == EntityType.ARMOR_STAND) {
             if (intEvent.getRightClicked().getName().equals("TRASHCAN")) {
 
-                player.openInventory(trashcanINV.TrashcanGUI());
+                player.openInventory(TrashInv.TrashcanGUI());
             }
         }
     }
