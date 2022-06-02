@@ -79,7 +79,7 @@ public class PlayerData {
             if(playerResult.getString("top_rank") == null || !(playerResult.getString("top_rank").equals(data.GetPlayerTopRank(player)))){
                 Bukkit.getConsoleSender().sendMessage(ChatColor.AQUA + "Updating top_rank player data for " + player.getName());
                 try(PreparedStatement updatePlayer = conn.prepareStatement("UPDATE PlayerData SET top_rank = ? WHERE UUID = ?")){
-                    updatePlayer.setString(1, data.GetPlayerTopRank(player));
+                    updatePlayer.setString(1, PlayerDataGetter.GetPlayerTopRank(player));
                     updatePlayer.setString(2, player.getUniqueId().toString());
                     updatePlayer.executeUpdate();
                 } catch(SQLException e){

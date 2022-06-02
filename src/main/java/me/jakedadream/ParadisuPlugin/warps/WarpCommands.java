@@ -42,6 +42,14 @@ public class WarpCommands {
         playerWarp(p, warps, warpName);
     }
 
+    @CommandPermission("paradisu.warp.default")
+    @CommandMethod("spawn")
+    public void spawn(CommandSender sender){
+        Player p = (Player) sender;
+        ArrayList<Warp> warps = WarpsDataHandler.getWarpData();
+        playerWarp(p, warps, "spawn");
+    }
+
     @CommandPermission("paradisu.warp.admin")
     @ProxiedBy("setwarp")
     @CommandMethod("warp|w add|set <warpName> [displayName]")

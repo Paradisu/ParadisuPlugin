@@ -94,5 +94,34 @@ public class EssentialCommands /* MEANT FOR ANY REWRITTEN VANILLA/QOL COMMANDS *
         player.setGameMode(GameMode.SPECTATOR);
         player.sendMessage(cmdprefix + "§fYour gamemode has been set to " + cmdemph + "Spectator§f.");
     }
+
+
+    @CommandPermission("paradisu.time")
+    // @ProxiedBy("time day")
+    @CommandMethod("day")
+    public void day(CommandSender sender){
+        Player player = (Player) sender;
+        player.getWorld().setTime(1000);
+        player.sendMessage(cmdprefix + "§fYou set the time to §3§nDay§f!");
+    }
+
+    @CommandPermission("paradisu.time")
+    // @ProxiedBy("time night")
+    @CommandMethod("night")
+    public void night(CommandSender sender){
+        Player player = (Player) sender;
+        player.getWorld().setTime(14000);
+        player.sendMessage(cmdprefix + "§fYou set the time to §3§nNight§f!");
+    }
+
+    @CommandPermission("paradisu.time")
+    // @ProxiedBy("time noon")
+    @CommandMethod("noon")
+    public void noon(CommandSender sender){
+        Player player = (Player) sender;
+        player.getWorld().setTime(600);
+        player.sendMessage(cmdprefix + "§fYou set the time to §3§nNoon§f!");
+    }
+
 }
 

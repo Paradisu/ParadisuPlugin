@@ -15,9 +15,9 @@ commands:
   unname:
     description: unnames items
     usage: /<command>
-  admininvsee:
-    description: admin invsee lol
-    usage: /<command> <player>
+  # admininvsee:
+  #   description: admin invsee lol
+  #   usage: /<command> <player>
   reloadshops:
     description: reloads shops
   getshop:
@@ -26,58 +26,58 @@ commands:
     description: reload hat config
   reloadprops:
      description: reload prop config
-  givecoin:
-    description: Gives player a SNW coin
-    usage: /<command>
-  givestarcoin:
-      description: Gives player a Star coin
-      usage: /<command>
-  sc:
-    description: Communicate to other staff
-    usage: /<command> <message>
-  ac:
-    description: Communicate to other admins
-    usage: /<command> <message>
-  dbreset:
-    description: disconnects from db
-  enderchest:
-    description: Opens your EC
-    usage: /<command>
-    aliases:
-      - ec
-      - echest
-      - enderc
-  workbench:
-    description: Opens a Workbench
-    usage: /<command>
-    aliases:
-      - wb
-      - craft
-      - craftingtable
-  invsee:
-    description: Lets you see what another person has in their inventory
-    usage: /<command> <player>
-    aliases:
-      - invpeek
-      - invs
-  Day:
-    description: Sets the time to day
-    usage: /<command>
-    aliases:
-      - setday
-  Night:
-    description: Sets the time to night
-    usage: /<command>
-    aliases:
-      - setnight
-  Noon:
-    description: Sets the time to noon
-    usage: /<command>
-    aliases:
-      - setnoon
-  sex:
-    description: You have sex
-    usage: /<command>
+  # givecoin:
+  #   description: Gives player a SNW coin
+  #   usage: /<command>
+  # givestarcoin:
+  #     description: Gives player a Star coin
+  #     usage: /<command>
+  # sc:
+  #   description: Communicate to other staff
+  #   usage: /<command> <message>
+  # ac:
+  #   description: Communicate to other admins
+  #   usage: /<command> <message>
+  # dbreset:
+  #   description: disconnects from db
+  # enderchest:
+  #   description: Opens your EC
+  #   usage: /<command>
+  #   aliases:
+  #     - ec
+  #     - echest
+  #     - enderc
+  # workbench:
+  #   description: Opens a Workbench
+  #   usage: /<command>
+  #   aliases:
+  #     - wb
+  #     - craft
+  #     - craftingtable
+  # invsee:
+  #   description: Lets you see what another person has in their inventory
+  #   usage: /<command> <player>
+  #   aliases:
+  #     - invpeek
+  #     - invs
+  # Day:
+  #   description: Sets the time to day
+  #   usage: /<command>
+  #   aliases:
+  #     - setday
+  # Night:
+  #   description: Sets the time to night
+  #   usage: /<command>
+  #   aliases:
+  #     - setnight
+  # Noon:
+  #   description: Sets the time to noon
+  #   usage: /<command>
+  #   aliases:
+  #     - setnoon
+  # sex:
+  #   description: You have sex
+  #   usage: /<command>
   tp:
     description: Tp to another player or tp a player to another player
     usage: /<command> <player>
@@ -88,31 +88,31 @@ commands:
     usage: /<command> <player>
     aliases:
       - atphere
-  trashcan:
-    description: Opens the trashcan inventory
-    usage: /<command>
-    aliases:
-      - trash
-  clearinventory:
-    description: Clears your inventory
-    usage: /<command>
-    aliases:
-      - ci
-      - clearinv
-      - clear
-  fly:
-    description: Allows you to toggle fly
-    usage: /<command>
-  Spawn:
-    description: Brings you to spawn
-    usage: /<command>
-  skull:
-    description: Give's you a player head
-    usage: /<command> <player>
-    aliases:
-      - giveskull
-      - skulls
-      - head
+  # trashcan:
+  #   description: Opens the trashcan inventory
+  #   usage: /<command>
+  #   aliases:
+  #     - trash
+  # clearinventory:
+  #   description: Clears your inventory
+  #   usage: /<command>
+  #   aliases:
+  #     - ci
+  #     - clearinv
+  #     - clear
+  # fly:
+  #   description: Allows you to toggle fly
+  #   usage: /<command>
+  # Spawn:
+  #   description: Brings you to spawn
+  #   usage: /<command>
+  # skull:
+  #   description: Give's you a player head
+  #   usage: /<command> <player>
+  #   aliases:
+  #     - giveskull
+  #     - skulls
+  #     - head
   rename:
     description: Renames the item in your hand
     usage: /<command> <args>

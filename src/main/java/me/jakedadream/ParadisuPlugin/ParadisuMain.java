@@ -100,33 +100,35 @@ public class ParadisuMain extends JavaPlugin {
 
         annotationParser.parse(new WarpCommands());
         annotationParser.parse(new EssentialCommands());
+        annotationParser.parse(new ParadisuCommands());
+
 
         // =================
         // SNW COMMANDS
         // =================
         
         
-        getCommand("givecoin").setExecutor(new ParadisuCommands());
-        getCommand("givestarcoin").setExecutor(new ParadisuCommands());
-        getCommand("sc").setExecutor(new ParadisuCommands());
-        getCommand("ac").setExecutor(new ParadisuCommands());
+        // getCommand("givecoin").setExecutor(new ParadisuCommands());
+        // getCommand("givestarcoin").setExecutor(new ParadisuCommands());
+        // getCommand("sc").setExecutor(new ParadisuCommands());
+        // getCommand("ac").setExecutor(new ParadisuCommands());
         // getCommand("gmc").setExecutor(new ParadisuCommands());
         // getCommand("gms").setExecutor(new ParadisuCommands());
         // getCommand("gmsp").setExecutor(new ParadisuCommands());
         // getCommand("gma").setExecutor(new ParadisuCommands());
-        getCommand("enderchest").setExecutor(new ParadisuCommands());
-        getCommand("workbench").setExecutor(new ParadisuCommands());
-        getCommand("invsee").setExecutor(new ParadisuCommands());
-        getCommand("day").setExecutor(new ParadisuCommands());
-        getCommand("night").setExecutor(new ParadisuCommands());
-        getCommand("noon").setExecutor(new ParadisuCommands());
-        getCommand("spawn").setExecutor(new ParadisuCommands());
-        getCommand("sex").setExecutor(new ParadisuCommands());
-        getCommand("skull").setExecutor(new ParadisuCommands());
-        getCommand("clearinventory").setExecutor(new ParadisuCommands());
-        getCommand("trashcan").setExecutor(new ParadisuCommands());
-        getCommand("fly").setExecutor(new ParadisuCommands());
-        getCommand("rename").setExecutor(new ParadisuCommands());
+        // getCommand("enderchest").setExecutor(new ParadisuCommands());
+        // getCommand("workbench").setExecutor(new ParadisuCommands());
+        // getCommand("invsee").setExecutor(new ParadisuCommands());
+        // getCommand("day").setExecutor(new ParadisuCommands());
+        // getCommand("night").setExecutor(new ParadisuCommands());
+        // getCommand("noon").setExecutor(new ParadisuCommands());
+        // getCommand("spawn").setExecutor(new ParadisuCommands());
+        // getCommand("sex").setExecutor(new ParadisuCommands());
+        // getCommand("skull").setExecutor(new ParadisuCommands());
+        // getCommand("clearinventory").setExecutor(new ParadisuCommands());
+        // getCommand("trashcan").setExecutor(new ParadisuCommands());
+        // getCommand("fly").setExecutor(new ParadisuCommands());
+        /*getCommand("rename").setExecutor(new ParadisuCommands());
         getCommand("srename").setExecutor(new ParadisuCommands());
         getCommand("glow").setExecutor(new ParadisuCommands());
         getCommand("unglow").setExecutor(new ParadisuCommands());
@@ -145,10 +147,10 @@ public class ParadisuMain extends JavaPlugin {
         getCommand("lightblocks").setExecutor(new ParadisuCommands());
         getCommand("syncjapantime").setExecutor(new ParadisuCommands());
         getCommand("synctimezone").setExecutor(new ParadisuCommands());
-        getCommand("admininvsee").setExecutor(new ParadisuCommands());
+        // getCommand("admininvsee").setExecutor(new ParadisuCommands());
         getCommand("unname").setExecutor(new ParadisuCommands());
         getCommand("stack").setExecutor(new ParadisuCommands());
-        getCommand("estack").setExecutor(new ParadisuCommands());
+        getCommand("estack").setExecutor(new ParadisuCommands());*/
         // =================
         // TPING COMMANDS
         // =================

@@ -5,8 +5,6 @@ import static org.bukkit.Bukkit.getServer;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.HashMap;
-
 import javax.sql.DataSource;
 
 import org.bukkit.Bukkit;
@@ -29,18 +27,18 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import me.jakedadream.ParadisuPlugin.ParadisuMain;
 import me.jakedadream.ParadisuPlugin.items.GenItemManager;
-import me.jakedadream.ParadisuPlugin.items.invs.TrashInv;
+import me.jakedadream.ParadisuPlugin.items.invs.TrashCan;
+import me.jakedadream.ParadisuPlugin.util.InventoryGUI;
 
 public class SnwEvents implements Listener {
 
-    private static HashMap<Player, ItemStack> ident = new HashMap<>();
+    // private static HashMap<Player, ItemStack> ident = new HashMap<>();
 
     String cmdprefix = ParadisuMain.CommandPrefix();
     String cmdemph = ParadisuMain.CommandEmph();
@@ -50,6 +48,8 @@ public class SnwEvents implements Listener {
     public SnwEvents(){
         dataSource = ParadisuMain.getDBCon();
     }
+    
+   
     
 
     @EventHandler
@@ -120,31 +120,20 @@ public class SnwEvents implements Listener {
         if (intEvent.getRightClicked().getType() == EntityType.ARMOR_STAND) {
             if (intEvent.getRightClicked().getName().equals("TRASHCAN")) {
 
-                player.openInventory(TrashInv.TrashcanGUI());
+                player.openInventory(new TrashCan().getInventory());
             }
         }
     }
 
     @EventHandler
-    public void InvenClick(InventoryClickEvent event) {
-        Player player = (Player) event.getWhoClicked();
-
-        Inventory open = event.getClickedInventory();
-        ItemStack item = event.getCurrentItem();
-
-        if (open == null) {
-            return;
-        }
-
-        if (player.getOpenInventory().getTitle().equals("§3§lWaste Bin")) {
-            ident.put(player, event.getCurrentItem());
-
-            if (item == null || event.getSlot() > 26) {
-                return;
-            }
-
-            }
-        }
+    public void onInventoryClick(InventoryClickEvent e) {
+        if(e.getInventory().getHolder() instanceof InventoryGUI) {
+            e.setCancelled(true);
+            InventoryGUI gui = (InventoryGUI) e.getInventory().getHolder();
+            gui.onGUIClick((Player)e.getWhoClicked(), e.getRawSlot(), e.getCurrentItem());
+        }      
+    }
+    
 
     @EventHandler
     public void leaveEvent(PlayerQuitEvent e) {

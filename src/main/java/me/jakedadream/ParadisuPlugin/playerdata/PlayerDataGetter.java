@@ -4,7 +4,7 @@ import org.bukkit.entity.Player;
 
 public class PlayerDataGetter {
 
-    public String GetPlayerTopRank(Player player) {
+    public static String GetPlayerTopRank(Player player) {
         String TOP_RANK = "";
 
 
@@ -38,18 +38,7 @@ public class PlayerDataGetter {
         return TOP_RANK;
     }
 
-    public Boolean isStaffCheck(Player player) {
-
-        Boolean isStaff = false;
-
-        if (player.hasPermission("group.staff")) {
-            isStaff = true;
-        }
-
-        return isStaff;
+    public static boolean isStaffCheck(Player player) {
+        return player.hasPermission("group.staff");
     }
-
-
-
-
 }
