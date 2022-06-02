@@ -1,4 +1,4 @@
-package me.jakedadream.ParadisuPlugin.events;
+package me.jakedadream.ParadisuPlugin.items;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -7,15 +7,9 @@ import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class spinningcoins extends BukkitRunnable {
-
-
-    public void run() {
-
-    }
+public class SpinningCoins extends BukkitRunnable {
 
     public static void spineffect() {
-
 
         //System.out.println("in runnable");
         Bukkit.getWorlds();
@@ -34,5 +28,11 @@ public class spinningcoins extends BukkitRunnable {
 
             }
         }
+    }
+
+    @Override
+    public void run() {
+        // TODO Auto-generated method stub
+        
     }
 }

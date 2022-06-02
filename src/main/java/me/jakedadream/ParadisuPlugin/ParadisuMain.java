@@ -5,6 +5,9 @@ import me.jakedadream.ParadisuPlugin.items.models.modelscroller.ModelScrollerEve
 import me.jakedadream.ParadisuPlugin.playerdata.PlayerDataEvents;
 import me.jakedadream.ParadisuPlugin.commands.ParadisuCommands;
 import me.jakedadream.ParadisuPlugin.events.*;
+import me.jakedadream.ParadisuPlugin.items.LuckyBlocks;
+import me.jakedadream.ParadisuPlugin.items.SpinningCoins;
+import me.jakedadream.ParadisuPlugin.items.ToyEvents;
 import me.jakedadream.ParadisuPlugin.items.models.ModelCommands;
 import me.jakedadream.ParadisuPlugin.items.models.ModelGiveInv;
 import me.jakedadream.ParadisuPlugin.items.models.ModelItemManager;
@@ -213,8 +216,8 @@ public class ParadisuMain extends JavaPlugin {
         // =================
         // EVENTS
         // =================
-        getServer().getPluginManager().registerEvents(new luckyblocks(), this);
-        getServer().getPluginManager().registerEvents(new toys(), this);
+        getServer().getPluginManager().registerEvents(new LuckyBlocks(), this);
+        getServer().getPluginManager().registerEvents(new ToyEvents(), this);
         getServer().getPluginManager().registerEvents(new SnwEvents(), this);
         getServer().getPluginManager().registerEvents(new GuiListeners(), this);
         getServer().getPluginManager().registerEvents(new PlayerDataEvents(), this);
@@ -231,7 +234,7 @@ public class ParadisuMain extends JavaPlugin {
         scheduler.scheduleSyncRepeatingTask(this, new Runnable() {
             @Override
             public void run() {
-                spinningcoins.spineffect();
+                SpinningCoins.spineffect();
 
             }
         }, 0L, 2L);

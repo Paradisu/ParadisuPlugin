@@ -1,4 +1,4 @@
-package me.jakedadream.ParadisuPlugin.events;
+package me.jakedadream.ParadisuPlugin.items;
 
 import java.util.Random;
 import java.util.UUID;
@@ -16,7 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import me.jakedadream.ParadisuPlugin.ParadisuMain;
 import me.jakedadream.ParadisuPlugin.util.EventCooldowns;
 
-public class toys implements Listener {
+public class ToyEvents implements Listener {
 
 
     String cmdprefix = ParadisuMain.CommandPrefix();

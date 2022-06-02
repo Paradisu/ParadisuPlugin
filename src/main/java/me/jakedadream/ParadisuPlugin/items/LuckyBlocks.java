@@ -1,9 +1,9 @@
-package me.jakedadream.ParadisuPlugin.events;
+package me.jakedadream.ParadisuPlugin.items;
 
 import me.jakedadream.ParadisuPlugin.ParadisuMain;
 import org.bukkit.event.Listener;
 
-public class luckyblocks implements Listener {
+public class LuckyBlocks implements Listener {
 
     String cmdprefix = ParadisuMain.CommandPrefix();
     String cmdemph = ParadisuMain.CommandEmph();
