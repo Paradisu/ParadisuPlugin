@@ -13,7 +13,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class EssentialCommands {
+public class EssentialCommands /* MEANT FOR ANY QOL COMMANDS */ {
 
     private boolean isRealPlayer(CommandSender sender) {
         return sender instanceof Player;
