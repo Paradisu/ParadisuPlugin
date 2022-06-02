@@ -1,21 +1,20 @@
 package me.jakedadream.ParadisuPlugin;
 
-import me.jakedadream.ParadisuPlugin.modelmanager.modelscroller.modelscroller_events;
-import me.jakedadream.ParadisuPlugin.commands.WarpCommands;
-import me.jakedadream.ParadisuPlugin.commands.snwcommands;
-import me.jakedadream.ParadisuPlugin.commands.teleportationcmds;
-import me.jakedadream.ParadisuPlugin.databaseHandlers.DBConnections;
-import me.jakedadream.ParadisuPlugin.databaseHandlers.WarpsDataHandler;
-import me.jakedadream.ParadisuPlugin.paradisu_protocollib.*;
+
+import me.jakedadream.ParadisuPlugin.items.models.modelscroller.ModelScrollerEvents;
+import me.jakedadream.ParadisuPlugin.playerdata.PlayerDataEvents;
+import me.jakedadream.ParadisuPlugin.commands.ParadisuCommands;
 import me.jakedadream.ParadisuPlugin.events.*;
-import me.jakedadream.ParadisuPlugin.modelmanager.ModelInv;
-import me.jakedadream.ParadisuPlugin.modelmanager.modelcommands;
-import me.jakedadream.ParadisuPlugin.modelmanager.modelitemmanager;
+import me.jakedadream.ParadisuPlugin.items.models.ModelCommands;
+import me.jakedadream.ParadisuPlugin.items.models.ModelGiveInv;
+import me.jakedadream.ParadisuPlugin.items.models.ModelItemManager;
 import me.jakedadream.ParadisuPlugin.shops.ShopCommands;
 import me.jakedadream.ParadisuPlugin.shops.ShopGuis;
-import me.jakedadream.ParadisuPlugin.wrappers.PlayerDataEvents;
-import me.jakedadream.ParadisuPlugin.wrappers.japantime;
-import org.bukkit.Bukkit;
+import me.jakedadream.ParadisuPlugin.util.DatabaseConnection;
+import me.jakedadream.ParadisuPlugin.warps.TeleportationCommands;
+import me.jakedadream.ParadisuPlugin.warps.WarpCommands;
+import me.jakedadream.ParadisuPlugin.warps.WarpsDataHandler;
+import me.jakedadream.ParadisuPlugin.util.JapanTime;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -25,9 +24,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import cloud.commandframework.CommandManager;
-import cloud.commandframework.Description;
 import cloud.commandframework.annotations.AnnotationParser;
-import cloud.commandframework.bukkit.BukkitCommandManager;
 import cloud.commandframework.execution.CommandExecutionCoordinator;
 import cloud.commandframework.meta.SimpleCommandMeta;
 import cloud.commandframework.paper.PaperCommandManager;
@@ -78,7 +75,7 @@ public class ParadisuMain extends JavaPlugin {
         saveEnvConfig();
 
         try {
-            dataSource = DBConnections.initParadisuSQLCon();
+            dataSource = DatabaseConnection.initParadisuSQLCon();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -104,55 +101,55 @@ public class ParadisuMain extends JavaPlugin {
         // =================
         
         
-        getCommand("givecoin").setExecutor(new snwcommands());
-        getCommand("givestarcoin").setExecutor(new snwcommands());
-        getCommand("sc").setExecutor(new snwcommands());
-        getCommand("ac").setExecutor(new snwcommands());
-        getCommand("gmc").setExecutor(new snwcommands());
-        getCommand("gms").setExecutor(new snwcommands());
-        getCommand("gmsp").setExecutor(new snwcommands());
-        getCommand("gma").setExecutor(new snwcommands());
-        getCommand("enderchest").setExecutor(new snwcommands());
-        getCommand("workbench").setExecutor(new snwcommands());
-        getCommand("invsee").setExecutor(new snwcommands());
-        getCommand("day").setExecutor(new snwcommands());
-        getCommand("night").setExecutor(new snwcommands());
-        getCommand("noon").setExecutor(new snwcommands());
-        getCommand("spawn").setExecutor(new snwcommands());
-        getCommand("sex").setExecutor(new snwcommands());
-        getCommand("skull").setExecutor(new snwcommands());
-        getCommand("clearinventory").setExecutor(new snwcommands());
-        getCommand("trashcan").setExecutor(new snwcommands());
-        getCommand("fly").setExecutor(new snwcommands());
-        getCommand("rename").setExecutor(new snwcommands());
-        getCommand("srename").setExecutor(new snwcommands());
-        getCommand("glow").setExecutor(new snwcommands());
-        getCommand("unglow").setExecutor(new snwcommands());
-        getCommand("broadcast").setExecutor(new snwcommands());
-        getCommand("staffbroadcast").setExecutor(new snwcommands());
-        getCommand("adminbroadcast").setExecutor(new snwcommands());
-        getCommand("supporterbroadcast").setExecutor(new snwcommands());
-        getCommand("permbroadcast").setExecutor(new snwcommands());
-        getCommand("speed").setExecutor(new snwcommands());
-        getCommand("sudo").setExecutor(new snwcommands());
-        getCommand("whomademe").setExecutor(new snwcommands());
-        getCommand("list").setExecutor(new snwcommands());
-        getCommand("findplayercords").setExecutor(new snwcommands());
-        getCommand("currenttime").setExecutor(new snwcommands());
-        getCommand("mkill").setExecutor(new snwcommands());
-        getCommand("lightblocks").setExecutor(new snwcommands());
-        getCommand("syncjapantime").setExecutor(new snwcommands());
-        getCommand("synctimezone").setExecutor(new snwcommands());
-        getCommand("admininvsee").setExecutor(new snwcommands());
-        getCommand("unname").setExecutor(new snwcommands());
-        getCommand("stack").setExecutor(new snwcommands());
-        getCommand("estack").setExecutor(new snwcommands());
+        getCommand("givecoin").setExecutor(new ParadisuCommands());
+        getCommand("givestarcoin").setExecutor(new ParadisuCommands());
+        getCommand("sc").setExecutor(new ParadisuCommands());
+        getCommand("ac").setExecutor(new ParadisuCommands());
+        getCommand("gmc").setExecutor(new ParadisuCommands());
+        getCommand("gms").setExecutor(new ParadisuCommands());
+        getCommand("gmsp").setExecutor(new ParadisuCommands());
+        getCommand("gma").setExecutor(new ParadisuCommands());
+        getCommand("enderchest").setExecutor(new ParadisuCommands());
+        getCommand("workbench").setExecutor(new ParadisuCommands());
+        getCommand("invsee").setExecutor(new ParadisuCommands());
+        getCommand("day").setExecutor(new ParadisuCommands());
+        getCommand("night").setExecutor(new ParadisuCommands());
+        getCommand("noon").setExecutor(new ParadisuCommands());
+        getCommand("spawn").setExecutor(new ParadisuCommands());
+        getCommand("sex").setExecutor(new ParadisuCommands());
+        getCommand("skull").setExecutor(new ParadisuCommands());
+        getCommand("clearinventory").setExecutor(new ParadisuCommands());
+        getCommand("trashcan").setExecutor(new ParadisuCommands());
+        getCommand("fly").setExecutor(new ParadisuCommands());
+        getCommand("rename").setExecutor(new ParadisuCommands());
+        getCommand("srename").setExecutor(new ParadisuCommands());
+        getCommand("glow").setExecutor(new ParadisuCommands());
+        getCommand("unglow").setExecutor(new ParadisuCommands());
+        getCommand("broadcast").setExecutor(new ParadisuCommands());
+        getCommand("staffbroadcast").setExecutor(new ParadisuCommands());
+        getCommand("adminbroadcast").setExecutor(new ParadisuCommands());
+        getCommand("supporterbroadcast").setExecutor(new ParadisuCommands());
+        getCommand("permbroadcast").setExecutor(new ParadisuCommands());
+        getCommand("speed").setExecutor(new ParadisuCommands());
+        getCommand("sudo").setExecutor(new ParadisuCommands());
+        getCommand("whomademe").setExecutor(new ParadisuCommands());
+        getCommand("list").setExecutor(new ParadisuCommands());
+        getCommand("findplayercords").setExecutor(new ParadisuCommands());
+        getCommand("currenttime").setExecutor(new ParadisuCommands());
+        getCommand("mkill").setExecutor(new ParadisuCommands());
+        getCommand("lightblocks").setExecutor(new ParadisuCommands());
+        getCommand("syncjapantime").setExecutor(new ParadisuCommands());
+        getCommand("synctimezone").setExecutor(new ParadisuCommands());
+        getCommand("admininvsee").setExecutor(new ParadisuCommands());
+        getCommand("unname").setExecutor(new ParadisuCommands());
+        getCommand("stack").setExecutor(new ParadisuCommands());
+        getCommand("estack").setExecutor(new ParadisuCommands());
         // =================
         // TPING COMMANDS
         // =================
-        getCommand("tphere").setExecutor(new teleportationcmds());
-        getCommand("tp").setExecutor(new teleportationcmds());
-        getCommand("cordstp").setExecutor(new teleportationcmds());
+        getCommand("tphere").setExecutor(new TeleportationCommands());
+        getCommand("tp").setExecutor(new TeleportationCommands());
+        getCommand("cordstp").setExecutor(new TeleportationCommands());
         //
         // =================
         // WARPS COMMANDS
@@ -181,9 +178,9 @@ public class ParadisuMain extends JavaPlugin {
         // =================
         // MODEL COMMANDS
         // =================
-        getCommand("mgive").setExecutor(new modelcommands());
-        getCommand("hgive").setExecutor(new modelcommands());
-        getCommand("mhat").setExecutor(new modelcommands());
+        getCommand("mgive").setExecutor(new ModelCommands());
+        getCommand("hgive").setExecutor(new ModelCommands());
+        getCommand("mhat").setExecutor(new ModelCommands());
         
         // =================
         // SHOP GUI COMMANDS
@@ -202,29 +199,26 @@ public class ParadisuMain extends JavaPlugin {
         getConfig().options().copyDefaults();
         saveDefaultConfig();
 
-        createWarpFiles();
-        saveWarpConfig();
+        // createWarpFiles();
+        // saveWarpConfig();
 
         createShopGuiFiles();
         saveShopGuiConfig();
 
-        modelitemmanager.updateModelData();
-        ModelInv.createAllInvs();
-
+        ModelItemManager.updateModelData();
+        ModelGiveInv.createAllInvs();
         ShopGuis.initShops();
-       
-        japantime.setJapanTime();
+        JapanTime.setJapanTime();
 
         // =================
         // EVENTS
         // =================
         getServer().getPluginManager().registerEvents(new luckyblocks(), this);
-        getServer().getPluginManager().registerEvents(new entityedits(), this);
         getServer().getPluginManager().registerEvents(new toys(), this);
         getServer().getPluginManager().registerEvents(new SnwEvents(), this);
         getServer().getPluginManager().registerEvents(new GuiListeners(), this);
         getServer().getPluginManager().registerEvents(new PlayerDataEvents(), this);
-        getServer().getPluginManager().registerEvents(new modelscroller_events(), this);
+        getServer().getPluginManager().registerEvents(new ModelScrollerEvents(), this);
 
         getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "\n" + ChatColor.GREEN +
                 "|------------------------------|\n" + ChatColor.GREEN +
@@ -256,8 +250,8 @@ public class ParadisuMain extends JavaPlugin {
     private static File envValues;
     private static FileConfiguration envConfig;
     
-    private static File sourceWarpFile;
-    private static FileConfiguration fileWarpConfig;
+    // private static File sourceWarpFile;
+    // private static FileConfiguration fileWarpConfig;
 
     private static File sourceShopGuiFile;
     private static FileConfiguration fileShopGuiConfig;
@@ -275,26 +269,26 @@ public class ParadisuMain extends JavaPlugin {
     }
 
 
-    public void createWarpFiles() {
+    // public void createWarpFiles() {
 
-        sourceWarpFile = new File(getDataFolder(), "warps.yml");
+    //     sourceWarpFile = new File(getDataFolder(), "warps.yml");
 
-        if (!sourceWarpFile.exists()) {
-            sourceWarpFile.getParentFile().mkdirs();
-            saveResource("warps.yml", false);
-        }
+    //     if (!sourceWarpFile.exists()) {
+    //         sourceWarpFile.getParentFile().mkdirs();
+    //         saveResource("warps.yml", false);
+    //     }
 
-        fileWarpConfig = new YamlConfiguration();
+    //     fileWarpConfig = new YamlConfiguration();
 
-        try {
-            fileWarpConfig.load(sourceWarpFile);
-        } catch (IOException | InvalidConfigurationException e) {
-            e.printStackTrace();
-        }
-        if (fileWarpConfig.getConfigurationSection("aliases") == null){
-            fileWarpConfig.createSection("aliases");
-        }
-    }
+    //     try {
+    //         fileWarpConfig.load(sourceWarpFile);
+    //     } catch (IOException | InvalidConfigurationException e) {
+    //         e.printStackTrace();
+    //     }
+    //     if (fileWarpConfig.getConfigurationSection("aliases") == null){
+    //         fileWarpConfig.createSection("aliases");
+    //     }
+    // }
 
     public void createShopGuiFiles(){
         sourceShopGuiFile = new File(getDataFolder(), "shopgui.yml");
@@ -313,9 +307,9 @@ public class ParadisuMain extends JavaPlugin {
         }
     }
 
-    public static FileConfiguration getWarpConfig() {
-        return fileWarpConfig;
-    }
+    // public static FileConfiguration getWarpConfig() {
+    //     return fileWarpConfig;
+    // }
 
     public static FileConfiguration getEnvConfig(){
         return envConfig;
@@ -325,13 +319,13 @@ public class ParadisuMain extends JavaPlugin {
 
 
     //use if edited through commands
-    public static void saveWarpConfig(){
-        try {
-            fileWarpConfig.save(sourceWarpFile);
-        } catch (IOException e){
-            System.out.println("couldn't save file");
-        }
-    }
+    // public static void saveWarpConfig(){
+    //     try {
+    //         fileWarpConfig.save(sourceWarpFile);
+    //     } catch (IOException e){
+    //         System.out.println("couldn't save file");
+    //     }
+    // }
 
 
     public static void saveEnvConfig(){
@@ -351,8 +345,8 @@ public class ParadisuMain extends JavaPlugin {
     }
 
     //use if edited file through text editor
-    public static void reloadWarpConfig(){
-        fileWarpConfig = YamlConfiguration.loadConfiguration(sourceWarpFile);}
+    // public static void reloadWarpConfig(){
+    //     fileWarpConfig = YamlConfiguration.loadConfiguration(sourceWarpFile);}
 
     public static void reloadEnvConfig(){
         envConfig = YamlConfiguration.loadConfiguration(envValues);

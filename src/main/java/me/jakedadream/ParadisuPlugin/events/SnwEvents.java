@@ -35,8 +35,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import me.jakedadream.ParadisuPlugin.ParadisuMain;
-import me.jakedadream.ParadisuPlugin.invs.TrashInv;
-import me.jakedadream.ParadisuPlugin.items.ItemManager;
+import me.jakedadream.ParadisuPlugin.items.GenItemManager;
+import me.jakedadream.ParadisuPlugin.items.invs.TrashInv;
 
 public class SnwEvents implements Listener {
 
@@ -78,7 +78,7 @@ public class SnwEvents implements Listener {
                 getServer().getConsoleSender().sendMessage(ChatColor.YELLOW + "A player picked up a coin");     // Triggers a message in chat
                 p.getWorld().playSound(p.getLocation(), Sound.ENTITY_ILLUSIONER_CAST_SPELL, 1F, 1F);        // plays a sound to the player
                 p.sendMessage("§3[§dParadisu §bツ§3] §f§lYou just picked up a coin!");                          // Triggers another message in chat
-                intEvent.getPlayer().getInventory().addItem(ItemManager.createCoin());                             // Adds an item into your inv (Can be used to trigger anything, like a gui)
+                intEvent.getPlayer().getInventory().addItem(GenItemManager.createCoin());                             // Adds an item into your inv (Can be used to trigger anything, like a gui)
                 intEvent.getRightClicked().remove();
                 
                 try (Connection connection = dataSource.getConnection(); 
@@ -151,7 +151,7 @@ public class SnwEvents implements Listener {
         Player leaver = e.getPlayer();
 
         e.setQuitMessage("§4[§c§l-§4]§f " + leaver.getName() + " left!");
-        }
+    }
 
 
     @EventHandler
@@ -179,31 +179,6 @@ public class SnwEvents implements Listener {
         player.setSaturation(20);
     }
 
-    /*
-    @EventHandler
-    public void PlayerPunchBlock(PlayerInteractEvent pie) {
-        if (pie.getAction() == Action.LEFT_CLICK_BLOCK) {
-            Player player = pie.getPlayer();
-            Block b = pie.getClickedBlock();
-            if (b.getType() != Material.CAULDRON)
-                return;  if (b.getType() == Material.CAULDRON) {
-                int full = ((Levelled)b.getBlockData()).getLevel();
-                if (((Levelled)b.getBlockData()).getLevel() == 3) {
-                    ConfigurationSection pd = getConfig().getConfigurationSection("playerdata").getConfigurationSection(player.getUniqueId().toString() + ", " + player.getName());
-                    if (pd.getInt("lb") <= 4) {
-                        pd.set("lb", Integer.valueOf(pd.getInt("lb") + 1));
-                        saveConfig();
-                        player.sendMessage(getConfig().getString("message-prefix") + " §rYou have claimed §e§L(" + pd.getInt("lb") + "/5)§r lucky blocks");
-                        player.playSound(player.getLocation(), Sound.ENTITY_EVOKER_CAST_SPELL, 1.0F, 1.0F);
-                    } else {
-                        player.sendMessage(getConfig().getString("message-prefix") + " §rYou have claimed the maximum lucky blocks for the day.");
-                        player.playSound(player.getLocation(), Sound.ENTITY_DROWNED_HURT, 1.0F, 1.0F);
-                    }
-                }
-            }
-        }
-    }
-} */
 
 
     @EventHandler
@@ -219,30 +194,4 @@ public class SnwEvents implements Listener {
             p.sendMessage("§3[§dParadisu §bツ§3] §fYou consumed a drink/food item and were given speed for§3 " + seconds/60 + "§f minutes.");
         }
     }
-    /*
-    @EventHandler
-    public void PlayerBackPackEvent(PlayerInteractEvent e) {
-        Player p = e.getPlayer();
-        ItemMeta p_item = p.getInventory().getItemInMainHand().getItemMeta();
-        Material mat = p.getInventory().getItemInMainHand().getType();
-        Integer matCMD = p_item.getCustomModelData();
-
-        if (e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
-            if (mat == Material.CHAINMAIL_CHESTPLATE && mat != null && matCMD != 0) {
-
-                Integer Vault_ID = (matCMD - 1);
-
-                p.openInventory(p.getEnderChest()); // replace with pv
-
-
-
-            }
-        }
-    }*/
-
-
-
-
-
-
 }

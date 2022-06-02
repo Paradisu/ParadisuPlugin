@@ -1,6 +1,6 @@
 package me.jakedadream.ParadisuPlugin.shops;
 
-import me.jakedadream.ParadisuPlugin.modelmanager.modelitemmanager;
+import me.jakedadream.ParadisuPlugin.items.models.ModelItemManager;
 import me.jakedadream.ParadisuPlugin.ParadisuMain;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -74,9 +74,9 @@ public class ShopGuis {
                 ItemStack shopItem;
                 ConfigurationSection slotcs = configsection.getConfigurationSection(slot);
                 if (slotcs.getBoolean("isProp")){
-                    shopItem = new ItemStack(modelitemmanager.createPropModel(slotcs.getInt("modelid")));
+                    shopItem = new ItemStack(ModelItemManager.createPropModel(slotcs.getInt("modelid")));
                 } else {
-                    shopItem = new ItemStack(modelitemmanager.createHatModel(slotcs.getInt("modelid")));
+                    shopItem = new ItemStack(ModelItemManager.createHatModel(slotcs.getInt("modelid")));
                 }
                 ItemMeta shopItemMeta = shopItem.getItemMeta();
                 List<String> itemlore = new ArrayList<>();

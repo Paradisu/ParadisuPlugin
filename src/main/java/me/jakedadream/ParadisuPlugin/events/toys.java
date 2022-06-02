@@ -14,7 +14,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 import me.jakedadream.ParadisuPlugin.ParadisuMain;
-import me.jakedadream.ParadisuPlugin.wrappers.EventCooldowns;
+import me.jakedadream.ParadisuPlugin.util.EventCooldowns;
 
 public class toys implements Listener {
 

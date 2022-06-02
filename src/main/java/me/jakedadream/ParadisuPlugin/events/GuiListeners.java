@@ -15,9 +15,9 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import me.jakedadream.ParadisuPlugin.ParadisuMain;
-import me.jakedadream.ParadisuPlugin.items.PlayerInventories;
-import me.jakedadream.ParadisuPlugin.modelmanager.ModelInv;
-import me.jakedadream.ParadisuPlugin.modelmanager.modelitemmanager;
+import me.jakedadream.ParadisuPlugin.items.models.ModelGiveInv;
+import me.jakedadream.ParadisuPlugin.items.models.ModelItemManager;
+import me.jakedadream.ParadisuPlugin.shops.PlayerInventories;
 import me.jakedadream.ParadisuPlugin.shops.ShopGuis;
 
 public class GuiListeners implements Listener {
@@ -60,9 +60,9 @@ public class GuiListeners implements Listener {
                         pInvs.spendGoldNuggets((Player) player, configSection.getInt("price"));
 //                        player.sendMessage("youspent ur money");
                         if (e.getInventory().getItem(e.getRawSlot()).getType() == Material.DIAMOND_AXE){
-                            playerItem = modelitemmanager.createPropModel(e.getInventory().getItem(e.getRawSlot()).getItemMeta().getCustomModelData());
+                            playerItem = ModelItemManager.createPropModel(e.getInventory().getItem(e.getRawSlot()).getItemMeta().getCustomModelData());
                         } else {
-                            playerItem = modelitemmanager.createHatModel(e.getInventory().getItem(e.getRawSlot()).getItemMeta().getCustomModelData());
+                            playerItem = ModelItemManager.createHatModel(e.getInventory().getItem(e.getRawSlot()).getItemMeta().getCustomModelData());
                         }
                         player.getInventory().addItem(playerItem);
                         player.sendMessage("§3[§dParadisu §bツ§3] §fCompleted purchase.");
@@ -79,7 +79,7 @@ public class GuiListeners implements Listener {
         switch (player.getOpenInventory().getTitle()) {
             case "§x§f§8§9§9§1§d§lProp Models Give GUI" -> {
 //                PropModelInv props = new PropModelInv();
-                List<Inventory> invss = ModelInv.getInvs(true);
+                List<Inventory> invss = ModelGiveInv.getInvs(true);
                 switch (e.getRawSlot()) {
                     case 48 -> {
                         e.setCancelled(true);
@@ -118,16 +118,16 @@ public class GuiListeners implements Listener {
                             e.setCancelled(true);
                             return;
                         }
-                        ItemStack item = modelitemmanager.createPropModel(modelData);
+                        ItemStack item = ModelItemManager.createPropModel(modelData);
                         player.sendMessage("display name: " + item.getItemMeta().getDisplayName());
-                        player.getInventory().addItem(modelitemmanager.createPropModel(modelData));
+                        player.getInventory().addItem(ModelItemManager.createPropModel(modelData));
                         e.setCancelled(true);
                     }
                     default -> e.setCancelled(true);
                 }
             }
             case "§x§f§8§9§9§1§d§lHat Models Give GUI" -> {
-                List<Inventory> invss = ModelInv.getInvs(false);
+                List<Inventory> invss = ModelGiveInv.getInvs(false);
                 switch (e.getRawSlot()) {
                     case 48 -> {
                         e.setCancelled(true);
@@ -166,7 +166,7 @@ public class GuiListeners implements Listener {
                             e.setCancelled(true);
                             return;
                         }
-                        player.getInventory().addItem(modelitemmanager.createHatModel(modelData));
+                        player.getInventory().addItem(ModelItemManager.createHatModel(modelData));
                         e.setCancelled(true);
                     }
                     default -> e.setCancelled(true);
