@@ -17,18 +17,6 @@ public class TeleportationCommands implements CommandExecutor {
     String noargsmsg = ParadisuMain.NoArgsMessage();
 
 
-    // private String getParsedName(String[] args) {
-    //     String name = "";
-
-    //     // Concat all the args to a string
-    //     for (int i = 0; i < args.length; i++) {
-    //         name = name.concat(args[i]);
-    //         name = name.concat(" ");
-    //     }
-    //     return ChatColor.translateAlternateColorCodes('&', name);
-    // }
-
-
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (!(sender instanceof Player)) {

@@ -3,6 +3,7 @@ package me.jakedadream.ParadisuPlugin;
 
 import me.jakedadream.ParadisuPlugin.items.models.modelscroller.ModelScrollerEvents;
 import me.jakedadream.ParadisuPlugin.playerdata.PlayerDataEvents;
+import me.jakedadream.ParadisuPlugin.commands.EssentialCommands;
 import me.jakedadream.ParadisuPlugin.commands.ParadisuCommands;
 import me.jakedadream.ParadisuPlugin.events.*;
 import me.jakedadream.ParadisuPlugin.items.LuckyBlocks;
@@ -98,6 +99,7 @@ public class ParadisuMain extends JavaPlugin {
         
 
         annotationParser.parse(new WarpCommands());
+        annotationParser.parse(new EssentialCommands());
 
         // =================
         // SNW COMMANDS
@@ -108,10 +110,10 @@ public class ParadisuMain extends JavaPlugin {
         getCommand("givestarcoin").setExecutor(new ParadisuCommands());
         getCommand("sc").setExecutor(new ParadisuCommands());
         getCommand("ac").setExecutor(new ParadisuCommands());
-        getCommand("gmc").setExecutor(new ParadisuCommands());
-        getCommand("gms").setExecutor(new ParadisuCommands());
-        getCommand("gmsp").setExecutor(new ParadisuCommands());
-        getCommand("gma").setExecutor(new ParadisuCommands());
+        // getCommand("gmc").setExecutor(new ParadisuCommands());
+        // getCommand("gms").setExecutor(new ParadisuCommands());
+        // getCommand("gmsp").setExecutor(new ParadisuCommands());
+        // getCommand("gma").setExecutor(new ParadisuCommands());
         getCommand("enderchest").setExecutor(new ParadisuCommands());
         getCommand("workbench").setExecutor(new ParadisuCommands());
         getCommand("invsee").setExecutor(new ParadisuCommands());
@@ -253,9 +255,6 @@ public class ParadisuMain extends JavaPlugin {
     private static File envValues;
     private static FileConfiguration envConfig;
     
-    // private static File sourceWarpFile;
-    // private static FileConfiguration fileWarpConfig;
-
     private static File sourceShopGuiFile;
     private static FileConfiguration fileShopGuiConfig;
 
@@ -271,27 +270,6 @@ public class ParadisuMain extends JavaPlugin {
         envConfig = YamlConfiguration.loadConfiguration(envValues);
     }
 
-
-    // public void createWarpFiles() {
-
-    //     sourceWarpFile = new File(getDataFolder(), "warps.yml");
-
-    //     if (!sourceWarpFile.exists()) {
-    //         sourceWarpFile.getParentFile().mkdirs();
-    //         saveResource("warps.yml", false);
-    //     }
-
-    //     fileWarpConfig = new YamlConfiguration();
-
-    //     try {
-    //         fileWarpConfig.load(sourceWarpFile);
-    //     } catch (IOException | InvalidConfigurationException e) {
-    //         e.printStackTrace();
-    //     }
-    //     if (fileWarpConfig.getConfigurationSection("aliases") == null){
-    //         fileWarpConfig.createSection("aliases");
-    //     }
-    // }
 
     public void createShopGuiFiles(){
         sourceShopGuiFile = new File(getDataFolder(), "shopgui.yml");
@@ -310,25 +288,12 @@ public class ParadisuMain extends JavaPlugin {
         }
     }
 
-    // public static FileConfiguration getWarpConfig() {
-    //     return fileWarpConfig;
-    // }
 
     public static FileConfiguration getEnvConfig(){
         return envConfig;
     }
     
     public static FileConfiguration getFileShopGuiConfig() {return fileShopGuiConfig; }
-
-
-    //use if edited through commands
-    // public static void saveWarpConfig(){
-    //     try {
-    //         fileWarpConfig.save(sourceWarpFile);
-    //     } catch (IOException e){
-    //         System.out.println("couldn't save file");
-    //     }
-    // }
 
 
     public static void saveEnvConfig(){
@@ -346,10 +311,6 @@ public class ParadisuMain extends JavaPlugin {
             System.out.println("couldn't save file");
         }
     }
-
-    //use if edited file through text editor
-    // public static void reloadWarpConfig(){
-    //     fileWarpConfig = YamlConfiguration.loadConfiguration(sourceWarpFile);}
 
     public static void reloadEnvConfig(){
         envConfig = YamlConfiguration.loadConfiguration(envValues);

@@ -21,7 +21,7 @@ import cloud.commandframework.annotations.ProxiedBy;
 import cloud.commandframework.annotations.specifier.Greedy;
 import me.jakedadream.ParadisuPlugin.ParadisuMain;
 
-public class WarpCommands /* implements CommandExecutor */ {
+public class WarpCommands {
 
     private static DataSource dataSource;
 
@@ -98,13 +98,14 @@ public class WarpCommands /* implements CommandExecutor */ {
 
     @CommandPermission("paradisu.warp.default")
     @CommandDescription("Displays a list of all warps")
-    @ProxiedBy("warplist|warpl|warps")
+    @ProxiedBy("warps")
     @CommandMethod("warp|w list")
     public void listWarps(CommandSender sender){
         ArrayList<Warp> warps = WarpsDataHandler.getWarpData();
         String msg = "§fWarps:";
         for(Warp warp : warps){
-            msg += "\n- " + warp.getDisplayName();
+            String name = warp.getDisplayName()==null ? warp.getName() : warp.getDisplayName();
+            msg += "\n- " + name;
         }
         sender.sendMessage(cmdprefix + msg);
     }

@@ -180,44 +180,6 @@ public class ParadisuCommands implements CommandExecutor {
                 }
                 return true;
 
-            case "gmc":
-                if (player.hasPermission("snw.gmc") || player.hasPermission("snw.gm.*")) {
-                    player.setGameMode(GameMode.CREATIVE);
-                    player.sendMessage(cmdprefix + "§fYour gamemode has been set to §3Creative§f!");
-                } else {
-                    player.sendMessage(nopermsmsg);
-                }
-                return true;
-
-
-            case "gms":
-                if (player.hasPermission("snw.gms") || player.hasPermission("snw.gm.*")) {
-                    player.setGameMode(GameMode.SURVIVAL);
-                    player.sendMessage(cmdprefix + "§fYour gamemode has been set to " + cmdemph + "Survival§f!");
-                } else {
-                    player.sendMessage(nopermsmsg);
-                }
-                return true;
-
-            case "gmsp":
-                if (player.hasPermission("snw.gmsp") || player.hasPermission("snw.gm.*")) {
-                    player.setGameMode(GameMode.SPECTATOR);
-                    player.sendMessage(cmdprefix + "§fYour gamemode has been set to §3Spectator§f!");
-                } else {
-                    player.sendMessage(nopermsmsg);
-                }
-                return true;
-
-            case "gma":
-                if (player.hasPermission("snw.gma") || player.hasPermission("snw.gm.*")) {
-                    player.setGameMode(GameMode.ADVENTURE);
-                    player.sendMessage(cmdprefix + "§fYour gamemode has been set to §3Adventure§f!");
-                } else {
-                    player.sendMessage(nopermsmsg);
-                }
-                return true;
-
-
             case "enderchest":
                 if (player.hasPermission("snw.ec")) {
                     player.openInventory(player.getEnderChest());

@@ -8,17 +8,22 @@ import cloud.commandframework.annotations.ProxiedBy;
 import cloud.commandframework.annotations.specifier.Greedy;
 import cloud.commandframework.meta.SimpleCommandMeta;
 import me.jakedadream.ParadisuPlugin.ParadisuMain;
+import me.jakedadream.ParadisuPlugin.warps.WarpCommands;
+
 import org.bukkit.GameMode;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class EssentialCommands /* MEANT FOR ANY QOL COMMANDS */ {
+public class EssentialCommands /* MEANT FOR ANY REWRITTEN VANILLA/QOL COMMANDS */ {
 
     private boolean isRealPlayer(CommandSender sender) {
         return sender instanceof Player;
     }
 
+    public EssentialCommands(){
+
+    }
 
     String cmdprefix = ParadisuMain.CommandPrefix();
     String cmdemph = ParadisuMain.CommandEmph();
@@ -27,38 +32,67 @@ public class EssentialCommands /* MEANT FOR ANY QOL COMMANDS */ {
 
     @CommandPermission("paradisu.gamemode")
     @CommandDescription("Specificly sets your gamemode to requested gamemode")
-    @CommandMethod("gm|gamemode")
-    public void gamemodeSet(CommandExecutor sender,
-        @Argument("gamemodeChar") String gamemodeChar,
-        @Argument("gamemodeInt") int gamemodeInt
+    @CommandMethod("gm|gamemode <mode>")
+    public void gamemodeSet(CommandSender sender,
+        @Argument("mode") String gamemode
     ) {
         Player player = (Player) sender;
 
-        if (gamemodeChar == "s" || gamemodeInt == 0) {
-            player.setGameMode(GameMode.SURVIVAL);
-        } else if (gamemodeChar == "c" || gamemodeInt == 1) {
-            player.setGameMode(GameMode.CREATIVE);
-        } else if (gamemodeChar == "sp" || gamemodeInt == 3) {
-            player.setGameMode(GameMode.SPECTATOR);
-        } else {
-            player.setGameMode(GameMode.ADVENTURE);
+        switch (gamemode){
+            case "s", "0", "survival" -> {
+                player.setGameMode(GameMode.SURVIVAL);
+                player.sendMessage(cmdprefix + "§fYour gamemode has been set to §6Survival§f.");
+            }
+            case "c", "1", "creative" -> {
+                player.setGameMode(GameMode.CREATIVE);
+                player.sendMessage(cmdprefix + "§fYour gamemode has been set to §6Creative§f.");
+            }
+            case "a", "2", "adventure" -> {
+                player.setGameMode(GameMode.ADVENTURE);
+                player.sendMessage(cmdprefix + "§fYour gamemode has been set to §6Adventure§f.");
+            }
+            case "sp", "3", "spectator" -> {
+                player.setGameMode(GameMode.SPECTATOR);
+                player.sendMessage(cmdprefix + "§fYour gamemode has been set to §6Spectator§f.");
+            }
+            default -> player.sendMessage(cmdprefix + "§fInvalid gamemode.");
         }
     }
 
-
-    @CommandPermission("paradisu.gamemode|paradisu.gamemode.c")
+    @CommandPermission("paradisu.gamemode")
     @CommandDescription("Sets your ingame gamemode to Creative")
     @CommandMethod("gmc|gm1")
-    public void gamemodeCreative(CommandExecutor sender) {
+    public void gamemodeCreative(CommandSender sender) {
         Player player = (Player) sender;
         player.setGameMode(GameMode.CREATIVE);
         player.sendMessage(cmdprefix + "§fYour gamemode has been set to " + cmdemph + "Creative§f.");
     }
 
+    @CommandPermission("paradisu.gamemode")
+    @CommandDescription("Sets your ingame gamemode to Survival")
+    @CommandMethod("gms|gm0")
+    public void gamemodeSurvival(CommandSender sender) {
+        Player player = (Player) sender;
+        player.setGameMode(GameMode.SURVIVAL);
+        player.sendMessage(cmdprefix + "§fYour gamemode has been set to " + cmdemph + "Survival§f.");
+    }
 
+    @CommandPermission("paradisu.gamemode")
+    @CommandDescription("Sets your ingame gamemode to Adventure")
+    @CommandMethod("gma|gm2")
+    public void gamemodeAdventure(CommandSender sender) {
+        Player player = (Player) sender;
+        player.setGameMode(GameMode.ADVENTURE);
+        player.sendMessage(cmdprefix + "§fYour gamemode has been set to " + cmdemph + "Adventure§f.");
+    }
 
-
-
-    // END
+    @CommandPermission("paradisu.gamemode")
+    @CommandDescription("Sets your ingame gamemode to Spectator")
+    @CommandMethod("gmsp|gm3")
+    public void gamemodeSpectator(CommandSender sender) {
+        Player player = (Player) sender;
+        player.setGameMode(GameMode.SPECTATOR);
+        player.sendMessage(cmdprefix + "§fYour gamemode has been set to " + cmdemph + "Spectator§f.");
+    }
 }
 
