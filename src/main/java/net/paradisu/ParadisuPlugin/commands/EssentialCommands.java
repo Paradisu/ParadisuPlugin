@@ -24,11 +24,17 @@ public class EssentialCommands /* MEANT FOR ANY REWRITTEN VANILLA/QOL COMMANDS *
 
     @CommandPermission("paradisu.gamemode")
     @CommandDescription("Specificly sets your gamemode to requested gamemode")
-    @CommandMethod("gm|gamemode <mode>")
+    @CommandMethod("gm|gamemode <mode> [player]")
     public void gamemodeSet(CommandSender sender,
-        @Argument("mode") String gamemode
+        @Argument("mode") String gamemode,
+        @Argument("target") Player target
     ) {
-        Player player = (Player) sender;
+        Player player;
+        if (target != null) {
+            player = target;
+        } else {
+            player = (Player) sender;
+        }
 
         switch (gamemode){
             case "s", "0", "survival" -> {
