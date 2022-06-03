@@ -1,5 +1,5 @@
 name: ParadisuPlugin
-version: 2.25.0
+version: 2.25.1
 authors: [JJakee, cytocracy, _Kastle, CookieCrafted]
 main: net.paradisu.ParadisuPlugin.ParadisuMain
 api-version: 1.16
