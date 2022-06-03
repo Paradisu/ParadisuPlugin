@@ -18,7 +18,7 @@ public class TeleportationCommands {
 
 
     @CommandPermission("paradisu.tphere")
-    @CommandMethod("tphere")
+    @CommandMethod("tphere|atphere <player>")
     public void tphere(CommandSender sender,
         @Argument("player") Player player
     ){
@@ -28,7 +28,7 @@ public class TeleportationCommands {
     }
 
     @CommandPermission("paradisu.tp")
-    @CommandMethod("tp <playerOne> [playerTwo]")
+    @CommandMethod("tp|atp <playerOne> [playerTwo]")
     public void tp(CommandSender sender,
         @Argument("playerOne") Player playerOne,
         @Argument("playerTwo") Player playerTwo

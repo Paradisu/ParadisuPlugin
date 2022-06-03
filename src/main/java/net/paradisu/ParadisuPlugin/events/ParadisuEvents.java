@@ -32,9 +32,9 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import net.paradisu.ParadisuPlugin.ParadisuMain;
+import net.paradisu.ParadisuPlugin.util.InventoryGUI;
 import net.paradisu.ParadisuPlugin.items.GenItemManager;
 import net.paradisu.ParadisuPlugin.items.invs.TrashCan;
-import net.paradisu.ParadisuPlugin.util.InventoryGUI;
 
 public class ParadisuEvents implements Listener {
 

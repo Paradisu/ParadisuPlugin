@@ -1,18 +1,16 @@
 package net.paradisu.ParadisuPlugin.items.models;
 
-import net.paradisu.ParadisuPlugin.ParadisuMain;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.inventory.meta.ItemMeta;
 
-public class ModelCommands implements CommandExecutor {
+import cloud.commandframework.annotations.Argument;
+import cloud.commandframework.annotations.CommandMethod;
+import cloud.commandframework.annotations.CommandPermission;
+import net.paradisu.ParadisuPlugin.ParadisuMain;
+import net.paradisu.ParadisuPlugin.items.invs.ModelGiveInv;
+
+public class ModelCommands  {
 
 
     String cmdprefix = ParadisuMain.CommandPrefix();
@@ -20,126 +18,91 @@ public class ModelCommands implements CommandExecutor {
     String nopermsmsg = ParadisuMain.NoPermsMessage();
 
 
-    @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if (!(sender instanceof Player)) {
-            sender.sendMessage(ChatColor.RED + "Only players can use that command!");
-            return true;
-        }
+    @CommandPermission("paradisu.model")
+    @CommandMethod("mgive")
+    public void mGive(CommandSender sender){
+        Player p = (Player) sender;
+        p.openInventory(new ModelGiveInv(true).getInventory());
+    }
+
+    @CommandPermission("paradisu.model")
+    @CommandMethod("mgive <model>")
+    public void mGiveModel(CommandSender sender,
+        @Argument("model") int model
+    ){
         Player player = (Player) sender;
-
-        switch (cmd.getName().toLowerCase()) {
-
-            case "mgive":
-                if (player.hasPermission("paradisu.model")) {
-                    if (args.length == 0) {
-                        player.openInventory(ModelGiveInv.getFirstInv(true));
-                        // player.openInventory(PropModelInv.getInvs().get(0));
-                        player.sendMessage(cmdprefix + "§fOpening the Catalog of Default Models!");
-                    } else if (args.length == 1) {
-                        PlayerInventory inv = player.getInventory();
-                        int firstEmpty = inv.firstEmpty();
-                        if (firstEmpty == -1) {
-                            player.sendMessage(cmdprefix + "§fYou do not have space in your inventory.");
-                            return false;
-                        }
-                        player.getInventory().addItem(ModelItemManager.createPropModel(Integer.parseInt(args[0])));
-                        player.sendMessage(cmdprefix + "§fWe gave you the model " + cmdemph + "#" + args[0] + "§f!");
-                    } else if (args.length == 2) {
-                        Player target = Bukkit.getPlayerExact(args[1]);
-                        PlayerInventory inv = target.getInventory();
-                        int firstEmpty = inv.firstEmpty();
-                        if (firstEmpty == -1) {
-                            player.sendMessage(cmdprefix + "§fThey do not have space their your inventory.");
-                            return false;
-                        }
-                        target.getInventory().addItem(ModelItemManager.createPropModel(Integer.parseInt(args[0])));
-                        player.sendMessage(cmdprefix + "§fWe gave them the model " + cmdemph + "#" + args[0] + "§f!");
-                    } else {
-                        player.sendMessage(cmdprefix + "§fNot Enough or too many args");
-                    }
-                } else {
-                    player.sendMessage(nopermsmsg);
-                }
-                return true;
-
-
-            case "hgive":
-                if (player.hasPermission("paradisu.model")) {
-
-                    if (args.length == 0) {
-                        player.openInventory(ModelGiveInv.getFirstInv(false));
-                        //player.openInventory(HatModelInv.getInvs().get(0));
-                        player.sendMessage(cmdprefix + "§fOpening the Catalog of Hat Models!");
-                    } else if (args.length == 1) {
-                        PlayerInventory inv = player.getInventory();
-                        int firstEmpty = inv.firstEmpty();
-                        if (firstEmpty == -1) {
-                            player.sendMessage(cmdprefix + "§fYou do not have space in your inventory.");
-                            return false;
-                        }
-                        player.getInventory().addItem(ModelItemManager.createHatModel(Integer.parseInt(args[0])));
-                        player.sendMessage(cmdprefix + "§fWe gave you the model " + cmdemph + "#" + args[0] + "§f!");
-                    } else if (args.length == 2) {
-                        Player target = Bukkit.getPlayerExact(args[1]);
-                        PlayerInventory inv = target.getInventory();
-                        int firstEmpty = inv.firstEmpty();
-                        if (firstEmpty == -1) {
-                            player.sendMessage(cmdprefix + "§fThey do not have space their your inventory.");
-                            return false;
-                        }
-                        target.getInventory().addItem(ModelItemManager.createHatModel(Integer.parseInt(args[0])));
-                        player.sendMessage(cmdprefix + "§fWe gave them the model " + cmdemph + "#" + args[0] + "§f!");
-
-                    } else {
-                        player.sendMessage(cmdprefix + "§fNot Enough or too many args");
-                    }
-                } else {
-                    player.sendMessage(nopermsmsg);
-                }
-                return true;
-
-            case "mhat":
-                if (player.hasPermission("paradisu.model")) {
-
-                    if (args.length == 1) {
-
-                        if (player.getInventory().getHelmet() != null) {
-                            // ItemStack[] armor = player.getInventory().getArmorContents();
-                            ItemStack helmet = player.getEquipment().getHelmet();
-                            ItemMeta hmeta = helmet.getItemMeta();
-                            helmet.setItemMeta(hmeta);
-                            player.getInventory().addItem(helmet);
-                        }
-
-                        player.getInventory().setHelmet(ModelItemManager.createPropModel(Integer.parseInt(args[0])));
-                        player.sendMessage(cmdprefix + "§fWe set the model as your helmet.");
-                    } else if (args.length == 0) {
-                        ItemStack[] armor = player.getInventory().getArmorContents();
-                        ItemStack swap = armor[3];
-                        armor[3] = player.getEquipment().getItemInMainHand();
-                        player.getInventory().setArmorContents(armor);
-                        player.getInventory().setItemInMainHand(swap);
-                        player.sendMessage(cmdprefix + "§fWe set the model as your helmet.");
-                    } else if (args.length >= 2) {
-                        Player target = Bukkit.getPlayerExact(args[1]);
-
-                        if (target.getInventory().getHelmet() != null) {
-                            // ItemStack[] armor = target.getInventory().getArmorContents();
-                            ItemStack helmet = target.getEquipment().getHelmet();
-                            ItemMeta hmeta = helmet.getItemMeta();
-                            helmet.setItemMeta(hmeta);
-                            target.getInventory().addItem(helmet);
-                        }
-
-                        target.getInventory().setHelmet(ModelItemManager.createPropModel(Integer.parseInt(args[0])));
-                        player.sendMessage(cmdprefix + "§fWe set the model as their helmet.");
-                        target.sendMessage(cmdprefix + "§fYour helmet has been set to a model by an admin.");
-                    }
-
-                } else { player.sendMessage(nopermsmsg); }
-                return true;
+        int firstEmpty = player.getInventory().firstEmpty();
+        if (firstEmpty == -1) {
+            player.sendMessage(cmdprefix + "§fYou do not have space in your inventory.");
+            return;
         }
-        return false;
+        player.getInventory().addItem(ModelItemManager.createPropModel(model));
+        player.sendMessage(cmdprefix + "§fWe gave you the model " + cmdemph + "#" + model + "§f!");
+    }
+
+    @CommandPermission("paradisu.model")
+    @CommandMethod("mgive <model> <player>")
+    public void mGiveModelPlayer(CommandSender sender,
+        @Argument("model") int model,
+        @Argument("player") Player player
+    ){
+        int firstEmpty = player.getInventory().firstEmpty();
+        if (firstEmpty == -1) {
+            sender.sendMessage(cmdprefix + "§fThey do not have space in their inventory.");
+            return;
+        }
+        player.getInventory().addItem(ModelItemManager.createPropModel(model));
+        player.sendMessage(cmdprefix + "§fWe gave you the model " + cmdemph + "#" + model + "§f!");
+        sender.sendMessage(cmdprefix + "§fWe gave them the model " + cmdemph + "#" + model + "§f!");
+    }
+
+    @CommandPermission("paradisu.model")
+    @CommandMethod("hgive")
+    public void hGive(CommandSender sender){
+        Player p = (Player) sender;
+        p.openInventory(new ModelGiveInv(false).getInventory());
+    }
+
+    @CommandPermission("paradisu.model")
+    @CommandMethod("hgive <model>")
+    public void hGiveModel(CommandSender sender,
+        @Argument("model") int model
+    ){
+        Player player = (Player) sender;
+        int firstEmpty = player.getInventory().firstEmpty();
+        if (firstEmpty == -1) {
+            player.sendMessage(cmdprefix + "§fYou do not have space in your inventory.");
+            return;
+        }
+        player.getInventory().addItem(ModelItemManager.createHatModel(model));
+        player.sendMessage(cmdprefix + "§fWe gave you the model " + cmdemph + "#" + model + "§f!");
+    }
+
+    @CommandPermission("paradisu.model")
+    @CommandMethod("hgive <model> <player>")
+    public void hGiveModelPlayer(CommandSender sender,
+        @Argument("model") int model,
+        @Argument("player") Player player
+    ){
+        int firstEmpty = player.getInventory().firstEmpty();
+        if (firstEmpty == -1) {
+            sender.sendMessage(cmdprefix + "§fThey do not have space in their inventory.");
+            return;
+        }
+        player.getInventory().addItem(ModelItemManager.createHatModel(model));
+        player.sendMessage(cmdprefix + "§fWe gave you the model " + cmdemph + "#" + model + "§f!");
+        sender.sendMessage(cmdprefix + "§fWe gave them the model " + cmdemph + "#" + model + "§f!");
+    }
+
+    @CommandPermission("paradisu.mhat")
+    @CommandMethod("mhat")
+    public void mHat(CommandSender sender){
+        Player player = (Player) sender;
+        ItemStack[] armor = player.getInventory().getArmorContents();
+        ItemStack swap = armor[3];
+        armor[3] = player.getEquipment().getItemInMainHand();
+        player.getInventory().setArmorContents(armor);
+        player.getInventory().setItemInMainHand(swap);
+        player.sendMessage(cmdprefix + "§fWe set the model as your helmet.");
     }
 }

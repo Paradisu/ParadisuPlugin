@@ -14,28 +14,3 @@ commands:
     description: reload hat config
   reloadprops:
      description: reload prop config
-  tp:
-    description: Tp to another player or tp a player to another player
-    usage: /<command> <player>
-    aliases:
-      - atp
-  tphere:
-    description: Tp's a player to you
-    usage: /<command> <player>
-    aliases:
-      - atphere
-  mgive:
-    description: gives you a diamond axe model
-    usage: /<command> <args>
-  hgive:
-    description: gives you a carved pumpkin model
-    usage: /<command> <args>
-  mhat:
-    description: puts a diamond axe model on your head
-    usage: /<command> <args>
-  cordstp:
-    description: tp to cords
-    aliases:
-      - ctp
-      - cordteleport
-      - cteleport

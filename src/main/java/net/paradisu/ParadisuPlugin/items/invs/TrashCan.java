@@ -1,11 +1,9 @@
 package net.paradisu.ParadisuPlugin.items.invs;
 
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 
 import net.paradisu.ParadisuPlugin.ParadisuMain;
 import net.paradisu.ParadisuPlugin.items.common.menu.BlankItem;

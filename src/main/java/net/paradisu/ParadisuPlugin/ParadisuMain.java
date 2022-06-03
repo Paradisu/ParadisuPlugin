@@ -20,6 +20,8 @@ import cloud.commandframework.annotations.AnnotationParser;
 import cloud.commandframework.execution.CommandExecutionCoordinator;
 import cloud.commandframework.meta.SimpleCommandMeta;
 import cloud.commandframework.paper.PaperCommandManager;
+import net.paradisu.ParadisuPlugin.util.DatabaseConnection;
+import net.paradisu.ParadisuPlugin.util.TimeZone;
 import net.paradisu.ParadisuPlugin.commands.EssentialCommands;
 import net.paradisu.ParadisuPlugin.commands.ParadisuCommands;
 import net.paradisu.ParadisuPlugin.events.GuiListeners;
@@ -28,14 +30,12 @@ import net.paradisu.ParadisuPlugin.items.ItemCommands;
 import net.paradisu.ParadisuPlugin.items.SpinningCoins;
 import net.paradisu.ParadisuPlugin.items.ToyEvents;
 import net.paradisu.ParadisuPlugin.items.models.ModelCommands;
-import net.paradisu.ParadisuPlugin.items.models.ModelGiveInv;
+import net.paradisu.ParadisuPlugin.items.models.ModelInvManager;
 import net.paradisu.ParadisuPlugin.items.models.ModelItemManager;
 import net.paradisu.ParadisuPlugin.items.models.modelscroller.ModelScrollerEvents;
 import net.paradisu.ParadisuPlugin.playerdata.PlayerDataEvents;
 import net.paradisu.ParadisuPlugin.shops.ShopCommands;
 import net.paradisu.ParadisuPlugin.shops.ShopGuis;
-import net.paradisu.ParadisuPlugin.util.DatabaseConnection;
-import net.paradisu.ParadisuPlugin.util.TimeZone;
 import net.paradisu.ParadisuPlugin.warps.TeleportationCommands;
 import net.paradisu.ParadisuPlugin.warps.WarpCommands;
 import net.paradisu.ParadisuPlugin.warps.WarpsDataHandler;
@@ -96,10 +96,10 @@ public class ParadisuMain extends JavaPlugin {
         annotationParser.parse(new ParadisuCommands());
         annotationParser.parse(new ItemCommands());
         annotationParser.parse(new TeleportationCommands());
+        annotationParser.parse(new ModelCommands());
 
         ModelItemManager.updateModelData();
-        ModelGiveInv.createAllInvs();
-        ShopGuis.initShops();
+        ModelInvManager.createAllInvs();
         TimeZone.setJapanTime();
         WarpsDataHandler.updateWarpData();
 
@@ -108,9 +108,9 @@ public class ParadisuMain extends JavaPlugin {
         // =================
         // MODEL COMMANDS
         // =================
-        getCommand("mgive").setExecutor(new ModelCommands());
-        getCommand("hgive").setExecutor(new ModelCommands());
-        getCommand("mhat").setExecutor(new ModelCommands());
+        // getCommand("mgive").setExecutor(new ModelCommands());
+        // getCommand("hgive").setExecutor(new ModelCommands());
+        // getCommand("mhat").setExecutor(new ModelCommands());
         
         // =================
         // SHOP GUI COMMANDS
@@ -128,6 +128,8 @@ public class ParadisuMain extends JavaPlugin {
 
         createShopGuiFiles();
         saveShopGuiConfig();
+        ShopGuis.initShops();
+        
 
         // =================
         // EVENTS
