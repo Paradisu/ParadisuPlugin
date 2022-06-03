@@ -127,10 +127,12 @@ public class SnwEvents implements Listener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent e) {
+        // e.setCancelled(true);
         if(e.getInventory().getHolder() instanceof InventoryGUI) {
+            e.getWhoClicked().sendMessage("test");
             e.setCancelled(true);
             InventoryGUI gui = (InventoryGUI) e.getInventory().getHolder();
-            gui.onGUIClick((Player)e.getWhoClicked(), e.getRawSlot(), e.getCurrentItem());
+            gui.onClick(e);
         }      
     }
     
