@@ -1,12 +1,12 @@
 package me.jakedadream.ParadisuPlugin;
 
 
+import me.jakedadream.ParadisuPlugin.items.ItemCommands;
 import me.jakedadream.ParadisuPlugin.items.models.modelscroller.ModelScrollerEvents;
 import me.jakedadream.ParadisuPlugin.playerdata.PlayerDataEvents;
 import me.jakedadream.ParadisuPlugin.commands.EssentialCommands;
 import me.jakedadream.ParadisuPlugin.commands.ParadisuCommands;
 import me.jakedadream.ParadisuPlugin.events.*;
-import me.jakedadream.ParadisuPlugin.items.LuckyBlocks;
 import me.jakedadream.ParadisuPlugin.items.SpinningCoins;
 import me.jakedadream.ParadisuPlugin.items.ToyEvents;
 import me.jakedadream.ParadisuPlugin.items.models.ModelCommands;
@@ -18,7 +18,7 @@ import me.jakedadream.ParadisuPlugin.util.DatabaseConnection;
 import me.jakedadream.ParadisuPlugin.warps.TeleportationCommands;
 import me.jakedadream.ParadisuPlugin.warps.WarpCommands;
 import me.jakedadream.ParadisuPlugin.warps.WarpsDataHandler;
-import me.jakedadream.ParadisuPlugin.util.JapanTime;
+import me.jakedadream.ParadisuPlugin.util.TimeZone;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -101,56 +101,10 @@ public class ParadisuMain extends JavaPlugin {
         annotationParser.parse(new WarpCommands());
         annotationParser.parse(new EssentialCommands());
         annotationParser.parse(new ParadisuCommands());
+        annotationParser.parse(new ItemCommands());
 
 
-        // =================
-        // SNW COMMANDS
-        // =================
-        
-        
-        // getCommand("givecoin").setExecutor(new ParadisuCommands());
-        // getCommand("givestarcoin").setExecutor(new ParadisuCommands());
-        // getCommand("sc").setExecutor(new ParadisuCommands());
-        // getCommand("ac").setExecutor(new ParadisuCommands());
-        // getCommand("gmc").setExecutor(new ParadisuCommands());
-        // getCommand("gms").setExecutor(new ParadisuCommands());
-        // getCommand("gmsp").setExecutor(new ParadisuCommands());
-        // getCommand("gma").setExecutor(new ParadisuCommands());
-        // getCommand("enderchest").setExecutor(new ParadisuCommands());
-        // getCommand("workbench").setExecutor(new ParadisuCommands());
-        // getCommand("invsee").setExecutor(new ParadisuCommands());
-        // getCommand("day").setExecutor(new ParadisuCommands());
-        // getCommand("night").setExecutor(new ParadisuCommands());
-        // getCommand("noon").setExecutor(new ParadisuCommands());
-        // getCommand("spawn").setExecutor(new ParadisuCommands());
-        // getCommand("sex").setExecutor(new ParadisuCommands());
-        // getCommand("skull").setExecutor(new ParadisuCommands());
-        // getCommand("clearinventory").setExecutor(new ParadisuCommands());
-        // getCommand("trashcan").setExecutor(new ParadisuCommands());
-        // getCommand("fly").setExecutor(new ParadisuCommands());
-        /*getCommand("rename").setExecutor(new ParadisuCommands());
-        getCommand("srename").setExecutor(new ParadisuCommands());
-        getCommand("glow").setExecutor(new ParadisuCommands());
-        getCommand("unglow").setExecutor(new ParadisuCommands());
-        getCommand("broadcast").setExecutor(new ParadisuCommands());
-        getCommand("staffbroadcast").setExecutor(new ParadisuCommands());
-        getCommand("adminbroadcast").setExecutor(new ParadisuCommands());
-        getCommand("supporterbroadcast").setExecutor(new ParadisuCommands());
-        getCommand("permbroadcast").setExecutor(new ParadisuCommands());
-        getCommand("speed").setExecutor(new ParadisuCommands());
-        getCommand("sudo").setExecutor(new ParadisuCommands());
-        getCommand("whomademe").setExecutor(new ParadisuCommands());
-        getCommand("list").setExecutor(new ParadisuCommands());
-        getCommand("findplayercords").setExecutor(new ParadisuCommands());
-        getCommand("currenttime").setExecutor(new ParadisuCommands());
-        getCommand("mkill").setExecutor(new ParadisuCommands());
-        getCommand("lightblocks").setExecutor(new ParadisuCommands());
-        getCommand("syncjapantime").setExecutor(new ParadisuCommands());
-        getCommand("synctimezone").setExecutor(new ParadisuCommands());
-        // getCommand("admininvsee").setExecutor(new ParadisuCommands());
-        getCommand("unname").setExecutor(new ParadisuCommands());
-        getCommand("stack").setExecutor(new ParadisuCommands());
-        getCommand("estack").setExecutor(new ParadisuCommands());*/
+
         // =================
         // TPING COMMANDS
         // =================
@@ -165,23 +119,6 @@ public class ParadisuMain extends JavaPlugin {
 
         WarpsDataHandler.updateWarpData();
 
-
-        // getCommand("setwarp").setExecutor(new WarpCommands());
-        // getCommand("delwarp").setExecutor(new WarpCommands());
-        // // getCommand("warp").setExecutor(new WarpCommands());
-        // getCommand("setalias").setExecutor(new WarpCommands());
-        // getCommand("delalias").setExecutor(new WarpCommands());
-        // getCommand("reloadwarp").setExecutor(new WarpCommands());
-        // getCommand("warps").setExecutor(new WarpCommands());
-        // getCommand("warpdisplay").setExecutor(new WarpCommands());
-        //
-        // =================
-        // DB COMMANDS
-        // =================
-        // getCommand("dbreset").setExecutor(new DBCommands());
-        // getCommand("dbdisconnectrememberthisisreallyunsafedontdoit").setExecutor(new DBCommands());
-        // getCommand("dbconnect").setExecutor(new DBCommands());
-        // 
         // =================
         // MODEL COMMANDS
         // =================
@@ -199,15 +136,9 @@ public class ParadisuMain extends JavaPlugin {
         // =================
         // SHOP GUI COMMANDS
         // =================
-        //getCommand("entitycontrol").setExecutor(new ProtoLib_Basic_Commands());
-        //
-        //
         //
         getConfig().options().copyDefaults();
         saveDefaultConfig();
-
-        // createWarpFiles();
-        // saveWarpConfig();
 
         createShopGuiFiles();
         saveShopGuiConfig();
@@ -215,24 +146,20 @@ public class ParadisuMain extends JavaPlugin {
         ModelItemManager.updateModelData();
         ModelGiveInv.createAllInvs();
         ShopGuis.initShops();
-        JapanTime.setJapanTime();
+        TimeZone.setJapanTime();
 
         // =================
         // EVENTS
         // =================
-        getServer().getPluginManager().registerEvents(new LuckyBlocks(), this);
         getServer().getPluginManager().registerEvents(new ToyEvents(), this);
         getServer().getPluginManager().registerEvents(new SnwEvents(), this);
         getServer().getPluginManager().registerEvents(new GuiListeners(), this);
         getServer().getPluginManager().registerEvents(new PlayerDataEvents(), this);
         getServer().getPluginManager().registerEvents(new ModelScrollerEvents(), this);
-
         getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "\n" + ChatColor.GREEN +
                 "|------------------------------|\n" + ChatColor.GREEN +
                 "| [Paradisu] Plugin now Active |\n" + ChatColor.GREEN +
                 "|------------------------------|");
-        //
-        //
 
         BukkitScheduler scheduler = getServer().getScheduler();
         scheduler.scheduleSyncRepeatingTask(this, new Runnable() {
@@ -245,15 +172,12 @@ public class ParadisuMain extends JavaPlugin {
 
     }
 
-
     @Override
     public void onDisable() {
         getServer().getConsoleSender().sendMessage(ChatColor.RED + "[Paradisu] Plugin is now disabled.");
         getServer().getConsoleSender().sendMessage(ChatColor.RED + "[Paradisu] Goodbye!");
     }
 
-
-    
     private static File envValues;
     private static FileConfiguration envConfig;
     
@@ -314,10 +238,9 @@ public class ParadisuMain extends JavaPlugin {
         }
     }
 
-    public static void reloadEnvConfig(){
-        envConfig = YamlConfiguration.loadConfiguration(envValues);
-
-    }
+//    public static void reloadEnvConfig(){
+//        envConfig = YamlConfiguration.loadConfiguration(envValues);
+//    }
 
     public static void reloadShopGuiConfig() { fileShopGuiConfig = YamlConfiguration.loadConfiguration(sourceShopGuiFile); }
     public static DataSource getDBCon(){return dataSource;}

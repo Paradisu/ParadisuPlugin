@@ -25,7 +25,6 @@ public class SpinningCoins extends BukkitRunnable {
                         as.teleport(loc);
                     }
                 }
-
             }
         }
     }

@@ -6,18 +6,6 @@ api-version: 1.16
 commands:
   dbconnect:
     description: connects to db
-  stack:
-    description: stack a player on another player
-    usage: /<command> <player(s)>
-  estack:
-    description: stack on an entity
-    usage: /<command>
-  # unname:
-  #   description: unnames items
-  #   usage: /<command>
-  # admininvsee:
-  #   description: admin invsee lol
-  #   usage: /<command> <player>
   reloadshops:
     description: reloads shops
   getshop:
@@ -26,58 +14,6 @@ commands:
     description: reload hat config
   reloadprops:
      description: reload prop config
-  # givecoin:
-  #   description: Gives player a SNW coin
-  #   usage: /<command>
-  # givestarcoin:
-  #     description: Gives player a Star coin
-  #     usage: /<command>
-  # sc:
-  #   description: Communicate to other staff
-  #   usage: /<command> <message>
-  # ac:
-  #   description: Communicate to other admins
-  #   usage: /<command> <message>
-  # dbreset:
-  #   description: disconnects from db
-  # enderchest:
-  #   description: Opens your EC
-  #   usage: /<command>
-  #   aliases:
-  #     - ec
-  #     - echest
-  #     - enderc
-  # workbench:
-  #   description: Opens a Workbench
-  #   usage: /<command>
-  #   aliases:
-  #     - wb
-  #     - craft
-  #     - craftingtable
-  # invsee:
-  #   description: Lets you see what another person has in their inventory
-  #   usage: /<command> <player>
-  #   aliases:
-  #     - invpeek
-  #     - invs
-  # Day:
-  #   description: Sets the time to day
-  #   usage: /<command>
-  #   aliases:
-  #     - setday
-  # Night:
-  #   description: Sets the time to night
-  #   usage: /<command>
-  #   aliases:
-  #     - setnight
-  # Noon:
-  #   description: Sets the time to noon
-  #   usage: /<command>
-  #   aliases:
-  #     - setnoon
-  # sex:
-  #   description: You have sex
-  #   usage: /<command>
   tp:
     description: Tp to another player or tp a player to another player
     usage: /<command> <player>
@@ -88,78 +24,6 @@ commands:
     usage: /<command> <player>
     aliases:
       - atphere
-  # trashcan:
-  #   description: Opens the trashcan inventory
-  #   usage: /<command>
-  #   aliases:
-  #     - trash
-  # clearinventory:
-  #   description: Clears your inventory
-  #   usage: /<command>
-  #   aliases:
-  #     - ci
-  #     - clearinv
-  #     - clear
-  # fly:
-  #   description: Allows you to toggle fly
-  #   usage: /<command>
-  # Spawn:
-  #   description: Brings you to spawn
-  #   usage: /<command>
-  # skull:
-  #   description: Give's you a player head
-  #   usage: /<command> <player>
-  #   aliases:
-  #     - giveskull
-  #     - skulls
-  #     - head
-  # rename:
-  #   description: Renames the item in your hand
-  #   usage: /<command> <args>
-  # srename:
-  #   description: Renames a storage item in your hand
-  #   usage: <command> <args>
-  #   aliases:
-  #     - shulkerrename
-  #     - shulkerrn
-  # glow:
-  #   description: Gives the item an enchantment effect
-  #   usage: /<command>
-  #   aliases:
-  #     - glint
-  # unglow:
-  #   description: Removes the item's enchantment effect
-  #   usage: /<command>
-  #   aliases:
-  #     - unglint
-  # broadcast:
-  #   description: Sends a message to all players
-  #   usage: /<command> <args>
-  #   aliases:
-  #     - bc
-  #     - snwbc
-  #     - announce
-  # speed:
-  #   description: changes how fast your player movement is
-  #   usage: /<command> <args>
-  # sudo:
-  #   description: forces a user to run a command or message
-  #   usage: /<command> <args>
-  # whomademe:
-  #   description: tells you the creators of the plugin
-  #   usage: /<command>
-  # list:
-  #   description: makes a list of all online players
-  #   usage: /<command>
-  # findplayercords:
-  #   description: finds a players world and cords
-  #   usage: /<commands> <args>
-  #   aliases:
-  #     - fpc
-  #     - findpc
-  currenttime:
-    description: tells you da time
-    usage: /<commands>
   mgive:
     description: gives you a diamond axe model
     usage: /<command> <args>
@@ -169,38 +33,9 @@ commands:
   mhat:
     description: puts a diamond axe model on your head
     usage: /<command> <args>
-  createmodelcfsection:
-    description: Creates a new template for you to use for a new model
-    usage: /<command>
-  mkill:
-    description: kills minecart
-    usage: /<command> <args>
-    aliases:
-      - minecartkill
-  lightblocks:
-    description: light blocks
-    usage: /<command>
-  syncjapantime:
-    description: syncs time to japan
-  synctimezone:
-    description: syncs to timezone
   cordstp:
     description: tp to cords
     aliases:
       - ctp
       - cordteleport
       - cteleport
-  # staffbroadcast:
-  #   description: broadcast to staff
-  # adminbroadcast:
-  #   description: broadcast to admin
-  # supporterbroadcast:
-  #   description: broadcast to supporter
-  # permbroadcast:
-  #   description: broadcast to perm
-  gmessage:
-    description: lol
-  entitycontrol:
-    description: allows to control entity lmao
-  dbdisconnectrememberthisisreallyunsafedontdoit:
-    description: please dont do this command

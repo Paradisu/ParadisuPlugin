@@ -5,16 +5,15 @@ import org.bukkit.ChatColor;
 import org.bukkit.World;
 
 import java.util.Calendar;
-import java.util.TimeZone;
 
 import static org.bukkit.Bukkit.getServer;
 
-public class JapanTime {
+public class TimeZone {
 
     public static void setJapanTime() {
 
         Calendar calTokyo = Calendar.getInstance();
-        calTokyo.setTimeZone(TimeZone.getTimeZone("Asia/Tokyo"));
+        calTokyo.setTimeZone(java.util.TimeZone.getTimeZone("Asia/Tokyo"));
         long tokyohour = calTokyo.get(Calendar.HOUR_OF_DAY);
         double tokyominute = calTokyo.get(Calendar.MINUTE);
         double tokyoseconds = calTokyo.get(Calendar.SECOND);
@@ -36,7 +35,7 @@ public class JapanTime {
     public static void setAnyTime(String timezone) {
 
         Calendar calTokyo = Calendar.getInstance();
-        calTokyo.setTimeZone(TimeZone.getTimeZone(timezone));
+        calTokyo.setTimeZone(java.util.TimeZone.getTimeZone(timezone));
         long tokyohour = calTokyo.get(Calendar.HOUR_OF_DAY);
         double tokyominute = calTokyo.get(Calendar.MINUTE);
         double tokyoseconds = calTokyo.get(Calendar.SECOND);

@@ -10,6 +10,7 @@ import cloud.commandframework.meta.SimpleCommandMeta;
 import me.jakedadream.ParadisuPlugin.ParadisuMain;
 import me.jakedadream.ParadisuPlugin.warps.WarpCommands;
 
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -102,7 +103,7 @@ public class EssentialCommands /* MEANT FOR ANY REWRITTEN VANILLA/QOL COMMANDS *
     public void day(CommandSender sender){
         Player player = (Player) sender;
         player.getWorld().setTime(1000);
-        player.sendMessage(cmdprefix + "§fYou set the time to §3§nDay§f!");
+        player.sendMessage(cmdprefix + "§fYou set the time to " + cmdemph + "Day§f.");
     }
 
     @CommandPermission("paradisu.time")
@@ -111,7 +112,7 @@ public class EssentialCommands /* MEANT FOR ANY REWRITTEN VANILLA/QOL COMMANDS *
     public void night(CommandSender sender){
         Player player = (Player) sender;
         player.getWorld().setTime(14000);
-        player.sendMessage(cmdprefix + "§fYou set the time to §3§nNight§f!");
+        player.sendMessage(cmdprefix + "§fYou set the time to " + cmdemph + "Night§f.");
     }
 
     @CommandPermission("paradisu.time")
@@ -120,7 +121,77 @@ public class EssentialCommands /* MEANT FOR ANY REWRITTEN VANILLA/QOL COMMANDS *
     public void noon(CommandSender sender){
         Player player = (Player) sender;
         player.getWorld().setTime(600);
-        player.sendMessage(cmdprefix + "§fYou set the time to §3§nNoon§f!");
+        player.sendMessage(cmdprefix + "§fYou set the time to " + cmdemph + "Noon§f.");
+    }
+
+    @CommandPermission("paradisu.ec")
+    @CommandMethod("ec|enderchest|echest")
+    public void enderChest(CommandSender sender) {
+        Player player = (Player) sender;
+        player.openInventory(player.getEnderChest());
+    }
+
+    @CommandPermission("paradisu.wb")
+    @CommandMethod("wb|workbench")
+    public void workbench(CommandSender sender) {
+        Player player = (Player) sender;
+        player.openWorkbench(null, true);
+    }
+
+    @CommandPermission("paradisu.clearinv.own")
+    @CommandMethod("clearinv|clear|clearinventory")
+    public void clearInv(CommandSender sender) {
+        Player p = (Player) sender;
+        p.getInventory().clear();
+        p.sendMessage(cmdprefix + "§fYour inventory has been cleared.");
+    }
+
+    @CommandPermission("paradisu.clearinv.other")
+    @CommandMethod("clearinv|clear|clearinventory <player>")
+    public void clearInvOther(CommandSender sender,
+                              @Argument("player") String player) {
+        Player p = (Player) sender;
+        Player target = Bukkit.getPlayer(player);
+        if (target == null) {
+            p.sendMessage(cmdprefix + "§fThis player does not exist or is offline.");
+            return;
+        }
+        target.getInventory().clear();
+        target.sendMessage(cmdprefix + "§fYour inventory has been cleared.");
+    }
+
+    @CommandPermission("paradisu.fly.own")
+    @CommandMethod("fly")
+    public void fly(CommandSender sender) {
+        Player target = (Player) sender;
+        if (target.isFlying()) {
+            target.setAllowFlight(false);
+            target.setFlying(false);
+            target.sendMessage(cmdprefix + "§fYou have stopped flying.");
+        } else {
+            target.setAllowFlight(true);
+            target.sendMessage(cmdprefix + "§fYou have started flying.");
+        }
+    }
+
+    @CommandPermission("paradisu.fly.other")
+    @CommandMethod("fly <player>")
+    public void flyOther(CommandSender sender,
+                         @Argument("player") String player) {
+        Player p = (Player) sender;
+        Player target = Bukkit.getPlayer(player);
+        if (target == null) {
+            p.sendMessage(cmdprefix + "§fThis player does not exist or is offline.");
+            return;
+        }
+        if (target.isFlying()) {
+            target.setAllowFlight(false);
+            target.setFlying(false);
+            target.sendMessage(cmdprefix + "§fYou have stopped flying.");
+        } else {
+            target.setAllowFlight(true);
+            target.sendMessage(cmdprefix + "§fYou have started flying.");
+        }
     }
 
 }
