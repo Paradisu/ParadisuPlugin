@@ -12,9 +12,9 @@ commands:
   estack:
     description: stack on an entity
     usage: /<command>
-  unname:
-    description: unnames items
-    usage: /<command>
+  # unname:
+  #   description: unnames items
+  #   usage: /<command>
   # admininvsee:
   #   description: admin invsee lol
   #   usage: /<command> <player>
@@ -113,50 +113,50 @@ commands:
   #     - giveskull
   #     - skulls
   #     - head
-  rename:
-    description: Renames the item in your hand
-    usage: /<command> <args>
-  srename:
-    description: Renames a storage item in your hand
-    usage: <command> <args>
-    aliases:
-      - shulkerrename
-      - shulkerrn
-  glow:
-    description: Gives the item an enchantment effect
-    usage: /<command>
-    aliases:
-      - glint
-  unglow:
-    description: Removes the item's enchantment effect
-    usage: /<command>
-    aliases:
-      - unglint
-  broadcast:
-    description: Sends a message to all players
-    usage: /<command> <args>
-    aliases:
-      - bc
-      - snwbc
-      - announce
-  speed:
-    description: changes how fast your player movement is
-    usage: /<command> <args>
-  sudo:
-    description: forces a user to run a command or message
-    usage: /<command> <args>
-  whomademe:
-    description: tells you the creators of the plugin
-    usage: /<command>
-  list:
-    description: makes a list of all online players
-    usage: /<command>
-  findplayercords:
-    description: finds a players world and cords
-    usage: /<commands> <args>
-    aliases:
-      - fpc
-      - findpc
+  # rename:
+  #   description: Renames the item in your hand
+  #   usage: /<command> <args>
+  # srename:
+  #   description: Renames a storage item in your hand
+  #   usage: <command> <args>
+  #   aliases:
+  #     - shulkerrename
+  #     - shulkerrn
+  # glow:
+  #   description: Gives the item an enchantment effect
+  #   usage: /<command>
+  #   aliases:
+  #     - glint
+  # unglow:
+  #   description: Removes the item's enchantment effect
+  #   usage: /<command>
+  #   aliases:
+  #     - unglint
+  # broadcast:
+  #   description: Sends a message to all players
+  #   usage: /<command> <args>
+  #   aliases:
+  #     - bc
+  #     - snwbc
+  #     - announce
+  # speed:
+  #   description: changes how fast your player movement is
+  #   usage: /<command> <args>
+  # sudo:
+  #   description: forces a user to run a command or message
+  #   usage: /<command> <args>
+  # whomademe:
+  #   description: tells you the creators of the plugin
+  #   usage: /<command>
+  # list:
+  #   description: makes a list of all online players
+  #   usage: /<command>
+  # findplayercords:
+  #   description: finds a players world and cords
+  #   usage: /<commands> <args>
+  #   aliases:
+  #     - fpc
+  #     - findpc
   currenttime:
     description: tells you da time
     usage: /<commands>
@@ -190,14 +190,14 @@ commands:
       - ctp
       - cordteleport
       - cteleport
-  staffbroadcast:
-    description: broadcast to staff
-  adminbroadcast:
-    description: broadcast to admin
-  supporterbroadcast:
-    description: broadcast to supporter
-  permbroadcast:
-    description: broadcast to perm
+  # staffbroadcast:
+  #   description: broadcast to staff
+  # adminbroadcast:
+  #   description: broadcast to admin
+  # supporterbroadcast:
+  #   description: broadcast to supporter
+  # permbroadcast:
+  #   description: broadcast to perm
   gmessage:
     description: lol
   entitycontrol:

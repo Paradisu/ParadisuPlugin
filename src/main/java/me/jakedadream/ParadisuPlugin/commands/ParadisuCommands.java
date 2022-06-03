@@ -21,6 +21,10 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.potion.PotionEffectType;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.Nullable;
+
+import com.comphenix.net.bytebuddy.implementation.bind.annotation.Default;
 
 import cloud.commandframework.annotations.Argument;
 import cloud.commandframework.annotations.CommandMethod;
@@ -41,15 +45,12 @@ import me.jakedadream.ParadisuPlugin.util.Announcements;
 import me.jakedadream.ParadisuPlugin.util.JapanTime;
 import net.md_5.bungee.api.ChatColor;
 
-
-public class ParadisuCommands /*implements CommandExecutor*/ {
+public class ParadisuCommands /* implements CommandExecutor */ {
 
     String cmdprefix = ParadisuMain.CommandPrefix();
     String cmdemph = ParadisuMain.CommandEmph();
     String nopermsmsg = ParadisuMain.NoPermsMessage();
     String noargsmsg = ParadisuMain.NoArgsMessage();
-
-
 
     private String getParsedName(String[] args) {
         String name = "";
@@ -62,93 +63,86 @@ public class ParadisuCommands /*implements CommandExecutor*/ {
         return ChatColor.translateAlternateColorCodes('&', name);
     }
 
-
     @CommandPermission("paradiu.givecoin")
     @CommandMethod("givecoin")
-    public void giveCoin(CommandSender sender){
+    public void giveCoin(CommandSender sender) {
         Player p = (Player) sender;
         p.getInventory().addItem(new ParadisuCoin());
         sender.sendMessage(ChatColor.GREEN + "Gave you a coin!");
     }
 
-
     @CommandPermission("paradiu.givecoin")
     @CommandMethod("givecoin <player> <amount>")
     public void giveCoinPlayerAmount(CommandSender sender,
-        @Argument("player") String player,
-        @Argument("amount") int amount
-    ){
+            @Argument("player") String player,
+            @Argument("amount") int amount) {
         Player p = (Player) sender;
-        
-        if(player == null && amount == 0){
+
+        if (player == null && amount == 0) {
             p.getInventory().addItem(new ParadisuCoin());
             p.sendMessage(cmdprefix + "§fWe gave you a coin!");
-                    
-        } else if (player == null){
+
+        } else if (player == null) {
             p.getInventory().addItem(new ParadisuCoin(amount));
-            p.sendMessage(cmdprefix + "§fWe gave you " + cmdemph + amount +  " §fcoins!");
+            p.sendMessage(cmdprefix + "§fWe gave you " + cmdemph + amount + " §fcoins!");
         } else {
             Player target = Bukkit.getPlayer(player);
-            if(target == null){
+            if (target == null) {
                 p.sendMessage(cmdprefix + "§fThis player does not exist or is offline.");
                 return;
-            } 
-            if (amount == 0){
+            }
+            if (amount == 0) {
                 target.getInventory().addItem(new ParadisuCoin());
                 target.sendMessage(cmdprefix + "§fYou received a coin!");
             } else {
                 target.getInventory().addItem(new ParadisuCoin(amount));
-                target.sendMessage(cmdprefix + "§fYou received " + cmdemph + amount +  " §fcoins!");
+                target.sendMessage(cmdprefix + "§fYou received " + cmdemph + amount + " §fcoins!");
             }
         }
     }
 
-
     @CommandPermission("paradisu.givestarcoin")
     @CommandMethod("givestarcoin")
-    public void giveStarCoin(CommandSender sender){
+    public void giveStarCoin(CommandSender sender) {
         Player p = (Player) sender;
         p.getInventory().addItem(new StarCoin());
         sender.sendMessage(ChatColor.GREEN + "Gave you a star coin!");
     }
 
-
-
     @CommandPermission("paradisu.givestarcoin")
     @CommandMethod("givestarcoin <player> <amount>")
     public void giveStarCoin(CommandSender sender,
-        @Argument("player") String player,
-        @Argument("amount") int amount
-    ){
+            @Argument("player") String player,
+            @Argument("amount") int amount) {
         Player p = (Player) sender;
-        if(player == null && amount == 0){
+        if (player == null && amount == 0) {
             p.getInventory().addItem(new StarCoin(amount));
             p.sendMessage(cmdprefix + "§fWe gave you a coin!");
-                    
-        } else if (player == null){
+
+        } else if (player == null) {
             p.getInventory().addItem(new StarCoin(amount));
-            p.sendMessage(cmdprefix + "§fWe gave you " + cmdemph + amount +  " §fcoins!");
-        } else if (amount == 0){
+            p.sendMessage(cmdprefix + "§fWe gave you " + cmdemph + amount + " §fcoins!");
+        } else if (amount == 0) {
             Player target = Bukkit.getPlayer(player);
             target.getInventory().addItem(new StarCoin(amount));
             target.sendMessage(cmdprefix + "§fYou received a coin!");
         } else {
             Player target = Bukkit.getPlayer(player);
             target.getInventory().addItem(new StarCoin(amount));
-            target.sendMessage(cmdprefix + "§fYou received " + cmdemph + amount +  " §fcoins!");
+            target.sendMessage(cmdprefix + "§fYou received " + cmdemph + amount + " §fcoins!");
         }
     }
 
     @CommandPermission("paradisu.ec")
     @CommandMethod("ec|enderchest|echest")
-    public void enderChest(CommandSender sender){
+    public void enderChest(CommandSender sender) {
         Player player = (Player) sender;
         player.openInventory(player.getEnderChest());
     }
 
     @CommandPermission("paradisu.wb")
     @CommandMethod("wb|workbench")
-    public void workbench(CommandSender sender){
+    public void workbench(CommandSender sender) {
         Player player = (Player) sender;
         player.openWorkbench(null, true);
     }
@@ -156,11 +150,10 @@ public class ParadisuCommands /*implements CommandExecutor*/ {
     @CommandPermission("paradisu.invsee")
     @CommandMethod("invsee|invs <player>")
     public void invsee(CommandSender sender,
-        @Argument("player") String player
-    ){
+            @Argument("player") String player) {
         Player p = (Player) sender;
         Player target = Bukkit.getPlayer(player);
-        if(target == null) {
+        if (target == null) {
             p.sendMessage(cmdprefix + "§fThis player does not exist or is offline.");
             return;
         }
@@ -168,26 +161,36 @@ public class ParadisuCommands /*implements CommandExecutor*/ {
         Inventory inv = Bukkit.createInventory(null, 54, "§f" + target.getName() + "'s Inventory");
         PlayerInventory playerInv = target.getInventory();
         inv.setContents(playerInv.getContents());
-        for(int i=36; i<45; i++)
+        for (int i = 36; i < 45; i++)
             inv.setItem(i, new BlankItem());
         inv.setItem(49, new BlankItem());
         inv.setItem(46, new ParadisuHead(target));
-        
-        //off hand
-        if(playerInv.getItemInOffHand() == null) inv.setItem(45, new NoItem(" §7(off hand)"));
-        else inv.setItem(45, playerInv.getItemInOffHand().clone());
-        //helmet
-        if(playerInv.getHelmet() == null) inv.setItem(50, new NoItem(" §7(helmet)"));
-        else inv.setItem(50, playerInv.getHelmet().clone());
-        //chestplate
-        if(playerInv.getChestplate() == null) inv.setItem(51, new NoItem(" §7(chestplate)"));
-        else inv.setItem(51, playerInv.getChestplate().clone());
-        //leggings
-        if(playerInv.getLeggings() == null) inv.setItem(52, new NoItem(" §7(leggings)"));
-        else inv.setItem(52, playerInv.getLeggings().clone());
-        //boots
-        if(playerInv.getBoots() == null) inv.setItem(53, new NoItem(" §7(boots)"));
-        else inv.setItem(53, playerInv.getBoots().clone());
+
+        // off hand
+        if (playerInv.getItemInOffHand() == null)
+            inv.setItem(45, new NoItem(" §7(off hand)"));
+        else
+            inv.setItem(45, playerInv.getItemInOffHand().clone());
+        // helmet
+        if (playerInv.getHelmet() == null)
+            inv.setItem(50, new NoItem(" §7(helmet)"));
+        else
+            inv.setItem(50, playerInv.getHelmet().clone());
+        // chestplate
+        if (playerInv.getChestplate() == null)
+            inv.setItem(51, new NoItem(" §7(chestplate)"));
+        else
+            inv.setItem(51, playerInv.getChestplate().clone());
+        // leggings
+        if (playerInv.getLeggings() == null)
+            inv.setItem(52, new NoItem(" §7(leggings)"));
+        else
+            inv.setItem(52, playerInv.getLeggings().clone());
+        // boots
+        if (playerInv.getBoots() == null)
+            inv.setItem(53, new NoItem(" §7(boots)"));
+        else
+            inv.setItem(53, playerInv.getBoots().clone());
 
         inv.setItem(48, new ParadisuEffects(target));
 
@@ -199,11 +202,10 @@ public class ParadisuCommands /*implements CommandExecutor*/ {
     @ProxiedBy("admininvsee")
     @CommandMethod("invsee admin <player>")
     public void adminInvsee(CommandSender sender,
-        @Argument("player") String player
-    ){
+            @Argument("player") String player) {
         Player p = (Player) sender;
         Player target = Bukkit.getPlayer(player);
-        if(target == null) {
+        if (target == null) {
             p.sendMessage(cmdprefix + "§fThis player does not exist or is offline.");
             return;
         }
@@ -214,25 +216,24 @@ public class ParadisuCommands /*implements CommandExecutor*/ {
     @CommandPermission("paradisu.skull")
     @CommandMethod("skull [player]")
     public void skull(CommandSender sender,
-        @Argument("player") String player
-    ){
+            @Argument("player") String player) {
         Player p = (Player) sender;
-        if(player == null){
+        if (player == null) {
             p.getInventory().addItem(new ParadisuHead(p));
-        } else{
+        } else {
             Player target = Bukkit.getPlayer(player);
-            if(target == null){
+            if (target == null) {
                 p.sendMessage(cmdprefix + "§fThis player does not exist or is offline.");
                 return;
             }
             p.getInventory().addItem(new ParadisuHead(target));
             p.sendMessage(cmdprefix + "§fWe successfully gave you the head of §3§n" + player + "§f!");
-        } 
+        }
     }
 
     @CommandPermission("paradisu.clearinv.own")
     @CommandMethod("clearinv|clear|clearinventory")
-    public void clearInv(CommandSender sender){
+    public void clearInv(CommandSender sender) {
         Player p = (Player) sender;
         p.getInventory().clear();
         p.sendMessage(cmdprefix + "§fYour inventory has been cleared.");
@@ -241,11 +242,10 @@ public class ParadisuCommands /*implements CommandExecutor*/ {
     @CommandPermission("paradisu.clearinv.other")
     @CommandMethod("clearinv|clear|clearinventory <player>")
     public void clearInvOther(CommandSender sender,
-        @Argument("player") String player
-    ){
+            @Argument("player") String player) {
         Player p = (Player) sender;
         Player target = Bukkit.getPlayer(player);
-        if(target == null){
+        if (target == null) {
             p.sendMessage(cmdprefix + "§fThis player does not exist or is offline.");
             return;
         }
@@ -255,7 +255,7 @@ public class ParadisuCommands /*implements CommandExecutor*/ {
 
     @CommandPermission("paradisu.trashcan")
     @CommandMethod("trashcan|trash")
-    public void trash(CommandSender sender){
+    public void trash(CommandSender sender) {
         Player p = (Player) sender;
         p.openInventory(new TrashCan().getInventory());
         p.sendMessage(cmdprefix + "§fOpened a trashcan");
@@ -263,13 +263,13 @@ public class ParadisuCommands /*implements CommandExecutor*/ {
 
     @CommandPermission("paradisu.fly.own")
     @CommandMethod("fly")
-    public void fly(CommandSender sender){
+    public void fly(CommandSender sender) {
         Player target = (Player) sender;
-        if(target.isFlying()){
+        if (target.isFlying()) {
             target.setAllowFlight(false);
             target.setFlying(false);
             target.sendMessage(cmdprefix + "§fYou have stopped flying.");
-        } else{
+        } else {
             target.setAllowFlight(true);
             target.setFlying(true);
             target.sendMessage(cmdprefix + "§fYou have started flying.");
@@ -279,28 +279,284 @@ public class ParadisuCommands /*implements CommandExecutor*/ {
     @CommandPermission("paradisu.fly.other")
     @CommandMethod("fly <player>")
     public void flyOther(CommandSender sender,
-        @Argument("player") String player
-    ){
+            @Argument("player") String player) {
         Player p = (Player) sender;
         Player target = Bukkit.getPlayer(player);
-        if(target == null){
+        if (target == null) {
             p.sendMessage(cmdprefix + "§fThis player does not exist or is offline.");
             return;
         }
-        if(target.isFlying()){
+        if (target.isFlying()) {
             target.setAllowFlight(false);
             target.setFlying(false);
             target.sendMessage(cmdprefix + "§fYou have stopped flying.");
-        } else{
+        } else {
             target.setAllowFlight(true);
             target.setFlying(true);
             target.sendMessage(cmdprefix + "§fYou have started flying.");
         }
     }
 
+    @CommandPermission("paradisu.rename")
+    @CommandMethod("rename <name>")
+    public void rename(CommandSender sender,
+            @Argument("name") @Greedy String name) {
+        Player p = (Player) sender;
+        if (p.getInventory().getItemInMainHand() == null
+                || p.getInventory().getItemInMainHand().getType() == Material.AIR) {
+            p.sendMessage(cmdprefix + "§fYou must be holding an item to rename it.");
+            return;
+        }
+        ItemStack item = p.getInventory().getItemInMainHand();
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName(name);
+        item.setItemMeta(meta);
+    }
+
+    @CommandPermission("paradisu.rename")
+    @ProxiedBy("unname")
+    @CommandMethod("rename clear")
+    public void unname(CommandSender sender) {
+        Player p = (Player) sender;
+        ItemStack item = p.getInventory().getItemInMainHand();
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName(null);
+        item.setItemMeta(meta);
+    }
+
+    @CommandPermission("paradisu.shulkerrename")
+    @CommandMethod("srename|shulkerrename <name>")
+    public void shulkerRename(CommandSender sender,
+            @Argument("name") @Greedy String name) {
+        Player p = (Player) sender;
+        Material mat = p.getInventory().getItemInMainHand().getType();
+        if (mat == null || mat == Material.AIR) {
+            p.sendMessage(cmdprefix + "§fYou must be holding an item to rename it.");
+            return;
+        }
+        if (mat == Material.SHULKER_BOX || mat == Material.WHITE_SHULKER_BOX || mat == Material.ORANGE_SHULKER_BOX
+                || mat == Material.MAGENTA_SHULKER_BOX || mat == Material.LIGHT_BLUE_SHULKER_BOX
+                || mat == Material.YELLOW_SHULKER_BOX || mat == Material.LIME_SHULKER_BOX
+                || mat == Material.PINK_SHULKER_BOX || mat == Material.GRAY_SHULKER_BOX
+                || mat == Material.LIGHT_GRAY_SHULKER_BOX || mat == Material.CYAN_SHULKER_BOX
+                || mat == Material.PURPLE_SHULKER_BOX || mat == Material.BLUE_SHULKER_BOX
+                || mat == Material.BROWN_SHULKER_BOX || mat == Material.GREEN_SHULKER_BOX
+                || mat == Material.RED_SHULKER_BOX || mat == Material.BLACK_SHULKER_BOX) {
+            ItemStack item = p.getInventory().getItemInMainHand();
+            ItemMeta meta = item.getItemMeta();
+            meta.setDisplayName(name);
+            item.setItemMeta(meta);
+            p.sendMessage(cmdprefix + "§fYou renamed your storage item to; " + name);
+
+        } else {
+            p.sendMessage(cmdprefix + "§fYou must be holding a shulker box to rename it.");
+        }
+    }
+
+    @CommandPermission("paradisu.glow")
+    @CommandMethod("glow")
+    public void glow(CommandSender sender) {
+        Player p = (Player) sender;
+        ItemStack item = p.getInventory().getItemInMainHand();
+        if (item == null || item.getType() == Material.AIR) {
+            p.sendMessage(cmdprefix + "§fYou must be holding an item to glow it.");
+            return;
+        }
+        ItemMeta meta = item.getItemMeta();
+        meta.addEnchant(Enchantment.ARROW_INFINITE, 4341, true);
+        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        item.setItemMeta(meta);
+
+        p.sendMessage(cmdprefix + "§fYou have added glow to your item.");
+    }
+
+    @CommandPermission("paradisu.glow")
+    @CommandMethod("unglow")
+    public void unglow(CommandSender sender) {
+        Player p = (Player) sender;
+        ItemStack item = p.getInventory().getItemInMainHand();
+        if (item == null || item.getType() == Material.AIR) {
+            p.sendMessage(cmdprefix + "§fYou must be holding an item.");
+            return;
+        }
+        ItemMeta meta = item.getItemMeta();
+        meta.removeEnchant(Enchantment.ARROW_INFINITE);
+        meta.removeItemFlags(ItemFlag.HIDE_ENCHANTS);
+        item.setItemMeta(meta);
+
+        p.sendMessage(cmdprefix + "§fYou have removed glow from your item.");
+    }
+
+    @CommandPermission("paradisu.speed")
+    @CommandMethod("speed <speed>")
+    public void speedN(CommandSender sender,
+            @Argument("speed") int speed) {
+        Player p = (Player) sender;
+        if (speed <= 1) {
+            p.setWalkSpeed(0.2f);
+            p.setFlySpeed(0.2f);
+            p.sendMessage(cmdprefix + "§fReset player speed");
+            return;
+        } else if (speed <= 10) {
+            p.setWalkSpeed(0.1f * speed);
+            p.setFlySpeed(0.1f * speed);
+            p.sendMessage(cmdprefix + "§fSet player speed to " + speed + "x");
+        } else {
+            p.sendMessage(cmdprefix + "§fSpeed must be between 1 and 10.");
+        }
+    }
+
+    @CommandPermission("paradisu.speed")
+    @CommandMethod("speed")
+    public void speed(CommandSender sender) {
+        Player p = (Player) sender;
+        p.setWalkSpeed(0.2f);
+        p.setFlySpeed(0.2f);
+        p.sendMessage(cmdprefix + "§fReset player speed");
+    }
+
+    @CommandPermission("paradisu.sudo")
+    @CommandMethod("sudo <player> <command>")
+    public void sudo(CommandSender sender,
+            @Argument("player") String player,
+            @Argument("command") @Greedy String command) {
+        Player p = (Player) sender;
+        Player target = Bukkit.getPlayer(player);
+        if (target == null) {
+            p.sendMessage(cmdprefix + "§fPlayer not found.");
+            return;
+        }
+        target.chat(command);
+        p.sendMessage(cmdprefix + "§fYou have sent §e" + target.getName() + "§f the command/chat §e" + command);
+    }
+
+    @CommandPermission("displayname.default")
+    @CommandMethod("whomademe|author|authors")
+    public void author(CommandSender sender) {
+        Player p = (Player) sender;
+        String msg = "";
+        msg += "\n";
+        msg += "           §3[§dParadisu §bツ§3] Plugin\n";
+        msg += "§c====================================\n";
+        msg += "§dPlugin Coded by §3Jakey §d- §3Jakey#9999\n";
+        msg += "§dPlugin Coded by §3Cyto §d- §3cyto ツ#7288\n";
+        msg += "\n";
+        msg += "§b§oWith help from:\n";
+        msg += "§3RealInstantRamen §c- §f§oTrashcans & Model ID system\n";
+        msg += "§3Andyinnie §c- §f§oEarly coin development\n";
+        msg += "§3Kastle_ §c- §f§oPointing out dumb flaws we've made\n";
+        msg += "\n";
+        p.sendMessage(msg);
+    }
+
+    @CommandPermission("paradisu.list")
+    @CommandMethod("list")
+    public void list(CommandSender sender) {
+        Player player = (Player) sender;
+        String owners = "";
+        String devs = "";
+        String builders = "";
+        String staff = "";
+        String supporters = "";
+        String visitors = "";
+        int onlineammount = Bukkit.getOnlinePlayers().size();
+
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            String name = p.getName();
+            name = name.concat(", ");
+            if (p.hasPermission("meta.rank.owner")) owners = owners.concat(name);
+            else if (p.hasPermission("meta.rank.dev")) devs = devs.concat(name);
+            else if (p.hasPermission("meta.rank.builders")) builders = builders.concat(name);
+            else if (p.hasPermission("meta.rank.staff")) staff = staff.concat(name);
+            else if (p.hasPermission("meta.rank.supporters")) supporters = supporters.concat(name);
+            else visitors = visitors.concat(name);
+        }
+
+        if (owners.length() != 0) owners = owners.substring(0, owners.length() - 2);
+        if (devs.length() != 0) devs = devs.substring(0, devs.length() - 2);
+        if (builders.length() != 0) builders = builders.substring(0, builders.length() - 2);
+        if (staff.length() != 0) staff = staff.substring(0, staff.length() - 2);
+        if (supporters.length() != 0) supporters = supporters.substring(0, supporters.length() - 2);
+        if (visitors.length() != 0) visitors = visitors.substring(0, visitors.length() - 2);
+
+        player.sendMessage("\uE013 " + cmdemph + onlineammount + " §fOnline Players \uE013" + "§r\n");
+        if (owners.length() != 0) player.sendMessage("§3\uE006 " + cmdemph + "\ue00d§f " + owners + "\n");
+        if (devs.length() != 0) player.sendMessage("§x§f§8§9§9§1§d\uE002 " + cmdemph + "\ue00d§f " + devs + "\n");
+        if (builders.length() != 0) player.sendMessage("§x§f§3§6§c§3§6\uE001 " + cmdemph + "\ue00d§f " + builders + "\n");
+        if (staff.length() != 0) player.sendMessage("§c\uE007 " + cmdemph + "\ue00d§f " + staff + "\n");
+        if (supporters.length() != 0) player.sendMessage("§d\uE008 " + cmdemph + "\ue00d§f " + supporters + "\n");
+        if (visitors.length() != 0) player.sendMessage("§7\uE00A " + cmdemph + "\ue00d§f " + visitors + "\n");
+    }
+
+    @CommandPermission("paradisu.findplayer")
+    @CommandMethod("findplayer|find|findplayercoords <player>")
+    public void findPlayer(CommandSender sender,
+        @Argument("player") String playerToFind
+    ){
+        Player player = (Player) sender;
+        Player target = Bukkit.getPlayerExact(playerToFind);
+        if(target == null) {
+            player.sendMessage(cmdprefix + "§fPlayer not found.");
+            return;
+        }
+        Location targetlocation = target.getLocation();
+        Integer tx = targetlocation.getBlockX();
+        Integer ty = targetlocation.getBlockY();
+        Integer tz = targetlocation.getBlockZ();
+        String tw = targetlocation.getWorld().getName();
+
+        player.sendMessage(cmdprefix + "§fThe player§3 " + playerToFind+ " §fis in §3" + tw + "§f at" +
+                " §3X » §d§o" + tx +
+                " §3Y » §d§o" + ty +
+                " §3Z » §d§o" + tz + "§f.");
+    }
+
+    @CommandPermission("paradisu.currenttime")
+    @CommandMethod("currenttime")
+    public void currentTime(CommandSender sender){
+        Player player = (Player) sender;
+        Long ct = player.getWorld().getTime();
+
+        // Converting time to Millitary
+        long gameTime = ct;
+        long hours = gameTime / 1000 + 6;
+        hours %= 24;
+        if (hours == 24)
+            hours = 0;
+        long minutes = (gameTime % 1000) * 60 / 1000;
+        String mm = "0" + minutes;
+        mm = mm.substring(mm.length() - 2, mm.length());
+
+        // Converting to normal time
+        long hoursparsed;
+        String ampm;
+        if (hours > 12) {
+            ampm = "PM";
+            hoursparsed = hours - 12;
+        } else if (hours < 12 && hours > 0) {
+            ampm = "AM";
+            hoursparsed = hours;
+        } else if (hours == 0) {
+            hoursparsed = 1;
+            ampm = "AM";
+        } else if (hours == 12) {
+            hoursparsed = 1;
+            ampm = "PM";
+        } else {
+            hoursparsed = 123;
+            ampm = "Error";
+        }
+
+        player.sendMessage(cmdprefix + "§fThe current time in" + cmdemph + " §lJapan §f§o(ingame)§f is "
+                + cmdemph + hoursparsed + "§f:" + cmdemph + mm + " " + ampm + "§f.");
+    }
 
 
-    //@Override
+
+
+    
+
+    // @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (!(sender instanceof Player)) {
             sender.sendMessage(ChatColor.RED + "Only players can use that command!");
@@ -308,940 +564,981 @@ public class ParadisuCommands /*implements CommandExecutor*/ {
         }
         Player player = (Player) sender;
 
-
         switch (cmd.getName().toLowerCase()) {
 
-
             // case "givecoin":
-            //     if (player.hasPermission("snw.givecoin")) {
-            //         if (args.length == 0) {
-            //             player.getInventory().addItem(GenItemManager.createCoin());
-            //             player.sendMessage(cmdprefix + "§fWe gave you a coin!");
-            //         } else if (args.length == 1) {
-            //             ItemStack coins = new ItemStack(GenItemManager.createCoin());
-            //             ItemMeta coinmeta = GenItemManager.createCoin().getItemMeta();
-            //             coins.setAmount(Integer.parseInt(args[0]));
-            //             coins.setItemMeta(coinmeta);
+            // if (player.hasPermission("snw.givecoin")) {
+            // if (args.length == 0) {
+            // player.getInventory().addItem(GenItemManager.createCoin());
+            // player.sendMessage(cmdprefix + "§fWe gave you a coin!");
+            // } else if (args.length == 1) {
+            // ItemStack coins = new ItemStack(GenItemManager.createCoin());
+            // ItemMeta coinmeta = GenItemManager.createCoin().getItemMeta();
+            // coins.setAmount(Integer.parseInt(args[0]));
+            // coins.setItemMeta(coinmeta);
 
-            //             player.getInventory().addItem(coins);
-            //             player.sendMessage(cmdprefix + "§fWe gave you " + cmdemph + args[0] +  " §fcoins!");
+            // player.getInventory().addItem(coins);
+            // player.sendMessage(cmdprefix + "§fWe gave you " + cmdemph + args[0] + "
+            // §fcoins!");
 
-            //         } else if (args.length == 2) {
+            // } else if (args.length == 2) {
 
-            //             ItemStack coins = new ItemStack(GenItemManager.createCoin());
-            //             ItemMeta coinmeta = GenItemManager.createCoin().getItemMeta();
-            //             coins.setAmount(Integer.parseInt(args[0]));
-            //             coins.setItemMeta(coinmeta);
+            // ItemStack coins = new ItemStack(GenItemManager.createCoin());
+            // ItemMeta coinmeta = GenItemManager.createCoin().getItemMeta();
+            // coins.setAmount(Integer.parseInt(args[0]));
+            // coins.setItemMeta(coinmeta);
 
-            //             Player target = Bukkit.getPlayerExact(args[1]);
-            //             target.getInventory().addItem(coins);
-            //             player.sendMessage(cmdprefix + "§fWe gave them " + cmdemph + args[0] +  " §fcoins!");
+            // Player target = Bukkit.getPlayerExact(args[1]);
+            // target.getInventory().addItem(coins);
+            // player.sendMessage(cmdprefix + "§fWe gave them " + cmdemph + args[0] + "
+            // §fcoins!");
 
-
-            //         } else {player.sendMessage(cmdprefix + "Too many arguments");}
-            //     } else {
-            //         player.sendMessage(nopermsmsg);
-            //     }
-            //     return true;
+            // } else {player.sendMessage(cmdprefix + "Too many arguments");}
+            // } else {
+            // player.sendMessage(nopermsmsg);
+            // }
+            // return true;
 
             // case "givestarcoin":
-            //     if (player.hasPermission("snw.givestarcoin")) {
-            //         if (args.length == 0) {
-            //             player.getInventory().addItem(GenItemManager.createStarCoin());
-            //             player.sendMessage(cmdprefix + "§fWe gave you a Star Coin!");
-            //         } else if (args.length == 1) {
-            //             ItemStack starcoins = new ItemStack(GenItemManager.createStarCoin());
-            //             ItemMeta starcoinmeta = GenItemManager.createStarCoin().getItemMeta();
-            //             starcoins.setAmount(Integer.parseInt(args[0]));
-            //             starcoins.setItemMeta(starcoinmeta);
+            // if (player.hasPermission("snw.givestarcoin")) {
+            // if (args.length == 0) {
+            // player.getInventory().addItem(GenItemManager.createStarCoin());
+            // player.sendMessage(cmdprefix + "§fWe gave you a Star Coin!");
+            // } else if (args.length == 1) {
+            // ItemStack starcoins = new ItemStack(GenItemManager.createStarCoin());
+            // ItemMeta starcoinmeta = GenItemManager.createStarCoin().getItemMeta();
+            // starcoins.setAmount(Integer.parseInt(args[0]));
+            // starcoins.setItemMeta(starcoinmeta);
 
-            //             player.getInventory().addItem(starcoins);
-            //             player.sendMessage(cmdprefix + "§fWe gave you " + cmdemph + args[0] +  " §fstar coins!");
+            // player.getInventory().addItem(starcoins);
+            // player.sendMessage(cmdprefix + "§fWe gave you " + cmdemph + args[0] + "
+            // §fstar coins!");
 
-            //         } else if (args.length == 2) {
+            // } else if (args.length == 2) {
 
-            //             ItemStack starcoins = new ItemStack(GenItemManager.createStarCoin());
-            //             ItemMeta starcoinmeta = GenItemManager.createStarCoin().getItemMeta();
-            //             starcoins.setAmount(Integer.parseInt(args[0]));
-            //             starcoins.setItemMeta(starcoinmeta);
+            // ItemStack starcoins = new ItemStack(GenItemManager.createStarCoin());
+            // ItemMeta starcoinmeta = GenItemManager.createStarCoin().getItemMeta();
+            // starcoins.setAmount(Integer.parseInt(args[0]));
+            // starcoins.setItemMeta(starcoinmeta);
 
-            //             Player target = Bukkit.getPlayerExact(args[1]);
-            //             target.getInventory().addItem(starcoins);
-            //             player.sendMessage(cmdprefix + "§fWe gave them " + cmdemph + args[0] +  " §fstar coins!");
+            // Player target = Bukkit.getPlayerExact(args[1]);
+            // target.getInventory().addItem(starcoins);
+            // player.sendMessage(cmdprefix + "§fWe gave them " + cmdemph + args[0] + "
+            // §fstar coins!");
 
-
-            //         } else {player.sendMessage(cmdprefix + "§fToo many arguments");}
-            //     } else {player.sendMessage(nopermsmsg);}
-            //     return true;
-
+            // } else {player.sendMessage(cmdprefix + "§fToo many arguments");}
+            // } else {player.sendMessage(nopermsmsg);}
+            // return true;
 
             // case "sc":
-            //     if (player.hasPermission("snw.sc")) {
-            //         if (args.length == 0) {
-            //             // /sc (no args)
-            //             player.sendMessage(cmdprefix + "§fIncorrect usage; Please use '/sc <message>'");
-            //         } else {
-            //             String allArgs = "";
+            // if (player.hasPermission("snw.sc")) {
+            // if (args.length == 0) {
+            // // /sc (no args)
+            // player.sendMessage(cmdprefix + "§fIncorrect usage; Please use '/sc
+            // <message>'");
+            // } else {
+            // String allArgs = "";
 
-            //             for (String arg : args) {
-            //                 allArgs += arg + " ";
-            //             }
-            //             for (World w : Bukkit.getWorlds()) {
-            //                 for (Player p : w.getPlayers()) {
-            //                     if (p.hasPermission("snw.sc")) {
-            //                         p.sendMessage("§3『§b§l§oSC§3』 §c" + player.getDisplayName() + " §f»§3 " + allArgs);
-            //                         // /sc <message>;
-            //                     }
-            //                 }
-            //             }
+            // for (String arg : args) {
+            // allArgs += arg + " ";
+            // }
+            // for (World w : Bukkit.getWorlds()) {
+            // for (Player p : w.getPlayers()) {
+            // if (p.hasPermission("snw.sc")) {
+            // p.sendMessage("§3『§b§l§oSC§3』 §c" + player.getDisplayName() + " §f»§3 " +
+            // allArgs);
+            // // /sc <message>;
+            // }
+            // }
+            // }
 
-            //         }
-            //     } else {
-            //         player.sendMessage(nopermsmsg);
-            //     }
-            //     return true;
-
+            // }
+            // } else {
+            // player.sendMessage(nopermsmsg);
+            // }
+            // return true;
 
             // case "ac":
-            //     if (player.hasPermission("snw.ac")) {
-            //         if (args.length == 0) {
-            //             // /ac (no args)
-            //             player.sendMessage(cmdprefix + "§fIncorrect usage; Please use '/ac <message>'");
-            //         } else {
-            //             String allArgs = "";
+            // if (player.hasPermission("snw.ac")) {
+            // if (args.length == 0) {
+            // // /ac (no args)
+            // player.sendMessage(cmdprefix + "§fIncorrect usage; Please use '/ac
+            // <message>'");
+            // } else {
+            // String allArgs = "";
 
-            //             for (String arg : args) {
-            //                 allArgs += arg + " ";
-            //             }
-            //             for (World w : Bukkit.getWorlds()) {
-            //                 for (Player p : w.getPlayers()) {
-            //                     if (p.hasPermission("snw.ac")) {
-            //                         p.sendMessage("§c『§4§l§oAC§c』 §4" + player.getDisplayName() + " §f»§3 " + allArgs);
-            //                         // /AC <message>;
-            //                     }
-            //                 }
-            //             }
+            // for (String arg : args) {
+            // allArgs += arg + " ";
+            // }
+            // for (World w : Bukkit.getWorlds()) {
+            // for (Player p : w.getPlayers()) {
+            // if (p.hasPermission("snw.ac")) {
+            // p.sendMessage("§c『§4§l§oAC§c』 §4" + player.getDisplayName() + " §f»§3 " +
+            // allArgs);
+            // // /AC <message>;
+            // }
+            // }
+            // }
 
-            //         }
-            //     } else {
-            //         player.sendMessage(nopermsmsg);
-            //     }
-            //     return true;
+            // }
+            // } else {
+            // player.sendMessage(nopermsmsg);
+            // }
+            // return true;
 
             // case "enderchest":
-            //     if (player.hasPermission("snw.ec")) {
-            //         player.openInventory(player.getEnderChest());
-            //     } else {
-            //         player.sendMessage(nopermsmsg);
-            //     }
-            //     return true;
-
+            // if (player.hasPermission("snw.ec")) {
+            // player.openInventory(player.getEnderChest());
+            // } else {
+            // player.sendMessage(nopermsmsg);
+            // }
+            // return true;
 
             // case "workbench":
-            //     if (player.hasPermission("snw.wb")) {
-            //         player.openWorkbench(null, true);
-            //     } else {
-            //         player.sendMessage(nopermsmsg);
-            //     }
-            //     return true;
+            // if (player.hasPermission("snw.wb")) {
+            // player.openWorkbench(null, true);
+            // } else {
+            // player.sendMessage(nopermsmsg);
+            // }
+            // return true;
 
             // case "invsee":
-            //     if (player.hasPermission("snw.invsee")) {
+            // if (player.hasPermission("snw.invsee")) {
 
-            //         if (args.length == 0) {
-            //             player.sendMessage(cmdprefix + "§fIncorrect usage; Please use '/invsee <player>'");
-            //         }
-            //         if (args.length >= 1) {
-            //             Player target = Bukkit.getPlayerExact(args[0]);
-            //             try {
+            // if (args.length == 0) {
+            // player.sendMessage(cmdprefix + "§fIncorrect usage; Please use '/invsee
+            // <player>'");
+            // }
+            // if (args.length >= 1) {
+            // Player target = Bukkit.getPlayerExact(args[0]);
+            // try {
 
-            //             Inventory inv = Bukkit.createInventory(null, 54, "§3§l" + target.getName() + "'s §3Inventory");
+            // Inventory inv = Bukkit.createInventory(null, 54, "§3§l" + target.getName() +
+            // "'s §3Inventory");
 
-            //                     ItemStack[] targetinv = target.getInventory().getStorageContents();
-            //                     inv.setContents(targetinv);
+            // ItemStack[] targetinv = target.getInventory().getStorageContents();
+            // inv.setContents(targetinv);
 
-            //                     inv.setItem(36, GenItemManager.BlankItemSlot());
-            //                     inv.setItem(37, GenItemManager.BlankItemSlot());
-            //                     inv.setItem(38, GenItemManager.BlankItemSlot());
-            //                     inv.setItem(39, GenItemManager.BlankItemSlot());
-            //                     inv.setItem(40, GenItemManager.BlankItemSlot());
-            //                     inv.setItem(41, GenItemManager.BlankItemSlot());
-            //                     inv.setItem(42, GenItemManager.BlankItemSlot());
-            //                     inv.setItem(43, GenItemManager.BlankItemSlot());
-            //                     inv.setItem(44, GenItemManager.BlankItemSlot());
+            // inv.setItem(36, GenItemManager.BlankItemSlot());
+            // inv.setItem(37, GenItemManager.BlankItemSlot());
+            // inv.setItem(38, GenItemManager.BlankItemSlot());
+            // inv.setItem(39, GenItemManager.BlankItemSlot());
+            // inv.setItem(40, GenItemManager.BlankItemSlot());
+            // inv.setItem(41, GenItemManager.BlankItemSlot());
+            // inv.setItem(42, GenItemManager.BlankItemSlot());
+            // inv.setItem(43, GenItemManager.BlankItemSlot());
+            // inv.setItem(44, GenItemManager.BlankItemSlot());
 
-            //                     inv.setItem(49, GenItemManager.BlankItemSlot());
+            // inv.setItem(49, GenItemManager.BlankItemSlot());
 
-            //             ItemStack skull = new ItemStack(Material.PLAYER_HEAD, 1);
-            //             SkullMeta sm = (SkullMeta)skull.getItemMeta();
-            //             sm.setOwningPlayer(target);
-            //                 if (player.hasPermission("meta.rank.owner")) {
-            //                     sm.setDisplayName("§3\ue006 §f" + target.getName());
-            //                 } else if (player.hasPermission("meta.rank.dev")) {
-            //                     sm.setDisplayName("§x§f§8§9§9§1§d\ue002 §f" + target.getName());
-            //                 } else if  (player.hasPermission("meta.rank.builders")) {
-            //                     sm.setDisplayName("§x§f§3§6§c§3§6\ue001 §f" + target.getName());
-            //                 } else if (player.hasPermission("meta.rank.staff")) {
-            //                     sm.setDisplayName("§3\ue007 §f" + target.getName());
-            //                 } else if (player.hasPermission("meta.rank.supporters")) {
-            //                     sm.setDisplayName("§d\ue008 §f" + target.getName());
-            //                 } else {
-            //                     sm.setDisplayName("§7\ue00a §f" + target.getName());
-            //                 }
-            //             skull.setItemMeta(sm);
+            // ItemStack skull = new ItemStack(Material.PLAYER_HEAD, 1);
+            // SkullMeta sm = (SkullMeta)skull.getItemMeta();
+            // sm.setOwningPlayer(target);
+            // if (player.hasPermission("meta.rank.owner")) {
+            // sm.setDisplayName("§3\ue006 §f" + target.getName());
+            // } else if (player.hasPermission("meta.rank.dev")) {
+            // sm.setDisplayName("§x§f§8§9§9§1§d\ue002 §f" + target.getName());
+            // } else if (player.hasPermission("meta.rank.builders")) {
+            // sm.setDisplayName("§x§f§3§6§c§3§6\ue001 §f" + target.getName());
+            // } else if (player.hasPermission("meta.rank.staff")) {
+            // sm.setDisplayName("§3\ue007 §f" + target.getName());
+            // } else if (player.hasPermission("meta.rank.supporters")) {
+            // sm.setDisplayName("§d\ue008 §f" + target.getName());
+            // } else {
+            // sm.setDisplayName("§7\ue00a §f" + target.getName());
+            // }
+            // skull.setItemMeta(sm);
 
-            //                     inv.setItem(46, skull);
+            // inv.setItem(46, skull);
 
+            // // ==================================
+            // if (target.getInventory().getItemInOffHand() == null ||
+            // target.getInventory().getItemInOffHand().getType() == Material.AIR) {
 
+            // ItemStack nullitem = new ItemStack(GenItemManager.ItemNoExist().getType(),
+            // 1);
+            // ItemMeta nullitemmeta = GenItemManager.ItemNoExist().getItemMeta();
+            // String prevname = nullitemmeta.getDisplayName();
+            // nullitemmeta.setDisplayName(prevname + " §7(off hand)");
+            // nullitem.setItemMeta(nullitemmeta);
 
-            //             // ==================================
-            //             if (target.getInventory().getItemInOffHand() == null || target.getInventory().getItemInOffHand().getType() == Material.AIR) {
+            // inv.setItem(45, nullitem);
+            // } else {
 
-            //                 ItemStack nullitem = new ItemStack(GenItemManager.ItemNoExist().getType(), 1);
-            //                 ItemMeta nullitemmeta = GenItemManager.ItemNoExist().getItemMeta();
-            //                 String prevname = nullitemmeta.getDisplayName();
-            //                 nullitemmeta.setDisplayName(prevname + " §7(off hand)");
-            //                 nullitem.setItemMeta(nullitemmeta);
+            // Material offhandtype = target.getInventory().getItemInOffHand().getType();
+            // ItemMeta offhandmeta =
+            // target.getInventory().getItemInOffHand().getItemMeta();
+            // Integer offhandammount =
+            // target.getInventory().getItemInOffHand().getAmount();
+            // ItemStack targetoffhand = new ItemStack(offhandtype, offhandammount);
+            // targetoffhand.setItemMeta(offhandmeta);
 
-            //                 inv.setItem(45, nullitem);
-            //             } else {
+            // inv.setItem(45, targetoffhand);
+            // }
+            // // ==================================
+            // if (target.getInventory().getHelmet() == null ||
+            // target.getInventory().getHelmet().getType() == Material.AIR) {
 
-            //                 Material offhandtype = target.getInventory().getItemInOffHand().getType();
-            //                 ItemMeta offhandmeta = target.getInventory().getItemInOffHand().getItemMeta();
-            //                 Integer offhandammount = target.getInventory().getItemInOffHand().getAmount();
-            //                 ItemStack targetoffhand = new ItemStack(offhandtype, offhandammount);
-            //                 targetoffhand.setItemMeta(offhandmeta);
+            // ItemStack nullitem = new ItemStack(GenItemManager.ItemNoExist().getType(),
+            // 1);
+            // ItemMeta nullitemmeta = GenItemManager.ItemNoExist().getItemMeta();
+            // String prevname = nullitemmeta.getDisplayName();
+            // nullitemmeta.setDisplayName(prevname + " §7(helmet)");
+            // nullitem.setItemMeta(nullitemmeta);
 
-            //                 inv.setItem(45, targetoffhand);
-            //             }
-            //             // ==================================
-            //             if (target.getInventory().getHelmet() == null || target.getInventory().getHelmet().getType() == Material.AIR) {
+            // inv.setItem(50, nullitem);
+            // } else {
+            // Material helmettype = target.getInventory().getHelmet().getType();
+            // ItemMeta helmetmeta = target.getInventory().getHelmet().getItemMeta();
+            // Integer helmetamount = target.getInventory().getHelmet().getAmount();
+            // ItemStack targethelmet = new ItemStack(helmettype, helmetamount);
+            // targethelmet.setItemMeta(helmetmeta);
+            // inv.setItem(50, targethelmet);
+            // }
+            // // ==================================
+            // if (target.getInventory().getChestplate() == null ||
+            // target.getInventory().getChestplate().getType() == Material.AIR) {
 
-            //                 ItemStack nullitem = new ItemStack(GenItemManager.ItemNoExist().getType(), 1);
-            //                 ItemMeta nullitemmeta = GenItemManager.ItemNoExist().getItemMeta();
-            //                 String prevname = nullitemmeta.getDisplayName();
-            //                 nullitemmeta.setDisplayName(prevname + " §7(helmet)");
-            //                 nullitem.setItemMeta(nullitemmeta);
+            // ItemStack nullitem = new ItemStack(GenItemManager.ItemNoExist().getType(),
+            // 1);
+            // ItemMeta nullitemmeta = GenItemManager.ItemNoExist().getItemMeta();
+            // String prevname = nullitemmeta.getDisplayName();
+            // nullitemmeta.setDisplayName(prevname + " §7(chestplate)");
+            // nullitem.setItemMeta(nullitemmeta);
 
-            //                 inv.setItem(50, nullitem);
-            //             } else {
-            //                 Material helmettype = target.getInventory().getHelmet().getType();
-            //                 ItemMeta helmetmeta = target.getInventory().getHelmet().getItemMeta();
-            //                 Integer helmetamount = target.getInventory().getHelmet().getAmount();
-            //                 ItemStack targethelmet = new ItemStack(helmettype, helmetamount);
-            //                 targethelmet.setItemMeta(helmetmeta);
-            //                 inv.setItem(50, targethelmet);
-            //             }
-            //             // ==================================
-            //             if (target.getInventory().getChestplate() == null || target.getInventory().getChestplate().getType() == Material.AIR) {
+            // inv.setItem(51, nullitem);
+            // } else {
+            // Material chesttype = target.getInventory().getChestplate().getType();
+            // ItemMeta chestmeta = target.getInventory().getChestplate().getItemMeta();
+            // ItemStack targetchest = new ItemStack(chesttype, 1);
+            // targetchest.setItemMeta(chestmeta);
+            // inv.setItem(51, targetchest);
+            // }
+            // // ==================================
+            // if (target.getInventory().getLeggings() == null ||
+            // target.getInventory().getLeggings().getType() == Material.AIR) {
 
-            //                 ItemStack nullitem = new ItemStack(GenItemManager.ItemNoExist().getType(), 1);
-            //                 ItemMeta nullitemmeta = GenItemManager.ItemNoExist().getItemMeta();
-            //                 String prevname = nullitemmeta.getDisplayName();
-            //                 nullitemmeta.setDisplayName(prevname + " §7(chestplate)");
-            //                 nullitem.setItemMeta(nullitemmeta);
+            // ItemStack nullitem = new ItemStack(GenItemManager.ItemNoExist().getType(),
+            // 1);
+            // ItemMeta nullitemmeta = GenItemManager.ItemNoExist().getItemMeta();
+            // String prevname = nullitemmeta.getDisplayName();
+            // nullitemmeta.setDisplayName(prevname + " §7(leggings)");
+            // nullitem.setItemMeta(nullitemmeta);
 
-            //                 inv.setItem(51, nullitem);
-            //             } else {
-            //                 Material chesttype = target.getInventory().getChestplate().getType();
-            //                 ItemMeta chestmeta = target.getInventory().getChestplate().getItemMeta();
-            //                 ItemStack targetchest = new ItemStack(chesttype, 1);
-            //                 targetchest.setItemMeta(chestmeta);
-            //                 inv.setItem(51, targetchest);
-            //             }
-            //             // ==================================
-            //             if (target.getInventory().getLeggings() == null || target.getInventory().getLeggings().getType() == Material.AIR) {
+            // inv.setItem(52, nullitem);
+            // } else {
+            // Material legtype = target.getInventory().getLeggings().getType();
+            // ItemMeta legmeta = target.getInventory().getLeggings().getItemMeta();
+            // ItemStack targetleg = new ItemStack(legtype, 1);
+            // targetleg.setItemMeta(legmeta);
+            // inv.setItem(52, targetleg);
+            // }
+            // // ==================================
+            // if (target.getInventory().getBoots() == null ||
+            // target.getInventory().getBoots().getType() == Material.AIR) {
 
-            //                 ItemStack nullitem = new ItemStack(GenItemManager.ItemNoExist().getType(), 1);
-            //                 ItemMeta nullitemmeta = GenItemManager.ItemNoExist().getItemMeta();
-            //                 String prevname = nullitemmeta.getDisplayName();
-            //                 nullitemmeta.setDisplayName(prevname + " §7(leggings)");
-            //                 nullitem.setItemMeta(nullitemmeta);
+            // ItemStack nullitem = new ItemStack(GenItemManager.ItemNoExist().getType(),
+            // 1);
+            // ItemMeta nullitemmeta = GenItemManager.ItemNoExist().getItemMeta();
+            // String prevname = nullitemmeta.getDisplayName();
+            // nullitemmeta.setDisplayName(prevname + " §7(boots)");
+            // nullitem.setItemMeta(nullitemmeta);
 
-            //                 inv.setItem(52, nullitem);
-            //             } else {
-            //                 Material legtype = target.getInventory().getLeggings().getType();
-            //                 ItemMeta legmeta = target.getInventory().getLeggings().getItemMeta();
-            //                 ItemStack targetleg = new ItemStack(legtype, 1);
-            //                 targetleg.setItemMeta(legmeta);
-            //                 inv.setItem(52, targetleg);
-            //             }
-            //             // ==================================
-            //             if (target.getInventory().getBoots() == null || target.getInventory().getBoots().getType() == Material.AIR) {
+            // inv.setItem(53, nullitem);
+            // } else {
+            // Material boottype = target.getInventory().getBoots().getType();
+            // ItemMeta bootmeta = target.getInventory().getBoots().getItemMeta();
+            // ItemStack targetboot = new ItemStack(boottype, 1);
+            // targetboot.setItemMeta(bootmeta);
+            // inv.setItem(53, targetboot);
+            // }
+            // // ==================================
+            // if (target.getInventory().getItemInMainHand() == null ||
+            // target.getInventory().getItemInMainHand().getType() == Material.AIR) {
 
-            //                 ItemStack nullitem = new ItemStack(GenItemManager.ItemNoExist().getType(), 1);
-            //                 ItemMeta nullitemmeta = GenItemManager.ItemNoExist().getItemMeta();
-            //                 String prevname = nullitemmeta.getDisplayName();
-            //                 nullitemmeta.setDisplayName(prevname + " §7(boots)");
-            //                 nullitem.setItemMeta(nullitemmeta);
+            // ItemStack nullitem = new ItemStack(GenItemManager.ItemNoExist().getType(),
+            // 1);
+            // ItemMeta nullitemmeta = GenItemManager.ItemNoExist().getItemMeta();
+            // String prevname = nullitemmeta.getDisplayName();
+            // nullitemmeta.setDisplayName(prevname + " §7(main hand)");
+            // nullitem.setItemMeta(nullitemmeta);
 
-            //                 inv.setItem(53, nullitem);
-            //             } else {
-            //                 Material boottype = target.getInventory().getBoots().getType();
-            //                 ItemMeta bootmeta = target.getInventory().getBoots().getItemMeta();
-            //                 ItemStack targetboot = new ItemStack(boottype, 1);
-            //                 targetboot.setItemMeta(bootmeta);
-            //                 inv.setItem(53, targetboot);
-            //             }
-            //             // ==================================
-            //             if (target.getInventory().getItemInMainHand() == null || target.getInventory().getItemInMainHand().getType() == Material.AIR) {
+            // inv.setItem(47, nullitem);
+            // } else {
+            // Material mainhandtype = target.getInventory().getItemInMainHand().getType();
+            // ItemMeta mainhandmeta =
+            // target.getInventory().getItemInMainHand().getItemMeta();
+            // Integer mainhandammount =
+            // target.getInventory().getItemInMainHand().getAmount();
+            // ItemStack targetmainhand = new ItemStack(mainhandtype, mainhandammount);
+            // targetmainhand.setItemMeta(mainhandmeta);
+            // inv.setItem(47, targetmainhand);
+            // }
+            // // ==================================
+            // if (player.hasPotionEffect(PotionEffectType.SPEED) ||
+            // player.hasPotionEffect(PotionEffectType.JUMP) ||
+            // player.hasPotionEffect(PotionEffectType.INVISIBILITY)) {
+            // ItemStack potioneffects = new ItemStack(Material.SLIME_BALL, 1);
+            // ItemMeta potionmeta = potioneffects.getItemMeta();
+            // potionmeta.setDisplayName("§a§lPlayer Potion Effects");
+            // ArrayList<String> lore = new ArrayList<>();
+            // lore.add("§f§o");
 
-            //                 ItemStack nullitem = new ItemStack(GenItemManager.ItemNoExist().getType(), 1);
-            //                 ItemMeta nullitemmeta = GenItemManager.ItemNoExist().getItemMeta();
-            //                 String prevname = nullitemmeta.getDisplayName();
-            //                 nullitemmeta.setDisplayName(prevname + " §7(main hand)");
-            //                 nullitem.setItemMeta(nullitemmeta);
+            // if (player.hasPotionEffect(PotionEffectType.SPEED)) {
+            // int speednum = player.getPotionEffect(PotionEffectType.SPEED).getAmplifier();
+            // speednum++;
+            // lore.add("§f§oSpeed§3 \uE00D §f§l" + speednum);
+            // }
+            // if (player.hasPotionEffect(PotionEffectType.JUMP)) {
+            // int jumpnum = player.getPotionEffect(PotionEffectType.JUMP).getAmplifier();
+            // jumpnum++;
+            // lore.add("§f§oJump§3 \uE00D §f§l" + jumpnum);
+            // }
+            // if (player.hasPotionEffect(PotionEffectType.INVISIBILITY)) {
+            // int invisnum =
+            // player.getPotionEffect(PotionEffectType.INVISIBILITY).getAmplifier();
+            // invisnum++;
+            // lore.add("§f§oInvisibility§3 \uE00D §f§l" + invisnum);
+            // }
+            // potionmeta.setLore(lore);
+            // potioneffects.setItemMeta(potionmeta);
 
-            //                 inv.setItem(47, nullitem);
-            //             } else {
-            //                 Material mainhandtype = target.getInventory().getItemInMainHand().getType();
-            //                 ItemMeta mainhandmeta = target.getInventory().getItemInMainHand().getItemMeta();
-            //                 Integer mainhandammount = target.getInventory().getItemInMainHand().getAmount();
-            //                 ItemStack targetmainhand = new ItemStack(mainhandtype, mainhandammount);
-            //                 targetmainhand.setItemMeta(mainhandmeta);
-            //                 inv.setItem(47, targetmainhand);
-            //             }
-            //             // ==================================
-            //             if (player.hasPotionEffect(PotionEffectType.SPEED) || player.hasPotionEffect(PotionEffectType.JUMP) || player.hasPotionEffect(PotionEffectType.INVISIBILITY)) {
-            //                 ItemStack potioneffects = new ItemStack(Material.SLIME_BALL, 1);
-            //                 ItemMeta potionmeta = potioneffects.getItemMeta();
-            //                 potionmeta.setDisplayName("§a§lPlayer Potion Effects");
-            //                 ArrayList<String> lore = new ArrayList<>();
-            //                 lore.add("§f§o");
+            // inv.setItem(48, potioneffects);
+            // } else {
+            // ItemStack potioneffects = new ItemStack(Material.SLIME_BALL, 1);
+            // ItemMeta potionmeta = potioneffects.getItemMeta();
+            // potionmeta.setDisplayName("§a§lPlayer Potion Effects");
+            // ArrayList<String> lore = new ArrayList<>();
+            // lore.add("§f");
+            // lore.add("§f§oNo potion Effects");
+            // potionmeta.setLore(lore);
+            // potioneffects.setItemMeta(potionmeta);
 
-            //                 if (player.hasPotionEffect(PotionEffectType.SPEED)) {
-            //                     int speednum = player.getPotionEffect(PotionEffectType.SPEED).getAmplifier();
-            //                     speednum++;
-            //                     lore.add("§f§oSpeed§3 \uE00D §f§l" + speednum);
-            //                 }
-            //                 if (player.hasPotionEffect(PotionEffectType.JUMP)) {
-            //                     int jumpnum = player.getPotionEffect(PotionEffectType.JUMP).getAmplifier();
-            //                     jumpnum++;
-            //                     lore.add("§f§oJump§3 \uE00D §f§l" + jumpnum);
-            //                 }
-            //                 if (player.hasPotionEffect(PotionEffectType.INVISIBILITY)) {
-            //                     int invisnum = player.getPotionEffect(PotionEffectType.INVISIBILITY).getAmplifier();
-            //                     invisnum++;
-            //                     lore.add("§f§oInvisibility§3 \uE00D §f§l" + invisnum);
-            //                 }
-            //                 potionmeta.setLore(lore);
-            //                 potioneffects.setItemMeta(potionmeta);
+            // inv.setItem(48, potioneffects);
+            // }
 
-            //                 inv.setItem(48, potioneffects);
-            //             } else {
-            //                 ItemStack potioneffects = new ItemStack(Material.SLIME_BALL, 1);
-            //                 ItemMeta potionmeta = potioneffects.getItemMeta();
-            //                 potionmeta.setDisplayName("§a§lPlayer Potion Effects");
-            //                 ArrayList<String> lore = new ArrayList<>();
-            //                 lore.add("§f");
-            //                 lore.add("§f§oNo potion Effects");
-            //                 potionmeta.setLore(lore);
-            //                 potioneffects.setItemMeta(potionmeta);
+            // player.openInventory(inv);
+            // player.sendMessage(cmdprefix + "§fOpening the inventory of §3" +
+            // target.getName() + ".");
+            // } catch (NullPointerException e) {
+            // player.sendMessage(cmdprefix + "§fThis player does not exist or is
+            // offline.");
+            // }
+            // }
 
-            //                 inv.setItem(48, potioneffects);
-            //             }
-
-
-            //             player.openInventory(inv);
-            //                 player.sendMessage(cmdprefix + "§fOpening the inventory of §3" + target.getName() + ".");
-            //             } catch (NullPointerException e) {
-            //                 player.sendMessage(cmdprefix + "§fThis player does not exist or is offline.");
-            //             }
-            //         }
-
-            //     } else {player.sendMessage(nopermsmsg);}
-            //     return true;
+            // } else {player.sendMessage(nopermsmsg);}
+            // return true;
 
             // case "admininvsee":
-            //     if (player.hasPermission("snw.invsee.admin")) {
+            // if (player.hasPermission("snw.invsee.admin")) {
 
-            //         if (args.length >= 1) {
-            //             Player target = Bukkit.getPlayerExact(args[0]);
-            //             try {
+            // if (args.length >= 1) {
+            // Player target = Bukkit.getPlayerExact(args[0]);
+            // try {
 
-            //                 player.openInventory(target.getInventory());
-            //                 player.sendMessage(cmdprefix + "§fOpening the inventory of §3" + target.getName() + ".");
+            // player.openInventory(target.getInventory());
+            // player.sendMessage(cmdprefix + "§fOpening the inventory of §3" +
+            // target.getName() + ".");
 
+            // } catch (NullPointerException e) {
+            // player.sendMessage(cmdprefix + "§fThis player does not exist or is
+            // offline.");
+            // }
 
-            //             } catch (NullPointerException e) {
-            //                 player.sendMessage(cmdprefix + "§fThis player does not exist or is offline.");
-            //             }
-
-            //         } else {
-            //             player.sendMessage(noargsmsg);
-            //         }
-            //     }
-            //     return true;
-
+            // } else {
+            // player.sendMessage(noargsmsg);
+            // }
+            // }
+            // return true;
 
             // case "day":
-            //     if (player.hasPermission("snw.time")) {
-            //         player.getWorld().setTime(1000);
-            //         player.sendMessage(cmdprefix + "§fYou set the time to §3§nDay§f!");
-            //     } else {
-            //         player.sendMessage(nopermsmsg);
-            //     }
-            //     return true;
+            // if (player.hasPermission("snw.time")) {
+            // player.getWorld().setTime(1000);
+            // player.sendMessage(cmdprefix + "§fYou set the time to §3§nDay§f!");
+            // } else {
+            // player.sendMessage(nopermsmsg);
+            // }
+            // return true;
 
             // case "night":
-            //     if (player.hasPermission("snw.time")) {
-            //         player.getWorld().setTime(14000);
-            //         player.sendMessage(cmdprefix + "§fYou set the time to §3§nNight§f!");
-            //     } else {
-            //         player.sendMessage(nopermsmsg);
-            //     }
-            //     return true;
-
+            // if (player.hasPermission("snw.time")) {
+            // player.getWorld().setTime(14000);
+            // player.sendMessage(cmdprefix + "§fYou set the time to §3§nNight§f!");
+            // } else {
+            // player.sendMessage(nopermsmsg);
+            // }
+            // return true;
 
             // case "noon":
-            //     if (player.hasPermission("snw.time")) {
-            //         player.getWorld().setTime(600);
-            //         player.sendMessage(cmdprefix + "§fYou set the time to §3§nNoon§f!");
-            //     } else {
-            //         player.sendMessage(nopermsmsg);
-            //     }
-            //     return true;
+            // if (player.hasPermission("snw.time")) {
+            // player.getWorld().setTime(600);
+            // player.sendMessage(cmdprefix + "§fYou set the time to §3§nNoon§f!");
+            // } else {
+            // player.sendMessage(nopermsmsg);
+            // }
+            // return true;
 
             // case "spawn":
-            //     if (player.hasPermission("snw.spawn")) {
-            //         player.performCommand("warp spawn");
-            //     } else {
-            //         player.sendMessage(nopermsmsg);
-            //     }
-            //     return true;
+            // if (player.hasPermission("snw.spawn")) {
+            // player.performCommand("warp spawn");
+            // } else {
+            // player.sendMessage(nopermsmsg);
+            // }
+            // return true;
 
             // case "sex":
-            //     if (player.hasPermission("snw.sex")) {
-            //         player.sendMessage(cmdprefix + "§fYou are now having sex!!!!!");
-            //     } else { player.sendMessage("Unknown command. Tyle \"/help\" for help."); }
-            //     return true;
+            // if (player.hasPermission("snw.sex")) {
+            // player.sendMessage(cmdprefix + "§fYou are now having sex!!!!!");
+            // } else { player.sendMessage("Unknown command. Tyle \"/help\" for help."); }
+            // return true;
 
             // case "skull":
-            //     if (player.hasPermission("snw.skull")) {
-            //         if (args.length == 0) {
-            //             ItemStack itemSkull = new ItemStack(Material.PLAYER_HEAD, 1);
-            //             SkullMeta sm = (SkullMeta)itemSkull.getItemMeta();
-            //             sm.setOwningPlayer(player);
-            //             sm.setDisplayName("§7§lSkull of §3" + player.getName());
-            //             itemSkull.setItemMeta(sm);
+            // if (player.hasPermission("snw.skull")) {
+            // if (args.length == 0) {
+            // ItemStack itemSkull = new ItemStack(Material.PLAYER_HEAD, 1);
+            // SkullMeta sm = (SkullMeta)itemSkull.getItemMeta();
+            // sm.setOwningPlayer(player);
+            // sm.setDisplayName("§7§lSkull of §3" + player.getName());
+            // itemSkull.setItemMeta(sm);
 
-            //             player.getInventory().addItem(itemSkull);
+            // player.getInventory().addItem(itemSkull);
 
-            //         } else if (args.length == 1) {
+            // } else if (args.length == 1) {
 
-            //             String name = args[0];
-            //             Player owner = Bukkit.getPlayer(name);
-            //             ItemStack itemSkull = new ItemStack(Material.PLAYER_HEAD, 1);
-            //             SkullMeta sm = (SkullMeta)itemSkull.getItemMeta();
-            //             sm.setOwningPlayer(owner);
-            //             sm.setDisplayName("§7§lSkull of §3" + owner);
-            //             itemSkull.setItemMeta(sm);
+            // String name = args[0];
+            // Player owner = Bukkit.getPlayer(name);
+            // ItemStack itemSkull = new ItemStack(Material.PLAYER_HEAD, 1);
+            // SkullMeta sm = (SkullMeta)itemSkull.getItemMeta();
+            // sm.setOwningPlayer(owner);
+            // sm.setDisplayName("§7§lSkull of §3" + owner);
+            // itemSkull.setItemMeta(sm);
 
+            // player.getInventory().addItem(itemSkull);
 
-            //             player.getInventory().addItem(itemSkull);
+            // player.sendMessage(cmdprefix + "§fWe successfully gave you the head of §3§n"
+            // + owner + "§f!");
 
-            //             player.sendMessage(cmdprefix + "§fWe successfully gave you the head of §3§n" + owner + "§f!");
-
-            //         } else {
-            //             player.sendMessage(cmdprefix + "§fPlease provide a valid name!");
-            //         }
-            //     } else {
-            //         player.sendMessage(nopermsmsg);
-            //     }
-            //     return true;
+            // } else {
+            // player.sendMessage(cmdprefix + "§fPlease provide a valid name!");
+            // }
+            // } else {
+            // player.sendMessage(nopermsmsg);
+            // }
+            // return true;
 
             // case "clearinventory":
 
-            //     if (player.hasPermission("snw.clearinventory")) {
+            // if (player.hasPermission("snw.clearinventory")) {
 
-            //         if (args.length == 0) {
+            // if (args.length == 0) {
 
-            //             player.getInventory().clear();
-            //             player.sendMessage(cmdprefix + "§fYour inventory has been cleared.");
-            //         } else if (args.length == 1 && player.hasPermission("snw.clearinventoryother")) {
-            //             String cleartarget = args[0];
-            //             Player target = Bukkit.getServer().getPlayer(cleartarget);
-            //             target.getInventory().clear();
+            // player.getInventory().clear();
+            // player.sendMessage(cmdprefix + "§fYour inventory has been cleared.");
+            // } else if (args.length == 1 &&
+            // player.hasPermission("snw.clearinventoryother")) {
+            // String cleartarget = args[0];
+            // Player target = Bukkit.getServer().getPlayer(cleartarget);
+            // target.getInventory().clear();
 
-            //             target.sendMessage(cmdprefix + "§fYour inventory has been cleared by another player.");
-            //             player.sendMessage(cmdprefix + "§fYou cleared the inventory of§3 " + cleartarget + " §f!");
-            //         } else if (args.length > 1) {
-            //             player.sendMessage(cmdprefix + "§fPlease provide a single valid name!");
-            //         }
-            //     } else {
-            //         player.sendMessage(nopermsmsg);
-            //     }
-            //     return true;
-
+            // target.sendMessage(cmdprefix + "§fYour inventory has been cleared by another
+            // player.");
+            // player.sendMessage(cmdprefix + "§fYou cleared the inventory of§3 " +
+            // cleartarget + " §f!");
+            // } else if (args.length > 1) {
+            // player.sendMessage(cmdprefix + "§fPlease provide a single valid name!");
+            // }
+            // } else {
+            // player.sendMessage(nopermsmsg);
+            // }
+            // return true;
 
             // case "trashcan":
-            //     if (player.hasPermission("snw.trashcan")) {
-            //         //PluginInventories inv = new PluginInventories();
-            //         PluginInventories.TrashCanInv(player);
-            //         player.sendMessage(cmdprefix + "§fOpened a trashcan");
+            // if (player.hasPermission("snw.trashcan")) {
+            // //PluginInventories inv = new PluginInventories();
+            // PluginInventories.TrashCanInv(player);
+            // player.sendMessage(cmdprefix + "§fOpened a trashcan");
+            // } else {
+            // player.sendMessage(nopermsmsg);
+            // }
+            // return true;
+
+            // case "fly":
+            // if (player.hasPermission("snw.fly")) {
+            // if (args.length < 1) {
+            // if (player.isFlying()) {
+            // player.setAllowFlight(false);
+            // player.setFlying(false);
+
+            // player.sendMessage(cmdprefix + "§fYou are no longer flying");
+
+            // } else if (!player.isFlying()) {
+            // player.setAllowFlight(true);
+            // player.setFlying(true);
+            // player.sendMessage(cmdprefix + "§fYou are now flying");
+
+            // } else {
+            // player.sendMessage(cmdprefix + "§fHow can you be flying and not flying?");
+            // }
+
+            // // FLY OTHER
+            // // FLY OTHER
+            // // FLY OTHER
+            // } else if (args.length >= 1 && player.hasPermission("snw.flyother")) {
+            // String flytarget = args[0];
+            // Player target = Bukkit.getServer().getPlayer(flytarget);
+
+            // if (target.isFlying()) {
+            // player.setAllowFlight(false);
+            // target.setFlying(false);
+
+            // player.sendMessage(cmdprefix + "§3" + flytarget + " §fis no longer flying!");
+            // target.sendMessage(cmdprefix + "§fYou are no longer flying");
+
+            // } else if (!player.isFlying()) {
+            // player.setAllowFlight(true);
+            // target.setFlying(true);
+
+            // player.sendMessage(cmdprefix + "§3" + flytarget + " §fis now flying!");
+            // target.sendMessage(cmdprefix + "§fYou are now flying");
+
+            // } else {
+            // player.sendMessage(cmdprefix + "§fIf you see this message, the game things
+            // you/the player is somehow Flying & Not Flying, please contact Jakey");
+            // }
+            // }
+            // } else {
+            // player.sendMessage(nopermsmsg);
+            // }
+            // return true;
+
+            // case "rename":
+            // if (player.hasPermission("snw.rename")) {
+            // if (args.length == 0) {
+            // player.sendMessage(cmdprefix + "§fPlease provide arguments");
+            // } else {
+            // if (player.getInventory().getItemInMainHand().getType() == Material.AIR) {
+            // player.sendMessage(cmdprefix + "§fPlease hold an item.");
+            // } else {
+
+            // ItemStack item = player.getInventory().getItemInMainHand();
+            // ItemMeta meta = item.getItemMeta();
+            // String name = getParsedName(args);
+            // meta.setDisplayName(name);
+            // item.setItemMeta(meta);
+            // }
+            // }
+
+            // } else {
+            // player.sendMessage(nopermsmsg);
+            // }
+            // return true;
+
+            // case "unname":
+            // if (player.hasPermission("snw.rename")) {
+            // ItemStack item = player.getInventory().getItemInMainHand();
+            // ItemMeta meta = item.getItemMeta();
+            // meta.setDisplayName(null);
+            // item.setItemMeta(meta);
+            // } else {
+            // player.sendMessage(nopermsmsg);
+            // }
+            // return true;
+
+            // case "srename":
+            // if (player.hasPermission("snw.shulkerrename")) {
+            // if (args.length == 0) {
+            // player.sendMessage(cmdprefix + "§fPlease provide a name for your storage");
+            // } else {
+            // Material phand = player.getInventory().getItemInMainHand().getType();
+            // if (phand == Material.AIR || phand == null) {
+            // player.sendMessage(cmdprefix + "§fPlease hold a storage item to rename.");
+            // } else if (phand == Material.SHULKER_BOX || phand ==
+            // Material.WHITE_SHULKER_BOX || phand == Material.LIGHT_GRAY_SHULKER_BOX ||
+            // phand == Material.GRAY_SHULKER_BOX || phand == Material.BLACK_SHULKER_BOX ||
+            // phand == Material.BROWN_SHULKER_BOX ||
+            // phand == Material.RED_SHULKER_BOX || phand == Material.ORANGE_SHULKER_BOX ||
+            // phand == Material.YELLOW_SHULKER_BOX ||
+            // phand == Material.LIME_SHULKER_BOX || phand == Material.GREEN_SHULKER_BOX ||
+            // phand == Material.CYAN_SHULKER_BOX ||
+            // phand == Material.LIGHT_BLUE_SHULKER_BOX || phand ==
+            // Material.BLUE_SHULKER_BOX || phand == Material.PURPLE_SHULKER_BOX ||
+            // phand == Material.MAGENTA_SHULKER_BOX || phand == Material.PINK_SHULKER_BOX)
+            // {
+
+            // ItemStack item = player.getInventory().getItemInMainHand();
+            // ItemMeta meta = item.getItemMeta();
+            // String name = getParsedName(args);
+            // meta.setDisplayName(name);
+            // item.setItemMeta(meta);
+
+            // player.sendMessage(cmdprefix + "§fYou renamed your storage item to; " +
+            // getParsedName(args));
+
+            // } else {
+            // player.sendMessage(cmdprefix + "§fPlease hold a storage item to rename.");
+            // }
+            // }
+            // } else {player.sendMessage(nopermsmsg);
+            // }
+            // return true;
+
+            // case "glow":
+            // if (player.hasPermission("snw.glow")) {
+            // if (player.getInventory().getItemInMainHand().getType() == Material.AIR ||
+            // player.getInventory().getItemInMainHand().getAmount() == 0 ||
+            // player.getInventory().getItemInMainHand().getType() == null) {
+            // player.sendMessage(cmdprefix + "§fPlease hold an item.");
+            // } else {
+
+            // ItemStack item = player.getInventory().getItemInMainHand();
+            // ItemMeta meta = item.getItemMeta();
+            // meta.addEnchant(Enchantment.ARROW_INFINITE, 4341, true);
+            // meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+            // item.setItemMeta(meta);
+
+            // player.sendMessage(cmdprefix + "§fItem is now glowing");
+            // }
+            // } else {
+            // player.sendMessage(nopermsmsg);
+            // }
+            // return true;
+
+            // case "unglow":
+            // if (player.hasPermission("snw.glow")) {
+            // if (player.getInventory().getItemInMainHand().getType() == Material.AIR ||
+            // player.getInventory().getItemInMainHand().getAmount() == 0 ||
+            // player.getInventory().getItemInMainHand().getType() == null) {
+            // player.sendMessage(cmdprefix + "§fPlease hold an item.");
+            // } else {
+
+            // ItemStack item = player.getInventory().getItemInMainHand();
+            // ItemMeta meta = item.getItemMeta();
+            // meta.removeEnchant(Enchantment.ARROW_INFINITE);
+            // meta.removeItemFlags(ItemFlag.HIDE_ENCHANTS);
+            // item.setItemMeta(meta);
+
+            // player.sendMessage(cmdprefix + "§fItem is no longer glowing");
+
+            // }
+            // } else { player.sendMessage(nopermsmsg); }
+            // return true;
+
+            // case "broadcast":
+            // if (player.hasPermission("snw.broadcast")) {
+            // if (args.length == 0) {
+            // player.sendMessage(noargsmsg);
+            // }
+            // String allArgs = "";
+            // for (String arg : args) {
+            // allArgs += arg + " ";
+            // }
+
+            // Announcements.everyoneannoucne(allArgs);
+
+            // } else {
+            // player.sendMessage(nopermsmsg);
+            // }
+            // return true;
+
+            // case "staffbroadcast":
+            // if (player.hasPermission("snw.broadcast")) {
+            // /*if (args.length == 0) {
+            // player.sendMessage(noargsmsg);
+            // } */
+            // String allArgs = "";
+            // for (String arg : args) {
+            // allArgs += arg + " ";
+            // }
+
+            // //Announcements.staffannoucne(allArgs);
+            // player.sendMessage(allArgs);
+
+            // } else {
+            // player.sendMessage(nopermsmsg);
+            // }
+            // return true;
+
+            // case "adminbroadcast":
+            // if (player.hasPermission("*")) {
+            // if (args.length == 0) {
+            // player.sendMessage(noargsmsg);
+            // }
+            // String allArgs = "";
+            // for (String arg : args) {
+            // allArgs += arg + " ";
+            // }
+
+            // Announcements.adminannoucne(allArgs);
+
+            // } else {
+            // player.sendMessage(nopermsmsg);
+            // }
+            // return true;
+
+            // case "supporterbroadcast":
+            // if (player.hasPermission("snw.broadcast")) {
+            // if (args.length == 0) {
+            // player.sendMessage(noargsmsg);
+            // }
+            // String allArgs = "";
+            // for (String arg : args) {
+            // allArgs += arg + " ";
+            // }
+
+            // Announcements.supportersannoucne(allArgs);
+
+            // } else {
+            // player.sendMessage(nopermsmsg);
+            // }
+            // return true;
+
+            // case "permbroadcast":
+            // if (player.hasPermission("snw.broadcast")) {
+            // if (args.length <= 1) {
+            // player.sendMessage(noargsmsg);
+            // }
+            // String allArgs = "";
+            // String perms = args[0];
+            // for (int i = 1; i < args.length; i++) {
+            // allArgs = allArgs.concat(args[i]);
+            // allArgs = allArgs.concat(" ");
+            // }
+
+            // Announcements.permannoucne(perms, allArgs);
+
+            // } else {
+            // player.sendMessage(nopermsmsg);
+            // }
+            // return true;
+
+            // case "speed":
+            // if (player.hasPermission("snw.speed")) {
+            // if (args.length == 0 || args[0].equalsIgnoreCase("1")) {
+            // player.setFlySpeed(0.2F);
+            // player.setWalkSpeed(0.2F);
+            // player.sendMessage(cmdprefix + "§fReset player speed");
+            // return true;
+            // }
+            // if (Float.parseFloat(args[0]) <= 10.0F) {
+            // player.setFlySpeed(0.1F * Float.parseFloat(args[0]));
+            // player.setWalkSpeed(0.1F * Float.parseFloat(args[0]));
+            // player.sendMessage(cmdprefix + "§fSet player speed to " + args[0]);
+            // return true;
+            // }
+            // player.sendMessage(cmdprefix + "§3" + args[0] + "§f is either higher than 10,
+            // or an invalid argument");
+            // } else {player.sendMessage(nopermsmsg); }
+            // return true;
+
+            // case "sudo":
+            // if (player.hasPermission("snw.sudo")) {
+            // if (args.length < 2) {
+            // player.sendMessage(cmdprefix + "§fPlease use the command as §3/sudo <player>
+            // <command or message>");
+            // return true;
+            // }
+            // Player target = Bukkit.getPlayer(args[0].toLowerCase());
+            // if (target == null) {
+            // player.sendMessage(cmdprefix + "§fThat player is not online!");
+            // return true;
+            // } if (args[1] != null) {
+            // StringBuilder execution = new StringBuilder();
+            // for (int i = 1; i < args.length; i++) {
+            // execution.append(" ").append(args[i]);
+            // }
+            // if (execution.toString().trim().startsWith("c:")) {
+            // target.chat(execution.toString().trim().replace("c:", ""));
+            // player.sendMessage(cmdprefix + "§fForcing §3" + target.getDisplayName() + "
+            // §rto say §3" + execution.toString().trim().replace("c:", ""));
+            // return true;
+            // }
+            // player.getServer().dispatchCommand((CommandSender)target,
+            // execution.toString().trim());
+            // player.sendMessage(cmdprefix + "§fForcing §3" + target.getDisplayName() + "
+            // §rto run §3" + execution.toString().trim());
+            // return true;
+            // }
+            // } else {player.sendMessage(nopermsmsg); }
+            // return true;
+
+            // case "whomademe":
+            // if (player.hasPermission("displayname.default")) {
+            // player.sendMessage("");
+            // player.sendMessage(" §3[§dParadisu §bツ§3] Plugin");
+            // player.sendMessage("§c====================================");
+            // player.sendMessage("§dPlugin Coded by §3Jakey §d- §3Jakey#9999");
+            // player.sendMessage("§dPlugin Coded by §3Cyto §d- §3cyto ツ#7288");
+            // player.sendMessage("");
+            // player.sendMessage("§b§oWith help from:");
+            // player.sendMessage("§3RealInstantRamen §c- §f§oTrashcans & Model ID system");
+            // player.sendMessage("§3Andyinnie §c- §f§oEarly coin development");
+            // player.sendMessage("§3Kastle_ §c- §f§oPointing out dumb flaws i've made");
+            // player.sendMessage("");
+
+            // } else {player.sendMessage(nopermsmsg); }
+            // return true;
+
+            /*
+             * case "resetluckyblockleaderboard"
+             * if (player.hasPermission("snw.resetlb")) {
+             * getConfig().getConfigurationSection("playerdata");
+             * player.sendMessage(cmdprefix + "§fReset all lucky block amounts"));
+             * for (String key :
+             * getConfig().getConfigurationSection("playerdata").getKeys(false)) {
+             * String lb = key + ".lb";
+             * getConfig().getConfigurationSection("playerdata").set(lb,
+             * Integer.valueOf(0));
+             * }
+             * saveConfig();
+             * }
+             */
+
+            // case "list":
+            //     if (player.hasPermission("snw.list")) {
+
+            //         String owners = "";
+            //         String devs = "";
+            //         String builders = "";
+            //         String staff = "";
+            //         String supporters = "";
+            //         String visitors = "";
+            //         Integer onlineammount = Bukkit.getOnlinePlayers().size();
+
+            //         for (Player p : Bukkit.getOnlinePlayers()) {
+            //             String name = p.getName();
+
+            //             name = name.concat(", ");
+
+            //             if (p.hasPermission("meta.rank.owner")) {
+            //                 owners = owners.concat(name);
+            //             } else if (p.hasPermission("meta.rank.dev")) {
+            //                 devs = devs.concat(name);
+            //             } else if (p.hasPermission("meta.rank.builders")) {
+            //                 builders = builders.concat(name);
+            //             } else if (p.hasPermission("meta.rank.staff")) {
+            //                 staff = staff.concat(name);
+            //             } else if (p.hasPermission("meta.rank.supporters")) {
+            //                 supporters = supporters.concat(name);
+            //             } else {
+            //                 visitors = visitors.concat(name);
+            //             }
+            //         }
+
+            //         if (owners.length() != 0) {
+            //             owners = owners.substring(0, owners.length() - 2);
+            //         }
+            //         if (devs.length() != 0) {
+            //             devs = devs.substring(0, devs.length() - 2);
+
+            //         }
+            //         if (builders.length() != 0) {
+            //             builders = builders.substring(0, builders.length() - 2);
+
+            //         }
+            //         if (staff.length() != 0) {
+            //             staff = staff.substring(0, staff.length() - 2);
+
+            //         }
+            //         if (supporters.length() != 0) {
+            //             supporters = supporters.substring(0, supporters.length() - 2);
+
+            //         }
+            //         if (visitors.length() != 0) {
+            //             visitors = visitors.substring(0, visitors.length() - 2);
+
+            //         }
+
+            //         player.sendMessage("\uE013 " + cmdemph + onlineammount + " §fOnline Players \uE013" +
+            //                 "§r\n");
+
+            //         if (owners.length() != 0) {
+            //             player.sendMessage("§3\uE006 " + cmdemph + "\ue00d§f " + owners + "\n");
+            //         }
+            //         if (devs.length() != 0) {
+            //             player.sendMessage("§x§f§8§9§9§1§d\uE002 " + cmdemph + "\ue00d§f " + devs + "\n");
+            //         }
+            //         if (builders.length() != 0) {
+            //             player.sendMessage("§x§f§3§6§c§3§6\uE001 " + cmdemph + "\ue00d§f " + builders + "\n");
+            //         }
+            //         if (staff.length() != 0) {
+            //             player.sendMessage("§c\uE007 " + cmdemph + "\ue00d§f " + staff + "\n");
+            //         }
+            //         if (supporters.length() != 0) {
+            //             player.sendMessage("§d\uE008 " + cmdemph + "\ue00d§f " + supporters + "\n");
+            //         }
+            //         if (visitors.length() != 0) {
+            //             player.sendMessage("§7\uE00A " + cmdemph + "\ue00d§f " + visitors + "\n");
+            //         }
+
             //     } else {
             //         player.sendMessage(nopermsmsg);
             //     }
             //     return true;
 
-            // case "fly":
-            //     if (player.hasPermission("snw.fly")) {
-            //         if (args.length < 1) {
-            //             if (player.isFlying()) {
-            //                 player.setAllowFlight(false);
-            //                 player.setFlying(false);
+            // case "findplayercords":
+            //     if (player.hasPermission("snw.findplayercords")) {
+            //         if (args.length == 1) {
+            //             Player target = Bukkit.getPlayerExact(args[0]);
+            //             Location targetlocation = target.getLocation();
+            //             Integer tx = targetlocation.getBlockX();
+            //             Integer ty = targetlocation.getBlockY();
+            //             Integer tz = targetlocation.getBlockZ();
+            //             String tw = targetlocation.getWorld().getName();
 
-            //                 player.sendMessage(cmdprefix + "§fYou are no longer flying");
+            //             player.sendMessage(cmdprefix + "§fThe player§3 " + args[0] + " §fis in §3" + tw + "§f at" +
+            //                     " §3X » §d§o" + tx +
+            //                     " §3Y » §d§o" + ty +
+            //                     " §3Z » §d§o" + tz + "§f.");
 
-            //             } else if (!player.isFlying()) {
-            //                 player.setAllowFlight(true);
-            //                 player.setFlying(true);
-            //                 player.sendMessage(cmdprefix + "§fYou are now flying");
-
-            //             } else {
-            //                 player.sendMessage(cmdprefix + "§fHow can you be flying and not flying?");
-            //             }
-
-            //             // FLY OTHER
-            //             // FLY OTHER
-            //             // FLY OTHER
-            //         } else if (args.length >= 1 && player.hasPermission("snw.flyother")) {
-            //             String flytarget = args[0];
-            //             Player target = Bukkit.getServer().getPlayer(flytarget);
-
-            //             if (target.isFlying()) {
-            //                 player.setAllowFlight(false);
-            //                 target.setFlying(false);
-
-            //                 player.sendMessage(cmdprefix + "§3" + flytarget + " §fis no longer flying!");
-            //                 target.sendMessage(cmdprefix + "§fYou are no longer flying");
-
-            //             } else if (!player.isFlying()) {
-            //                 player.setAllowFlight(true);
-            //                 target.setFlying(true);
-
-            //                 player.sendMessage(cmdprefix + "§3" + flytarget + " §fis now flying!");
-            //                 target.sendMessage(cmdprefix + "§fYou are now flying");
-
-            //             } else {
-            //                 player.sendMessage(cmdprefix + "§fIf you see this message, the game things you/the player is somehow Flying & Not Flying, please contact Jakey");
-            //             }
+            //         } else {
+            //             player.sendMessage(cmdprefix + "§fNot enough or too many args.");
             //         }
             //     } else {
             //         player.sendMessage(nopermsmsg);
             //     }
             //     return true;
 
-            case "rename":
-                if (player.hasPermission("snw.rename")) {
-                    if (args.length == 0) {
-                        player.sendMessage(cmdprefix + "§fPlease provide arguments");
-                    } else {
-                        if (player.getInventory().getItemInMainHand().getType() == Material.AIR) {
-                            player.sendMessage(cmdprefix + "§fPlease hold an item.");
-                        } else {
-
-                            ItemStack item = player.getInventory().getItemInMainHand();
-                            ItemMeta meta = item.getItemMeta();
-                            String name = getParsedName(args);
-                            meta.setDisplayName(name);
-                            item.setItemMeta(meta);
-                        }
-                    }
-
-                } else {
-                    player.sendMessage(nopermsmsg);
-                }
-                return true;
-
-
-            case "unname":
-                if (player.hasPermission("snw.rename")) {
-                    ItemStack item = player.getInventory().getItemInMainHand();
-                    ItemMeta meta = item.getItemMeta();
-                    meta.setDisplayName(null);
-                    item.setItemMeta(meta);
-                } else {
-                    player.sendMessage(nopermsmsg);
-                }
-                return true;
-
-
-
-            case "srename":
-                if (player.hasPermission("snw.shulkerrename")) {
-                    if (args.length == 0) {
-                        player.sendMessage(cmdprefix + "§fPlease provide a name for your storage");
-                    } else {
-                        Material phand = player.getInventory().getItemInMainHand().getType();
-                        if (phand == Material.AIR || phand == null) {
-                            player.sendMessage(cmdprefix + "§fPlease hold a storage item to rename.");
-                        } else if (phand == Material.SHULKER_BOX || phand == Material.WHITE_SHULKER_BOX || phand == Material.LIGHT_GRAY_SHULKER_BOX ||
-                                phand == Material.GRAY_SHULKER_BOX || phand == Material.BLACK_SHULKER_BOX || phand == Material.BROWN_SHULKER_BOX ||
-                                phand == Material.RED_SHULKER_BOX || phand == Material.ORANGE_SHULKER_BOX || phand == Material.YELLOW_SHULKER_BOX ||
-                                phand == Material.LIME_SHULKER_BOX || phand == Material.GREEN_SHULKER_BOX || phand == Material.CYAN_SHULKER_BOX ||
-                                phand == Material.LIGHT_BLUE_SHULKER_BOX || phand == Material.BLUE_SHULKER_BOX || phand == Material.PURPLE_SHULKER_BOX ||
-                                phand == Material.MAGENTA_SHULKER_BOX || phand == Material.PINK_SHULKER_BOX) {
-
-                                        ItemStack item = player.getInventory().getItemInMainHand();
-                                        ItemMeta meta = item.getItemMeta();
-                                        String name = getParsedName(args);
-                                        meta.setDisplayName(name);
-                                        item.setItemMeta(meta);
-
-                            player.sendMessage(cmdprefix + "§fYou renamed your storage item to; " + getParsedName(args));
-
-
-                        } else {
-                            player.sendMessage(cmdprefix + "§fPlease hold a storage item to rename.");
-                        }
-                    }
-                } else {player.sendMessage(nopermsmsg);
-                }
-                return true;
-
-            case "glow":
-                if (player.hasPermission("snw.glow")) {
-                    if (player.getInventory().getItemInMainHand().getType() == Material.AIR || player.getInventory().getItemInMainHand().getAmount() == 0 || player.getInventory().getItemInMainHand().getType() == null) {
-                        player.sendMessage(cmdprefix + "§fPlease hold an item.");
-                    } else {
-
-                        ItemStack item = player.getInventory().getItemInMainHand();
-                        ItemMeta meta = item.getItemMeta();
-                        meta.addEnchant(Enchantment.ARROW_INFINITE, 4341, true);
-                        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                        item.setItemMeta(meta);
-
-                        player.sendMessage(cmdprefix + "§fItem is now glowing");
-                    }
-                } else {
-                    player.sendMessage(nopermsmsg);
-                }
-                return true;
-
-
-
-            case "unglow":
-                if (player.hasPermission("snw.glow")) {
-                    if (player.getInventory().getItemInMainHand().getType() == Material.AIR || player.getInventory().getItemInMainHand().getAmount() == 0 || player.getInventory().getItemInMainHand().getType() == null) {
-                        player.sendMessage(cmdprefix + "§fPlease hold an item.");
-                    } else {
-
-                    ItemStack item = player.getInventory().getItemInMainHand();
-                    ItemMeta meta = item.getItemMeta();
-                    meta.removeEnchant(Enchantment.ARROW_INFINITE);
-                    meta.removeItemFlags(ItemFlag.HIDE_ENCHANTS);
-                    item.setItemMeta(meta);
-
-                    player.sendMessage(cmdprefix + "§fItem is no longer glowing");
-
-                    }
-                } else { player.sendMessage(nopermsmsg); }
-                return true;
-
-            case "broadcast":
-                if (player.hasPermission("snw.broadcast")) {
-                        if (args.length == 0) {
-                            player.sendMessage(noargsmsg);
-                        }
-                        String allArgs = "";
-                        for (String arg : args) {
-                            allArgs += arg + " ";
-                        }
-
-                        Announcements.everyoneannoucne(allArgs);
-
-                    
-                } else {
-                    player.sendMessage(nopermsmsg);
-                }
-                return true;
-
-            case "staffbroadcast":
-                if (player.hasPermission("snw.broadcast")) {
-                    /*if (args.length == 0) {
-                        player.sendMessage(noargsmsg);
-                    } */
-                    String allArgs = "";
-                    for (String arg : args) {
-                        allArgs += arg + " ";
-                    }
-
-                    //Announcements.staffannoucne(allArgs);
-                    player.sendMessage(allArgs);
-
-                } else {
-                    player.sendMessage(nopermsmsg);
-                }
-                return true;
-                
-            case "adminbroadcast":
-                if (player.hasPermission("*")) {
-                    if (args.length == 0) {
-                        player.sendMessage(noargsmsg);
-                    }
-                    String allArgs = "";
-                    for (String arg : args) {
-                        allArgs += arg + " ";
-                    }
-
-                    Announcements.adminannoucne(allArgs);
-
-                } else {
-                    player.sendMessage(nopermsmsg);
-                }
-                return true;
-
-            case "supporterbroadcast":
-                if (player.hasPermission("snw.broadcast")) {
-                    if (args.length == 0) {
-                        player.sendMessage(noargsmsg);
-                    }
-                    String allArgs = "";
-                    for (String arg : args) {
-                        allArgs += arg + " ";
-                    }
-
-                    Announcements.supportersannoucne(allArgs);
-
-                } else {
-                    player.sendMessage(nopermsmsg);
-                }
-                return true;
-
-            case "permbroadcast":
-                if (player.hasPermission("snw.broadcast")) {
-                    if (args.length <= 1) {
-                        player.sendMessage(noargsmsg);
-                    }
-                    String allArgs = "";
-                    String perms = args[0];
-                    for (int i = 1; i < args.length; i++) {
-                        allArgs = allArgs.concat(args[i]);
-                        allArgs = allArgs.concat(" ");
-                    }
-
-                    Announcements.permannoucne(perms, allArgs);
-
-                } else {
-                    player.sendMessage(nopermsmsg);
-                }
-                return true;
-
-            case "speed":
-                if (player.hasPermission("snw.speed")) {
-                    if (args.length == 0 || args[0].equalsIgnoreCase("1")) {
-                            player.setFlySpeed(0.2F);
-                            player.setWalkSpeed(0.2F);
-                            player.sendMessage(cmdprefix + "§fReset player speed");
-                        return true;
-                    }
-                    if (Float.parseFloat(args[0]) <= 10.0F) {
-                            player.setFlySpeed(0.1F * Float.parseFloat(args[0]));
-                            player.setWalkSpeed(0.1F * Float.parseFloat(args[0]));
-                            player.sendMessage(cmdprefix + "§fSet player speed to " + args[0]);
-                        return true;
-                    }
-                        player.sendMessage(cmdprefix + "§3" + args[0] + "§f is either higher than 10, or an invalid argument");
-                } else {player.sendMessage(nopermsmsg); }
-                return true;
-
-            case "sudo":
-                if (player.hasPermission("snw.sudo")) {
-                    if (args.length < 2) {
-                        player.sendMessage(cmdprefix + "§fPlease use the command as §3/sudo <player> <command or message>");
-                        return true;
-                    }
-                    Player target = Bukkit.getPlayer(args[0].toLowerCase());
-                    if (target == null) {
-                        player.sendMessage(cmdprefix + "§fThat player is not online!");
-                        return true;
-                    }  if (args[1] != null) {
-                        StringBuilder execution = new StringBuilder();
-                        for (int i = 1; i < args.length; i++) {
-                            execution.append(" ").append(args[i]);
-                        }
-                        if (execution.toString().trim().startsWith("c:")) {
-                            target.chat(execution.toString().trim().replace("c:", ""));
-                            player.sendMessage(cmdprefix + "§fForcing §3" + target.getDisplayName() + " §rto say §3" + execution.toString().trim().replace("c:", ""));
-                            return true;
-                        }
-                        player.getServer().dispatchCommand((CommandSender)target, execution.toString().trim());
-                        player.sendMessage(cmdprefix + "§fForcing §3" + target.getDisplayName() + " §rto run §3" + execution.toString().trim());
-                        return true;
-                    }
-                } else {player.sendMessage(nopermsmsg); }
-                return true;
-
-            case "whomademe":
-                if (player.hasPermission("displayname.default")) {
-                    player.sendMessage("");
-                    player.sendMessage("           §3[§dParadisu §bツ§3] Plugin");
-                    player.sendMessage("§c====================================");
-                    player.sendMessage("§dPlugin Coded by §3Jakey §d- §3Jakey#9999");
-                    player.sendMessage("§dPlugin Coded by §3Cyto §d- §3cyto ツ#7288");
-                    player.sendMessage("");
-                    player.sendMessage("§b§oWith help from:");
-                    player.sendMessage("§3RealInstantRamen §c- §f§oTrashcans & Model ID system");
-                    player.sendMessage("§3Andyinnie §c- §f§oEarly coin development");
-                    player.sendMessage("§3Kastle_ §c- §f§oPointing out dumb flaws i've made");
-                    player.sendMessage("");
-
-                } else {player.sendMessage(nopermsmsg); }
-                return true;
-
-                /*
-                case "resetluckyblockleaderboard"
-                if (player.hasPermission("snw.resetlb")) {
-                    getConfig().getConfigurationSection("playerdata");
-                    player.sendMessage(cmdprefix + "§fReset all lucky block amounts"));
-                    for (String key : getConfig().getConfigurationSection("playerdata").getKeys(false)) {
-                        String lb = key + ".lb";
-                        getConfig().getConfigurationSection("playerdata").set(lb, Integer.valueOf(0));
-                    }
-                    saveConfig();
-                } */
-
-
-            case "list":
-                if (player.hasPermission("snw.list")) {
-
-                    String owners = "";
-                    String devs = "";
-                    String builders = "";
-                    String staff = "";
-                    String supporters = "";
-                    String visitors = "";
-                    Integer onlineammount = Bukkit.getOnlinePlayers().size();
-
-                    for (Player p : Bukkit.getOnlinePlayers()){
-                        String name = p.getName();
-
-                        name = name.concat(", ");
-
-                        if (p.hasPermission("meta.rank.owner")) {
-                            owners = owners.concat(name);
-                        } else if (p.hasPermission("meta.rank.dev")) {
-                            devs = devs.concat(name);
-                        } else if  (p.hasPermission("meta.rank.builders")) {
-                            builders = builders.concat(name);
-                        } else if (p.hasPermission("meta.rank.staff")) {
-                            staff = staff.concat(name);
-                        } else if (p.hasPermission("meta.rank.supporters")) {
-                            supporters = supporters.concat(name);
-                        } else {
-                            visitors = visitors.concat(name);
-                        }
-                    }
-
-                    if (owners.length() != 0){
-                        owners = owners.substring(0, owners.length() -2);
-                    }
-                    if (devs.length() != 0){
-                        devs = devs.substring(0, devs.length() -2);
-
-                    }
-                    if (builders.length() != 0){
-                        builders = builders.substring(0, builders.length() -2);
-
-                    }
-                    if (staff.length() != 0){
-                        staff = staff.substring(0, staff.length() -2);
-
-                    }
-                    if (supporters.length() != 0){
-                        supporters = supporters.substring(0, supporters.length() -2);
-
-                    }
-                    if (visitors.length() != 0){
-                        visitors = visitors.substring(0, visitors.length() -2);
-
-                    }
-
-
-
-
-                    player.sendMessage("\uE013 " + cmdemph + onlineammount + " §fOnline Players \uE013" +
-                            "§r\n");
-
-                    if (owners.length() != 0) {player.sendMessage("§3\uE006 " + cmdemph + "\ue00d§f " + owners + "\n");}
-
-                    if (devs.length() != 0) {player.sendMessage("§x§f§8§9§9§1§d\uE002 " + cmdemph + "\ue00d§f " + devs + "\n");}
-
-                    if (builders.length() != 0) {player.sendMessage("§x§f§3§6§c§3§6\uE001 " + cmdemph + "\ue00d§f " + builders + "\n");}
-
-                    if (staff.length() != 0) {player.sendMessage("§c\uE007 " + cmdemph + "\ue00d§f " + staff + "\n");}
-
-                    if (supporters.length() != 0) {player.sendMessage("§d\uE008 " + cmdemph + "\ue00d§f " + supporters + "\n");}
-
-                    if (visitors.length() != 0) {player.sendMessage("§7\uE00A " + cmdemph + "\ue00d§f " + visitors + "\n");}
-
-                } else {player.sendMessage(nopermsmsg); }
-                return true;
-
-            case "findplayercords":
-                if (player.hasPermission("snw.findplayercords")) {
-                    if (args.length == 1) {
-                        Player target = Bukkit.getPlayerExact(args[0]);
-                        Location targetlocation = target.getLocation();
-                        Integer tx = targetlocation.getBlockX();
-                        Integer ty = targetlocation.getBlockY();
-                        Integer tz = targetlocation.getBlockZ();
-                        String tw = targetlocation.getWorld().getName();
-
-
-
-                        player.sendMessage(cmdprefix + "§fThe player§3 " + args[0] + " §fis in §3" + tw + "§f at" +
-                                " §3X » §d§o" + tx +
-                                " §3Y » §d§o" + ty +
-                                " §3Z » §d§o" + tz + "§f.");
-
-
-                    } else { player.sendMessage(cmdprefix + "§fNot enough or too many args."); }
-                } else {player.sendMessage(nopermsmsg); }
-                return true;
-
-            case "currenttime":
-                if (player.hasPermission("snw.currenttime")) {
-                    Long ct = player.getWorld().getTime();
-
-                    // Converting time to Millitary
-                    long gameTime = ct;
-                    long hours = gameTime / 1000 + 6;
-                    hours %= 24;
-                    if (hours == 24) hours = 0;
-                    long minutes = (gameTime % 1000) * 60 / 1000;
-                    String mm = "0" + minutes;
-                    mm = mm.substring(mm.length() - 2, mm.length());
-
-                    // Converting to normal time
-                    long hoursparsed;
-                    String ampm;
-                    if (hours > 12) {
-                        ampm = "PM";
-                        hoursparsed = hours - 12;
-                    } else if (hours < 12 && hours > 0) {
-                        ampm = "AM";
-                        hoursparsed = hours;
-                    } else if (hours == 0) {
-                        hoursparsed = 1;
-                        ampm = "AM";
-                    } else if (hours == 12) {
-                        hoursparsed = 1;
-                        ampm = "PM";
-                    } else {
-                        hoursparsed = 123;
-                        ampm = "Error";
-                    }
-
-
-
-
-                    player.sendMessage(cmdprefix + "§fThe current time in" + cmdemph + " §lJapan §f§o(ingame)§f is " + cmdemph + hoursparsed + "§f:" + cmdemph + mm + " " + ampm + "§f.");
-
-                } else {player.sendMessage(nopermsmsg); }
-                return true;
-
+            // case "currenttime":
+            //     if (player.hasPermission("snw.currenttime")) {
+            //         Long ct = player.getWorld().getTime();
+
+            //         // Converting time to Millitary
+            //         long gameTime = ct;
+            //         long hours = gameTime / 1000 + 6;
+            //         hours %= 24;
+            //         if (hours == 24)
+            //             hours = 0;
+            //         long minutes = (gameTime % 1000) * 60 / 1000;
+            //         String mm = "0" + minutes;
+            //         mm = mm.substring(mm.length() - 2, mm.length());
+
+            //         // Converting to normal time
+            //         long hoursparsed;
+            //         String ampm;
+            //         if (hours > 12) {
+            //             ampm = "PM";
+            //             hoursparsed = hours - 12;
+            //         } else if (hours < 12 && hours > 0) {
+            //             ampm = "AM";
+            //             hoursparsed = hours;
+            //         } else if (hours == 0) {
+            //             hoursparsed = 1;
+            //             ampm = "AM";
+            //         } else if (hours == 12) {
+            //             hoursparsed = 1;
+            //             ampm = "PM";
+            //         } else {
+            //             hoursparsed = 123;
+            //             ampm = "Error";
+            //         }
+
+            //         player.sendMessage(cmdprefix + "§fThe current time in" + cmdemph + " §lJapan §f§o(ingame)§f is "
+            //                 + cmdemph + hoursparsed + "§f:" + cmdemph + mm + " " + ampm + "§f.");
+
+            //     } else {
+            //         player.sendMessage(nopermsmsg);
+            //     }
+            //     return true;
 
             case "mkill":
                 if (player.hasPermission("snw.mkill")) {
@@ -1266,11 +1563,12 @@ public class ParadisuCommands /*implements CommandExecutor*/ {
                                 double my = minecartlocation.getY();
                                 double mz = minecartlocation.getZ();
 
-
-                                if ((mx == px + radius || mx == px - radius) && (my == py + radius || mx == py - radius) && (mz == pz + radius || mz == pz - radius)) {
+                                if ((mx == px + radius || mx == px - radius) && (my == py + radius || mx == py - radius)
+                                        && (mz == pz + radius || mz == pz - radius)) {
                                     if (e.getType() == EntityType.MINECART) {
                                         e.remove();
-                                        player.sendMessage(cmdprefix + "§fWe removed all minecarts within the radius provided.");
+                                        player.sendMessage(
+                                                cmdprefix + "§fWe removed all minecarts within the radius provided.");
                                     }
                                 } else {
                                     player.sendMessage(cmdprefix + "§fThere were no minecarts within the radius.");
@@ -1282,18 +1580,20 @@ public class ParadisuCommands /*implements CommandExecutor*/ {
                     } else {
                         player.sendMessage(cmdprefix + "§fPlease provide 1 argument");
                     }
-                } else { player.sendMessage(nopermsmsg); }
+                } else {
+                    player.sendMessage(nopermsmsg);
+                }
                 return true;
 
             case "lightblocks":
                 if (player.hasPermission("snw.lightblocks")) {
-         //           Inventory inv = Bukkit.createInventory(null, 18, "§3§lLight Blocks");
+                    // Inventory inv = Bukkit.createInventory(null, 18, "§3§lLight Blocks");
 
                     ItemStack lightblocks = new ItemStack(Material.LIGHT);
 
                     // String dataString = "[level=10]";
 
-                    //BlockData lightdata = Bukkit.createBlockData(dataString);
+                    // BlockData lightdata = Bukkit.createBlockData(dataString);
 
                     // BlockData t = lightblocks.getType().createBlockData(dataString);
 
@@ -1301,7 +1601,6 @@ public class ParadisuCommands /*implements CommandExecutor*/ {
 
                 }
                 return true;
-
 
             case "ptime":
                 if (player.hasPermission("snw.ptime")) {
@@ -1317,11 +1616,12 @@ public class ParadisuCommands /*implements CommandExecutor*/ {
 
                         if (providedtime > 0 && providedtime < 24000) {
                             player.setPlayerTime(providedtime, false);
-                            player.sendMessage(cmdprefix + "§fYour player time has been set to " + cmdemph + args[0] + "§f.");
-
+                            player.sendMessage(
+                                    cmdprefix + "§fYour player time has been set to " + cmdemph + args[0] + "§f.");
 
                         } else {
-                            player.sendMessage(cmdprefix + "§fPlease provide a time between " + cmdemph + "0§f-" + cmdemph + "24000§f.");
+                            player.sendMessage(cmdprefix + "§fPlease provide a time between " + cmdemph + "0§f-"
+                                    + cmdemph + "24000§f.");
                         }
                     } else if (args.length == 2) {
                         Player target = Bukkit.getPlayerExact(args[1]);
@@ -1334,19 +1634,18 @@ public class ParadisuCommands /*implements CommandExecutor*/ {
                             Long providedtime = Long.valueOf(args[0]);
                             if (providedtime > 0 && providedtime < 24000) {
                                 target.setPlayerTime(providedtime, false);
-                                target.sendMessage(cmdprefix + "§fYour player time has been set to " + cmdemph + args[0] + "§f.");
-                                player.sendMessage(cmdprefix + "§fTheir player time has been set to " + cmdemph + args[0] + "§f.");
+                                target.sendMessage(
+                                        cmdprefix + "§fYour player time has been set to " + cmdemph + args[0] + "§f.");
+                                player.sendMessage(
+                                        cmdprefix + "§fTheir player time has been set to " + cmdemph + args[0] + "§f.");
                             } else {
-                                player.sendMessage(cmdprefix + "§fPlease provide a time between " + cmdemph + "0§f-" + cmdemph + "24000§f.");
+                                player.sendMessage(cmdprefix + "§fPlease provide a time between " + cmdemph + "0§f-"
+                                        + cmdemph + "24000§f.");
                             }
-
-
 
                         } catch (NullPointerException e) {
                             player.sendMessage(cmdprefix + "§fThis player does not exist or is offline.");
                         }
-
-
 
                     }
 
@@ -1355,115 +1654,117 @@ public class ParadisuCommands /*implements CommandExecutor*/ {
                 }
                 return true;
 
-
             case "syncjapantime":
                 if (player.hasPermission("snw.synctime")) {
 
-                    /*Calendar calTokyo = Calendar.getInstance();
-                    calTokyo.setTimeZone(TimeZone.getTimeZone("Asia/Tokyo"));
-                    long tokyohour = calTokyo.get(Calendar.HOUR_OF_DAY);
-                    double tokyominute = calTokyo.get(Calendar.MINUTE);
-                    double tokyoseconds = calTokyo.get(Calendar.SECOND);
-
-                    long tokyohourtick;
-                    if (tokyohour >= 6) { tokyohourtick = (tokyohour * 1000) - 6000; } else {
-                        tokyohourtick = (tokyohour * 1000) + 18000; }
-                    double tokyominsec = (tokyominute * 60d) + tokyoseconds;
-                    double tokyosecondstick = (tokyominsec/3600d) * 1000d;
-                    long tokyotimeticks = (long) (tokyosecondstick + tokyohourtick);
-
-                    Bukkit.getServer().getWorld(player.getWorld().getName()).setTime(tokyotimeticks);*/ 
+                    /*
+                     * Calendar calTokyo = Calendar.getInstance();
+                     * calTokyo.setTimeZone(TimeZone.getTimeZone("Asia/Tokyo"));
+                     * long tokyohour = calTokyo.get(Calendar.HOUR_OF_DAY);
+                     * double tokyominute = calTokyo.get(Calendar.MINUTE);
+                     * double tokyoseconds = calTokyo.get(Calendar.SECOND);
+                     * 
+                     * long tokyohourtick;
+                     * if (tokyohour >= 6) { tokyohourtick = (tokyohour * 1000) - 6000; } else {
+                     * tokyohourtick = (tokyohour * 1000) + 18000; }
+                     * double tokyominsec = (tokyominute * 60d) + tokyoseconds;
+                     * double tokyosecondstick = (tokyominsec/3600d) * 1000d;
+                     * long tokyotimeticks = (long) (tokyosecondstick + tokyohourtick);
+                     * 
+                     * Bukkit.getServer().getWorld(player.getWorld().getName()).setTime(
+                     * tokyotimeticks);
+                     */
                     JapanTime.setJapanTime();
                     player.sendMessage(cmdprefix + "§fWe set the server time to " + cmdemph + "Japanese §ftime.");
-                    
-
 
                 } else {
                     player.sendMessage(nopermsmsg);
                 }
                 return true;
 
-
             case "synctimezone":
                 if (player.hasPermission("snw.synctime")) {
-                
+
                     if (args.length == 0) {
 
                         player.sendMessage(noargsmsg);
 
                     } else {
                         String timezone = args[0];
-                
+
                         try {
 
                             JapanTime.setAnyTime(timezone);
-                            player.sendMessage(cmdprefix + "§fWe set the server time to " + cmdemph + timezone + " §ftime.");
+                            player.sendMessage(
+                                    cmdprefix + "§fWe set the server time to " + cmdemph + timezone + " §ftime.");
 
                         } catch (Exception e) {
 
                             player.sendMessage(cmdprefix + "§fTimezone does not exist");
 
+                        }
                     }
-                }
 
                 } else {
                     player.sendMessage(nopermsmsg);
                 }
                 return true;
 
- /*
-            case "staffannouncement":
-                if (player.hasPermission("snw.")) {
-                    String text = getParsedName(args);
-                    Announcements.permannoucne("group.visitor", text);
-                    return true;
-                } */
+            /*
+             * case "staffannouncement":
+             * if (player.hasPermission("snw.")) {
+             * String text = getParsedName(args);
+             * Announcements.permannoucne("group.visitor", text);
+             * return true;
+             * }
+             */
 
             case "stack":
                 if (player.hasPermission("snw.stack")) {
-                if(args.length == 0) {
-                    player.sendMessage(cmdprefix + "§fIncorrect usage; Please use '/stack <player on me> or /stack <player> <on another player>'");
-                    return false;
-                }
-                else if(args.length == 1){
-                    if(Bukkit.getPlayer(args[0]) == null) {
-                        player.sendMessage(cmdprefix + "§fIncorrect usage; Please use '/stack <player on me> or /stack <player> <on another player>'");
+                    if (args.length == 0) {
+                        player.sendMessage(cmdprefix
+                                + "§fIncorrect usage; Please use '/stack <player on me> or /stack <player> <on another player>'");
                         return false;
+                    } else if (args.length == 1) {
+                        if (Bukkit.getPlayer(args[0]) == null) {
+                            player.sendMessage(cmdprefix
+                                    + "§fIncorrect usage; Please use '/stack <player on me> or /stack <player> <on another player>'");
+                            return false;
+                        }
+                        player.addPassenger(Bukkit.getPlayer(args[0]));
+                    } else if (args.length == 2) {
+                        if (Bukkit.getPlayer(args[1]) == null) {
+                            player.sendMessage(cmdprefix
+                                    + "§fIncorrect usage; Please use '/stack <player on me> or /stack <player> <on another player>'");
+                            return false;
+                        }
+                        Bukkit.getPlayer(args[1]).addPassenger(Bukkit.getPlayer(args[0]));
                     }
-                    player.addPassenger(Bukkit.getPlayer(args[0]));
+                } else {
+                    player.sendMessage(nopermsmsg);
                 }
-                else if (args.length == 2) {
-                    if(Bukkit.getPlayer(args[1]) == null) {
-                        player.sendMessage(cmdprefix + "§fIncorrect usage; Please use '/stack <player on me> or /stack <player> <on another player>'");
-                        return false;
-                    }
-                    Bukkit.getPlayer(args[1]).addPassenger(Bukkit.getPlayer(args[0]));
-                }
-            } else {
-                player.sendMessage(nopermsmsg);
-            }
                 return true;
 
             case "estack":
-            if (player.hasPermission("snw.stack")) {
+                if (player.hasPermission("snw.stack")) {
 
-                Entity entity = (Entity) player.getWorld().rayTraceEntities(player.getLocation(), player.getLocation().getDirection(), 5);
+                    Entity entity = (Entity) player.getWorld().rayTraceEntities(player.getLocation(),
+                            player.getLocation().getDirection(), 5);
 
-                if (entity != null) {
+                    if (entity != null) {
 
-                    entity.addPassenger(player);
+                        entity.addPassenger(player);
 
+                    }
+
+                } else {
+                    player.sendMessage(nopermsmsg);
                 }
-
-            } else  {
-                player.sendMessage(nopermsmsg);
-            }
-            return true;
-
+                return true;
 
             default:
-                    return false;
-                    //complain
+                return false;
+            // complain
         }
     }
 }
