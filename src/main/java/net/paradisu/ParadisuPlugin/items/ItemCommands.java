@@ -37,80 +37,41 @@ public class ItemCommands {
     @CommandPermission("paradiu.givecoin")
     @CommandMethod("givecoin <player> <amount>")
     public void giveCoinPlayerAmount(CommandSender sender,
-                                     @Argument("player") String player,
+                                     @Argument("player") Player player,
                                      @Argument("amount") int amount) {
-        Player p = (Player) sender;
-
-        if (player == null && amount == 0) {
-            p.getInventory().addItem(new ParadisuCoin());
-            p.sendMessage(cmdprefix + "§fWe gave you a coin!");
-
-        } else if (player == null) {
-            p.getInventory().addItem(new ParadisuCoin(amount));
-            p.sendMessage(cmdprefix + "§fWe gave you " + cmdemph + amount + " §fcoins!");
-        } else {
-            Player target = Bukkit.getPlayer(player);
-            if (target == null) {
-                p.sendMessage(cmdprefix + "§fThis player does not exist or is offline.");
-                return;
-            }
-            if (amount == 0) {
-                target.getInventory().addItem(new ParadisuCoin());
-                target.sendMessage(cmdprefix + "§fYou received a coin!");
-            } else {
-                target.getInventory().addItem(new ParadisuCoin(amount));
-                target.sendMessage(cmdprefix + "§fYou received " + cmdemph + amount + " §fcoins!");
-            }
-        }
+        player.getInventory().addItem(new ParadisuCoin(amount));
+        player.sendMessage(cmdprefix + "§fYou received " + cmdemph + amount + " §fcoins!");    
     }
+    
 
     @CommandPermission("paradisu.givestarcoin")
     @CommandMethod("givestarcoin")
     public void giveStarCoin(CommandSender sender) {
         Player p = (Player) sender;
         p.getInventory().addItem(new StarCoin());
-        sender.sendMessage(ChatColor.GREEN + "Gave you a star coin!");
+        p.sendMessage(ChatColor.GREEN + "Gave you a star coin!");
     }
 
     @CommandPermission("paradisu.givestarcoin")
     @CommandMethod("givestarcoin <player> <amount>")
     public void giveStarCoin(CommandSender sender,
-                             @Argument("player") String player,
+                             @Argument("player") Player player,
                              @Argument("amount") int amount) {
-        Player p = (Player) sender;
-        if (player == null && amount == 0) {
-            p.getInventory().addItem(new StarCoin(amount));
-            p.sendMessage(cmdprefix + "§fWe gave you a coin!");
-
-        } else if (player == null) {
-            p.getInventory().addItem(new StarCoin(amount));
-            p.sendMessage(cmdprefix + "§fWe gave you " + cmdemph + amount + " §fcoins!");
-        } else if (amount == 0) {
-            Player target = Bukkit.getPlayer(player);
-            target.getInventory().addItem(new StarCoin(amount));
-            target.sendMessage(cmdprefix + "§fYou received a coin!");
-        } else {
-            Player target = Bukkit.getPlayer(player);
-            target.getInventory().addItem(new StarCoin(amount));
-            target.sendMessage(cmdprefix + "§fYou received " + cmdemph + amount + " §fcoins!");
-        }
+        player.getInventory().addItem(new StarCoin(amount));
+        player.sendMessage(cmdprefix + "§fYou received " + cmdemph + amount + " §fcoins!");
     }
 
     @CommandPermission("paradisu.skull")
     @CommandMethod("skull [player]")
     public void skull(CommandSender sender,
-                      @Argument("player") String player) {
+                      @Argument("player") Player player) {
         Player p = (Player) sender;
         if (player == null) {
             p.getInventory().addItem(new ParadisuHead(p));
         } else {
-            Player target = Bukkit.getPlayer(player);
-            if (target == null) {
-                p.sendMessage(cmdprefix + "§fThis player does not exist or is offline.");
-                return;
-            }
+            Player target = player;
             p.getInventory().addItem(new ParadisuHead(target));
-            p.sendMessage(cmdprefix + "§fWe successfully gave you the head of §3§n" + player + "§f!");
+            p.sendMessage(cmdprefix + "§fWe successfully gave you the head of §3§n" + player.getName() + "§f!");
         }
     }
 

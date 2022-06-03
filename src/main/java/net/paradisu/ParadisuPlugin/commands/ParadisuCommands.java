@@ -30,13 +30,9 @@ public class ParadisuCommands {
     @CommandPermission("paradisu.invsee")
     @CommandMethod("invsee|invs <player>")
     public void invsee(CommandSender sender,
-            @Argument("player") String player) {
+            @Argument("player") Player player) {
         Player p = (Player) sender;
-        Player target = Bukkit.getPlayer(player);
-        if (target == null) {
-            p.sendMessage(cmdprefix + "§fThis player does not exist or is offline.");
-            return;
-        }
+        Player target = player;
 
         Inventory inv = Bukkit.createInventory(null, 54, "§f" + target.getName() + "'s Inventory");
         PlayerInventory playerInv = target.getInventory();
@@ -143,10 +139,10 @@ public class ParadisuCommands {
     @CommandPermission("paradisu.findplayer")
     @CommandMethod("findplayer|find|findplayercoords <player>")
     public void findPlayer(CommandSender sender,
-        @Argument("player") String playerToFind
+        @Argument("player") Player playerToFind
     ){
         Player player = (Player) sender;
-        Player target = Bukkit.getPlayerExact(playerToFind);
+        Player target = playerToFind;
         if(target == null) {
             player.sendMessage(cmdprefix + "§fPlayer not found.");
             return;

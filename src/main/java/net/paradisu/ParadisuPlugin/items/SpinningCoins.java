@@ -31,7 +31,7 @@ public class SpinningCoins extends BukkitRunnable {
 
     @Override
     public void run() {
-        // TODO Auto-generated method stub
+        return;
         
     }
 }

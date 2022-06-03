@@ -146,13 +146,9 @@ public class EssentialCommands /* MEANT FOR ANY REWRITTEN VANILLA/QOL COMMANDS *
     @CommandPermission("paradisu.clearinv.other")
     @CommandMethod("clearinv|clear|clearinventory <player>")
     public void clearInvOther(CommandSender sender,
-                              @Argument("player") String player) {
+                              @Argument("player") Player player) {
         Player p = (Player) sender;
-        Player target = Bukkit.getPlayer(player);
-        if (target == null) {
-            p.sendMessage(cmdprefix + "§fThis player does not exist or is offline.");
-            return;
-        }
+        Player target = player;
         target.getInventory().clear();
         target.sendMessage(cmdprefix + "§fYour inventory has been cleared.");
     }
@@ -174,13 +170,9 @@ public class EssentialCommands /* MEANT FOR ANY REWRITTEN VANILLA/QOL COMMANDS *
     @CommandPermission("paradisu.fly.other")
     @CommandMethod("fly <player>")
     public void flyOther(CommandSender sender,
-                         @Argument("player") String player) {
+                         @Argument("player") Player player) {
         Player p = (Player) sender;
-        Player target = Bukkit.getPlayer(player);
-        if (target == null) {
-            p.sendMessage(cmdprefix + "§fThis player does not exist or is offline.");
-            return;
-        }
+        Player target = player;
         if (target.isFlying()) {
             target.setAllowFlight(false);
             target.setFlying(false);
