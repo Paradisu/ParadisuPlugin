@@ -32,7 +32,7 @@ public class ModelScrollerCommands implements CommandExecutor {
         switch (command.getName().toLowerCase()) {
 
             case "modelscrollerswitch":
-                if (player.hasPermission("snw.modelscroller")) {
+                if (player.hasPermission("paradisu.modelscroller")) {
 
                     World world = player.getWorld();
 

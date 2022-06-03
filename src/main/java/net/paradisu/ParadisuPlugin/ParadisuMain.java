@@ -152,7 +152,7 @@ public class ParadisuMain extends JavaPlugin {
         // EVENTS
         // =================
         getServer().getPluginManager().registerEvents(new ToyEvents(), this);
-        getServer().getPluginManager().registerEvents(new SnwEvents(), this);
+        getServer().getPluginManager().registerEvents(new ParadisuEvents(), this);
         getServer().getPluginManager().registerEvents(new GuiListeners(), this);
         getServer().getPluginManager().registerEvents(new PlayerDataEvents(), this);
         getServer().getPluginManager().registerEvents(new ModelScrollerEvents(), this);

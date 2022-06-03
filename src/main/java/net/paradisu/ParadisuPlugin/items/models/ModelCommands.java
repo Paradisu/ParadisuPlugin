@@ -31,7 +31,7 @@ public class ModelCommands implements CommandExecutor {
         switch (cmd.getName().toLowerCase()) {
 
             case "mgive":
-                if (player.hasPermission("snw.model")) {
+                if (player.hasPermission("paradisu.model")) {
                     if (args.length == 0) {
                         player.openInventory(ModelGiveInv.getFirstInv(true));
                         // player.openInventory(PropModelInv.getInvs().get(0));
@@ -65,7 +65,7 @@ public class ModelCommands implements CommandExecutor {
 
 
             case "hgive":
-                if (player.hasPermission("snw.model")) {
+                if (player.hasPermission("paradisu.model")) {
 
                     if (args.length == 0) {
                         player.openInventory(ModelGiveInv.getFirstInv(false));
@@ -100,7 +100,7 @@ public class ModelCommands implements CommandExecutor {
                 return true;
 
             case "mhat":
-                if (player.hasPermission("snw.model")) {
+                if (player.hasPermission("paradisu.model")) {
 
                     if (args.length == 1) {
 
