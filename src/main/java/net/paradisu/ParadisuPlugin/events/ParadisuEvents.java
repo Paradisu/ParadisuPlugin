@@ -36,7 +36,7 @@ import net.paradisu.ParadisuPlugin.items.GenItemManager;
 import net.paradisu.ParadisuPlugin.items.invs.TrashCan;
 import net.paradisu.ParadisuPlugin.util.InventoryGUI;
 
-public class SnwEvents implements Listener {
+public class ParadisuEvents implements Listener {
 
     // private static HashMap<Player, ItemStack> ident = new HashMap<>();
 
@@ -45,7 +45,7 @@ public class SnwEvents implements Listener {
 
     private DataSource dataSource;
 
-    public SnwEvents(){
+    public ParadisuEvents(){
         dataSource = ParadisuMain.getDBCon();
     }
     
@@ -60,7 +60,7 @@ public class SnwEvents implements Listener {
         joiner.sendMessage("\uE016 §fBe sure to do " + cmdemph + "/audio§f.");
         joiner.sendMessage("\uE013 §f| \uE013");
 
-        if (!joiner.hasPermission("snw.nospawnonjoin")) {
+        if (!joiner.hasPermission("paradisu.nospawnonjoin")) {
             World world = joiner.getWorld();
             Location loc = new Location(world, 82.5, 86.1, -741.5, 75, 0);    // 82.5 86.1 -741.5
             joiner.setGameMode(GameMode.ADVENTURE);
@@ -159,7 +159,7 @@ public class SnwEvents implements Listener {
 
     @EventHandler
     public void PlayerCraft(CraftItemEvent cie) {
-        if (!cie.getWhoClicked().hasPermission("snw.allowcraft")) {
+        if (!cie.getWhoClicked().hasPermission("paradisu.allowcraft")) {
             cie.setCancelled(true);
         }
     }

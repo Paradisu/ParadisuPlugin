@@ -28,7 +28,7 @@ public class ProtoLibBasicCommands implements CommandExecutor {
         switch (command.getName().toLowerCase()) {
 
             case "entitycontrol": // Thank you pocketkid2
-                if (player.hasPermission("snw.entitycontrol")) {
+                if (player.hasPermission("paradisu.entitycontrol")) {
 
                     RayTraceResult Get_Looked_At = player.getWorld().rayTraceEntities(player.getEyeLocation().add(player.getLocation().getDirection()), player.getLocation().getDirection(), 10.0D);
 

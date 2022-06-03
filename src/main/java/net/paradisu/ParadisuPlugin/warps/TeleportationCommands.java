@@ -29,7 +29,7 @@ public class TeleportationCommands implements CommandExecutor {
         switch (cmd.getName().toLowerCase()) {
 
             case "tphere":
-                if (player.hasPermission("snw.tphere") || player.hasPermission("snw.tp.*")) {
+                if (player.hasPermission("paradisu.tphere") || player.hasPermission("paradisu.tp.*")) {
 
                     if (args.length == 1) {
                         try {
@@ -48,7 +48,7 @@ public class TeleportationCommands implements CommandExecutor {
                 return true;
 
             case "tp":
-                if (player.hasPermission("snw.tp") || player.hasPermission("snw.tp.*")) {
+                if (player.hasPermission("paradisu.tp") || player.hasPermission("paradisu.tp.*")) {
                     if (args.length < 1) {
                         player.sendMessage(cmdprefix + "§fPlease do §3/tp User §f§oor");
                         player.sendMessage(cmdprefix + "§fPlease do §3/tp User User");
@@ -86,7 +86,7 @@ public class TeleportationCommands implements CommandExecutor {
                 return true;
 
             case "cordstp":
-                if (player.hasPermission("snw.ctp") || player.hasPermission("snw.tp.*")) {
+                if (player.hasPermission("paradisu.ctp") || player.hasPermission("paradisu.tp.*")) {
 
                     if (args.length == 3) {
 
