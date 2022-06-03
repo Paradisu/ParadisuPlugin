@@ -12,7 +12,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import net.paradisu.ParadisuPlugin.ParadisuMain;
 import net.paradisu.ParadisuPlugin.items.models.ModelGiveInv;
