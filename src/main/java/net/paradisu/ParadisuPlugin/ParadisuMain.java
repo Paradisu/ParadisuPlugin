@@ -1,24 +1,12 @@
 package net.paradisu.ParadisuPlugin;
 
 
-import net.paradisu.ParadisuPlugin.items.ItemCommands;
-import net.paradisu.ParadisuPlugin.items.models.modelscroller.ModelScrollerEvents;
-import net.paradisu.ParadisuPlugin.playerdata.PlayerDataEvents;
-import net.paradisu.ParadisuPlugin.commands.EssentialCommands;
-import net.paradisu.ParadisuPlugin.commands.ParadisuCommands;
-import net.paradisu.ParadisuPlugin.events.*;
-import net.paradisu.ParadisuPlugin.items.SpinningCoins;
-import net.paradisu.ParadisuPlugin.items.ToyEvents;
-import net.paradisu.ParadisuPlugin.items.models.ModelCommands;
-import net.paradisu.ParadisuPlugin.items.models.ModelGiveInv;
-import net.paradisu.ParadisuPlugin.items.models.ModelItemManager;
-import net.paradisu.ParadisuPlugin.shops.ShopCommands;
-import net.paradisu.ParadisuPlugin.shops.ShopGuis;
-import net.paradisu.ParadisuPlugin.util.DatabaseConnection;
-import net.paradisu.ParadisuPlugin.warps.TeleportationCommands;
-import net.paradisu.ParadisuPlugin.warps.WarpCommands;
-import net.paradisu.ParadisuPlugin.warps.WarpsDataHandler;
-import net.paradisu.ParadisuPlugin.util.TimeZone;
+import java.io.File;
+import java.io.IOException;
+import java.util.function.Function;
+
+import javax.sql.DataSource;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -32,13 +20,25 @@ import cloud.commandframework.annotations.AnnotationParser;
 import cloud.commandframework.execution.CommandExecutionCoordinator;
 import cloud.commandframework.meta.SimpleCommandMeta;
 import cloud.commandframework.paper.PaperCommandManager;
-
-import java.io.File;
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.function.Function;
-
-import javax.sql.DataSource;
+import net.paradisu.ParadisuPlugin.commands.EssentialCommands;
+import net.paradisu.ParadisuPlugin.commands.ParadisuCommands;
+import net.paradisu.ParadisuPlugin.events.GuiListeners;
+import net.paradisu.ParadisuPlugin.events.ParadisuEvents;
+import net.paradisu.ParadisuPlugin.items.ItemCommands;
+import net.paradisu.ParadisuPlugin.items.SpinningCoins;
+import net.paradisu.ParadisuPlugin.items.ToyEvents;
+import net.paradisu.ParadisuPlugin.items.models.ModelCommands;
+import net.paradisu.ParadisuPlugin.items.models.ModelGiveInv;
+import net.paradisu.ParadisuPlugin.items.models.ModelItemManager;
+import net.paradisu.ParadisuPlugin.items.models.modelscroller.ModelScrollerEvents;
+import net.paradisu.ParadisuPlugin.playerdata.PlayerDataEvents;
+import net.paradisu.ParadisuPlugin.shops.ShopCommands;
+import net.paradisu.ParadisuPlugin.shops.ShopGuis;
+import net.paradisu.ParadisuPlugin.util.DatabaseConnection;
+import net.paradisu.ParadisuPlugin.util.TimeZone;
+import net.paradisu.ParadisuPlugin.warps.TeleportationCommands;
+import net.paradisu.ParadisuPlugin.warps.WarpCommands;
+import net.paradisu.ParadisuPlugin.warps.WarpsDataHandler;
 
 public class ParadisuMain extends JavaPlugin {
 
@@ -70,22 +70,17 @@ public class ParadisuMain extends JavaPlugin {
     private static DataSource dataSource;
     public static CommandManager<CommandSender> manager;
     public static AnnotationParser<CommandSender> annotationParser;
+    public static BukkitScheduler scheduler;
 
     @Override
     public void onEnable() {
 
-        
-        createEnvFiles();
-        saveEnvConfig();
-
         try {
+            createEnvFiles();
+            saveEnvConfig();
             dataSource = DatabaseConnection.initParadisuSQLCon();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        try {
             manager = new PaperCommandManager<>(this, CommandExecutionCoordinator.simpleCoordinator(), Function.identity(), Function.identity());
+            scheduler = getServer().getScheduler();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -96,29 +91,20 @@ public class ParadisuMain extends JavaPlugin {
             parameters -> SimpleCommandMeta.empty() 
         );
 
-        
-
         annotationParser.parse(new WarpCommands());
         annotationParser.parse(new EssentialCommands());
         annotationParser.parse(new ParadisuCommands());
         annotationParser.parse(new ItemCommands());
+        annotationParser.parse(new TeleportationCommands());
 
-
-
-        // =================
-        // TPING COMMANDS
-        // =================
-        getCommand("tphere").setExecutor(new TeleportationCommands());
-        getCommand("tp").setExecutor(new TeleportationCommands());
-        getCommand("cordstp").setExecutor(new TeleportationCommands());
-        //
-        // =================
-        // WARPS COMMANDS
-        // =================
-        
-
+        ModelItemManager.updateModelData();
+        ModelGiveInv.createAllInvs();
+        ShopGuis.initShops();
+        TimeZone.setJapanTime();
         WarpsDataHandler.updateWarpData();
 
+
+        
         // =================
         // MODEL COMMANDS
         // =================
@@ -143,11 +129,6 @@ public class ParadisuMain extends JavaPlugin {
         createShopGuiFiles();
         saveShopGuiConfig();
 
-        ModelItemManager.updateModelData();
-        ModelGiveInv.createAllInvs();
-        ShopGuis.initShops();
-        TimeZone.setJapanTime();
-
         // =================
         // EVENTS
         // =================
@@ -161,7 +142,6 @@ public class ParadisuMain extends JavaPlugin {
                 "| [Paradisu] Plugin now Active |\n" + ChatColor.GREEN +
                 "|------------------------------|");
 
-        BukkitScheduler scheduler = getServer().getScheduler();
         scheduler.scheduleSyncRepeatingTask(this, new Runnable() {
             @Override
             public void run() {

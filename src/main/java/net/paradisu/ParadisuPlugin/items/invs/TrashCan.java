@@ -2,6 +2,7 @@ package net.paradisu.ParadisuPlugin.items.invs;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -23,7 +24,7 @@ public class TrashCan implements InventoryGUI{
 
     @Override
     public Inventory getInventory() {
-        Inventory inv = Bukkit.createInventory(null, 36, "§3✮ §dTRASHCAN §3✮");
+        Inventory inv = Bukkit.createInventory(this, 36, "§3✮ §dTRASHCAN §3✮");
 
         for(int i=27; i<36; i++)
             inv.setItem(i, new BlankItem());
@@ -34,7 +35,7 @@ public class TrashCan implements InventoryGUI{
 
     @Override
     public void onClick(InventoryClickEvent e) {
-        
-        
+        if(e.getSlot() == 35) e.getWhoClicked().closeInventory();
+        else if (e.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) e.setCancelled(false);
     }
 }

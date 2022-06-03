@@ -129,7 +129,6 @@ public class ParadisuEvents implements Listener {
     public void onInventoryClick(InventoryClickEvent e) {
         // e.setCancelled(true);
         if(e.getInventory().getHolder() instanceof InventoryGUI) {
-            e.getWhoClicked().sendMessage("test");
             e.setCancelled(true);
             InventoryGUI gui = (InventoryGUI) e.getInventory().getHolder();
             gui.onClick(e);

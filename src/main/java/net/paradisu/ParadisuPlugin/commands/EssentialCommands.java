@@ -1,6 +1,5 @@
 package net.paradisu.ParadisuPlugin.commands;
 
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -147,7 +146,6 @@ public class EssentialCommands /* MEANT FOR ANY REWRITTEN VANILLA/QOL COMMANDS *
     @CommandMethod("clearinv|clear|clearinventory <player>")
     public void clearInvOther(CommandSender sender,
                               @Argument("player") Player player) {
-        Player p = (Player) sender;
         Player target = player;
         target.getInventory().clear();
         target.sendMessage(cmdprefix + "§fYour inventory has been cleared.");
@@ -171,7 +169,6 @@ public class EssentialCommands /* MEANT FOR ANY REWRITTEN VANILLA/QOL COMMANDS *
     @CommandMethod("fly <player>")
     public void flyOther(CommandSender sender,
                          @Argument("player") Player player) {
-        Player p = (Player) sender;
         Player target = player;
         if (target.isFlying()) {
             target.setAllowFlight(false);
