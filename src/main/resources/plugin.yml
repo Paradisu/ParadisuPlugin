@@ -1,7 +1,7 @@
 name: ParadisuPlugin
 version: 2.24.2
 authors: [JJakee, cytocracy, _Kastle, CookieCrafted]
-main: me.jakedadream.ParadisuPlugin.ParadisuMain
+main: net.paradisu.ParadisuPlugin.ParadisuMain
 api-version: 1.16
 commands:
   dbconnect:
