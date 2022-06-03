@@ -10,7 +10,6 @@ import net.paradisu.ParadisuPlugin.items.common.ingame.ParadisuCoin;
 import net.paradisu.ParadisuPlugin.items.common.ingame.StarCoin;
 import net.paradisu.ParadisuPlugin.items.common.menu.ParadisuHead;
 import net.md_5.bungee.api.ChatColor;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
@@ -108,27 +107,21 @@ public class ItemCommands {
                               @Argument("name") @Greedy String name) {
         Player p = (Player) sender;
         Material mat = p.getInventory().getItemInMainHand().getType();
-        if (mat == null || mat == Material.AIR) {
-            p.sendMessage(cmdprefix + "§fYou must be holding an item to rename it.");
-            return;
-        }
-
-        if (mat == Material.SHULKER_BOX || mat == Material.WHITE_SHULKER_BOX || mat == Material.ORANGE_SHULKER_BOX
-                || mat == Material.MAGENTA_SHULKER_BOX || mat == Material.LIGHT_BLUE_SHULKER_BOX
-                || mat == Material.YELLOW_SHULKER_BOX || mat == Material.LIME_SHULKER_BOX
-                || mat == Material.PINK_SHULKER_BOX || mat == Material.GRAY_SHULKER_BOX
-                || mat == Material.LIGHT_GRAY_SHULKER_BOX || mat == Material.CYAN_SHULKER_BOX
-                || mat == Material.PURPLE_SHULKER_BOX || mat == Material.BLUE_SHULKER_BOX
-                || mat == Material.BROWN_SHULKER_BOX || mat == Material.GREEN_SHULKER_BOX
-                || mat == Material.RED_SHULKER_BOX || mat == Material.BLACK_SHULKER_BOX) {
-            ItemStack item = p.getInventory().getItemInMainHand();
-            ItemMeta meta = item.getItemMeta();
-            meta.setDisplayName(name);
-            item.setItemMeta(meta);
-            p.sendMessage(cmdprefix + "§fYou renamed your storage item to; " + name);
-
-        } else {
-            p.sendMessage(cmdprefix + "§fYou must be holding a shulker box to rename it.");
+        switch (mat) {
+            case SHULKER_BOX, WHITE_SHULKER_BOX, ORANGE_SHULKER_BOX, 
+            MAGENTA_SHULKER_BOX, LIGHT_BLUE_SHULKER_BOX, YELLOW_SHULKER_BOX, 
+            LIME_SHULKER_BOX, PINK_SHULKER_BOX, GRAY_SHULKER_BOX, 
+            LIGHT_GRAY_SHULKER_BOX, CYAN_SHULKER_BOX, PURPLE_SHULKER_BOX, 
+            BLUE_SHULKER_BOX, BROWN_SHULKER_BOX, GREEN_SHULKER_BOX, 
+            RED_SHULKER_BOX, BLACK_SHULKER_BOX -> {
+                ItemStack item = p.getInventory().getItemInMainHand();
+                ItemMeta meta = item.getItemMeta();
+                meta.setDisplayName(name);
+                item.setItemMeta(meta);
+            }
+            default -> {
+                p.sendMessage(cmdprefix + "§fYou must be holding a shulker box to rename it.");
+            }
         }
     }
 
