@@ -22,13 +22,14 @@ import cloud.commandframework.meta.SimpleCommandMeta;
 import cloud.commandframework.paper.PaperCommandManager;
 import net.paradisu.ParadisuPlugin.util.DatabaseConnection;
 import net.paradisu.ParadisuPlugin.util.TimeZone;
+import net.paradisu.ParadisuPlugin.commands.AdminCommands;
 import net.paradisu.ParadisuPlugin.commands.EssentialCommands;
 import net.paradisu.ParadisuPlugin.commands.ParadisuCommands;
 import net.paradisu.ParadisuPlugin.events.GuiListeners;
 import net.paradisu.ParadisuPlugin.events.ParadisuEvents;
 import net.paradisu.ParadisuPlugin.items.ItemCommands;
 import net.paradisu.ParadisuPlugin.items.SpinningCoins;
-import net.paradisu.ParadisuPlugin.items.ToyEvents;
+import net.paradisu.ParadisuPlugin.items.ItemEvents;
 import net.paradisu.ParadisuPlugin.items.models.ModelCommands;
 import net.paradisu.ParadisuPlugin.items.models.ModelInvManager;
 import net.paradisu.ParadisuPlugin.items.models.ModelItemManager;
@@ -69,7 +70,7 @@ public class ParadisuMain extends JavaPlugin {
 
     private static DataSource dataSource;
     public static CommandManager<CommandSender> manager;
-    public static AnnotationParser<CommandSender> annotationParser;
+    public static AnnotationParser<CommandSender> commands;
     public static BukkitScheduler scheduler;
 
     @Override
@@ -85,18 +86,19 @@ public class ParadisuMain extends JavaPlugin {
             e.printStackTrace();
         }
         
-        annotationParser = new AnnotationParser<>(
+        commands = new AnnotationParser<>(
             manager,
             CommandSender.class,
             parameters -> SimpleCommandMeta.empty() 
         );
 
-        annotationParser.parse(new WarpCommands());
-        annotationParser.parse(new EssentialCommands());
-        annotationParser.parse(new ParadisuCommands());
-        annotationParser.parse(new ItemCommands());
-        annotationParser.parse(new TeleportationCommands());
-        annotationParser.parse(new ModelCommands());
+        commands.parse(new WarpCommands());
+        commands.parse(new EssentialCommands());
+        commands.parse(new ParadisuCommands());
+        commands.parse(new ItemCommands());
+        commands.parse(new TeleportationCommands());
+        commands.parse(new ModelCommands());
+        commands.parse(new AdminCommands());
 
         ModelItemManager.updateModelData();
         ModelInvManager.createAllInvs();
@@ -134,7 +136,7 @@ public class ParadisuMain extends JavaPlugin {
         // =================
         // EVENTS
         // =================
-        getServer().getPluginManager().registerEvents(new ToyEvents(), this);
+        getServer().getPluginManager().registerEvents(new ItemEvents(), this);
         getServer().getPluginManager().registerEvents(new ParadisuEvents(), this);
         getServer().getPluginManager().registerEvents(new GuiListeners(), this);
         getServer().getPluginManager().registerEvents(new PlayerDataEvents(), this);

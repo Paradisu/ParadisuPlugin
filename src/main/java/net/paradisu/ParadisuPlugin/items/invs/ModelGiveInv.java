@@ -33,7 +33,6 @@ public class ModelGiveInv implements InventoryGUI{
     public Inventory getInventory() {
         Inventory i = Bukkit.createInventory(this, 54, isProps ? "§x§f§8§9§9§1§d§lProp Models Give GUI" : "§x§f§8§9§9§1§d§lHat Models Give GUI");
         ItemStack[] models = ModelInvManager.getInv(isProps, page);
-        i.setContents(ModelInvManager.getInv(isProps, page));
         
         ItemStack previous = new ItemStack(Material.DIAMOND_AXE, 1);
         ItemMeta prevMeta = previous.getItemMeta();

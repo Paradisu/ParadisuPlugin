@@ -16,8 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import net.paradisu.ParadisuPlugin.ParadisuMain;
 import net.paradisu.ParadisuPlugin.util.EventCooldowns;
 
-public class ToyEvents implements Listener {
-
+public class ItemEvents implements Listener {
 
     String cmdprefix = ParadisuMain.CommandPrefix();
     String cmdemph = ParadisuMain.CommandEmph();
