@@ -74,21 +74,6 @@ public class ParadisuCommands {
         p.sendMessage(cmdprefix + "§fOpening the inventory of §3" + target.getName() + ".");
     }
 
-    @CommandPermission("paradisu.invsee.admin")
-    @ProxiedBy("admininvsee")
-    @CommandMethod("invsee admin <player>")
-    public void adminInvsee(CommandSender sender,
-            @Argument("player") String player) {
-        Player p = (Player) sender;
-        Player target = Bukkit.getPlayer(player);
-        if (target == null) {
-            p.sendMessage(cmdprefix + "§fThis player does not exist or is offline.");
-            return;
-        }
-        p.openInventory(target.getInventory());
-        p.sendMessage(cmdprefix + "§fOpening the inventory of §3" + target.getName() + ".");
-    }
-
     @CommandPermission("paradisu.trashcan")
     @CommandMethod("trashcan|trash")
     public void trash(CommandSender sender) {

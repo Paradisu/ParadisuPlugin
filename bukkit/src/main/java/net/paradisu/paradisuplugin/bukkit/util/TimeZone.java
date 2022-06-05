@@ -4,7 +4,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 
-import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.context.DefaultContextKeys;
 
@@ -40,7 +39,6 @@ public class TimeZone {
 
         String japanTimezone = "Asia/Tokyo";
         String californiaTimezone = "America/Los_Angeles";
-
         String serverName = LuckPermsProvider.get().getServerName();
 
         switch(serverName) {

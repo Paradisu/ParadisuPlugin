@@ -56,10 +56,11 @@ public class ParadisuEvents implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent jEvent) {
         Player joiner = jEvent.getPlayer();
-        joiner.sendMessage("\uE013 §f| \uE013");
-        joiner.sendMessage("\uE016 §fWelcome to " + cmdemph + "\ue00f");
-        joiner.sendMessage("\uE016 §fBe sure to do " + cmdemph + "/audio§f.");
-        joiner.sendMessage("\uE013 §f| \uE013");
+        joiner.sendMessage("\uE013 §f| \uE013" + "\n" +
+        "\uE016 §fWelcome to " + cmdemph + "\ue00f" + "\n" +
+        "\uE016 §fBe sure to do " + cmdemph + "/audio§f." + "\n" +
+        "\uE013 §f| \uE013"
+        );
 
         if (!joiner.hasPermission("paradisu.nospawnonjoin")) {
             World world = joiner.getWorld();
@@ -97,23 +98,6 @@ public class ParadisuEvents implements Listener {
             }
         }
     }
-
-
-    // @EventHandler
-    // public static void WearHatEvent(PlayerInteractEvent wearhat) {
-    //     Player player = wearhat.getPlayer();
-
-    //     if (player.getInventory().getItemInMainHand().getType() == Material.AIR) return;
-    //     if (wearhat.getAction() == Action.RIGHT_CLICK_AIR) {
-    //         if (wearhat.getItem() != null && wearhat.getItem().getType() == Material.CARVED_PUMPKIN) {
-    //             ItemStack[] armor = player.getInventory().getArmorContents();
-    //             ItemStack swap = armor[3];
-    //             armor[3] = player.getEquipment().getItem(wearhat.getHand());
-    //             player.getInventory().setArmorContents(armor);
-    //             player.getInventory().setItemInMainHand(swap);
-    //         }
-    //     }
-    // }
 
     @EventHandler
     public static void WearHatEvent(PlayerInteractEvent event) {
