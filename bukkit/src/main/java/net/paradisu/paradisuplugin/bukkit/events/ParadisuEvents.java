@@ -64,8 +64,8 @@ public class ParadisuEvents implements Listener {
             World world = joiner.getWorld();
             Location loc = new Location(world, 82.5, 86.1, -741.5, 75, 0);    // 82.5 86.1 -741.5
             joiner.setGameMode(GameMode.ADVENTURE);
-            joiner.teleport(loc);
-        }
+            //joiner.teleport(loc);
+        } 
     }
 
 

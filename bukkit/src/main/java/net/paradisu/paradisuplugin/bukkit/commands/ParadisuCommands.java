@@ -204,7 +204,7 @@ public class ParadisuCommands {
     @CommandDescription("Syncs ingame time to japanese time")
     public void syncJapanTime(CommandSender sender) {
         Player player = (Player) sender;
-        TimeZone.setJapanTime();
+        TimeZone.setAnyTime("Asia/Tokyo");
         player.sendMessage(cmdprefix + "§fWe set the server time to " + cmdemph + "Japanese §ftime.");
     }
 

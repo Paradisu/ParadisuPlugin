@@ -102,7 +102,7 @@ public class ParadisuMain extends JavaPlugin {
 
         ModelItemManager.updateModelData();
         ModelInvManager.createAllInvs();
-        TimeZone.setJapanTime();
+        TimeZone.serverStartupTimeSetter();
         WarpsDataHandler.updateWarpData();
 
 
