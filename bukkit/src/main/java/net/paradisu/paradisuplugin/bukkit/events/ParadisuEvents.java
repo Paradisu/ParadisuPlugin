@@ -5,6 +5,7 @@ import static org.bukkit.Bukkit.getServer;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+
 import javax.sql.DataSource;
 
 import org.bukkit.Bukkit;
@@ -32,9 +33,9 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import net.paradisu.paradisuplugin.bukkit.ParadisuMain;
-import net.paradisu.paradisuplugin.bukkit.util.InventoryGUI;
 import net.paradisu.paradisuplugin.bukkit.items.GenItemManager;
 import net.paradisu.paradisuplugin.bukkit.items.invs.TrashCan;
+import net.paradisu.paradisuplugin.bukkit.util.InventoryGUI;
 
 public class ParadisuEvents implements Listener {
 
@@ -77,7 +78,7 @@ public class ParadisuEvents implements Listener {
             if (intEvent.getRightClicked().getName().equals("CoinPickup")) {                     // Tests if the name is "CoinPickup"
                 getServer().getConsoleSender().sendMessage(ChatColor.YELLOW + "A player picked up a coin");     // Triggers a message in chat
                 p.getWorld().playSound(p.getLocation(), Sound.ENTITY_ILLUSIONER_CAST_SPELL, 1F, 1F);        // plays a sound to the player
-                p.sendMessage("§3[§dParadisu §bツ§3] §f§lYou just picked up a coin!");                          // Triggers another message in chat
+                p.sendMessage(cmdprefix + "§fYou just picked up a coin!");                          // Triggers another message in chat
                 intEvent.getPlayer().getInventory().addItem(GenItemManager.createCoin());                             // Adds an item into your inv (Can be used to trigger anything, like a gui)
                 intEvent.getRightClicked().remove();
                 
@@ -113,6 +114,22 @@ public class ParadisuEvents implements Listener {
     //         }
     //     }
     // }
+
+    @EventHandler
+    public static void WearHatEvent(PlayerInteractEvent event) {
+        Player player = event.getPlayer();
+        ItemStack item = event.getItem();
+        if (item == null || item.getType() == Material.AIR) return;
+        if (event.getAction() == Action.RIGHT_CLICK_AIR) {
+            if (item.getType() == Material.CARVED_PUMPKIN) {
+                ItemStack headItem = player.getInventory().getHelmet();
+                player.getInventory().setHelmet(item);
+                event.getItem().setAmount(headItem.getAmount());
+                event.getItem().setItemMeta(headItem.getItemMeta());
+                event.getItem().setType(headItem.getType());
+            }
+        }   
+    }
 
     @EventHandler()
     public void onRClick(PlayerInteractAtEntityEvent intEvent) {
@@ -181,7 +198,7 @@ public class ParadisuEvents implements Listener {
             Integer seconds = 600; // 10 minutes in seconds
 
             p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, seconds * 20, 1, true, false));
-            p.sendMessage("§3[§dParadisu §bツ§3] §fYou consumed a drink/food item and were given speed for§3 " + seconds/60 + "§f minutes.");
+            p.sendMessage(cmdprefix + "§fYou consumed an item and were given speed for " + cmdemph + seconds/60 + "§f minutes.");
         }
     }
 }

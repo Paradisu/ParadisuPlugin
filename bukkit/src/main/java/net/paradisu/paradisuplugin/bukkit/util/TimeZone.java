@@ -42,6 +42,7 @@ public class TimeZone {
         String californiaTimezone = "America/Los_Angeles";
 
         String serverName = LuckPermsProvider.get().getServerName();
+
         switch(serverName) {
             case "usj":
                 setAnyTime(japanTimezone);

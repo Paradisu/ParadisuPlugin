@@ -5,14 +5,20 @@ import org.bukkit.entity.Player;
 
 import cloud.commandframework.annotations.CommandMethod;
 import cloud.commandframework.annotations.CommandPermission;
+import net.luckperms.api.LuckPermsProvider;
+import net.paradisu.paradisuplugin.bukkit.ParadisuMain;
 
 public class AdminCommands {
     
+    String cmdprefix = ParadisuMain.CommandPrefix();
+    String cmdemph = ParadisuMain.CommandEmph();
+
     @CommandPermission("paradisu.world")
     @CommandMethod("world")
     public void world(CommandSender sender){
-        Player p = (Player) sender;
-        p.sendMessage("curr world: " + p.getWorld().getName());
+        Player player = (Player) sender;
+        player.sendMessage(cmdprefix + "§fCurrent World: " + cmdemph + player.getWorld().getName());
+        player.sendMessage(cmdprefix + "§fLuckperms server ID: " + cmdemph + LuckPermsProvider.get().getServerName().toString());
     }
 
 }
