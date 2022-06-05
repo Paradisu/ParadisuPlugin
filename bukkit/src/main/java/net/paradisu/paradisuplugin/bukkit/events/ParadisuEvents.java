@@ -98,21 +98,21 @@ public class ParadisuEvents implements Listener {
     }
 
 
-    @EventHandler
-    public static void WearHatEvent(PlayerInteractEvent wearhat) {
-        Player player = wearhat.getPlayer();
+    // @EventHandler
+    // public static void WearHatEvent(PlayerInteractEvent wearhat) {
+    //     Player player = wearhat.getPlayer();
 
-        if (player.getInventory().getItemInMainHand().getType() == Material.AIR) return;
-        if (wearhat.getAction() == Action.RIGHT_CLICK_AIR) {
-            if (wearhat.getItem() != null && wearhat.getItem().getType() == Material.CARVED_PUMPKIN) {
-                ItemStack[] armor = player.getInventory().getArmorContents();
-                ItemStack swap = armor[3];
-                armor[3] = player.getEquipment().getItem(wearhat.getHand());
-                player.getInventory().setArmorContents(armor);
-                player.getInventory().setItemInMainHand(swap);
-            }
-        }
-    }
+    //     if (player.getInventory().getItemInMainHand().getType() == Material.AIR) return;
+    //     if (wearhat.getAction() == Action.RIGHT_CLICK_AIR) {
+    //         if (wearhat.getItem() != null && wearhat.getItem().getType() == Material.CARVED_PUMPKIN) {
+    //             ItemStack[] armor = player.getInventory().getArmorContents();
+    //             ItemStack swap = armor[3];
+    //             armor[3] = player.getEquipment().getItem(wearhat.getHand());
+    //             player.getInventory().setArmorContents(armor);
+    //             player.getInventory().setItemInMainHand(swap);
+    //         }
+    //     }
+    // }
 
     @EventHandler()
     public void onRClick(PlayerInteractAtEntityEvent intEvent) {
