@@ -123,10 +123,10 @@ public class ParadisuEvents implements Listener {
         if (event.getAction() == Action.RIGHT_CLICK_AIR) {
             if (item.getType() == Material.CARVED_PUMPKIN) {
                 ItemStack headItem = player.getInventory().getHelmet();
-                player.getInventory().setHelmet(item);
-                event.getItem().setAmount(headItem.getAmount());
-                event.getItem().setItemMeta(headItem.getItemMeta());
-                event.getItem().setType(headItem.getType());
+                ItemStack rightClickedItem = item.clone();
+                item.setType(Material.AIR);
+                player.getInventory().setHelmet(rightClickedItem);
+                player.getInventory().addItem(headItem);
             }
         }   
     }
