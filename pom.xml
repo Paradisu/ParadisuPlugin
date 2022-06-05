@@ -26,7 +26,6 @@
         <module>plugin</module>
     </modules>
 
-
     <profiles>
         <profile>
             <id>static_build_number</id>
