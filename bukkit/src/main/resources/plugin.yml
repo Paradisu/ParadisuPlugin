@@ -1,5 +1,5 @@
 name: ParadisuPlugin
-version: 3.0.0
+version: ${minecraft.plugin.version}
 authors: [JJakee, cytocracy, _Kastle, CookieCrafted]
 main: net.paradisu.paradisuplugin.bukkit.ParadisuMain
 api-version: 1.18
