@@ -41,7 +41,8 @@ public class TimeZone {
         String japanTimezone = "Asia/Tokyo";
         String californiaTimezone = "America/Los_Angeles";
 
-        switch(DefaultContextKeys.SERVER_KEY) {
+        String serverName = LuckPermsProvider.get().getServerName();
+        switch(serverName) {
             case "usj":
                 setAnyTime(japanTimezone);
                 break;

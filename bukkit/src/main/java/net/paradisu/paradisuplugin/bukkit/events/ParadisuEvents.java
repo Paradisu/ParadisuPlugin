@@ -107,7 +107,7 @@ public class ParadisuEvents implements Listener {
             if (wearhat.getItem() != null && wearhat.getItem().getType() == Material.CARVED_PUMPKIN) {
                 ItemStack[] armor = player.getInventory().getArmorContents();
                 ItemStack swap = armor[3];
-                armor[3] = player.getEquipment().getItemInMainHand();
+                armor[3] = player.getEquipment().getItem(wearhat.getHand());
                 player.getInventory().setArmorContents(armor);
                 player.getInventory().setItemInMainHand(swap);
             }
