@@ -51,11 +51,11 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SNW_VERSION: ${{ steps.lookupSNWVersion.outputs.result }}
       run: mvn -Drevision=${SNW_VERSION} clean package
-    - run: mkdir staging && cp target/*.jar staging
+    - run: mkdir staging && cp target/ParadisuPlugin.jar staging
     - uses: actions/upload-artifact@v2
       with:
         name: ParadisuPlugin-Latest
-        path: staging/ParadisuPlugin-*.jar
+        path: staging/ParadisuPlugin.jar
     - name: Generate release diff
       env:
         BEGIN_COMMIT: ${{ steps.get-previous-tag.outputs.tag }}
@@ -75,7 +75,7 @@ jobs:
       env:
         PTERODACTYL_TOKEN: ${{ secrets.PTERODACTYL_TOKEN }}
       run: |
-        cp staging/ParadisuPlugin-*.jar ParadisuPlugin.jar
+        cp staging/ParadisuPlugin.jar ParadisuPlugin.jar
         upload_plugin () {
           local upload_url=$(curl "https://panel.paradisu.net/api/client/servers/${1}/files/upload" -H "Authorization: Bearer ${PTERODACTYL_TOKEN}" -X GET -s | jq -r .attributes.url)
           curl -F files=@ParadisuPlugin.jar "${upload_url}&directory=/plugins"
@@ -84,6 +84,7 @@ jobs:
           "978fd706"
           "1b063a16"
           "a0638f52"
+          "517d0585"
         )
         for id in ${server_ids[@]}
         do

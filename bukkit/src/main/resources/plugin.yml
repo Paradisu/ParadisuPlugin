@@ -1,0 +1,16 @@
+name: ParadisuPlugin
+version: 3.0.0
+authors: [JJakee, cytocracy, _Kastle, CookieCrafted]
+main: net.paradisu.paradisuplugin.bukkit.ParadisuMain
+api-version: 1.18
+commands:
+  dbconnect:
+    description: connects to db
+  reloadshops:
+    description: reloads shops
+  getshop:
+    description: gets shop
+  reloadhats:
+    description: reload hat config
+  reloadprops:
+     description: reload prop config

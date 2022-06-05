@@ -1,0 +1,7 @@
+{
+    "id": "paradisuplugin",
+    "name": "ParadisuPlugin",
+    "version": "${minecraft.plugin.version}",
+    "main": "net.paradisu.paradisuplugin.velocity.VelocityTest",
+    "authors": ["_Kastle", "cyto"]
+  }
