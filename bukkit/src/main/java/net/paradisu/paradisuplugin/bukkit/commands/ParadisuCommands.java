@@ -1,16 +1,24 @@
 package net.paradisu.paradisuplugin.bukkit.commands;
 
+import java.util.Set;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.PlayerInventory;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import com.mysql.cj.x.protobuf.MysqlxCrud.Collection;
 
 import cloud.commandframework.annotations.Argument;
 import cloud.commandframework.annotations.CommandDescription;
 import cloud.commandframework.annotations.CommandMethod;
 import cloud.commandframework.annotations.CommandPermission;
+import net.luckperms.api.LuckPerms;
+import net.luckperms.api.LuckPermsProvider;
+import net.luckperms.api.model.PermissionHolder;
+import net.luckperms.api.model.group.Group;
 import net.paradisu.paradisuplugin.bukkit.ParadisuMain;
 import net.paradisu.paradisuplugin.bukkit.util.TimeZone;
 import net.paradisu.paradisuplugin.bukkit.items.common.menu.BlankItem;
@@ -83,25 +91,46 @@ public class ParadisuCommands {
 
     @CommandPermission("paradisu.list")
     @CommandMethod("list")
-    public void list(CommandSender sender) {
+    public void testList(CommandSender sender) {
         Player player = (Player) sender;
+        LuckPerms luckPerms = LuckPermsProvider.get();
         String owners = "";
         String devs = "";
         String builders = "";
         String staff = "";
         String supporters = "";
         String visitors = "";
-        int onlineammount = Bukkit.getOnlinePlayers().size();
+        //String owners, devs, builders, staff, supporters, visitors; 
+        int onlineAmmount = Bukkit.getOnlinePlayers().size();
 
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            String name = p.getName();
-            name = name.concat(", ");
-            if (p.hasPermission("meta.rank.owner")) owners = owners.concat(name);
-            else if (p.hasPermission("meta.rank.dev")) devs = devs.concat(name);
-            else if (p.hasPermission("meta.rank.builders")) builders = builders.concat(name);
-            else if (p.hasPermission("meta.rank.staff")) staff = staff.concat(name);
-            else if (p.hasPermission("meta.rank.supporters")) supporters = supporters.concat(name);
-            else visitors = visitors.concat(name);
+        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+        String group = luckPerms.getGroupManager().getGroup(luckPerms.getUserManager().getUser(onlinePlayer.getUniqueId()).getPrimaryGroup()).getDisplayName();
+        String onlinePlayerName = onlinePlayer.getName();
+        onlinePlayerName = onlinePlayerName.concat(", ");
+
+        switch (group) {
+            case "owner":
+                owners = owners.concat(onlinePlayerName);
+                break;
+            case "dev":
+                devs = devs.concat(onlinePlayerName);
+                break;
+            case "builder":
+                builders = builders.concat(onlinePlayerName);
+                break;
+            case "staff":
+                staff = staff.concat(onlinePlayerName);
+                break;
+            case "supporter":
+                supporters = supporters.concat(onlinePlayerName);
+                break;
+            case "visitor":
+                visitors = visitors.concat(onlinePlayerName);
+                break;
+            default:
+                visitors = visitors.concat(onlinePlayerName);
+                break;
+            }
         }
 
         if (owners.length() != 0) owners = owners.substring(0, owners.length() - 2);
@@ -111,7 +140,8 @@ public class ParadisuCommands {
         if (supporters.length() != 0) supporters = supporters.substring(0, supporters.length() - 2);
         if (visitors.length() != 0) visitors = visitors.substring(0, visitors.length() - 2);
 
-        player.sendMessage("\uE013 " + cmdemph + onlineammount + " §fOnline Players \uE013" + "§r\n");
+        String optionalS = "s"; if (onlineAmmount < 2) optionalS = "";
+        player.sendMessage("\uE013 " + cmdemph + onlineAmmount + " §fOnline Player" + optionalS +" \uE013" + "§r\n");
         if (owners.length() != 0) player.sendMessage("§3\uE006 " + cmdemph + "\ue00d§f " + owners + "\n");
         if (devs.length() != 0) player.sendMessage("§x§f§8§9§9§1§d\uE002 " + cmdemph + "\ue00d§f " + devs + "\n");
         if (builders.length() != 0) player.sendMessage("§x§f§3§6§c§3§6\uE001 " + cmdemph + "\ue00d§f " + builders + "\n");
