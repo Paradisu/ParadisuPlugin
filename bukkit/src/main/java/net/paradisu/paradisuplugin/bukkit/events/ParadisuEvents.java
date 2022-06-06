@@ -14,6 +14,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 import org.bukkit.World;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -29,6 +30,7 @@ import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -88,7 +90,6 @@ public class ParadisuEvents implements Listener {
                     
                     statement.setString(1, playeruuid);
                     statement.executeQuery();
-
                     Bukkit.getConsoleSender().sendMessage(ChatColor.AQUA + "Changed a player's amount of coins");
 
                 } catch (SQLException e) {
@@ -102,20 +103,24 @@ public class ParadisuEvents implements Listener {
     @EventHandler
     public static void WearHatEvent(PlayerInteractEvent event) {
         Player player = event.getPlayer();
-        ItemStack item = event.getItem();
-        if (item == null || item.getType() == Material.AIR) return;
+        PlayerInventory playerInventory = player.getInventory();
+        ItemStack handItem = event.getItem();
+        ItemStack headItem = player.getInventory().getHelmet();
+        int slot = player.getInventory().getHeldItemSlot();
+        
+        if (headItem == null) { headItem = new ItemStack(Material.AIR); } else { headItem = headItem.clone();}
+        if (handItem == null) { handItem = new ItemStack(Material.AIR); } else { handItem = handItem.clone();}
+
         if (event.getAction() == Action.RIGHT_CLICK_AIR) {
-            if (item.getType() == Material.CARVED_PUMPKIN) {
-                ItemStack headItem = player.getInventory().getHelmet();
-                ItemStack rightClickedItem = item.clone();
-                item.setType(Material.AIR);
-                player.getInventory().setHelmet(rightClickedItem);
-                player.getInventory().addItem(headItem);
+            if (handItem.getType() == Material.CARVED_PUMPKIN) {
+                playerInventory.setHelmet(handItem);
+                playerInventory.setItem(slot, headItem);
+                player.playSound(player, Sound.BLOCK_LAVA_POP, SoundCategory.MASTER, 1F, 1F);
             }
         }   
     }
 
-    @EventHandler()
+    @EventHandler
     public void onRClick(PlayerInteractAtEntityEvent intEvent) {
         Player player = intEvent.getPlayer();
         if (intEvent.getRightClicked().getType() == EntityType.ARMOR_STAND) {

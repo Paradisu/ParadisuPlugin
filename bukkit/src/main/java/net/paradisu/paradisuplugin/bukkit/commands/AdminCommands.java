@@ -1,8 +1,14 @@
 package net.paradisu.paradisuplugin.bukkit.commands;
 
+import java.util.List;
+
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.minecart.RideableMinecart;
 
 import cloud.commandframework.annotations.Argument;
 import cloud.commandframework.annotations.CommandMethod;
@@ -39,5 +45,34 @@ public class AdminCommands {
         p.sendMessage(cmdprefix + "§fOpening the inventory of §3" + target.getName() + ".");
     }
 
+    @CommandPermission("paradisu.mkill")
+    @CommandMethod("minecartkill|mkill <radius>")
+    public void mKill(CommandSender sender,
+            @Argument("radius") int radius) {
+
+        Player player = (Player) sender;
+        List<Entity> allEntites = player.getNearbyEntities(radius, radius, radius);
+        int entityCount = 0;
+
+        if (radius < 1 || radius > 10) {
+            player.sendMessage(cmdprefix + "§fThe radius has to be between 1 and 10.");
+            return;
+        }
+
+        for (Entity entity : allEntites) {
+            if (entity instanceof RideableMinecart) {
+                entity.remove();
+                entityCount++;
+            }
+        }
+
+        if (entityCount == 0) { 
+            player.sendMessage(cmdprefix + "§fNo minecarts found within " + radius + " blocks.");
+        } else {
+            player.sendMessage(cmdprefix + "§fKilled " + entityCount + " minecarts.");
+            player.playSound(player, Sound.BLOCK_ANCIENT_DEBRIS_BREAK, SoundCategory.MASTER, 1F, 1F);
+        }
+    
+    }
 
 }
