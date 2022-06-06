@@ -1,15 +1,11 @@
 package net.paradisu.paradisuplugin.bukkit.commands;
 
-import java.util.Set;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.PlayerInventory;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import com.mysql.cj.x.protobuf.MysqlxCrud.Collection;
 
 import cloud.commandframework.annotations.Argument;
 import cloud.commandframework.annotations.CommandDescription;
@@ -17,22 +13,18 @@ import cloud.commandframework.annotations.CommandMethod;
 import cloud.commandframework.annotations.CommandPermission;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
-import net.luckperms.api.model.PermissionHolder;
-import net.luckperms.api.model.group.Group;
 import net.paradisu.paradisuplugin.bukkit.ParadisuMain;
-import net.paradisu.paradisuplugin.bukkit.util.TimeZone;
 import net.paradisu.paradisuplugin.bukkit.items.common.menu.BlankItem;
 import net.paradisu.paradisuplugin.bukkit.items.common.menu.NoItem;
 import net.paradisu.paradisuplugin.bukkit.items.common.menu.ParadisuEffects;
 import net.paradisu.paradisuplugin.bukkit.items.common.menu.ParadisuHead;
 import net.paradisu.paradisuplugin.bukkit.items.invs.TrashCan;
+import net.paradisu.paradisuplugin.bukkit.util.TimeZone;
 
 public class ParadisuCommands {
 
     String cmdprefix = ParadisuMain.CommandPrefix();
     String cmdemph = ParadisuMain.CommandEmph();
-    String nopermsmsg = ParadisuMain.NoPermsMessage();
-    String noargsmsg = ParadisuMain.NoArgsMessage();
 
     @CommandPermission("paradisu.invsee")
     @CommandMethod("invsee|invs <player>")
@@ -94,13 +86,8 @@ public class ParadisuCommands {
     public void testList(CommandSender sender) {
         Player player = (Player) sender;
         LuckPerms luckPerms = LuckPermsProvider.get();
-        String owners = "";
-        String devs = "";
-        String builders = "";
-        String staff = "";
-        String supporters = "";
-        String visitors = "";
-        //String owners, devs, builders, staff, supporters, visitors; 
+        String owners, devs, builders, staff, supporters, visitors;
+        owners = devs = builders = staff = supporters = visitors = "";
         int onlineAmmount = Bukkit.getOnlinePlayers().size();
 
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
@@ -133,21 +120,14 @@ public class ParadisuCommands {
             }
         }
 
-        if (owners.length() != 0) owners = owners.substring(0, owners.length() - 2);
-        if (devs.length() != 0) devs = devs.substring(0, devs.length() - 2);
-        if (builders.length() != 0) builders = builders.substring(0, builders.length() - 2);
-        if (staff.length() != 0) staff = staff.substring(0, staff.length() - 2);
-        if (supporters.length() != 0) supporters = supporters.substring(0, supporters.length() - 2);
-        if (visitors.length() != 0) visitors = visitors.substring(0, visitors.length() - 2);
-
         String optionalS = "s"; if (onlineAmmount < 2) optionalS = "";
-        player.sendMessage("\uE013 " + cmdemph + onlineAmmount + " §fOnline Player" + optionalS +" \uE013" + "§r\n");
-        if (owners.length() != 0) player.sendMessage("§3\uE006 " + cmdemph + "\ue00d§f " + owners + "\n");
-        if (devs.length() != 0) player.sendMessage("§x§f§8§9§9§1§d\uE002 " + cmdemph + "\ue00d§f " + devs + "\n");
-        if (builders.length() != 0) player.sendMessage("§x§f§3§6§c§3§6\uE001 " + cmdemph + "\ue00d§f " + builders + "\n");
-        if (staff.length() != 0) player.sendMessage("§c\uE007 " + cmdemph + "\ue00d§f " + staff + "\n");
-        if (supporters.length() != 0) player.sendMessage("§d\uE008 " + cmdemph + "\ue00d§f " + supporters + "\n");
-        if (visitors.length() != 0) player.sendMessage("§7\uE00A " + cmdemph + "\ue00d§f " + visitors + "\n");
+        player.sendMessage("\uE013 "                                                + cmdemph + onlineAmmount + " §fOnline Player" + optionalS +" \uE013" + "§r\n");
+        if (owners.length() != 0) player.sendMessage("§3\uE006 "                    + cmdemph + "\ue00d§f " + owners.substring(0, owners.length() - 2) + "\n");
+        if (devs.length() != 0) player.sendMessage("§x§f§8§9§9§1§d\uE002 "          + cmdemph + "\ue00d§f " + devs.substring(0, devs.length() - 2) + "\n");
+        if (builders.length() != 0) player.sendMessage("§x§f§3§6§c§3§6\uE001 "      + cmdemph + "\ue00d§f " + builders.substring(0, devs.length() - 2) + "\n");
+        if (staff.length() != 0) player.sendMessage("§c\uE007 "                     + cmdemph + "\ue00d§f " + staff.substring(0, staff.length() - 2) + "\n");
+        if (supporters.length() != 0) player.sendMessage("§d\uE008 "                + cmdemph + "\ue00d§f " + supporters.substring(0, supporters.length() - 2) + "\n");
+        if (visitors.length() != 0) player.sendMessage("§7\uE00A "                  + cmdemph + "\ue00d§f " + visitors.substring(0, visitors.length() - 2) + "\n");
     }
 
     @CommandPermission("paradisu.findplayer")

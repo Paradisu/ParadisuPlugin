@@ -18,8 +18,6 @@ public class EssentialCommands /* MEANT FOR ANY REWRITTEN VANILLA/QOL COMMANDS *
 
     String cmdprefix = ParadisuMain.CommandPrefix();
     String cmdemph = ParadisuMain.CommandEmph();
-    String nopermsmsg = ParadisuMain.NoPermsMessage();
-    String noargsmsg = ParadisuMain.NoArgsMessage();
 
     @CommandPermission("paradisu.gamemode")
     @CommandDescription("Specificly sets your gamemode to requested gamemode")
