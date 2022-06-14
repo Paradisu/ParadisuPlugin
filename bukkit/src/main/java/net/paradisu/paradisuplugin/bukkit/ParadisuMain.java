@@ -12,6 +12,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 
@@ -68,7 +69,7 @@ public class ParadisuMain extends JavaPlugin {
     public static String NoArgsMessage() { String noargsmsg = "\uE016 §fNot enough arguments provided."; return noargsmsg; }
     public static String PlayerCooldownMessage() { String cooldownmsg = "\uE016 §fYou are currently on a §x§f§d§d§0§2§3cooldown§f." ; return cooldownmsg; }
     // Keep no perms & no args message for later use
-
+    private static Plugin paradisuInstance = null;
 
     private static DataSource dataSource;
     public static CommandManager<CommandSender> manager;
@@ -77,7 +78,7 @@ public class ParadisuMain extends JavaPlugin {
 
     @Override
     public void onEnable() {
-
+        
         try {
             createEnvFiles();
             saveEnvConfig();
@@ -107,7 +108,7 @@ public class ParadisuMain extends JavaPlugin {
         TimeZone.serverStartupTimeSetter();
         WarpsDataHandler.updateWarpData();
 
-
+        paradisuInstance = this;
         
         // =================
         // MODEL COMMANDS
@@ -230,4 +231,10 @@ public class ParadisuMain extends JavaPlugin {
 
     public static void reloadShopGuiConfig() { fileShopGuiConfig = YamlConfiguration.loadConfiguration(sourceShopGuiFile); }
     public static DataSource getDBCon(){return dataSource;}
+
+
+    public static Plugin getParadisuPlugin() { return paradisuInstance; }
+
+
+
 }
