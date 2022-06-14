@@ -67,6 +67,7 @@ public class ParadisuEvents implements Listener {
         if (!joiner.hasPermission("paradisu.nospawnonjoin")) {
             World world = joiner.getWorld();
             Location loc = new Location(world, 82.5, 86.1, -741.5, 75, 0);    // 82.5 86.1 -741.5
+            loc.setWorld(world); // this is just to remove the warning
             joiner.setGameMode(GameMode.ADVENTURE);
             //joiner.teleport(loc);
         } 
