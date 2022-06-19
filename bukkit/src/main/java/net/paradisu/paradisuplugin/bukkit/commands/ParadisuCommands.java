@@ -2,11 +2,9 @@ package net.paradisu.paradisuplugin.bukkit.commands;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 import cloud.commandframework.annotations.Argument;
@@ -239,7 +237,7 @@ public class ParadisuCommands {
     @CommandMethod("serverswitcher")
     @CommandDescription("Opens an inventory that takes you to a different server")
     public void serverSwitcher(CommandSender sender) {
-        Player player = (Player) sender;
+        // Player player = (Player) sender;
 
         
 
