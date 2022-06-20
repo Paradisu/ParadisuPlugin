@@ -9,12 +9,22 @@ import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.TextComponent;
 
 public interface Messages {
-    Component PREFIX = translatable("paradisu.general.prefix");
-    Component ABOUT = translatable("paradisu.command.about");
-    Component RELOAD = translatable("paradisu.command.reload");
+    Component GENERAL_PREFIX = translatable("paradisu.general.prefix");
+    Component GENERAL_VERSION = translatable("paradisu.general.version");
+
+    Component COMMAND_HELP_VPARADISU = translatable("paradisu.command.help.vparadisu");
+    Component COMMAND_HELP_VPARADISU_ABOUT = translatable("paradisu.command.help.vparadisu.about");
+    Component COMMAND_HELP_VPARADISU_RELOAD = translatable("paradisu.command.help.vparadisu.reload");
+
+    Component COMMAND_OUTPUT_VPARADISU_ABOUT = translatable()
+        .key("paradisu.command.output.vparadisu.about")
+        .args(translatable("paradisu.general.version"))
+        .build();
+    Component COMMAND_OUTPUT_VPARADISU_RELOAD = translatable("paradisu.command.output.vparadisu.reload");
+
     static TextComponent prefixed(ComponentLike component) {
         return text()
-                .append(PREFIX)
+                .append(GENERAL_PREFIX)
                 .append(Component.space())
                 .append(component)
                 .build();
