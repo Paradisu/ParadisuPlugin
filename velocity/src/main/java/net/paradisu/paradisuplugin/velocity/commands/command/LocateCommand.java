@@ -43,14 +43,18 @@ public final class LocateCommand extends AbstractCommand {
         // Log the bridge instance
         paradisu.logger().info("ConnectorPlugin instance: " + paradisu.getConnector().getBridge().toString());
         paradisu.getConnector().getBridge().getLocation(player)
-        .thenAccept(location -> {
-            //debugging
-            paradisu.logger().info(location.toString());
-            double posX = location.getX();
-            double posY = location.getY();
-            double posZ = location.getZ();
-            String server = location.getServer();
-            context.getSender().sendMessage(Component.text("[" + posX + ", " + posY + ", " + posZ + "] " + server));
+        .whenComplete((location, exception) -> {
+            if (exception != null) {
+                paradisu.logger().error("Error getting location: " + exception.getMessage());
+            } else {
+                //debugging
+                paradisu.logger().info(location.toString());
+                double posX = location.getX();
+                double posY = location.getY();
+                double posZ = location.getZ();
+                String server = location.getServer();
+                context.getSender().sendMessage(Component.text("[" + posX + ", " + posY + ", " + posZ + "] " + server));
+            }
         });
         //debugging
         context.getSender().sendMessage(Component.text("Command was executed"));
