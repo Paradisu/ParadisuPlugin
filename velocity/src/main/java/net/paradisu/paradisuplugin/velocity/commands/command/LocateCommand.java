@@ -42,11 +42,10 @@ public final class LocateCommand extends AbstractCommand {
 
         // Log the bridge instance
         paradisu.logger().info("ConnectorPlugin instance: " + paradisu.getConnector().getBridge().toString());
-        this.paradisu.logger().info("ConnectorPlugin instance: " + this.paradisu.getConnector().getBridge().toString());
-        this.paradisu.getConnector().getBridge().getLocation(player)
+        paradisu.getConnector().getBridge().getLocation(player)
         .thenAccept(location -> {
             //debugging
-            this.paradisu.logger().info(location.toString());
+            paradisu.logger().info(location.toString());
             double posX = location.getX();
             double posY = location.getY();
             double posZ = location.getZ();
