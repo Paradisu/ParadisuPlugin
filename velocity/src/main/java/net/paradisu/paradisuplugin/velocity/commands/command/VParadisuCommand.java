@@ -16,7 +16,6 @@ public final class VParadisuCommand extends AbstractCommand {
 
     @Override
     public void register() {
-        
 
         var builder = this.commandManager.commandBuilder("vparadisu")
             .meta(CommandMeta.DESCRIPTION, "paradisu.command.help.vparadisu"
@@ -26,8 +25,7 @@ public final class VParadisuCommand extends AbstractCommand {
         .argument(StringArgument.optional("query", StringArgument.StringMode.GREEDY))
         .handler(context -> {
             this.minecraftHelp.queryCommands(context.getOrDefault("query", ""), context.getSender());
-        })
-        );
+        }));
         
         this.commandManager.command(builder.literal("about")
             .permission("vparadisu.about")

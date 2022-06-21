@@ -22,6 +22,11 @@ public interface Messages {
         .build();
     Component COMMAND_OUTPUT_VPARADISU_RELOAD = translatable("paradisu.command.output.vparadisu.reload");
 
+    /**
+     * Take an Adeventure text component as an inuput and prepends the specified prefix to it.
+     * @param component Adventure text component to be prefixed
+     * @return A built Adventure text component with the prefix
+     */
     static TextComponent prefixed(ComponentLike component) {
         return text()
                 .append(GENERAL_PREFIX)

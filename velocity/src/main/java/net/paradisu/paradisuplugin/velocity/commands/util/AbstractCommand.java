@@ -15,10 +15,19 @@ public abstract class AbstractCommand {
     protected final CommandManager<CommandSource> commandManager;
     protected final MinecraftHelp<CommandSource> minecraftHelp;
 
+    /**
+     * Constructor for the AbstractCommand class.
+     * @param paradisu The instance of the Paradisu plugin.
+     */
     public AbstractCommand(Paradisu paradisu) {
+        // Initialize the command manager
         this.paradisu = paradisu;
         this.commandManager = paradisu.commandManager();
+
+        // Initialize the help command system
         this.minecraftHelp = new MinecraftHelp<>("/vparadisu help", p -> p, commandManager);
+
+        // Allow use of translation keys in the help command
         this.minecraftHelp.messageProvider((sender, key, args) ->
             Component.translatable(
                 key,

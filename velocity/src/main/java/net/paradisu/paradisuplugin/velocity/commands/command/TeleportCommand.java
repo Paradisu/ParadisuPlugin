@@ -10,6 +10,6 @@ public final class TeleportCommand extends AbstractCommand {
 
     @Override
     public void register() {
-        
+
     }
 }
