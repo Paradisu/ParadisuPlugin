@@ -15,12 +15,16 @@ public interface Messages {
     Component COMMAND_HELP_VPARADISU = translatable("paradisu.command.help.vparadisu");
     Component COMMAND_HELP_VPARADISU_ABOUT = translatable("paradisu.command.help.vparadisu.about");
     Component COMMAND_HELP_VPARADISU_RELOAD = translatable("paradisu.command.help.vparadisu.reload");
+    Component COMMAND_HELP_VTP = translatable("paradisu.command.help.vtp");
+    Component COMMAND_HELP_VTP_0 = translatable("paradisu.command.help.vtp.0");
+    Component COMMAND_HELP_VTP_1 = translatable("paradisu.command.help.vtp.1");
 
     Component COMMAND_OUTPUT_VPARADISU_ABOUT = translatable()
         .key("paradisu.command.output.vparadisu.about")
         .args(translatable("paradisu.general.version"))
         .build();
     Component COMMAND_OUTPUT_VPARADISU_RELOAD = translatable("paradisu.command.output.vparadisu.reload");
+    Component COMMAND_OUTPUT_VTP = translatable("paradisu.command.output.vtp");
 
     /**
      * Take an Adeventure text component as an inuput and prepends the specified prefix to it.

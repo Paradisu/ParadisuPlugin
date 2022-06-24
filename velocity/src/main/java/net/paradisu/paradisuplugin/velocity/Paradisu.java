@@ -42,6 +42,7 @@ public final class Paradisu {
     private VelocityCommandManager<CommandSource> commandManager;
     private boolean connectorEnabled;
     private VelocityConnectorPlugin connector;
+    //private final VelocityConnectorPlugin connectorPlugin;
     
     @Inject
     public Paradisu(ProxyServer server, Logger logger, @DataDirectory Path dataDirectory) {
@@ -75,6 +76,7 @@ public final class Paradisu {
             this.connector = (VelocityConnectorPlugin) connectorPlugin.get().getInstance().get();
             // Debug logging: what is the connector plugin bridge?
             logger().info("ConnectorPlugin instance: " + this.connector.getBridge().toString());
+            logger().info("ConnectorPlugin server: " + this.connector.getServerName());
         }
     }
 

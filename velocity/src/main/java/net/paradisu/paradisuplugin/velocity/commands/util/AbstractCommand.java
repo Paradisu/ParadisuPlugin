@@ -7,7 +7,9 @@ import com.velocitypowered.api.command.CommandSource;
 
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.minecraft.extras.MinecraftHelp;
+import cloud.commandframework.minecraft.extras.MinecraftHelp.HelpColors;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.paradisu.paradisuplugin.velocity.Paradisu;
 
 public abstract class AbstractCommand {
@@ -36,6 +38,15 @@ public abstract class AbstractCommand {
         this.minecraftHelp.descriptionDecorator((sender, description) ->
             Component.translatable(description)
         );
+
+        // Set help command colors
+        this.minecraftHelp.setHelpColors(HelpColors.of(
+            NamedTextColor.GOLD,
+            NamedTextColor.WHITE,
+            NamedTextColor.WHITE,
+            NamedTextColor.GRAY,
+            NamedTextColor.DARK_GRAY
+            ));
     }
 
     public abstract void register();

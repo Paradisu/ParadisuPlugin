@@ -42,6 +42,8 @@ public final class LocateCommand extends AbstractCommand {
 
         // Log the bridge instance
         paradisu.logger().info("ConnectorPlugin instance: " + paradisu.getConnector().getBridge().toString());
+        paradisu.logger().info("Player: " + player.getUsername() + " " + player.getUniqueId().toString());
+        paradisu.logger().info("ConnectorPlugin server: " + paradisu.getConnector().getServerName());
         paradisu.getConnector().getBridge().getLocation(player)
         .whenComplete((location, exception) -> {
             if (exception != null) {
