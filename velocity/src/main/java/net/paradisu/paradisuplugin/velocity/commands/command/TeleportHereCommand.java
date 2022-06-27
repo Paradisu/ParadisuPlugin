@@ -13,40 +13,38 @@ import net.paradisu.paradisuplugin.velocity.Paradisu;
 import net.paradisu.paradisuplugin.velocity.commands.util.AbstractCommand;
 import net.paradisu.paradisuplugin.velocity.locale.Messages;
 
-public final class TeleportCommand extends AbstractCommand {
-    public TeleportCommand(Paradisu paradisu) {
+public final class TeleportHereCommand extends AbstractCommand {
+    public TeleportHereCommand(Paradisu paradisu) {
         super(paradisu);
     }
 
     @Override
     public void register() {
-        var builder = this.commandManager.commandBuilder("vtp", "vteleport")
-            .permission("vparadisu.vtp")
-            .meta(CommandMeta.DESCRIPTION, "paradisu.command.help.vtp")
-            .argument(PlayerArgument.of("target"), ArgumentDescription.of("paradisu.command.help.vtp.0"))
-            .argument(PlayerArgument.optional("player"), ArgumentDescription.of("paradisu.command.help.vtp.1"))
-            .handler(this::teleportHereCommand);
+        var builder = this.commandManager.commandBuilder("vtphere", "vteleporthere")
+            .permission("vparadisu.vtphere")
+            .meta(CommandMeta.DESCRIPTION, "paradisu.command.help.vtphere")
+            .argument(PlayerArgument.of("target"), ArgumentDescription.of("paradisu.command.help.vtphere.0"))
+            .handler(this::teleportCommand);
         this.commandManager.command(builder);
     }
-
+    
     /**
-     * Handeler for the /vtp command
+     * Handeler for the /vtphere command
      * @param context the data specified on registration of the command
      */
     @SuppressWarnings("unchecked")
-    private void teleportHereCommand(CommandContext<CommandSource> context) {
+    private void teleportCommand(CommandContext<CommandSource> context) {
         Player target = (Player) context.get("target");
-        Player player = (Player) context.getOrDefault("player", context.getSender());
+        Player player = (Player) context.getSender();
 
-        paradisu.getConnector().getBridge().teleport(player.getUsername(), target.getUsername(), m -> {})
+        paradisu.getConnector().getBridge().teleport(target.getUsername(), player.getUsername(), m -> {})
         .whenComplete((success, exception) -> {
             if (success) {
                 context.getSender().sendMessage(
                     Messages.prefixed(
                         Component.translatable()
-                            .key("paradisu.command.output.vtp")
+                            .key("paradisu.command.output.vtphere")
                             .args(
-                                Component.text(player.getUsername()).color(NamedTextColor.GOLD), 
                                 Component.text(target.getUsername()).color(NamedTextColor.GOLD))
                             .build()
                 ));

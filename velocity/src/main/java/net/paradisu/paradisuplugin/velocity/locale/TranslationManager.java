@@ -20,7 +20,9 @@ import java.util.stream.Stream;
 
 public final class TranslationManager {
     public static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
-    public static final List<Locale> BUNDLED_LOCALES = List.of(new Locale("fi", "FI"));
+    public static final List<Locale> BUNDLED_LOCALES = List.of(
+        new Locale("fi", "FI")
+        );
 
     private final Paradisu paradisu;
     private final Set<Locale> installed = ConcurrentHashMap.newKeySet();

@@ -40,10 +40,18 @@ public final class VParadisuCommand extends AbstractCommand {
         );
     }
 
+    /**
+     * Handeler for the /vparadisu about command
+     * @param context the data specified on registration of the command
+     */
     private void aboutCommand(CommandContext<CommandSource> context) {
         context.getSender().sendMessage(Messages.prefixed(Messages.COMMAND_OUTPUT_VPARADISU_ABOUT));
     }
 
+    /**
+     * Handeler for the /vparadisu reload command
+     * @param context the data specified on registration of the command
+     */
     private void reloadCommand(CommandContext<CommandSource> context) {
         this.paradisu.reload();
         context.getSender().sendMessage(Messages.prefixed(Messages.COMMAND_OUTPUT_VPARADISU_RELOAD));

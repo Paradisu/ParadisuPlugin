@@ -129,6 +129,8 @@ public final class Paradisu {
         Stream.of(
             new LocateCommand(this),
             new TeleportCommand(this),
+            new TeleportHereCommand(this),
+            new TeleportPositionCommand(this),
             new VParadisuCommand(this),
             new WarpCommand(this)
         ).forEach(AbstractCommand::register);
