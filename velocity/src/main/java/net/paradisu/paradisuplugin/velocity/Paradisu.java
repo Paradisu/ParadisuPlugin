@@ -128,9 +128,11 @@ public final class Paradisu {
     private void registerCommands() {
         Stream.of(
             new LocateCommand(this),
+            new TeleportAcceptCommand(this),
             new TeleportCommand(this),
             new TeleportHereCommand(this),
             new TeleportPositionCommand(this),
+            new TeleportRequestCommand(this),
             new VParadisuCommand(this),
             new WarpCommand(this)
         ).forEach(AbstractCommand::register);
