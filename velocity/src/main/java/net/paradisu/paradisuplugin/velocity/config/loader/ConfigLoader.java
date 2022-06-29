@@ -1,9 +1,10 @@
-package net.paradisu.paradisuplugin.velocity.config;
+package net.paradisu.paradisuplugin.velocity.config.loader;
 
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationOptions;
-import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
+import org.spongepowered.configurate.yaml.NodeStyle;
+import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 import org.spongepowered.configurate.objectmapping.ObjectMapper;
 import org.spongepowered.configurate.serialize.SerializationException;
 
@@ -12,13 +13,15 @@ import java.util.function.UnaryOperator;
 
 public final class ConfigLoader<C> {
 
-    private final HoconConfigurationLoader loader;
+    private final YamlConfigurationLoader loader;
     private final ObjectMapper<C> mapper;
 
     public ConfigLoader(Class<C> configClass, Path configPath, UnaryOperator<ConfigurationOptions> optionsModifier) {
-        this.loader = HoconConfigurationLoader.builder()
+        this.loader = YamlConfigurationLoader.builder()
                 .path(configPath)
                 .defaultOptions(optionsModifier)
+                .indent(2)
+                .nodeStyle(NodeStyle.BLOCK)
                 .build();
         try {
             this.mapper = ObjectMapper.factory().get(configClass);

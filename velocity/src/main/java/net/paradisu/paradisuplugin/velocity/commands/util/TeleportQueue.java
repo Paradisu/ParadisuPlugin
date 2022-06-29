@@ -28,6 +28,6 @@ public class TeleportQueue {
     }
 
     public Player getPlayer(Player player, int i) {
-        return teleportQueue.getIfPresent(player) == null ? null : teleportQueue.getIfPresent(player)[i];
+        return teleportQueue.getIfPresent(player) == null ? null : (teleportQueue.getIfPresent(player)[i].isActive() ? teleportQueue.getIfPresent(player)[i] : null);
     }
 }

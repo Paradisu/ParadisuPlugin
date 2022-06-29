@@ -8,6 +8,7 @@ import cloud.commandframework.context.CommandContext;
 import cloud.commandframework.meta.CommandMeta;
 import cloud.commandframework.velocity.arguments.PlayerArgument;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.paradisu.paradisuplugin.velocity.Paradisu;
 import net.paradisu.paradisuplugin.velocity.commands.util.AbstractCommand;
@@ -50,7 +51,8 @@ public final class TeleportRequestCommand extends AbstractCommand {
                 Component.translatable()
                     .key(teleportHere ? "paradisu.command.output.vtpr.0" : "paradisu.command.output.vtpr.1")
                     .args(
-                        Component.text(player.getUsername()).color(NamedTextColor.GOLD))
+                        Component.text(player.getUsername()).color(NamedTextColor.GOLD),
+                        Component.translatable("paradisu.command.output.vtpr.2").clickEvent(ClickEvent.runCommand("/vtpa")))
                     .build()
         ));
 

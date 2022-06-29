@@ -6,6 +6,7 @@ import cloud.commandframework.execution.CommandExecutionCoordinator;
 import cloud.commandframework.velocity.VelocityCommandManager;
 import de.themoep.connectorplugin.velocity.VelocityConnectorPlugin;
 import net.paradisu.paradisuplugin.velocity.commands.util.AbstractCommand;
+import net.paradisu.paradisuplugin.velocity.config.ConfigManager;
 import net.paradisu.paradisuplugin.velocity.locale.TranslationManager;
 import net.paradisu.paradisuplugin.velocity.commands.command.*;
 
@@ -38,6 +39,7 @@ public final class Paradisu {
     private final ProxyServer server;
     private final Logger logger;
     private final Path dataDirectory;
+    private ConfigManager configManager;
     private TranslationManager translationManager;
     private VelocityCommandManager<CommandSource> commandManager;
     private boolean connectorEnabled;
@@ -53,6 +55,9 @@ public final class Paradisu {
 
     @Subscribe
     public void onProxyInitialization(ProxyInitializeEvent event) {
+        // Initialize the config manager
+        this.configManager = new ConfigManager(this);
+        this.configManager.loadConfigs();
         // Initialize the translation manager
         this.translationManager = new TranslationManager(this);
         this.translationManager.reload();
@@ -105,6 +110,14 @@ public final class Paradisu {
     }
 
     /**
+     * Returns the config manager for this plugin.
+     * @return the config manager for this plugin
+     */
+    public ConfigManager configManager() {
+        return configManager;
+    }
+
+    /**
      * Returns the proxy server.
      * @return the proxy server
      */
@@ -120,6 +133,7 @@ public final class Paradisu {
     public VelocityConnectorPlugin getConnector() {
         return this.connector;
     }
+    
 
     /**
      * Registers all commands for this plugin.
@@ -142,6 +156,7 @@ public final class Paradisu {
      * Reloads the plugin.
      */
     public void reload() {
+        this.configManager.loadConfigs();
         this.translationManager.reload();
     }
 

@@ -38,13 +38,13 @@ public final class TeleportAcceptCommand extends AbstractCommand {
         Player teleportingPlayer = (Player) queue.getPlayer(sender, 0);
         Player stationaryPlayer = (Player) queue.getPlayer(sender, 1);
         
-        boolean validRequest = (teleportingPlayer != null && stationaryPlayer != null) ? (teleportingPlayer.isActive() && stationaryPlayer.isActive()) : false;
+        boolean validRequest = (teleportingPlayer != null && stationaryPlayer != null);
+        queue.removeTeleport(sender);
 
         if (validRequest) {
             paradisu.getConnector().getBridge().teleport(teleportingPlayer.getUsername(), stationaryPlayer.getUsername(), m -> {})
             .whenComplete((success, exception) -> {
                 if (success) {
-                    queue.removeTeleport(sender);
                     teleportingPlayer.sendMessage(
                         Messages.prefixed(
                             Component.translatable()
