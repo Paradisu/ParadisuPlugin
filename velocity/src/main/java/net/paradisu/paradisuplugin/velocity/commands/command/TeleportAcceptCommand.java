@@ -28,7 +28,7 @@ public final class TeleportAcceptCommand extends AbstractCommand {
     }
 
     /**
-     * Handeler for the /tp command
+     * Handeler for the /tpa command
      * @param context the data specified on registration of the command
      */
     @SuppressWarnings("unchecked")

@@ -31,7 +31,7 @@ public final class TeleportHereRequestCommand extends AbstractCommand {
     }
 
     /**
-     * Handeler for the /tpr command
+     * Handeler for the /tprh command
      * @param context the data specified on registration of the command
      */
     private void teleportHereRequestCommand(CommandContext<CommandSource> context) {
