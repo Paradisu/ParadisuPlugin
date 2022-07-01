@@ -130,29 +130,6 @@ public class ParadisuCommands {
         if (visitors.length() != 0) player.sendMessage("§7\uE00A "                  + cmdemph + "\ue00d§f " + visitors.substring(0, visitors.length() - 2) + "\n");
     }
 
-    @CommandPermission("paradisu.findplayer")
-    @CommandMethod("findplayer|find|findplayercoords <player>")
-    public void findPlayer(CommandSender sender,
-        @Argument("player") Player playerToFind
-    ){
-        Player player = (Player) sender;
-        Player target = playerToFind;
-        if(target == null) {
-            player.sendMessage(cmdprefix + "§fPlayer not found.");
-            return;
-        }
-        Location targetlocation = target.getLocation();
-        Integer tx = targetlocation.getBlockX();
-        Integer ty = targetlocation.getBlockY();
-        Integer tz = targetlocation.getBlockZ();
-        String tw = targetlocation.getWorld().getName();
-
-        player.sendMessage(cmdprefix + "§fThe player§3 " + playerToFind+ " §fis in §3" + tw + "§f at" +
-                " §3X » §d§o" + tx +
-                " §3Y » §d§o" + ty +
-                " §3Z » §d§o" + tz + "§f.");
-    }
-
     @CommandPermission("paradisu.currenttime")
     @CommandMethod("currenttime")
     public void currentTime(CommandSender sender){

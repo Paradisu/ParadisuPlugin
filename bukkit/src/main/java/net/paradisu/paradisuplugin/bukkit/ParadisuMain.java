@@ -38,7 +38,6 @@ import net.paradisu.paradisuplugin.bukkit.items.models.modelscroller.ModelScroll
 import net.paradisu.paradisuplugin.bukkit.playerdata.PlayerDataEvents;
 import net.paradisu.paradisuplugin.bukkit.shops.ShopCommands;
 import net.paradisu.paradisuplugin.bukkit.shops.ShopGuis;
-import net.paradisu.paradisuplugin.bukkit.warps.TeleportationCommands;
 import net.paradisu.paradisuplugin.bukkit.warps.WarpCommands;
 import net.paradisu.paradisuplugin.bukkit.warps.WarpsDataHandler;
 
@@ -99,7 +98,6 @@ public class ParadisuMain extends JavaPlugin {
         commands.parse(new EssentialCommands());
         commands.parse(new ParadisuCommands());
         commands.parse(new ItemCommands());
-        commands.parse(new TeleportationCommands());
         commands.parse(new ModelCommands());
         commands.parse(new AdminCommands());
 
