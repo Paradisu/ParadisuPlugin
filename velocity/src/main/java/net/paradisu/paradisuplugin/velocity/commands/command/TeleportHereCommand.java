@@ -8,7 +8,8 @@ import cloud.commandframework.context.CommandContext;
 import cloud.commandframework.meta.CommandMeta;
 import cloud.commandframework.velocity.arguments.PlayerArgument;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.paradisu.paradisuplugin.velocity.Paradisu;
 import net.paradisu.paradisuplugin.velocity.commands.util.AbstractCommand;
 import net.paradisu.paradisuplugin.velocity.locale.Messages;
@@ -20,16 +21,16 @@ public final class TeleportHereCommand extends AbstractCommand {
 
     @Override
     public void register() {
-        var builder = this.commandManager.commandBuilder("vtphere", "vteleporthere")
-            .permission("vparadisu.vtphere")
-            .meta(CommandMeta.DESCRIPTION, "paradisu.command.help.vtphere")
-            .argument(PlayerArgument.of("target"), ArgumentDescription.of("paradisu.command.help.vtphere.0"))
+        var builder = this.commandManager.commandBuilder("tph", "tphere")
+            .permission("vparadisu.tph")
+            .meta(CommandMeta.DESCRIPTION, paradisu.commands().tph().helpMsg())
+            .argument(PlayerArgument.of("target"), ArgumentDescription.of(paradisu.commands().tph().helpArgs(0)))
             .handler(this::teleportCommand);
         this.commandManager.command(builder);
     }
     
     /**
-     * Handeler for the /vtphere command
+     * Handeler for the /tph command
      * @param context the data specified on registration of the command
      */
     @SuppressWarnings("unchecked")
@@ -40,14 +41,12 @@ public final class TeleportHereCommand extends AbstractCommand {
         paradisu.getConnector().getBridge().teleport(target.getUsername(), player.getUsername(), m -> {})
         .whenComplete((success, exception) -> {
             if (success) {
-                context.getSender().sendMessage(
-                    Messages.prefixed(
-                        Component.translatable()
-                            .key("paradisu.command.output.vtphere")
-                            .args(
-                                Component.text(target.getUsername()).color(NamedTextColor.GOLD))
-                            .build()
-                ));
+                player.sendMessage(
+                    Messages.prefixed(MiniMessage.miniMessage().deserialize(
+                        paradisu.commands().tph().output(0),
+                        Placeholder.component("player", Component.text(target.getUsername()))
+                    )
+                )); 
             } else {
                 paradisu.logger().error("Error teleporting: " + exception.getMessage());
             }

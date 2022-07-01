@@ -15,18 +15,18 @@ import net.paradisu.paradisuplugin.velocity.commands.util.AbstractCommand;
 import net.paradisu.paradisuplugin.velocity.commands.util.TeleportQueue;
 import net.paradisu.paradisuplugin.velocity.locale.Messages;
 
-public final class TeleportRequestCommand extends AbstractCommand {
-    public TeleportRequestCommand(Paradisu paradisu) {
+public final class TeleportHereRequestCommand extends AbstractCommand {
+    public TeleportHereRequestCommand(Paradisu paradisu) {
         super(paradisu);
     }
 
     @Override
     public void register() {
-        var builder = this.commandManager.commandBuilder("tpr", "tprequest")
-            .permission("vparadisu.tpr")
-            .meta(CommandMeta.DESCRIPTION, paradisu.commands().tpr().helpMsg())
-            .argument(PlayerArgument.of("target"), ArgumentDescription.of(paradisu.commands().tpr().helpArgs(0)))
-            .handler(this::teleportRequestCommand);
+        var builder = this.commandManager.commandBuilder("tprh", "tprhere")
+            .permission("vparadisu.tprh")
+            .meta(CommandMeta.DESCRIPTION, paradisu.commands().tprh().helpMsg())
+            .argument(PlayerArgument.of("target"), ArgumentDescription.of(paradisu.commands().tprh().helpArgs(0)))
+            .handler(this::teleportHereRequestCommand);
         this.commandManager.command(builder);
     }
 
@@ -34,25 +34,25 @@ public final class TeleportRequestCommand extends AbstractCommand {
      * Handeler for the /tpr command
      * @param context the data specified on registration of the command
      */
-    private void teleportRequestCommand(CommandContext<CommandSource> context) {
+    private void teleportHereRequestCommand(CommandContext<CommandSource> context) {
         Player target = (Player) context.get("target");
         Player player = (Player) context.getSender();
 
         TeleportQueue queue = new TeleportQueue();
-        queue.queueTeleport(target, (new Player[] {player, target}));
+        queue.queueTeleport(target, (new Player[] {target, player}));
 
         target.sendMessage(
             Messages.prefixed(MiniMessage.miniMessage().deserialize(
-                paradisu.commands().tpr().output(0),
+                paradisu.commands().tprh().output(0),
                 Placeholder.component("player", Component.text(player.getUsername()))
             )
         ));
 
         player.sendMessage(
             Messages.prefixed(MiniMessage.miniMessage().deserialize(
-                paradisu.commands().tpr().output(1),
+                paradisu.commands().tprh().output(1),
                 Placeholder.component("player", Component.text(target.getUsername()))
             )
-        ));
+        ));        
     }
 }

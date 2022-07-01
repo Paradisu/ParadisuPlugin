@@ -7,6 +7,7 @@ import cloud.commandframework.velocity.VelocityCommandManager;
 import de.themoep.connectorplugin.velocity.VelocityConnectorPlugin;
 import net.paradisu.paradisuplugin.velocity.commands.util.AbstractCommand;
 import net.paradisu.paradisuplugin.velocity.config.ConfigManager;
+import net.paradisu.paradisuplugin.velocity.config.MessagesConfig;
 import net.paradisu.paradisuplugin.velocity.locale.TranslationManager;
 import net.paradisu.paradisuplugin.velocity.commands.command.*;
 
@@ -118,6 +119,30 @@ public final class Paradisu {
     }
 
     /**
+     * Returns the messages config for this plugin.
+     * @return the messages config for this plugin
+     */
+    public MessagesConfig messagesConfig() {
+        return configManager.messagesConfig();
+    }
+
+    /**
+     * Returns the commands section of the messages config for this plugin.
+     * @return the commands section of the messages config for this plugin
+     */
+    public MessagesConfig.Commands commands() {
+        return configManager.messagesConfig().commands();
+    }
+
+    /**
+     * Returns the translation manager for this plugin.
+     * @return the translation manager for this plugin
+     */
+    public TranslationManager translationManager() {
+        return translationManager;
+    }
+
+    /**
      * Returns the proxy server.
      * @return the proxy server
      */
@@ -145,6 +170,7 @@ public final class Paradisu {
             new TeleportAcceptCommand(this),
             new TeleportCommand(this),
             new TeleportHereCommand(this),
+            new TeleportHereRequestCommand(this),
             new TeleportPositionCommand(this),
             new TeleportRequestCommand(this),
             new VParadisuCommand(this),
@@ -158,6 +184,7 @@ public final class Paradisu {
     public void reload() {
         this.configManager.loadConfigs();
         this.translationManager.reload();
+        logger().info("Reloaded plugin");
     }
 
 }

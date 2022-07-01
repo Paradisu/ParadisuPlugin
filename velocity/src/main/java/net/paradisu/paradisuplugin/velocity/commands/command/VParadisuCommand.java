@@ -5,6 +5,7 @@ import com.velocitypowered.api.command.CommandSource;
 import cloud.commandframework.arguments.standard.StringArgument;
 import cloud.commandframework.context.CommandContext;
 import cloud.commandframework.meta.CommandMeta;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.paradisu.paradisuplugin.velocity.Paradisu;
 import net.paradisu.paradisuplugin.velocity.commands.util.AbstractCommand;
 import net.paradisu.paradisuplugin.velocity.locale.Messages;
@@ -18,7 +19,7 @@ public final class VParadisuCommand extends AbstractCommand {
     public void register() {
 
         var builder = this.commandManager.commandBuilder("vparadisu")
-            .meta(CommandMeta.DESCRIPTION, "paradisu.command.help.vparadisu"
+            .meta(CommandMeta.DESCRIPTION, paradisu.commands().vparadisu().helpMsg()
             );
 
         this.commandManager.command(builder.literal("help")
@@ -29,13 +30,13 @@ public final class VParadisuCommand extends AbstractCommand {
         
         this.commandManager.command(builder.literal("about")
             .permission("vparadisu.about")
-            .meta(CommandMeta.DESCRIPTION, "paradisu.command.help.vparadisu.about")
+            .meta(CommandMeta.DESCRIPTION, paradisu.commands().vparadisu().about().helpMsg())
             .handler(this::aboutCommand)
         );
 
         this.commandManager.command(builder.literal("reload")
             .permission("vparadisu.reload")
-            .meta(CommandMeta.DESCRIPTION, "paradisu.command.help.vparadisu.reload")
+            .meta(CommandMeta.DESCRIPTION, paradisu.commands().vparadisu().reload().helpMsg())
             .handler(this::reloadCommand)
         );
     }
@@ -45,7 +46,11 @@ public final class VParadisuCommand extends AbstractCommand {
      * @param context the data specified on registration of the command
      */
     private void aboutCommand(CommandContext<CommandSource> context) {
-        context.getSender().sendMessage(Messages.prefixed(Messages.COMMAND_OUTPUT_VPARADISU_ABOUT));
+        context.getSender().sendMessage(Messages.prefixed(
+            MiniMessage.miniMessage().deserialize(
+                paradisu.commands().vparadisu().about().output(0)
+            )
+        ));
     }
 
     /**
@@ -53,7 +58,9 @@ public final class VParadisuCommand extends AbstractCommand {
      * @param context the data specified on registration of the command
      */
     private void reloadCommand(CommandContext<CommandSource> context) {
-        this.paradisu.reload();
-        context.getSender().sendMessage(Messages.prefixed(Messages.COMMAND_OUTPUT_VPARADISU_RELOAD));
+        paradisu.reload();
+        context.getSender().sendMessage(Messages.prefixed(
+                MiniMessage.miniMessage().deserialize(paradisu.commands().vparadisu().reload().output(0))
+        ));
     }
 }

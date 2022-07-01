@@ -12,7 +12,8 @@ import cloud.commandframework.velocity.arguments.PlayerArgument;
 import cloud.commandframework.velocity.arguments.ServerArgument;
 import de.themoep.connectorplugin.LocationInfo;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.paradisu.paradisuplugin.velocity.Paradisu;
 import net.paradisu.paradisuplugin.velocity.commands.util.AbstractCommand;
 import net.paradisu.paradisuplugin.velocity.locale.Messages;
@@ -24,20 +25,20 @@ public final class TeleportPositionCommand extends AbstractCommand {
 
     @Override
     public void register() {
-        var builder = this.commandManager.commandBuilder("vtppos", "vtpposition")
-            .permission("vparadisu.vtppos")
-            .meta(CommandMeta.DESCRIPTION, "paradisu.command.help.vtppos")
-            .argument(DoubleArgument.of("x"), ArgumentDescription.of("paradisu.command.help.vtppos.0"))
-            .argument(DoubleArgument.of("y"), ArgumentDescription.of("paradisu.command.help.vtppos.1"))
-            .argument(DoubleArgument.of("z"), ArgumentDescription.of("paradisu.command.help.vtppos.2"))
-            .argument(ServerArgument.optional("server"), ArgumentDescription.of("paradisu.command.help.vtppos.3"))
-            .argument(PlayerArgument.optional("player"), ArgumentDescription.of("paradisu.command.help.vtppos.4"))
+        var builder = this.commandManager.commandBuilder("tppos", "tpposition")
+            .permission("vparadisu.tppos")
+            .meta(CommandMeta.DESCRIPTION, paradisu.commands().tppos().helpMsg())
+            .argument(DoubleArgument.of("x"), ArgumentDescription.of(paradisu.commands().tppos().helpArgs(0)))
+            .argument(DoubleArgument.of("y"), ArgumentDescription.of(paradisu.commands().tppos().helpArgs(1)))
+            .argument(DoubleArgument.of("z"), ArgumentDescription.of(paradisu.commands().tppos().helpArgs(2)))
+            .argument(ServerArgument.optional("server"), ArgumentDescription.of(paradisu.commands().tppos().helpArgs(3)))
+            .argument(PlayerArgument.optional("player"), ArgumentDescription.of(paradisu.commands().tppos().helpArgs(4)))
             .handler(this::teleportPositionCommand);
         this.commandManager.command(builder);
     }
     
     /**
-     * Handeler for the /vtppos command
+     * Handeler for the /tppos command
      * @param context the data specified on registration of the command
      */
     @SuppressWarnings("unchecked")
@@ -56,17 +57,15 @@ public final class TeleportPositionCommand extends AbstractCommand {
                 paradisu.getConnector().getBridge().teleport(player.getUsername(), telportLocation, m -> {})
                 .whenComplete((success, teleportException) -> {
                     if (success) {
-                        context.getSender().sendMessage(
-                            Messages.prefixed(
-                                Component.translatable()
-                                    .key("paradisu.command.output.vtppos")
-                                    .args(
-                                        Component.text(player.getUsername()).color(NamedTextColor.GOLD), 
-                                        Component.text((int) telportLocation.getX()).color(NamedTextColor.GOLD), 
-                                        Component.text((int) telportLocation.getY()).color(NamedTextColor.GOLD), 
-                                        Component.text((int) telportLocation.getZ()).color(NamedTextColor.GOLD),
-                                        Component.text(telportLocation.getServer()).color(NamedTextColor.GOLD))
-                                    .build()
+                        context.getSender().sendMessage(Messages.prefixed(
+                                MiniMessage.miniMessage().deserialize(
+                                    paradisu.commands().tppos().output(0),
+                                    Placeholder.component("player", Component.text(player.getUsername())),
+                                    Placeholder.component("posx", Component.text((int) telportLocation.getX())),
+                                    Placeholder.component("posy", Component.text((int) telportLocation.getY())),
+                                    Placeholder.component("posz", Component.text((int) telportLocation.getZ())),
+                                    Placeholder.component("server", Component.text(telportLocation.getServer()))
+                                )
                         ));
                     } else {
                         paradisu.logger().error("Error teleporting: " + teleportException.getMessage());

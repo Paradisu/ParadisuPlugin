@@ -6,7 +6,8 @@ import com.velocitypowered.api.proxy.Player;
 import cloud.commandframework.context.CommandContext;
 import cloud.commandframework.meta.CommandMeta;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.paradisu.paradisuplugin.velocity.Paradisu;
 import net.paradisu.paradisuplugin.velocity.commands.util.AbstractCommand;
 import net.paradisu.paradisuplugin.velocity.commands.util.TeleportQueue;
@@ -19,15 +20,15 @@ public final class TeleportAcceptCommand extends AbstractCommand {
 
     @Override
     public void register() {
-        var builder = this.commandManager.commandBuilder("vtpa", "vtpaccept")
-            .permission("vparadisu.vtpa")
-            .meta(CommandMeta.DESCRIPTION, "paradisu.command.help.vtpa")
+        var builder = this.commandManager.commandBuilder("tpa", "tpaccept")
+            .permission("vparadisu.tpa")
+            .meta(CommandMeta.DESCRIPTION, paradisu.commands().tpa().helpMsg())
             .handler(this::teleportAcceptCommand);
         this.commandManager.command(builder);
     }
 
     /**
-     * Handeler for the /vtp command
+     * Handeler for the /tp command
      * @param context the data specified on registration of the command
      */
     @SuppressWarnings("unchecked")
@@ -46,27 +47,23 @@ public final class TeleportAcceptCommand extends AbstractCommand {
             .whenComplete((success, exception) -> {
                 if (success) {
                     teleportingPlayer.sendMessage(
-                        Messages.prefixed(
-                            Component.translatable()
-                                .key("paradisu.command.output.vtpa.0")
-                                .args(
-                                    Component.text(stationaryPlayer.getUsername()).color(NamedTextColor.GOLD))
-                                .build()
+                        Messages.prefixed(MiniMessage.miniMessage().deserialize(
+                            paradisu.commands().tpa().output(0),
+                            Placeholder.component("player", Component.text(stationaryPlayer.getUsername()))
+                        )
                     ));
                     stationaryPlayer.sendMessage(
-                        Messages.prefixed(
-                            Component.translatable()
-                                .key("paradisu.command.output.vtpa.1")
-                                .args(
-                                    Component.text(teleportingPlayer.getUsername()).color(NamedTextColor.GOLD))
-                                .build()
+                        Messages.prefixed(MiniMessage.miniMessage().deserialize(
+                            paradisu.commands().tpa().output(1),
+                            Placeholder.component("player", Component.text(teleportingPlayer.getUsername()))
+                        )
                     ));
                 } else {
                     paradisu.logger().error("Error teleporting: " + exception.getMessage());
                 }
             });
         } else {
-            context.getSender().sendMessage(Messages.prefixed(Messages.COMMAND_OUTPUT_VTPA_2));
+            context.getSender().sendMessage(Messages.prefixed(MiniMessage.miniMessage().deserialize(paradisu.commands().tpa().output(2))));
         }
     }
 }
