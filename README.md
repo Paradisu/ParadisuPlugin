@@ -14,17 +14,22 @@ cd ParadisuParadisuPlugin
 mvn clean package
 ```
 
+### Dependencies
+- [ConnectorPlugin](https://github.com/Phoenix616/ConnectorPlugin)
+- [LuckPerms](https://github.com/LuckPerms/LuckPerms)
+- [ProtocolLib](https://github.com/dmulloy2/ProtocolLib/)
+
 ### Features
-* Teleportation Commands
+* Cross-server teleportation commands
+* Velocity support
 * Fly mode for non-creative players
 * Lists and obtain available custom models with GUI
 * Gamemode management system
 * Inventory management system
 * Limited item NBT editing
 * Obtain player skulls
-* Automatic server time syncing to Japan
+* Automatic server time syncing
 * Player information commands
-* Admin & Staff chat
 * Custom Trash Cans
 * Custom Shops
 
