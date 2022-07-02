@@ -10,8 +10,6 @@ import cloud.commandframework.annotations.Argument;
 import cloud.commandframework.annotations.CommandDescription;
 import cloud.commandframework.annotations.CommandMethod;
 import cloud.commandframework.annotations.CommandPermission;
-import net.luckperms.api.LuckPerms;
-import net.luckperms.api.LuckPermsProvider;
 import net.paradisu.paradisuplugin.bukkit.ParadisuMain;
 import net.paradisu.paradisuplugin.bukkit.items.common.menu.BlankItem;
 import net.paradisu.paradisuplugin.bukkit.items.common.menu.NoItem;
@@ -78,55 +76,6 @@ public class ParadisuCommands {
         Player p = (Player) sender;
         p.openInventory(new TrashCan().getInventory());
         p.sendMessage(cmdprefix + "§fOpened a trashcan");
-    }
-
-    @CommandPermission("paradisu.list")
-    @CommandMethod("list")
-    public void testList(CommandSender sender) {
-        Player player = (Player) sender;
-        LuckPerms luckPerms = LuckPermsProvider.get();
-        String owners, devs, builders, staff, supporters, visitors;
-        owners = devs = builders = staff = supporters = visitors = "";
-        int onlineAmmount = Bukkit.getOnlinePlayers().size();
-
-        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-        String group = luckPerms.getGroupManager().getGroup(luckPerms.getUserManager().getUser(onlinePlayer.getUniqueId()).getPrimaryGroup()).getDisplayName();
-        String onlinePlayerName = onlinePlayer.getName();
-        onlinePlayerName = onlinePlayerName.concat(", ");
-
-        switch (group) {
-            case "owner":
-                owners = owners.concat(onlinePlayerName);
-                break;
-            case "dev":
-                devs = devs.concat(onlinePlayerName);
-                break;
-            case "builder":
-                builders = builders.concat(onlinePlayerName);
-                break;
-            case "staff":
-                staff = staff.concat(onlinePlayerName);
-                break;
-            case "supporter":
-                supporters = supporters.concat(onlinePlayerName);
-                break;
-            case "visitor":
-                visitors = visitors.concat(onlinePlayerName);
-                break;
-            default:
-                visitors = visitors.concat(onlinePlayerName);
-                break;
-            }
-        }
-
-        String optionalS = "s"; if (onlineAmmount < 2) optionalS = "";
-        player.sendMessage("\uE013 "                                                + cmdemph + onlineAmmount + " §fOnline Player" + optionalS +" \uE013" + "§r\n");
-        if (owners.length() != 0) player.sendMessage("§3\uE006 "                    + cmdemph + "\ue00d§f " + owners.substring(0, owners.length() - 2) + "\n");
-        if (devs.length() != 0) player.sendMessage("§x§f§8§9§9§1§d\uE002 "          + cmdemph + "\ue00d§f " + devs.substring(0, devs.length() - 2) + "\n");
-        if (builders.length() != 0) player.sendMessage("§x§f§3§6§c§3§6\uE001 "      + cmdemph + "\ue00d§f " + builders.substring(0, devs.length() - 2) + "\n");
-        if (staff.length() != 0) player.sendMessage("§c\uE007 "                     + cmdemph + "\ue00d§f " + staff.substring(0, staff.length() - 2) + "\n");
-        if (supporters.length() != 0) player.sendMessage("§d\uE008 "                + cmdemph + "\ue00d§f " + supporters.substring(0, supporters.length() - 2) + "\n");
-        if (visitors.length() != 0) player.sendMessage("§7\uE00A "                  + cmdemph + "\ue00d§f " + visitors.substring(0, visitors.length() - 2) + "\n");
     }
 
     @CommandPermission("paradisu.currenttime")

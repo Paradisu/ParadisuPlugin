@@ -127,6 +127,14 @@ public final class Paradisu {
     }
 
     /**
+     * Returns the utility section of the messages config for this plugin.
+     * @return the utility section of the messages config for this plugin
+     */
+    public MessagesConfig.Utility utility() {
+        return configManager.messagesConfig().utility();
+    }
+
+    /**
      * Returns the commands section of the messages config for this plugin.
      * @return the commands section of the messages config for this plugin
      */
@@ -166,6 +174,7 @@ public final class Paradisu {
      */
     private void registerCommands() {
         Stream.of(
+            new ListCommand(this),
             new LocateCommand(this),
             new TeleportAcceptCommand(this),
             new TeleportCommand(this),

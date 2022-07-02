@@ -33,7 +33,7 @@ public class NpcCommands implements CommandExecutor {
                 ProtocolManager pcmanager = ProtocolLibrary.getProtocolManager();
 
 
-
+                @SuppressWarnings("deprecation")
                 PacketContainer entitypacket = pcmanager.createPacket(PacketType.Play.Server.SPAWN_ENTITY_LIVING);
                 // Still need to set entities
                 entitypacket.getDoubles().write(0, block_location.getX());
