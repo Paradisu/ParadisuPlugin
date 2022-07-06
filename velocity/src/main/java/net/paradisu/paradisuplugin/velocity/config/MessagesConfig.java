@@ -58,6 +58,8 @@ public final class MessagesConfig {
         private Ls ls = new Ls();
         private Tp tp = new Tp();
         private Tpa tpa = new Tpa();
+        private Tpc tpc = new Tpc();
+        private Tpd tpd = new Tpd();
         private Tph tph = new Tph();
         private Tppos tppos = new Tppos();
         private Tpr tpr = new Tpr();
@@ -78,6 +80,14 @@ public final class MessagesConfig {
 
         public Tpa tpa() {
             return this.tpa;
+        }
+
+        public Tpc tpc() {
+            return this.tpc;
+        }
+
+        public Tpd tpd() {
+            return this.tpd;
         }
 
         public Tph tph() {
@@ -167,7 +177,56 @@ public final class MessagesConfig {
             @Setting("output") private List<String> output = List.of(
                 "<lang:paradisu.command.output.tpa.0:'<gold><player>'>",
                 "<lang:paradisu.command.output.tpa.1:'<gold><player>'>",
-                "<lang:paradisu.command.output.tpa.2>");
+                "<lang:paradisu.command.output.tpa.2>",
+                "<lang:paradisu.command.output.tpa.3:'<gold><player>'>");
+            
+            public String helpMsg() {
+                return this.helpMsg;
+            }
+
+            public String helpArgs(int index) {
+                return this.helpArgs.get(index);
+            }
+
+            public String output(int index) {
+                return this.output.get(index);
+            }
+        }
+
+        @ConfigSerializable
+        public static final class Tpc {
+            @Setting("help-msg") private String helpMsg = "<lang:paradisu.command.help.tpc>";
+            @Setting("help-args") private List<String> helpArgs = List.of(
+                "<lang:paradisu.command.help.tpc.0>");
+            @Setting("output") private List<String> output = List.of(
+                "<lang:paradisu.command.output.tpc.0:'<gold><player>'>",
+                "<lang:paradisu.command.output.tpc.1:'<gold><player>'>",
+                "<lang:paradisu.command.output.tpc.2>",
+                "<lang:paradisu.command.output.tpc.3:'<gold><player>'>");
+            
+            public String helpMsg() {
+                return this.helpMsg;
+            }
+
+            public String helpArgs(int index) {
+                return this.helpArgs.get(index);
+            }
+
+            public String output(int index) {
+                return this.output.get(index);
+            }
+        }
+
+        @ConfigSerializable
+        public static final class Tpd {
+            @Setting("help-msg") private String helpMsg = "<lang:paradisu.command.help.tpd>";
+            @Setting("help-args") private List<String> helpArgs = List.of(
+                "<lang:paradisu.command.help.tpd.0>");
+            @Setting("output") private List<String> output = List.of(
+                "<lang:paradisu.command.output.tpd.0:'<gold><player>'>",
+                "<lang:paradisu.command.output.tpd.1:'<gold><player>'>",
+                "<lang:paradisu.command.output.tpd.2>",
+                "<lang:paradisu.command.output.tpc.3:'<gold><player>'>");
             
             public String helpMsg() {
                 return this.helpMsg;
@@ -235,7 +294,7 @@ public final class MessagesConfig {
             @Setting("help-args") private List<String> helpArgs = List.of(
                 "<lang:paradisu.command.help.tpr.0>");
             @Setting("output") private List<String> output = List.of(
-                "<lang:paradisu.command.output.tpr.0:'<gold><player>'><br><lang:paradisu.command.output.tpr.1:\"<click:run_command:/tpa><hover:show_text:'<green>Accept'><gold>/tpa\">",
+                "<lang:paradisu.command.output.tpr.0:'<gold><player>'><br><lang:paradisu.command.output.tpr.1:\"<command>\">",
                 "<lang:paradisu.command.output.tpr.2:'<gold><player>'>");
             
             public String helpMsg() {

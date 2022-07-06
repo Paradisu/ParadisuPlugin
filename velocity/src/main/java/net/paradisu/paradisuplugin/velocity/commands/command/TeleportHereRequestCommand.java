@@ -13,6 +13,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.paradisu.paradisuplugin.velocity.Paradisu;
 import net.paradisu.paradisuplugin.velocity.commands.util.AbstractCommand;
 import net.paradisu.paradisuplugin.velocity.commands.util.TeleportQueue;
+import net.paradisu.paradisuplugin.velocity.commands.util.TeleportRequestHeader;
 import net.paradisu.paradisuplugin.velocity.locale.Messages;
 
 public final class TeleportHereRequestCommand extends AbstractCommand {
@@ -37,22 +38,37 @@ public final class TeleportHereRequestCommand extends AbstractCommand {
     private void teleportHereRequestCommand(CommandContext<CommandSource> context) {
         Player target = (Player) context.get("target");
         Player player = (Player) context.getSender();
+        Player[] teleportArray = {target, player};
 
         TeleportQueue queue = new TeleportQueue();
-        queue.queueTeleport(target, (new Player[] {target, player}));
+        TeleportRequestHeader requestHeader = new TeleportRequestHeader();
+        requestHeader.setRequestHeader(player, target);
 
-        target.sendMessage(
-            Messages.prefixed(MiniMessage.miniMessage().deserialize(
-                paradisu.commands().tprh().output(0),
-                Placeholder.component("player", Component.text(player.getUsername()))
-            )
-        ));
+        boolean existingRequest = queue.isTeleportQueued(requestHeader, teleportArray);
 
-        player.sendMessage(
-            Messages.prefixed(MiniMessage.miniMessage().deserialize(
-                paradisu.commands().tprh().output(1),
-                Placeholder.component("player", Component.text(target.getUsername()))
-            )
-        ));        
+        if (!existingRequest) {
+            queue.queueTeleport(requestHeader, teleportArray);
+
+            target.sendMessage(
+                Messages.prefixed(MiniMessage.miniMessage().deserialize(
+                    paradisu.commands().tprh().output(0),
+                    Placeholder.component("player", Component.text(player.getUsername()))
+                )
+            ));
+
+            player.sendMessage(
+                Messages.prefixed(MiniMessage.miniMessage().deserialize(
+                    paradisu.commands().tprh().output(1),
+                    Placeholder.component("player", Component.text(target.getUsername()))
+                )
+            ));
+        } else {
+            player.sendMessage(
+                Messages.prefixed(MiniMessage.miniMessage().deserialize(
+                    paradisu.commands().tprh().output(2),
+                    Placeholder.component("player", Component.text(target.getUsername()))
+                )
+            ));
+        }
     }
 }

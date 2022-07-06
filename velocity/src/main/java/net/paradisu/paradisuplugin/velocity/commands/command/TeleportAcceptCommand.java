@@ -3,14 +3,17 @@ package net.paradisu.paradisuplugin.velocity.commands.command;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.Player;
 
+import cloud.commandframework.ArgumentDescription;
 import cloud.commandframework.context.CommandContext;
 import cloud.commandframework.meta.CommandMeta;
+import cloud.commandframework.velocity.arguments.PlayerArgument;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.paradisu.paradisuplugin.velocity.Paradisu;
 import net.paradisu.paradisuplugin.velocity.commands.util.AbstractCommand;
 import net.paradisu.paradisuplugin.velocity.commands.util.TeleportQueue;
+import net.paradisu.paradisuplugin.velocity.commands.util.TeleportRequestHeader;
 import net.paradisu.paradisuplugin.velocity.locale.Messages;
 
 public final class TeleportAcceptCommand extends AbstractCommand {
@@ -23,6 +26,7 @@ public final class TeleportAcceptCommand extends AbstractCommand {
         var builder = this.commandManager.commandBuilder("tpa", "tpaccept")
             .permission("vparadisu.tpa")
             .meta(CommandMeta.DESCRIPTION, paradisu.commands().tpa().helpMsg())
+            .argument(PlayerArgument.optional("target"), ArgumentDescription.of(paradisu.commands().tpa().helpArgs(0)))
             .handler(this::teleportAcceptCommand);
         this.commandManager.command(builder);
     }
@@ -36,11 +40,16 @@ public final class TeleportAcceptCommand extends AbstractCommand {
         TeleportQueue queue = new TeleportQueue();
         
         Player sender = (Player) context.getSender();
-        Player teleportingPlayer = (Player) queue.getPlayer(sender, 0);
-        Player stationaryPlayer = (Player) queue.getPlayer(sender, 1);
+        Player target = (Player) context.getOrDefault("target", queue.getRecentTeleport(sender));
+
+        TeleportRequestHeader requestHeader = new TeleportRequestHeader();
+        requestHeader.setRequestHeader(target, sender);
+
+        Player teleportingPlayer = (Player) queue.getPlayer(requestHeader, 0);
+        Player stationaryPlayer = (Player) queue.getPlayer(requestHeader, 1);
         
         boolean validRequest = (teleportingPlayer != null && stationaryPlayer != null);
-        queue.removeTeleport(sender);
+        queue.removeTeleport(requestHeader);
 
         if (validRequest) {
             paradisu.getConnector().getBridge().teleport(teleportingPlayer.getUsername(), stationaryPlayer.getUsername(), m -> {})
@@ -63,7 +72,16 @@ public final class TeleportAcceptCommand extends AbstractCommand {
                 }
             });
         } else {
-            context.getSender().sendMessage(Messages.prefixed(MiniMessage.miniMessage().deserialize(paradisu.commands().tpa().output(2))));
+            if (context.getOrDefault("target", null) == null) {
+                sender.sendMessage(Messages.prefixed(MiniMessage.miniMessage().deserialize(paradisu.commands().tpa().output(2))));
+            } else {
+                sender.sendMessage(Messages.prefixed(
+                    MiniMessage.miniMessage().deserialize(
+                        paradisu.commands().tpa().output(3),
+                        Placeholder.component("player", Component.text(target.getUsername()))
+                    )
+                ));
+            }
         }
     }
 }

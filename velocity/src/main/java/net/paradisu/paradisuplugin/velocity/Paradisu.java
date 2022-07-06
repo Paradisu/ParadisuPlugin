@@ -177,6 +177,8 @@ public final class Paradisu {
             new ListCommand(this),
             new LocateCommand(this),
             new TeleportAcceptCommand(this),
+            new TeleportCancelCommand(this),
+            new TeleportDenyCommand(this),
             new TeleportCommand(this),
             new TeleportHereCommand(this),
             new TeleportHereRequestCommand(this),
