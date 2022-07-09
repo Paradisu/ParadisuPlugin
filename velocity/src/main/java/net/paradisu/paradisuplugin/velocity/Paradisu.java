@@ -174,6 +174,7 @@ public final class Paradisu {
      */
     private void registerCommands() {
         Stream.of(
+            new BackCommand(this),
             new ListCommand(this),
             new LocateCommand(this),
             new TeleportAcceptCommand(this),

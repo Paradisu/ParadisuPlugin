@@ -56,6 +56,7 @@ public final class MessagesConfig {
     public static final class Commands {
         private Locate locate = new Locate();
         private Ls ls = new Ls();
+        private Back back = new Back();
         private Tp tp = new Tp();
         private Tpa tpa = new Tpa();
         private Tpc tpc = new Tpc();
@@ -72,6 +73,10 @@ public final class MessagesConfig {
 
         public Ls ls() {
             return this.ls;
+        }
+
+        public Back back() {
+            return this.back;
         }
 
         public Tp tp() {
@@ -108,6 +113,28 @@ public final class MessagesConfig {
 
         public Vparadisu vparadisu() {
             return this.vparadisu;
+        }
+
+        @ConfigSerializable
+        public static final class Back {
+            @Setting("help-msg") private String helpMsg = "<lang:paradisu.command.help.back>";
+            @Setting("help-args") private List<String> helpArgs = List.of(
+                "<lang:paradisu.command.help.back.0>");
+            @Setting("output") private List<String> output = List.of(
+                "<lang:paradisu.command.output.back.0:'<gold><player>'>",
+                "<lang:paradisu.command.output.back.1:'<gold><player>'>");
+
+            public String helpMsg() {
+                return this.helpMsg;
+            }
+
+            public String helpArgs(int index) {
+                return this.helpArgs.get(index);
+            }
+
+            public String output(int index) {
+                return this.output.get(index);
+            }
         }
 
         @ConfigSerializable
@@ -294,7 +321,7 @@ public final class MessagesConfig {
             @Setting("help-args") private List<String> helpArgs = List.of(
                 "<lang:paradisu.command.help.tpr.0>");
             @Setting("output") private List<String> output = List.of(
-                "<lang:paradisu.command.output.tpr.0:'<gold><player>'><br><lang:paradisu.command.output.tpr.1:\"<command>\">",
+                "<lang:paradisu.command.output.tpr.0:'<gold><player>'><br><lang:paradisu.command.output.tpr.1:\"<gold><command>\">",
                 "<lang:paradisu.command.output.tpr.2:'<gold><player>'>");
             
             public String helpMsg() {

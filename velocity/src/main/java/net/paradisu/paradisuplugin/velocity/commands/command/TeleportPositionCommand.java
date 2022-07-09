@@ -16,6 +16,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.paradisu.paradisuplugin.velocity.Paradisu;
 import net.paradisu.paradisuplugin.velocity.commands.util.AbstractCommand;
+import net.paradisu.paradisuplugin.velocity.commands.util.teleport.TeleportHistory;
 import net.paradisu.paradisuplugin.velocity.locale.Messages;
 
 public final class TeleportPositionCommand extends AbstractCommand {
@@ -43,10 +44,14 @@ public final class TeleportPositionCommand extends AbstractCommand {
      */
     @SuppressWarnings("unchecked")
     private void teleportPositionCommand(CommandContext<CommandSource> context) {
+        TeleportHistory history = new TeleportHistory();
+
         Player player = (Player) context.getOrDefault("player", context.getSender());
+
         paradisu.getConnector().getBridge().getLocation(player)
         .whenComplete((location, locationException) -> {
             if (locationException == null) {
+                history.addTeleport(player, location);
                 RegisteredServer server = context.getOrDefault("server", null);
                 LocationInfo telportLocation = new LocationInfo(
                     server == null ?  location.getServer() : server.getServerInfo().getName(),

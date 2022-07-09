@@ -12,8 +12,8 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.paradisu.paradisuplugin.velocity.Paradisu;
 import net.paradisu.paradisuplugin.velocity.commands.util.AbstractCommand;
-import net.paradisu.paradisuplugin.velocity.commands.util.TeleportQueue;
-import net.paradisu.paradisuplugin.velocity.commands.util.TeleportRequestHeader;
+import net.paradisu.paradisuplugin.velocity.commands.util.teleport.TeleportQueue;
+import net.paradisu.paradisuplugin.velocity.commands.util.teleport.TeleportRequestHeader;
 import net.paradisu.paradisuplugin.velocity.locale.Messages;
 
 public final class TeleportDenyCommand extends AbstractCommand {

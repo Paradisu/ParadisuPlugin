@@ -1,4 +1,4 @@
-package net.paradisu.paradisuplugin.velocity.commands.util;
+package net.paradisu.paradisuplugin.velocity.commands.util.teleport;
 
 import com.velocitypowered.api.proxy.Player;
 
@@ -6,15 +6,28 @@ public class TeleportRequestHeader {
     private Player requestor;
     private Player requestee;
 
+    /**
+     * Constructor for TeleportRequestHeader
+     * @param requestor The player who requesting the teleport
+     * @param requestee The player who is recieving the telport request
+     */
     public void setRequestHeader(Player requestor, Player requestee) {
         this.requestor = requestor;
         this.requestee = requestee;
     }
 
+    /**
+     * Gets the player who is requesting the teleport
+     * @return The player who is requesting the teleport
+     */
     public Player getRequestor() {
         return requestor;
     }
 
+    /**
+     * Gets the player who is recieving the teleport request
+     * @return The player who is recieving the teleport request
+     */
     public Player getRequestee() {
         return requestee;
     }

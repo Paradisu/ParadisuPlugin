@@ -12,8 +12,9 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.paradisu.paradisuplugin.velocity.Paradisu;
 import net.paradisu.paradisuplugin.velocity.commands.util.AbstractCommand;
-import net.paradisu.paradisuplugin.velocity.commands.util.TeleportQueue;
-import net.paradisu.paradisuplugin.velocity.commands.util.TeleportRequestHeader;
+import net.paradisu.paradisuplugin.velocity.commands.util.teleport.TeleportHistory;
+import net.paradisu.paradisuplugin.velocity.commands.util.teleport.TeleportQueue;
+import net.paradisu.paradisuplugin.velocity.commands.util.teleport.TeleportRequestHeader;
 import net.paradisu.paradisuplugin.velocity.locale.Messages;
 
 public final class TeleportAcceptCommand extends AbstractCommand {
@@ -38,6 +39,7 @@ public final class TeleportAcceptCommand extends AbstractCommand {
     @SuppressWarnings("unchecked")
     private void teleportAcceptCommand(CommandContext<CommandSource> context) {
         TeleportQueue queue = new TeleportQueue();
+        TeleportHistory history = new TeleportHistory();
         
         Player sender = (Player) context.getSender();
         Player target = (Player) context.getOrDefault("target", queue.getRecentTeleport(sender));
@@ -52,23 +54,31 @@ public final class TeleportAcceptCommand extends AbstractCommand {
         queue.removeTeleport(requestHeader);
 
         if (validRequest) {
-            paradisu.getConnector().getBridge().teleport(teleportingPlayer.getUsername(), stationaryPlayer.getUsername(), m -> {})
-            .whenComplete((success, exception) -> {
-                if (success) {
-                    teleportingPlayer.sendMessage(
-                        Messages.prefixed(MiniMessage.miniMessage().deserialize(
-                            paradisu.commands().tpa().output(0),
-                            Placeholder.component("player", Component.text(stationaryPlayer.getUsername()))
-                        )
-                    ));
-                    stationaryPlayer.sendMessage(
-                        Messages.prefixed(MiniMessage.miniMessage().deserialize(
-                            paradisu.commands().tpa().output(1),
-                            Placeholder.component("player", Component.text(teleportingPlayer.getUsername()))
-                        )
-                    ));
+            paradisu.getConnector().getBridge().getLocation(teleportingPlayer)
+            .whenComplete((location, locationException) -> {
+                if (locationException == null) {
+                    history.addTeleport(teleportingPlayer, location);
+                    paradisu.getConnector().getBridge().teleport(teleportingPlayer.getUsername(), stationaryPlayer.getUsername(), m -> {})
+                    .whenComplete((success, teleportException) -> {
+                        if (success) {
+                            teleportingPlayer.sendMessage(
+                                Messages.prefixed(MiniMessage.miniMessage().deserialize(
+                                    paradisu.commands().tpa().output(0),
+                                    Placeholder.component("player", Component.text(stationaryPlayer.getUsername()))
+                                )
+                            ));
+                            stationaryPlayer.sendMessage(
+                                Messages.prefixed(MiniMessage.miniMessage().deserialize(
+                                    paradisu.commands().tpa().output(1),
+                                    Placeholder.component("player", Component.text(teleportingPlayer.getUsername()))
+                                )
+                            ));
+                        } else {
+                            paradisu.logger().error("Error teleporting: " + teleportException.getMessage());
+                        }
+                    });
                 } else {
-                    paradisu.logger().error("Error teleporting: " + exception.getMessage());
+                    paradisu.logger().error("Error getting location: " + locationException.getMessage());
                 }
             });
         } else {

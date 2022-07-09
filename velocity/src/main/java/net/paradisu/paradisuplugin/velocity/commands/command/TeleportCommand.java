@@ -12,6 +12,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.paradisu.paradisuplugin.velocity.Paradisu;
 import net.paradisu.paradisuplugin.velocity.commands.util.AbstractCommand;
+import net.paradisu.paradisuplugin.velocity.commands.util.teleport.TeleportHistory;
 import net.paradisu.paradisuplugin.velocity.locale.Messages;
 
 public final class TeleportCommand extends AbstractCommand {
@@ -36,21 +37,31 @@ public final class TeleportCommand extends AbstractCommand {
      */
     @SuppressWarnings("unchecked")
     private void teleportHereCommand(CommandContext<CommandSource> context) {
+        TeleportHistory history = new TeleportHistory();
+
         Player target = (Player) context.get("target");
         Player player = (Player) context.getOrDefault("player", context.getSender());
 
-        paradisu.getConnector().getBridge().teleport(player.getUsername(), target.getUsername(), m -> {})
-        .whenComplete((success, exception) -> {
-            if (success) {
-                context.getSender().sendMessage(
-                    Messages.prefixed(MiniMessage.miniMessage().deserialize(
-                        paradisu.commands().tp().output(0),
-                        Placeholder.component("player", Component.text(player.getUsername())),
-                        Placeholder.component("target", Component.text(target.getUsername()))
-                    )
-                ));
+        paradisu.getConnector().getBridge().getLocation(player)
+        .whenComplete((location, locationException) -> {
+            if (locationException == null) {
+                history.addTeleport(player, location);
+                paradisu.getConnector().getBridge().teleport(player.getUsername(), target.getUsername(), m -> {})
+                .whenComplete((success, teleportException) -> {
+                    if (success) {
+                        context.getSender().sendMessage(
+                            Messages.prefixed(MiniMessage.miniMessage().deserialize(
+                                paradisu.commands().tp().output(0),
+                                Placeholder.component("player", Component.text(player.getUsername())),
+                                Placeholder.component("target", Component.text(target.getUsername()))
+                            )
+                        ));
+                    } else {
+                        paradisu.logger().error("Error teleporting: " + teleportException.getMessage());
+                    }
+                });
             } else {
-                paradisu.logger().error("Error teleporting: " + exception.getMessage());
+                paradisu.logger().error("Error getting location: " + locationException.getMessage());
             }
         });
     }
