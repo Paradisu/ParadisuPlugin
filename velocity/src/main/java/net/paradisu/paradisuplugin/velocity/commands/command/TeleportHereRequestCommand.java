@@ -8,6 +8,8 @@ import cloud.commandframework.context.CommandContext;
 import cloud.commandframework.meta.CommandMeta;
 import cloud.commandframework.velocity.arguments.PlayerArgument;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.paradisu.paradisuplugin.velocity.Paradisu;
@@ -49,10 +51,14 @@ public final class TeleportHereRequestCommand extends AbstractCommand {
         if (!existingRequest) {
             queue.queueTeleport(requestHeader, teleportArray);
 
+            String acceptCommand = "/tpa " + player.getUsername();
             target.sendMessage(
                 Messages.prefixed(MiniMessage.miniMessage().deserialize(
                     paradisu.commands().tprh().output(0),
-                    Placeholder.component("player", Component.text(player.getUsername()))
+                    Placeholder.component("player", Component.text(player.getUsername())),
+                    Placeholder.component("command", Component.text(acceptCommand)
+                        .clickEvent(ClickEvent.runCommand(acceptCommand))
+                        .hoverEvent(Component.text(acceptCommand).color(NamedTextColor.GREEN)))
                 )
             ));
 

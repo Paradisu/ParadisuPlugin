@@ -322,7 +322,8 @@ public final class MessagesConfig {
                 "<lang:paradisu.command.help.tpr.0>");
             @Setting("output") private List<String> output = List.of(
                 "<lang:paradisu.command.output.tpr.0:'<gold><player>'><br><lang:paradisu.command.output.tpr.1:\"<gold><command>\">",
-                "<lang:paradisu.command.output.tpr.2:'<gold><player>'>");
+                "<lang:paradisu.command.output.tpr.2:'<gold><player>'>",
+                "<lang:paradisu.command.output.tpr.3:'<gold><player>'>");
             
             public String helpMsg() {
                 return this.helpMsg;
@@ -343,8 +344,9 @@ public final class MessagesConfig {
             @Setting("help-args") private List<String> helpArgs = List.of(
                 "<lang:paradisu.command.help.tprh.0>");
             @Setting("output") private List<String> output = List.of(
-                "<lang:paradisu.command.output.tprh.0:'<gold><player>'><br><lang:paradisu.command.output.tprh.1:\"<click:run_command:/tpa><hover:show_text:'<green>Accept'><gold>/tpa\">",
-                "<lang:paradisu.command.output.tprh.2:'<gold><player>'>");
+                "<lang:paradisu.command.output.tprh.0:'<gold><player>'><br><lang:paradisu.command.output.tprh.1:\"<gold><command>\">",
+                "<lang:paradisu.command.output.tprh.2:'<gold><player>'>",
+                "<lang:paradisu.command.output.tprh.3:'<gold><player>'>");
             
             public String helpMsg() {
                 return this.helpMsg;
