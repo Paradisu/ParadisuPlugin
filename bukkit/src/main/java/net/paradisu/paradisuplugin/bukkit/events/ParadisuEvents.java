@@ -105,7 +105,7 @@ public class ParadisuEvents implements Listener {
     public static void WearHatEvent(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         PlayerInventory playerInventory = player.getInventory();
-        ItemStack handItem = event.getItem();
+        ItemStack handItem = player.getInventory().getItemInMainHand();
         ItemStack headItem = player.getInventory().getHelmet();
         int slot = player.getInventory().getHeldItemSlot();
         
