@@ -14,7 +14,7 @@
     <properties>
         <plugin.name>ParadisuPlugin</plugin.name>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <minecraft.plugin.version>3.3.0</minecraft.plugin.version>
+        <minecraft.plugin.version>3.3.1</minecraft.plugin.version>
         <maven.compiler.source>16</maven.compiler.source>
         <maven.compiler.target>16</maven.compiler.target>
         <dependency.connectorplugin.version>1.2-SNAPSHOT</dependency.connectorplugin.version>
