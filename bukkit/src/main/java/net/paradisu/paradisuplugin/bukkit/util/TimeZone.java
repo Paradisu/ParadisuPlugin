@@ -62,20 +62,19 @@ public class TimeZone {
 
     public static void UnixToDateTime(Long unixTime) {
         String dateTimeString;
-        Long Years, Months, Days, Hours, Minutes, Seconds;
         String Yearss, Monthss, Dayss, Hourss, Minutess, Secondss;
         String ys, ms, ds, hs, mins, ss;
 
-        Years;
-        Months;
-        Hours = unixTime / 1000 + 6;
-        Minutes = (unixTime % 1000) * 60 / 1000;
-        Seconds;
+        Long Years;
+        Long Months;
+        Long Hours = unixTime / 1000 + 6;
+        Long Minutes = (unixTime % 1000) * 60 / 1000;
+        Long Seconds;
 
         if (Years != 1) ys = "s";       if (Months != 1) ms = "s";
         if (Days != 1) ds = "s";        if (Hours != 1) hs = "s";
         if (Minutes != 1) mins = "s";   if (Seconds != 1) ss = "s";
-        // ------------------------------------------------------- //
+        // ---------------------------------------------------------------------------------- //
         if (Years != 0) { Yearss = Years.toString() + " Year" + ys + ", "} else { Yearss = ""}
         if (Months != 0) { Monthss = Months.toString() + " Month" + ms + ", "} else { Monthss = ""}
         if (Days != 0) { Dayss = Days.toString() + " Day" + ds + ", "} else { Dayss = ""}
