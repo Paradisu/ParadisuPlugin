@@ -10,7 +10,7 @@ import net.paradisu.paradisuplugin.bukkit.items.common.menu.BlankItem;
 import net.paradisu.paradisuplugin.bukkit.items.models.ModelItemManager;
 import net.paradisu.paradisuplugin.bukkit.util.InventoryGUI;
 
-public class TrashCan implements InventoryGUI{
+public class TrashCan implements InventoryGUI {
 
     String cmdprefix;
     String cmdemph;

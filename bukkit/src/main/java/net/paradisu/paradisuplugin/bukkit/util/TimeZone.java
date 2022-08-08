@@ -59,4 +59,32 @@ public class TimeZone {
                 break;
         }
     }
+
+    public static void UnixToDateTime(Long unixTime) {
+        String dateTimeString;
+        Long Years, Months, Days, Hours, Minutes, Seconds;
+        String Yearss, Monthss, Dayss, Hourss, Minutess, Secondss;
+        String ys, ms, ds, hs, mins, ss;
+
+        Years;
+        Months;
+        Hours = unixTime / 1000 + 6;
+        Minutes = (unixTime % 1000) * 60 / 1000;
+        Seconds;
+
+        if (Years != 1) ys = "s";       if (Months != 1) ms = "s";
+        if (Days != 1) ds = "s";        if (Hours != 1) hs = "s";
+        if (Minutes != 1) mins = "s";   if (Seconds != 1) ss = "s";
+        // ------------------------------------------------------- //
+        if (Years != 0) { Yearss = Years.toString() + " Year" + ys + ", "} else { Yearss = ""}
+        if (Months != 0) { Monthss = Months.toString() + " Month" + ms + ", "} else { Monthss = ""}
+        if (Days != 0) { Dayss = Days.toString() + " Day" + ds + ", "} else { Dayss = ""}
+        if (Hours != 0) { Hourss = Hours.toString() + "" + hs + ", "} else { Hourss = ""}
+        if (Minutes != 0) { Minutess = Minutes.toString() + " Minute" + mins + ", "} else { Minutess = ""}
+        if (Seconds != 0) { Secondss = Seconds.toString() + " Second" + ss + ", "} else { Secondss = ""}
+    
+        
+        dateTimeString = Yearss + Monthss + Dayss + Hourss + Minutess + Secondss;
+        return dateTimeString;
+    }
 }

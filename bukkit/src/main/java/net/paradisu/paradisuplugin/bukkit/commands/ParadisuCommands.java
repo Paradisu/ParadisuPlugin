@@ -20,6 +20,13 @@ import net.paradisu.paradisuplugin.bukkit.util.TimeZone;
 
 public class ParadisuCommands {
 
+    private static DataSource dataSource;
+    
+    private static void establishConnection(){
+        if(dataSource == null)
+            dataSource = ParadisuMain.getDBCon();
+    }
+
     String cmdprefix = ParadisuMain.CommandPrefix();
     String cmdemph = ParadisuMain.CommandEmph();
 
@@ -164,8 +171,49 @@ public class ParadisuCommands {
     public void serverSwitcher(CommandSender sender) {
         // Player player = (Player) sender;
 
-        
+    }
 
+
+    @CommandPermission("paradisu.playtime")
+    @CommandMethod("playtime [target]")
+    @CommandDescription("Tells you a players playtime")
+    public void serverSwitcher(CommandSender sender,
+        @Argument("target") Player target) {
+
+    Player player = (Player) sender;
+    establishConnection();
+    String playtime;
+
+        if (target == null) {
+            try (Connection connection = dataSource.getConnection(); PreparedStatement playerQuery = connection.prepareStatement("SELECT * FROM PlayerData WHERE UUID = ?")) {
+                playerQuery.setString(1, player.getUniqueId());
+                ResultSet playerResult = playerQuery.executeQuery();
+                playerResult.next();
+                playtime = playerResult.getString("playtime").toString();
+            
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            player.sendMessage(cmdprefix + cmdemph + player.getName() + "'s §fplaytime is " + cmdemph + /* VARIABLE + */ "§f.");
+
+        } else {
+            try (Connection connection = dataSource.getConnection(); PreparedStatement playerQuery = connection.prepareStatement("SELECT * FROM PlayerData WHERE UUID = ?")) {
+                playerQuery.setString(1, target.getUniqueId());
+                ResultSet playerResult = playerQuery.executeQuery();
+                playerResult.next();
+                playtime = playerResult.getString("playtime").toString();
+            
+                
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            player.sendMessage(cmdprefix + cmdemph + target.getName() + "'s §fplaytime is " + cmdemph + /* VARIABLE + */ "§f.");
+
+        }
+        
 
     }
 
