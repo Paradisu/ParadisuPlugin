@@ -5,11 +5,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.sql.DataSource;
 
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -30,30 +31,31 @@ public class PlaytimeEvents implements Listener {
     String cmdprefix = ParadisuMain.CommandPrefix();
     String cmdemph = ParadisuMain.CommandEmph();
 
-    Player player;
-    UUID playerUUID = player.getUniqueId();
-    Long joinTime;
+    //
+    static Map<UUID, Long> uuidJoinMap = new HashMap<UUID, Long>();
+    //
 
-    //Player[] joinArray = {playerUUID, jointime};
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         UUID playerUUID = event.getPlayer().getUniqueId();
         long currentTime = Instant.now().getEpochSecond();
 
-        //joinArray.put(playerUUID, currentTime);
+        uuidJoinMap.put(playerUUID, currentTime);
     }
 
     @EventHandler
     public void onDisconnect(PlayerQuitEvent event) {
-        establishConnection();
         UUID playerUUID = event.getPlayer().getUniqueId();
+        updatePlayTime(playerUUID);
+    }
 
-        //Player[] playerInfo = joinArray.get(playerUUID);
-        //long joinTime = playerInfo[1];
+    public static void updatePlayTime(UUID playerUUID) {
+        establishConnection();
+        long playerJoinTime = uuidJoinMap.get(playerUUID);
         long currentTime = Instant.now().getEpochSecond();
 
-        long timeDifference = currentTime - joinTime;
+        long sessionDifference = currentTime - playerJoinTime;
         
         long currentPlayTime = 0;
         try (Connection connection = dataSource.getConnection(); PreparedStatement playerQuery = connection.prepareStatement("SELECT * FROM PlayerData WHERE UUID = ?")) {
@@ -61,13 +63,12 @@ public class PlaytimeEvents implements Listener {
             ResultSet playerResult = playerQuery.executeQuery();
             playerResult.next();
             currentPlayTime = playerResult.getLong("playtime");
-        
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
         
-        Long newPlayTime = currentPlayTime += timeDifference;
+        Long newPlayTime = currentPlayTime += sessionDifference;
 
         // set playtime
         try (Connection connection = dataSource.getConnection(); 
@@ -80,19 +81,6 @@ public class PlaytimeEvents implements Listener {
             } catch (SQLException e) {
                 e.printStackTrace();
         }
-
-
-        
-    }
-
-    public Long updatePlayTime(Long timeProvided) {
-        Long playtime = timeProvided;
-
-        // You update jointime 
-        // this is for the command so it updates when you do the command.
-
-
-        return playtime; 
     }
     
 

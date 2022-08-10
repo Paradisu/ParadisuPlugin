@@ -18,6 +18,7 @@ import cloud.commandframework.annotations.CommandDescription;
 import cloud.commandframework.annotations.CommandMethod;
 import cloud.commandframework.annotations.CommandPermission;
 import net.paradisu.paradisuplugin.bukkit.ParadisuMain;
+import net.paradisu.paradisuplugin.bukkit.events.PlaytimeEvents;
 import net.paradisu.paradisuplugin.bukkit.items.common.menu.BlankItem;
 import net.paradisu.paradisuplugin.bukkit.items.common.menu.NoItem;
 import net.paradisu.paradisuplugin.bukkit.items.common.menu.ParadisuEffects;
@@ -184,7 +185,7 @@ public class ParadisuCommands {
     @CommandPermission("paradisu.playtime")
     @CommandMethod("playtime [target]")
     @CommandDescription("Tells you a players playtime")
-    public void serverSwitcher(CommandSender sender,
+    public void playTime(CommandSender sender,
         @Argument("target") Player target) {
 
     Player player = (Player) sender;
@@ -192,6 +193,8 @@ public class ParadisuCommands {
     Long playtime = null;
 
         if (target == null) {
+            PlaytimeEvents.updatePlayTime(player.getUniqueId());
+
             try (Connection connection = dataSource.getConnection(); PreparedStatement playerQuery = connection.prepareStatement("SELECT * FROM PlayerData WHERE UUID = ?")) {
                 playerQuery.setString(1, player.getUniqueId().toString());
                 ResultSet playerResult = playerQuery.executeQuery();
@@ -206,6 +209,8 @@ public class ParadisuCommands {
             player.sendMessage(cmdprefix + cmdemph + player.getName() + "'s §fplaytime is " + cmdemph + playtimeString + "§f.");
 
         } else {
+            PlaytimeEvents.updatePlayTime(target.getUniqueId());
+
             try (Connection connection = dataSource.getConnection(); PreparedStatement playerQuery = connection.prepareStatement("SELECT * FROM PlayerData WHERE UUID = ?")) {
                 playerQuery.setString(1, target.getUniqueId().toString());
                 ResultSet playerResult = playerQuery.executeQuery();
@@ -225,5 +230,7 @@ public class ParadisuCommands {
         
 
     }
+    
 
+    
 }
