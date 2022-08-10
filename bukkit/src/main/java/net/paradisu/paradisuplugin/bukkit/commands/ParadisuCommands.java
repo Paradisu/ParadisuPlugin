@@ -1,5 +1,12 @@
 package net.paradisu.paradisuplugin.bukkit.commands;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import javax.sql.DataSource;
+
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -182,27 +189,28 @@ public class ParadisuCommands {
 
     Player player = (Player) sender;
     establishConnection();
-    String playtime;
+    Long playtime = null;
 
         if (target == null) {
             try (Connection connection = dataSource.getConnection(); PreparedStatement playerQuery = connection.prepareStatement("SELECT * FROM PlayerData WHERE UUID = ?")) {
-                playerQuery.setString(1, player.getUniqueId());
+                playerQuery.setString(1, player.getUniqueId().toString());
                 ResultSet playerResult = playerQuery.executeQuery();
                 playerResult.next();
-                playtime = playerResult.getString("playtime").toString();
+                playtime = playerResult.getLong("playtime");
             
             } catch (SQLException e) {
                 e.printStackTrace();
             }
 
-            player.sendMessage(cmdprefix + cmdemph + player.getName() + "'s §fplaytime is " + cmdemph + /* VARIABLE + */ "§f.");
+            String playtimeString = TimeZone.UnixToPlayTime(playtime);
+            player.sendMessage(cmdprefix + cmdemph + player.getName() + "'s §fplaytime is " + cmdemph + playtimeString + "§f.");
 
         } else {
             try (Connection connection = dataSource.getConnection(); PreparedStatement playerQuery = connection.prepareStatement("SELECT * FROM PlayerData WHERE UUID = ?")) {
-                playerQuery.setString(1, target.getUniqueId());
+                playerQuery.setString(1, target.getUniqueId().toString());
                 ResultSet playerResult = playerQuery.executeQuery();
                 playerResult.next();
-                playtime = playerResult.getString("playtime").toString();
+                playtime = playerResult.getLong("playtime");
             
                 
 
@@ -210,7 +218,8 @@ public class ParadisuCommands {
                 e.printStackTrace();
             }
 
-            player.sendMessage(cmdprefix + cmdemph + target.getName() + "'s §fplaytime is " + cmdemph + /* VARIABLE + */ "§f.");
+            String playtimeString = TimeZone.UnixToPlayTime(playtime);
+            player.sendMessage(cmdprefix + cmdemph + target.getName() + "'s §fplaytime is " + cmdemph + playtimeString + "§f.");
 
         }
         

@@ -60,30 +60,32 @@ public class TimeZone {
         }
     }
 
-    public static void UnixToDateTime(Long unixTime) {
+    public static String UnixToPlayTime(Long timeProvided) {
         String dateTimeString;
-        String Yearss, Monthss, Dayss, Hourss, Minutess, Secondss;
-        String ys, ms, ds, hs, mins, ss;
+        String Dayss, Hourss, Minutess, Secondss;
+        String ds = "", hs = "", mins = "", ss = "";
 
-        Long Years;
-        Long Months;
-        Long Hours = unixTime / 1000 + 6;
-        Long Minutes = (unixTime % 1000) * 60 / 1000;
-        Long Seconds;
+        Long Days = timeProvided / (24 * 3600); timeProvided = timeProvided % (24 * 3600);
+        Long Hours = timeProvided / 3600; timeProvided %= 3600;
+        Long Minutes = timeProvided / 60; timeProvided %= 60;
+        Long Seconds = timeProvided;
 
-        if (Years != 1) ys = "s";       if (Months != 1) ms = "s";
-        if (Days != 1) ds = "s";        if (Hours != 1) hs = "s";
-        if (Minutes != 1) mins = "s";   if (Seconds != 1) ss = "s";
+        if (Days != 1) ds = "s";
+        if (Hours != 1) hs = "s";
+        if (Minutes != 1) mins = "s";
+        if (Seconds != 1) ss = "s";
         // ---------------------------------------------------------------------------------- //
-        if (Years != 0) { Yearss = Years.toString() + " Year" + ys + ", "} else { Yearss = ""}
-        if (Months != 0) { Monthss = Months.toString() + " Month" + ms + ", "} else { Monthss = ""}
-        if (Days != 0) { Dayss = Days.toString() + " Day" + ds + ", "} else { Dayss = ""}
-        if (Hours != 0) { Hourss = Hours.toString() + "" + hs + ", "} else { Hourss = ""}
-        if (Minutes != 0) { Minutess = Minutes.toString() + " Minute" + mins + ", "} else { Minutess = ""}
-        if (Seconds != 0) { Secondss = Seconds.toString() + " Second" + ss + ", "} else { Secondss = ""}
+        if (Days != 0) { Dayss = Days.toString() + " Day" + ds + ", "; } 
+            else { Dayss = ""; }
+        if (Hours != 0) { Hourss = Hours.toString() + "" + hs + ", "; } 
+            else { Hourss = ""; }
+        if (Minutes != 0) { Minutess = Minutes.toString() + " Minute" + mins + ", "; } 
+            else { Minutess = ""; }
+        if (Seconds != 0) { Secondss = Seconds.toString() + " Second" + ss + ", "; } 
+            else { Secondss = ""; }
     
         
-        dateTimeString = Yearss + Monthss + Dayss + Hourss + Minutess + Secondss;
+        dateTimeString = Dayss + Hourss + Minutess + Secondss;
         return dateTimeString;
     }
 }
