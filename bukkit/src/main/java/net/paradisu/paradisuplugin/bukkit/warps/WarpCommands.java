@@ -74,6 +74,7 @@ public class WarpCommands {
             ps.setFloat(5, player.getLocation().getPitch());
             ps.setFloat(6, player.getLocation().getYaw());
             ps.setString(7, player.getLocation().getWorld().getName());
+            ps.setString(8, "paradisu.warp.default");
 
             ps.executeUpdate();
             player.sendMessage(cmdprefix + "§fCreated warp " + cmdemph + warpName + "&f at your location");
