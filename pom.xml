@@ -6,20 +6,19 @@
 >
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>net.paradisu.paradisuplugin</groupId>
+    <groupId>net.paradisu</groupId>
     <artifactId>parent</artifactId>
-    <version>${minecraft.plugin.version}</version>
+    <version>3.4.0</version>
     <packaging>pom</packaging>
-    <name>${plugin.name}</name>
+    <name>ParadisuPlugin</name>
 
     <properties>
         <plugin.name>ParadisuPlugin</plugin.name>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <minecraft.plugin.version>3.3.3</minecraft.plugin.version>
-        <maven.compiler.source>16</maven.compiler.source>
-        <maven.compiler.target>16</maven.compiler.target>
-        <dependency.connectorplugin.version
-    >1.2-SNAPSHOT</dependency.connectorplugin.version>
+        <minecraft.plugin.version>3.4.0</minecraft.plugin.version>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <dependency.connectorplugin.version>1.2-SNAPSHOT</dependency.connectorplugin.version>
     </properties>
 
     <modules>
@@ -27,33 +26,5 @@
         <module>velocity</module>
         <module>plugin</module>
     </modules>
-
-    <profiles>
-        <profile>
-            <id>static_build_number</id>
-            <activation>
-                <property>
-                    <name>!env.BUILD_NUMBER</name>
-                </property>
-            </activation>
-            <properties>
-                <buildNumber>0</buildNumber>
-                <buildDescription
-        >(compiled at ${maven.build.timestamp})</buildDescription>
-            </properties>
-        </profile>
-        <profile>
-            <id>dynamic_build_number</id>
-            <activation>
-                <property>
-                    <name>env.BUILD_NUMBER</name>
-                </property>
-            </activation>
-            <properties>
-                <buildNumber>${env.BUILD_NUMBER}</buildNumber>
-                <buildDescription>(build ${env.BUILD_NUMBER})</buildDescription>
-            </properties>
-        </profile>
-    </profiles>
 
 </project>

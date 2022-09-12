@@ -2,6 +2,6 @@
     "id": "paradisuplugin",
     "name": "ParadisuPlugin",
     "version": "${minecraft.plugin.version}",
-    "main": "net.paradisu.paradisuplugin.velocity.Paradisu",
+    "main": "net.paradisu.velocity.Paradisu",
     "authors": ["_Kastle", "cyto"]
 }

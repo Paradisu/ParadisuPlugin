@@ -1,7 +1,7 @@
 name: ParadisuPlugin
 version: ${minecraft.plugin.version}
 authors: [JJakee, cytocracy, _Kastle, CookieCrafted]
-main: net.paradisu.paradisuplugin.bukkit.ParadisuMain
+main: net.paradisu.bukkit.ParadisuMain
 api-version: 1.18
 commands:
   dbconnect:

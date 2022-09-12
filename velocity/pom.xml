@@ -5,9 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>net.paradisu.paradisuplugin</groupId>
+		<groupId>net.paradisu</groupId>
 		<artifactId>parent</artifactId>
-		<version>${minecraft.plugin.version}</version>
+		<version>3.4.0</version>
 	</parent>
 	
 	<artifactId>velocity</artifactId>
