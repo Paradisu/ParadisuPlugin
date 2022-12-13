@@ -28,7 +28,6 @@
     </dependencies>
 
     <build>
-        <directory>../target</directory>
         <finalName>${plugin.name}</finalName>
         <resources>
             <resource>
