@@ -94,15 +94,15 @@ public class ModelCommands  {
         sender.sendMessage(cmdprefix + "§fWe gave them the model " + cmdemph + "#" + model + "§f!");
     }
 
-    // @CommandPermission("paradisu.mhat")
-    // @CommandMethod("mhat")
-    // public void mHat(CommandSender sender){
-    //     Player player = (Player) sender;
-    //     ItemStack[] armor = player.getInventory().getArmorContents();
-    //     ItemStack swap = armor[3];
-    //     armor[3] = player.getEquipment().getItemInMainHand();
-    //     player.getInventory().setArmorContents(armor);
-    //     player.getInventory().setItemInMainHand(swap);
-    //     player.sendMessage(cmdprefix + "§fWe set the model as your helmet.");
-    // }
+    @CommandPermission("paradisu.mhat")
+    @CommandMethod("mhat")
+    public void mHat(CommandSender sender){
+        Player player = (Player) sender;
+        ItemStack[] armor = player.getInventory().getArmorContents();
+        ItemStack swap = armor[3];
+        armor[3] = player.getEquipment().getItemInMainHand();
+        player.getInventory().setArmorContents(armor);
+        player.getInventory().setItemInMainHand(swap);
+        player.sendMessage(cmdprefix + "§fWe set the model as your helmet.");
+    }
 }
