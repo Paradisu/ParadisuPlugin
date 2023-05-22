@@ -58,6 +58,9 @@ public final class TeleportAcceptCommand extends AbstractCommand {
             .whenComplete((location, locationException) -> {
                 if (locationException == null) {
                     history.addTeleport(teleportingPlayer, location);
+                    if (teleportingPlayer == null || stationaryPlayer == null) {
+                        return;
+                    }
                     paradisu.getConnector().getBridge().teleport(teleportingPlayer.getUsername(), stationaryPlayer.getUsername(), m -> {})
                     .whenComplete((success, teleportException) -> {
                         if (success) {
