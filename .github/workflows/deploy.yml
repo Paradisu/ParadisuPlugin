@@ -1,14 +1,11 @@
-# This workflow will build a Java project with Maven
-# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
-
-name: Java CI with Maven
+name: Deploy Plungin
 
 on:
     push:
         branches:
             - "master"
         paths:
-            - "pom.xml"
+            - "gradle.properties"
 
 jobs:
   build:
@@ -16,49 +13,40 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         fetch-depth: 0
-    - name: Get previous tag
-      id: get-previous-tag
-      uses: actions-ecosystem/action-get-latest-tag@v1
-    - name: Get Paradisu Plugin Version from plugin.yml
+    - name: Get previous version
+      id: getPreviousTag
+      uses: WyriHaximus/github-action-get-previous-tag@v1
+    - name: Get current version
       id: lookupParadisuVersion
-      uses: mikefarah/yq@master
-      with:
-        cmd: yq eval -p xml '.project.properties | .["minecraft.plugin.version"]' pom.xml
+      run: echo result=$(cat gradle.properties | grep "version" | cut -d'=' -f2) >> $GITHUB_OUTPUT
     - name: Bump version and push tag
       id: tag_version
-      uses: mathieudutour/github-tag-action@v5.5
+      uses: mathieudutour/github-tag-action@v6.1
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         tag_prefix: ''
         custom_tag: ${{ steps.lookupParadisuVersion.outputs.result }}
     - name: Set up JDK 17
-      uses: actions/setup-java@v1
+      uses: actions/setup-java@v3
       with:
         java-version: 17
-        java-package: jdk
-        architecture: x86
-    - name: Cache Maven packages
-      uses: actions/cache@v1
+        distribution: temurin
+    - name: Build with Gradle
+      uses: gradle/gradle-build-action@v2
       with:
-        path: ~/.m2
-        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-        restore-keys: ${{ runner.os }}-m2
-    - name: Build with Maven
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SNW_VERSION: ${{ steps.lookupParadisuVersion.outputs.result }}
-      run: mvn -Drevision=${SNW_VERSION} clean package
-    - run: mkdir staging && cp plugin/target/ParadisuPlugin.jar staging
-    - uses: actions/upload-artifact@v2
+        arguments: build
+        gradle-home-cache-cleanup: true
+    - run: mkdir staging && cp build/libs/ParadisuPlugin.jar staging
+    - uses: actions/upload-artifact@v3
       with:
         name: ParadisuPlugin-Latest
         path: staging/ParadisuPlugin.jar
     - name: Generate release diff
       env:
-        BEGIN_COMMIT: ${{ steps.get-previous-tag.outputs.tag }}
+        BEGIN_COMMIT: ${{ steps.getPreviousTag.outputs.tag }}
         END_COMMIT: ${{ steps.lookupParadisuVersion.outputs.result }}
       run: git fetch --tags --force && git log --pretty=format:"* %s (%h)" ${BEGIN_COMMIT}..${END_COMMIT} > release_notes.md
     - name: Create release

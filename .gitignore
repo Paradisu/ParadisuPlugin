@@ -167,3 +167,6 @@ build.bat
 .env
 .vscode/
 .idea/
+# Gradle
+.gradle
+**/build

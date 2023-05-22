@@ -1,7 +1,7 @@
 {
-    "id": "paradisuplugin",
-    "name": "ParadisuPlugin",
-    "version": "${minecraft.plugin.version}",
+    "id": "${id}",
+    "name": "${name}",
+    "version": "${version}",
     "main": "net.paradisu.velocity.Paradisu",
-    "authors": ["_Kastle", "cyto"]
+    "authors": ["${author}"]
 }
