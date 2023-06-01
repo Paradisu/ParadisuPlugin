@@ -6,12 +6,12 @@ import cloud.commandframework.arguments.standard.StringArgument;
 import cloud.commandframework.context.CommandContext;
 import cloud.commandframework.meta.CommandMeta;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.paradisu.velocity.Paradisu;
-import net.paradisu.velocity.commands.util.AbstractCommand;
-import net.paradisu.velocity.locale.Messages;
+import net.paradisu.core.locale.Messages;
+import net.paradisu.velocity.ParadisuVelocity;
+import net.paradisu.velocity.commands.AbstractVelocityCommand;
 
-public final class VParadisuCommand extends AbstractCommand {
-    public VParadisuCommand(Paradisu paradisu) {
+public final class VParadisuCommand extends AbstractVelocityCommand {
+    public VParadisuCommand(ParadisuVelocity paradisu) {
         super(paradisu);
     }
 
@@ -25,7 +25,7 @@ public final class VParadisuCommand extends AbstractCommand {
         this.commandManager.command(builder.literal("help")
         .argument(StringArgument.optional("query", StringArgument.StringMode.GREEDY))
         .handler(context -> {
-            this.minecraftHelp.queryCommands(context.getOrDefault("query", ""), context.getSender());
+            this.helpManager.getMinecraftHelp().queryCommands(context.getOrDefault("query", ""), context.getSender());
         }));
         
         this.commandManager.command(builder.literal("about")

@@ -10,13 +10,13 @@ import cloud.commandframework.velocity.arguments.PlayerArgument;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import net.paradisu.velocity.Paradisu;
-import net.paradisu.velocity.commands.util.AbstractCommand;
+import net.paradisu.core.locale.Messages;
+import net.paradisu.velocity.ParadisuVelocity;
+import net.paradisu.velocity.commands.AbstractVelocityCommand;
 import net.paradisu.velocity.commands.util.teleport.TeleportHistory;
-import net.paradisu.velocity.locale.Messages;
 
-public final class TeleportHereCommand extends AbstractCommand {
-    public TeleportHereCommand(Paradisu paradisu) {
+public final class TeleportHereCommand extends AbstractVelocityCommand {
+    public TeleportHereCommand(ParadisuVelocity paradisu) {
         super(paradisu);
     }
 
@@ -41,11 +41,11 @@ public final class TeleportHereCommand extends AbstractCommand {
         Player target = (Player) context.get("target");
         Player player = (Player) context.getSender();
 
-        paradisu.getConnector().getBridge().getLocation(target)
+        paradisu.connector().getBridge().getLocation(target)
         .whenComplete((location, locationException) -> {
             if (locationException == null) {
                 history.addTeleport(target, location);
-                paradisu.getConnector().getBridge().teleport(target.getUsername(), player.getUsername(), m -> {})
+                paradisu.connector().getBridge().teleport(target.getUsername(), player.getUsername(), m -> {})
                 .whenComplete((success, teleportException) -> {
                     if (success) {
                         player.sendMessage(

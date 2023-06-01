@@ -5,10 +5,11 @@ import cloud.commandframework.CommandManager;
 import cloud.commandframework.execution.CommandExecutionCoordinator;
 import cloud.commandframework.velocity.VelocityCommandManager;
 import de.themoep.connectorplugin.velocity.VelocityConnectorPlugin;
-import net.paradisu.velocity.commands.util.AbstractCommand;
-import net.paradisu.velocity.config.ConfigManager;
-import net.paradisu.velocity.config.MessagesConfig;
-import net.paradisu.velocity.locale.TranslationManager;
+import net.paradisu.velocity.config.VelocityConfigManager;
+import net.paradisu.velocity.config.configs.MessagesConfig;
+import net.paradisu.core.locale.TranslationManager;
+import net.paradisu.core.ParadisuPlugin;
+import net.paradisu.velocity.commands.AbstractVelocityCommand;
 import net.paradisu.velocity.commands.command.*;
 
 import com.velocitypowered.api.command.CommandSource;
@@ -29,18 +30,18 @@ import org.slf4j.Logger;
 @Plugin(
     id = "paradisuplugin", 
     name = "ParadisuPlugin",
-    version = "1.0.0",
+    version = "${version}",
     description = "The core plugin for the Paradisu Velocity proxy",
     authors = {"_Kastle", "cyto"},
     url = "https://paradisu.net",
     dependencies = @Dependency(id = "connectorplugin")
     )
-public final class Paradisu {
+public final class ParadisuVelocity implements ParadisuPlugin {
 
     private final ProxyServer server;
     private final Logger logger;
     private final Path dataDirectory;
-    private ConfigManager configManager;
+    private VelocityConfigManager configManager;
     private TranslationManager translationManager;
     private VelocityCommandManager<CommandSource> commandManager;
     private boolean connectorEnabled;
@@ -48,7 +49,7 @@ public final class Paradisu {
     //private final VelocityConnectorPlugin connectorPlugin;
     
     @Inject
-    public Paradisu(ProxyServer server, Logger logger, @DataDirectory Path dataDirectory) {
+    public ParadisuVelocity(ProxyServer server, Logger logger, @DataDirectory Path dataDirectory) {
         this.server = server;
         this.logger = logger;
         this.dataDirectory = dataDirectory;
@@ -57,7 +58,7 @@ public final class Paradisu {
     @Subscribe
     public void onProxyInitialization(ProxyInitializeEvent event) {
         // Initialize the config manager
-        this.configManager = new ConfigManager(this);
+        this.configManager = new VelocityConfigManager(this);
         this.configManager.loadConfigs();
         // Initialize the translation manager
         this.translationManager = new TranslationManager(this);
@@ -114,7 +115,7 @@ public final class Paradisu {
      * Returns the config manager for this plugin.
      * @return the config manager for this plugin
      */
-    public ConfigManager configManager() {
+    public VelocityConfigManager configManager() {
         return configManager;
     }
 
@@ -123,7 +124,7 @@ public final class Paradisu {
      * @return the messages config for this plugin
      */
     public MessagesConfig messagesConfig() {
-        return configManager.messagesConfig();
+        return configManager.getConfig("messages", MessagesConfig.class);
     }
 
     /**
@@ -131,7 +132,7 @@ public final class Paradisu {
      * @return the utility section of the messages config for this plugin
      */
     public MessagesConfig.Utility utility() {
-        return configManager.messagesConfig().utility();
+        return configManager.getConfig("messages", MessagesConfig.class).utility();
     }
 
     /**
@@ -139,7 +140,7 @@ public final class Paradisu {
      * @return the commands section of the messages config for this plugin
      */
     public MessagesConfig.Commands commands() {
-        return configManager.messagesConfig().commands();
+        return configManager.getConfig("messages", MessagesConfig.class).commands();
     }
 
     /**
@@ -163,7 +164,7 @@ public final class Paradisu {
      * See https://github.com/Phoenix616/ConnectorPlugin
      * @return the Velocity Connector Plugin instance
      */
-    public VelocityConnectorPlugin getConnector() {
+    public VelocityConnectorPlugin connector() {
         return this.connector;
     }
     
@@ -187,7 +188,7 @@ public final class Paradisu {
             new TeleportRequestCommand(this),
             new VParadisuCommand(this),
             new WarpCommand(this)
-        ).forEach(AbstractCommand::register);
+        ).forEach(AbstractVelocityCommand::register);
     }
 
     /**

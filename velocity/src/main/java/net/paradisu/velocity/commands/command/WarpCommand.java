@@ -1,10 +1,10 @@
 package net.paradisu.velocity.commands.command;
 
-import net.paradisu.velocity.Paradisu;
-import net.paradisu.velocity.commands.util.AbstractCommand;
+import net.paradisu.velocity.ParadisuVelocity;
+import net.paradisu.velocity.commands.AbstractVelocityCommand;
 
-public final class WarpCommand extends AbstractCommand {
-    public WarpCommand(Paradisu paradisu) {
+public final class WarpCommand extends AbstractVelocityCommand {
+    public WarpCommand(ParadisuVelocity paradisu) {
         super(paradisu);
     }
 

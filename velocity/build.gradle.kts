@@ -1,17 +1,16 @@
 plugins {
-    id("net.paradisu.shadow-conventions")
+    id("net.paradisu.platform-conventions")
 }
 
 dependencies {
-    implementation("cloud.commandframework:cloud-velocity:1.8.3")
-    implementation("cloud.commandframework:cloud-minecraft-extras:1.8.3")
-    implementation("net.kyori:adventure-api:4.13.1-SNAPSHOT")
-    implementation("net.kyori:adventure-text-minimessage:4.13.1-SNAPSHOT")
-    implementation("org.spongepowered:configurate-yaml:4.0.0")
-    implementation("com.google.guava:guava:31.1-jre")
-    compileOnly("com.velocitypowered:velocity-api:3.0.1")
-    compileOnly("de.themoep.connectorplugin:velocity:1.5-SNAPSHOT")
-    compileOnly("net.luckperms:api:5.4")
+    api(project(":core"))
+    implementation(libs.bundles.cloud.velocity)
+    implementation(libs.bundles.adventure)
+    implementation(libs.configurate.yaml)
+    implementation(libs.guava)
+    compileOnly(libs.velocity.api)
+    compileOnly(libs.connectorplugin.velocity)
+    compileOnly(libs.luckperms.api)
 }
 
 description = "velocity"

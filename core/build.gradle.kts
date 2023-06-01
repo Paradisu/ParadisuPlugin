@@ -3,9 +3,12 @@ plugins {
 }
 
 dependencies {
-    implementation("org.spongepowered:configurate-yaml:4.0.0")
-    implementation("cloud.commandframework:cloud-core:1.8.3")
-    implementation("de.themoep.connectorplugin:core:1.5-SNAPSHOT")
+    compileOnly(libs.configurate.yaml)
+    compileOnly(libs.bundles.cloud.core)
+    compileOnly(libs.bundles.adventure)
+    compileOnly(libs.guava)
+    compileOnly(libs.connectorplugin.core)
+    compileOnly(libs.log4j.slf4j.impl)
 }
 
 description = "core"

@@ -10,14 +10,14 @@ import cloud.commandframework.velocity.arguments.PlayerArgument;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import net.paradisu.velocity.Paradisu;
-import net.paradisu.velocity.commands.util.AbstractCommand;
+import net.paradisu.core.locale.Messages;
+import net.paradisu.velocity.ParadisuVelocity;
+import net.paradisu.velocity.commands.AbstractVelocityCommand;
 import net.paradisu.velocity.commands.util.teleport.TeleportQueue;
 import net.paradisu.velocity.commands.util.teleport.TeleportRequestHeader;
-import net.paradisu.velocity.locale.Messages;
 
-public final class TeleportDenyCommand extends AbstractCommand {
-    public TeleportDenyCommand(Paradisu paradisu) {
+public final class TeleportDenyCommand extends AbstractVelocityCommand {
+    public TeleportDenyCommand(ParadisuVelocity paradisu) {
         super(paradisu);
     }
 

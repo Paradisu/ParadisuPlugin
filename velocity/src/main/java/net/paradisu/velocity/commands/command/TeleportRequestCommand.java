@@ -12,14 +12,14 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import net.paradisu.velocity.Paradisu;
-import net.paradisu.velocity.commands.util.AbstractCommand;
+import net.paradisu.core.locale.Messages;
+import net.paradisu.velocity.ParadisuVelocity;
+import net.paradisu.velocity.commands.AbstractVelocityCommand;
 import net.paradisu.velocity.commands.util.teleport.TeleportQueue;
 import net.paradisu.velocity.commands.util.teleport.TeleportRequestHeader;
-import net.paradisu.velocity.locale.Messages;
 
-public final class TeleportRequestCommand extends AbstractCommand {
-    public TeleportRequestCommand(Paradisu paradisu) {
+public final class TeleportRequestCommand extends AbstractVelocityCommand {
+    public TeleportRequestCommand(ParadisuVelocity paradisu) {
         super(paradisu);
     }
 

@@ -1,4 +1,4 @@
-package net.paradisu.velocity.utils;
+package net.paradisu.core.utils;
 
 import java.io.IOException;
 import java.nio.file.DirectoryStream;

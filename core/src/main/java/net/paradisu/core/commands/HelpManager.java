@@ -1,34 +1,20 @@
-package net.paradisu.velocity.commands.util;
+package net.paradisu.core.commands;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-import com.velocitypowered.api.command.CommandSource;
-
-import cloud.commandframework.CommandManager;
 import cloud.commandframework.minecraft.extras.MinecraftHelp;
 import cloud.commandframework.minecraft.extras.MinecraftHelp.HelpColors;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.paradisu.velocity.Paradisu;
 
-public abstract class AbstractCommand {
-    protected final Paradisu paradisu;
-    protected final CommandManager<CommandSource> commandManager;
-    protected MinecraftHelp<CommandSource> minecraftHelp;
+public class HelpManager<T> {
+    private MinecraftHelp<T> minecraftHelp;
 
-    /**
-     * Constructor for the AbstractCommand class.
-     * @param paradisu The instance of the Paradisu plugin.
-     */
-    public AbstractCommand(Paradisu paradisu) {
-        // Initialize the command manager
-        this.paradisu = paradisu;
-        this.commandManager = paradisu.commandManager();
-
+    public HelpManager(MinecraftHelp<T> minecraftHelp) {
         // Initialize the help command system
-        this.minecraftHelp = new MinecraftHelp<>("/vparadisu help", p -> p, commandManager);
+        this.minecraftHelp = minecraftHelp;
 
         // Allow use of translation keys in the help command
         this.minecraftHelp.messageProvider((sender, key, args) ->
@@ -50,6 +36,8 @@ public abstract class AbstractCommand {
             NamedTextColor.DARK_GRAY
             ));
     }
-
-    public abstract void register();
+    
+    public MinecraftHelp<T> getMinecraftHelp() {
+        return minecraftHelp;
+    }
 }

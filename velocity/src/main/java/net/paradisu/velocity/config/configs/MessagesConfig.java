@@ -1,4 +1,4 @@
-package net.paradisu.velocity.config;
+package net.paradisu.velocity.config.configs;
 
 import java.util.List;
 

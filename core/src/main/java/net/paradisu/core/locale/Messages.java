@@ -1,4 +1,4 @@
-package net.paradisu.velocity.locale;
+package net.paradisu.core.locale;
 
 
 import static net.kyori.adventure.text.Component.text;

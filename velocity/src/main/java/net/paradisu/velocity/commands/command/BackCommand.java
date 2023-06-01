@@ -11,13 +11,13 @@ import de.themoep.connectorplugin.LocationInfo;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import net.paradisu.velocity.Paradisu;
-import net.paradisu.velocity.commands.util.AbstractCommand;
+import net.paradisu.core.locale.Messages;
+import net.paradisu.velocity.ParadisuVelocity;
+import net.paradisu.velocity.commands.AbstractVelocityCommand;
 import net.paradisu.velocity.commands.util.teleport.TeleportHistory;
-import net.paradisu.velocity.locale.Messages;
 
-public final class BackCommand extends AbstractCommand {
-    public BackCommand(Paradisu paradisu) {
+public final class BackCommand extends AbstractVelocityCommand {
+    public BackCommand(ParadisuVelocity paradisu) {
         super(paradisu);
     }
 
@@ -44,11 +44,11 @@ public final class BackCommand extends AbstractCommand {
         boolean validRequest = (previousLocation != null);
 
         if (validRequest) {
-            paradisu.getConnector().getBridge().getLocation(player)
+            paradisu.connector().getBridge().getLocation(player)
             .whenComplete((location, locationException) -> {
                 if (locationException == null) {
                     history.addTeleport(player, location);
-                    paradisu.getConnector().getBridge().teleport(player.getUsername(), previousLocation, m -> {})
+                    paradisu.connector().getBridge().teleport(player.getUsername(), previousLocation, m -> {})
                     .whenComplete((success, teleportException) -> {
                         if (success) {
                             context.getSender().sendMessage(

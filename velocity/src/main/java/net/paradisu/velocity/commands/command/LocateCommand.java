@@ -10,12 +10,12 @@ import cloud.commandframework.velocity.arguments.PlayerArgument;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import net.paradisu.velocity.Paradisu;
-import net.paradisu.velocity.commands.util.AbstractCommand;
-import net.paradisu.velocity.locale.Messages;
+import net.paradisu.core.locale.Messages;
+import net.paradisu.velocity.ParadisuVelocity;
+import net.paradisu.velocity.commands.AbstractVelocityCommand;
 
-public final class LocateCommand extends AbstractCommand {
-    public LocateCommand(Paradisu paradisu) {
+public final class LocateCommand extends AbstractVelocityCommand {
+    public LocateCommand(ParadisuVelocity paradisu) {
         super(paradisu);
     }
 
@@ -36,7 +36,7 @@ public final class LocateCommand extends AbstractCommand {
     private void locateCommand(CommandContext<CommandSource> context) {
         Player player = (Player) context.get("player");
 
-        paradisu.getConnector().getBridge().getLocation(player)
+        paradisu.connector().getBridge().getLocation(player)
         .whenComplete((location, exception) -> {
             if (exception == null) {
                 context.getSender().sendMessage(Messages.prefixed(

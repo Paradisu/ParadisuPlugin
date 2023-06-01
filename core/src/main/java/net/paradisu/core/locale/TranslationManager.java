@@ -1,8 +1,8 @@
-package net.paradisu.velocity.locale;
+package net.paradisu.core.locale;
 
 import com.google.common.collect.Maps;
-import net.paradisu.velocity.Paradisu;
-import net.paradisu.velocity.utils.FileUtils;
+import net.paradisu.core.ParadisuPlugin;
+import net.paradisu.core.utils.FileUtils;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.translation.GlobalTranslator;
 import net.kyori.adventure.translation.TranslationRegistry;
@@ -24,12 +24,12 @@ public final class TranslationManager {
         new Locale("fi", "FI")
         );
 
-    private final Paradisu paradisu;
+    private final ParadisuPlugin paradisu;
     private final Set<Locale> installed = ConcurrentHashMap.newKeySet();
     private final Path translationsDirectory;
     private TranslationRegistry registry;
 
-    public TranslationManager(Paradisu paradisu) {
+    public TranslationManager(ParadisuPlugin paradisu) {
         this.paradisu = paradisu;
         this.translationsDirectory = this.paradisu.dataDirectory().resolve("translations");
 
@@ -145,3 +145,4 @@ public final class TranslationManager {
         return Maps.immutableEntry(locale, bundle);
     }
 }
+

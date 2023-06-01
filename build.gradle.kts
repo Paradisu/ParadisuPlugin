@@ -1,7 +1,7 @@
 plugins {
     id("net.paradisu.java-conventions")
     id("com.github.johnrengelman.shadow") version "8.1.1"
-    java
+    `java-library`
 }
 
 dependencies {

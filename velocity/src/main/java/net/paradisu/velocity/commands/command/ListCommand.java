@@ -17,12 +17,12 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
-import net.paradisu.velocity.Paradisu;
-import net.paradisu.velocity.commands.util.AbstractCommand;
-import net.paradisu.velocity.locale.Messages;
+import net.paradisu.core.locale.Messages;
+import net.paradisu.velocity.ParadisuVelocity;
+import net.paradisu.velocity.commands.AbstractVelocityCommand;
 
-public final class ListCommand extends AbstractCommand {
-    public ListCommand(Paradisu paradisu) {
+public final class ListCommand extends AbstractVelocityCommand {
+    public ListCommand(ParadisuVelocity paradisu) {
         super(paradisu);
     }
 

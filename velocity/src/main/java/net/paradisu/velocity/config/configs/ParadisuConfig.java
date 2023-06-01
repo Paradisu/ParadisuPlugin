@@ -1,4 +1,4 @@
-package net.paradisu.velocity.config;
+package net.paradisu.velocity.config.configs;
 
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Setting;
