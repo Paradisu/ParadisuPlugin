@@ -13,6 +13,9 @@ connectorplugin = "1.5-SNAPSHOT"
 guava = "31.1-jre"
 log4j-slf4j-impl = "2.20.0"
 velocity-api = "3.0.1"
+shadow = "8.1.1"
+blossom = "1.2.0"
+indra = "3.1.1"
 
 [libraries]
 dotenv-kotlin = { group = "io.github.cdimascio", name = "dotenv-kotlin", version.ref = "dotenv-kotlin" }
@@ -36,6 +39,7 @@ connectorplugin-core = { group = "de.themoep.connectorplugin", name = "core", ve
 connectorplugin-velocity = { group = "de.themoep.connectorplugin", name = "velocity", version.ref = "connectorplugin" }
 connectorplugin-spigot = { group = "de.themoep.connectorplugin", name = "spigot", version.ref = "connectorplugin" }
 log4j-slf4j-impl = { group = "org.apache.logging.log4j", name = "log4j-slf4j-impl", version.ref = "log4j-slf4j-impl" }
+shadow = { group = "com.github.johnrengelman", name = "shadow", version.ref = "shadow" }
 
 [bundles]
 cloud-velocity = [
@@ -54,3 +58,8 @@ adventure = [
   "adventure-api",
   "adventure-text-minimessage"
 ]
+
+[plugins]
+shadow = { id = "com.github.johnrengelman.shadow", version.ref = "shadow" }
+blossom = { id = "net.kyori.blossom", version.ref = "blossom" }
+indra-git = { id = "net.kyori.indra.git", version.ref = "indra" }

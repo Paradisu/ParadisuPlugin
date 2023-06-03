@@ -8,10 +8,37 @@ on:
             - "gradle.properties"
 
 jobs:
-  build:
-
+  validate-version:
+    name: Validate Version
     runs-on: ubuntu-latest
-
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Get previous tag
+        id: getPreviousTag
+        uses: WyriHaximus/github-action-get-previous-tag@v1
+      - name: Validate Version
+        env:
+          PREVIOUS_VERSION: ${{ steps.getPreviousTag.outputs.tag }}
+        run: |
+          CURRENT_VERSION=$(cat gradle.properties | grep "version" | cut -d'=' -f2)
+          PREV_VER_GEQ_CUR_VER=$(
+            jq -r -n --arg previous_version "${PREVIOUS_VERSION}" --arg current_version "${CURRENT_VERSION}" '
+            def ver2arr($inp): ($inp | split(".") | map(tonumber)); 
+              ver2arr($previous_version) as $ver_prev  
+            | ver2arr($current_version) as $ver_cur 
+            | if ($ver_prev[0] > $ver_cur[0]) or ($ver_prev[1] > $ver_cur[1] and $ver_cur[1] != 0) or ($ver_prev[2] >= $ver_cur[2] and $ver_cur[2] != 0) then true else false end
+          ')
+          if [ "${PREV_VER_GEQ_CUR_VER}" = true ]; then
+            echo "Previous version is greater than or equal to current version."
+            echo "Please update gradle.properties with a valid SemVer version greater than ${PREVIOUS_VERSION} before pushing again!"
+            exit 1
+          fi
+  build:
+    runs-on: ubuntu-latest
+    needs: [validate-version]
     steps:
     - uses: actions/checkout@v3
       with:

@@ -1,9 +1,9 @@
 name: ${name}
 version: ${version}
 website: ${url}
-authors: ["${author}"]
+authors: [${authors}]
 main: net.paradisu.bukkit.ParadisuMain
-api-version: 1.19
+api-version: ${spigotApiVersion}
 commands:
   dbconnect:
     description: connects to db

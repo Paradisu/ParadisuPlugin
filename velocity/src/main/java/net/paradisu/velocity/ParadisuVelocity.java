@@ -8,6 +8,7 @@ import de.themoep.connectorplugin.velocity.VelocityConnectorPlugin;
 import net.paradisu.velocity.config.VelocityConfigManager;
 import net.paradisu.velocity.config.configs.MessagesConfig;
 import net.paradisu.core.locale.TranslationManager;
+import net.paradisu.core.utils.Constants;
 import net.paradisu.core.ParadisuPlugin;
 import net.paradisu.velocity.commands.AbstractVelocityCommand;
 import net.paradisu.velocity.commands.command.*;
@@ -28,12 +29,12 @@ import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 @Plugin(
-    id = "paradisuplugin", 
-    name = "ParadisuPlugin",
-    version = "${version}",
-    description = "The core plugin for the Paradisu Velocity proxy",
-    authors = {"_Kastle", "cyto"},
-    url = "https://paradisu.net",
+    id = Constants.Plugin.ID, 
+    name = Constants.Plugin.NAME,
+    version = Constants.Plugin.VERSION,
+    description = Constants.Plugin.DESCRIPTION,
+    authors = { Constants.Plugin.AUTHORS },
+    url = Constants.Plugin.URL,
     dependencies = @Dependency(id = "connectorplugin")
     )
 public final class ParadisuVelocity implements ParadisuPlugin {
