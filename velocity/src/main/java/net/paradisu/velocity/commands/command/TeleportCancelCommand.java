@@ -26,7 +26,7 @@ public final class TeleportCancelCommand extends AbstractVelocityCommand {
         var builder = this.commandManager.commandBuilder("tpc", "tpcancel")
             .permission("vparadisu.tprh")
             .meta(CommandMeta.DESCRIPTION, paradisu.commands().tprh().helpMsg())
-            .argument(PlayerArgument.of("target"), ArgumentDescription.of(paradisu.commands().tpc().helpArgs(0)))
+            .argument(PlayerArgument.of("target"), ArgumentDescription.of(paradisu.commands().tpc().helpArgs().get(0)))
             .handler(this::teleportCancelCommand);
         this.commandManager.command(builder);
     }
@@ -50,21 +50,21 @@ public final class TeleportCancelCommand extends AbstractVelocityCommand {
 
             target.sendMessage(
                 Messages.prefixed(MiniMessage.miniMessage().deserialize(
-                    paradisu.commands().tpc().output(0),
+                    paradisu.commands().tpc().output().get(0),
                     Placeholder.component("player", Component.text(player.getUsername()))
                 )
             ));
 
             player.sendMessage(
                 Messages.prefixed(MiniMessage.miniMessage().deserialize(
-                    paradisu.commands().tpc().output(1),
+                    paradisu.commands().tpc().output().get(1),
                     Placeholder.component("player", Component.text(target.getUsername()))
                 )
             ));
         } else {
             player.sendMessage(
                 Messages.prefixed(MiniMessage.miniMessage().deserialize(
-                    paradisu.commands().tpc().output(2),
+                    paradisu.commands().tpc().output().get(2),
                     Placeholder.component("player", Component.text(target.getUsername()))
                 )
             ));

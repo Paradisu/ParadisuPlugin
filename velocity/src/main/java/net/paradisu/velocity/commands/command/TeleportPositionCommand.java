@@ -29,11 +29,11 @@ public final class TeleportPositionCommand extends AbstractVelocityCommand {
         var builder = this.commandManager.commandBuilder("tppos", "tpposition")
             .permission("vparadisu.tppos")
             .meta(CommandMeta.DESCRIPTION, paradisu.commands().tppos().helpMsg())
-            .argument(DoubleArgument.of("x"), ArgumentDescription.of(paradisu.commands().tppos().helpArgs(0)))
-            .argument(DoubleArgument.of("y"), ArgumentDescription.of(paradisu.commands().tppos().helpArgs(1)))
-            .argument(DoubleArgument.of("z"), ArgumentDescription.of(paradisu.commands().tppos().helpArgs(2)))
-            .argument(ServerArgument.optional("server"), ArgumentDescription.of(paradisu.commands().tppos().helpArgs(3)))
-            .argument(PlayerArgument.optional("player"), ArgumentDescription.of(paradisu.commands().tppos().helpArgs(4)))
+            .argument(DoubleArgument.of("x"), ArgumentDescription.of(paradisu.commands().tppos().helpArgs().get(0)))
+            .argument(DoubleArgument.of("y"), ArgumentDescription.of(paradisu.commands().tppos().helpArgs().get(1)))
+            .argument(DoubleArgument.of("z"), ArgumentDescription.of(paradisu.commands().tppos().helpArgs().get(2)))
+            .argument(ServerArgument.optional("server"), ArgumentDescription.of(paradisu.commands().tppos().helpArgs().get(3)))
+            .argument(PlayerArgument.optional("player"), ArgumentDescription.of(paradisu.commands().tppos().helpArgs().get(4)))
             .handler(this::teleportPositionCommand);
         this.commandManager.command(builder);
     }
@@ -64,7 +64,7 @@ public final class TeleportPositionCommand extends AbstractVelocityCommand {
                     if (success) {
                         context.getSender().sendMessage(Messages.prefixed(
                                 MiniMessage.miniMessage().deserialize(
-                                    paradisu.commands().tppos().output(0),
+                                    paradisu.commands().tppos().output().get(0),
                                     Placeholder.component("player", Component.text(player.getUsername())),
                                     Placeholder.component("posx", Component.text((int) telportLocation.getX())),
                                     Placeholder.component("posy", Component.text((int) telportLocation.getY())),

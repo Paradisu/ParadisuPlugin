@@ -24,7 +24,7 @@ public final class LocateCommand extends AbstractVelocityCommand {
         var builder = this.commandManager.commandBuilder("locate", "locateplayer", "find", "findplayer")
             .permission("vparadisu.locate")
             .meta(CommandMeta.DESCRIPTION, paradisu.commands().locate().helpMsg())
-            .argument(PlayerArgument.of("player"), ArgumentDescription.of(paradisu.commands().locate().helpArgs(0)))
+            .argument(PlayerArgument.of("player"), ArgumentDescription.of(paradisu.commands().locate().helpArgs().get(0)))
             .handler(this::locateCommand);
         this.commandManager.command(builder);
     }
@@ -41,7 +41,7 @@ public final class LocateCommand extends AbstractVelocityCommand {
             if (exception == null) {
                 context.getSender().sendMessage(Messages.prefixed(
                     MiniMessage.miniMessage().deserialize(
-                        paradisu.commands().locate().output(0),
+                        paradisu.commands().locate().output().get(0),
                         Placeholder.component("player", Component.text(player.getUsername())),
                         Placeholder.component("server", Component.text(location.getServer())),
                         Placeholder.component("posx", Component.text((int) location.getX())),

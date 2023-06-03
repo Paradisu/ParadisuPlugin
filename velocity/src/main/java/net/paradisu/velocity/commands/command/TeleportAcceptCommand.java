@@ -27,7 +27,7 @@ public final class TeleportAcceptCommand extends AbstractVelocityCommand {
         var builder = this.commandManager.commandBuilder("tpa", "tpaccept")
             .permission("vparadisu.tpa")
             .meta(CommandMeta.DESCRIPTION, paradisu.commands().tpa().helpMsg())
-            .argument(PlayerArgument.optional("target"), ArgumentDescription.of(paradisu.commands().tpa().helpArgs(0)))
+            .argument(PlayerArgument.optional("target"), ArgumentDescription.of(paradisu.commands().tpa().helpArgs().get(0)))
             .handler(this::teleportAcceptCommand);
         this.commandManager.command(builder);
     }
@@ -66,13 +66,13 @@ public final class TeleportAcceptCommand extends AbstractVelocityCommand {
                         if (success) {
                             teleportingPlayer.sendMessage(
                                 Messages.prefixed(MiniMessage.miniMessage().deserialize(
-                                    paradisu.commands().tpa().output(0),
+                                    paradisu.commands().tpa().output().get(0),
                                     Placeholder.component("player", Component.text(stationaryPlayer.getUsername()))
                                 )
                             ));
                             stationaryPlayer.sendMessage(
                                 Messages.prefixed(MiniMessage.miniMessage().deserialize(
-                                    paradisu.commands().tpa().output(1),
+                                    paradisu.commands().tpa().output().get(1),
                                     Placeholder.component("player", Component.text(teleportingPlayer.getUsername()))
                                 )
                             ));
@@ -86,11 +86,11 @@ public final class TeleportAcceptCommand extends AbstractVelocityCommand {
             });
         } else {
             if (context.getOrDefault("target", null) == null) {
-                sender.sendMessage(Messages.prefixed(MiniMessage.miniMessage().deserialize(paradisu.commands().tpa().output(2))));
+                sender.sendMessage(Messages.prefixed(MiniMessage.miniMessage().deserialize(paradisu.commands().tpa().output().get(2))));
             } else {
                 sender.sendMessage(Messages.prefixed(
                     MiniMessage.miniMessage().deserialize(
-                        paradisu.commands().tpa().output(3),
+                        paradisu.commands().tpa().output().get(3),
                         Placeholder.component("player", Component.text(target.getUsername()))
                     )
                 ));

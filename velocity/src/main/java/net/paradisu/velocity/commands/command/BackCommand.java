@@ -26,7 +26,7 @@ public final class BackCommand extends AbstractVelocityCommand {
         var builder = this.commandManager.commandBuilder("back", "return")
             .permission("vparadisu.back")
             .meta(CommandMeta.DESCRIPTION, paradisu.commands().back().helpMsg())
-            .argument(PlayerArgument.optional("player"), ArgumentDescription.of(paradisu.commands().back().helpArgs(0)))
+            .argument(PlayerArgument.optional("player"), ArgumentDescription.of(paradisu.commands().back().helpArgs().get(0)))
             .handler(this::backCommand);
         this.commandManager.command(builder);
     }
@@ -53,7 +53,7 @@ public final class BackCommand extends AbstractVelocityCommand {
                         if (success) {
                             context.getSender().sendMessage(
                                 Messages.prefixed(MiniMessage.miniMessage().deserialize(
-                                    paradisu.commands().back().output(0),
+                                    paradisu.commands().back().output().get(0),
                                     Placeholder.component("player", Component.text(player.getUsername()))
                                 )
                             ));
@@ -68,7 +68,7 @@ public final class BackCommand extends AbstractVelocityCommand {
         } else {
             context.getSender().sendMessage(
                 Messages.prefixed(MiniMessage.miniMessage().deserialize(
-                    paradisu.commands().back().output(1),
+                    paradisu.commands().back().output().get(1),
                     Placeholder.component("player", Component.text(player.getUsername()))
                 )
             ));

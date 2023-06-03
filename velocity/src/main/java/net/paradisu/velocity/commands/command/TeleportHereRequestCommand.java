@@ -28,7 +28,7 @@ public final class TeleportHereRequestCommand extends AbstractVelocityCommand {
         var builder = this.commandManager.commandBuilder("tprh", "tprhere")
             .permission("vparadisu.tprh")
             .meta(CommandMeta.DESCRIPTION, paradisu.commands().tprh().helpMsg())
-            .argument(PlayerArgument.of("target"), ArgumentDescription.of(paradisu.commands().tprh().helpArgs(0)))
+            .argument(PlayerArgument.of("target"), ArgumentDescription.of(paradisu.commands().tprh().helpArgs().get(0)))
             .handler(this::teleportHereRequestCommand);
         this.commandManager.command(builder);
     }
@@ -54,7 +54,7 @@ public final class TeleportHereRequestCommand extends AbstractVelocityCommand {
             String acceptCommand = "/tpa " + player.getUsername();
             target.sendMessage(
                 Messages.prefixed(MiniMessage.miniMessage().deserialize(
-                    paradisu.commands().tprh().output(0),
+                    paradisu.commands().tprh().output().get(0),
                     Placeholder.component("player", Component.text(player.getUsername())),
                     Placeholder.component("command", Component.text(acceptCommand)
                         .clickEvent(ClickEvent.runCommand(acceptCommand))
@@ -64,14 +64,14 @@ public final class TeleportHereRequestCommand extends AbstractVelocityCommand {
 
             player.sendMessage(
                 Messages.prefixed(MiniMessage.miniMessage().deserialize(
-                    paradisu.commands().tprh().output(1),
+                    paradisu.commands().tprh().output().get(1),
                     Placeholder.component("player", Component.text(target.getUsername()))
                 )
             ));
         } else {
             player.sendMessage(
                 Messages.prefixed(MiniMessage.miniMessage().deserialize(
-                    paradisu.commands().tprh().output(2),
+                    paradisu.commands().tprh().output().get(2),
                     Placeholder.component("player", Component.text(target.getUsername()))
                 )
             ));

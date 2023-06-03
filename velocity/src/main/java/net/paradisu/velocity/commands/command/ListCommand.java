@@ -73,7 +73,7 @@ public final class ListCommand extends AbstractVelocityCommand {
                 .append(Component.newline())
                 .append(Messages.prefixed(
                     MiniMessage.miniMessage().deserialize(
-                        paradisu.commands().ls().output(Math.min(playerCount, 2)),
+                        paradisu.commands().ls().output().get(Math.min(playerCount, 2)),
                         Placeholder.component("count", Component.text(playerCount)))))
                 .append(textComponentWrapper.textComponent)
                 .append(MiniMessage.miniMessage().deserialize(paradisu.utility().messageDivider()))

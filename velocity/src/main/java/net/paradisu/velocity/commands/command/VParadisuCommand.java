@@ -48,7 +48,7 @@ public final class VParadisuCommand extends AbstractVelocityCommand {
     private void aboutCommand(CommandContext<CommandSource> context) {
         context.getSender().sendMessage(Messages.prefixed(
             MiniMessage.miniMessage().deserialize(
-                paradisu.commands().vparadisu().about().output(0)
+                paradisu.commands().vparadisu().about().output().get(0)
             )
         ));
     }
@@ -60,7 +60,7 @@ public final class VParadisuCommand extends AbstractVelocityCommand {
     private void reloadCommand(CommandContext<CommandSource> context) {
         paradisu.reload();
         context.getSender().sendMessage(Messages.prefixed(
-                MiniMessage.miniMessage().deserialize(paradisu.commands().vparadisu().reload().output(0))
+                MiniMessage.miniMessage().deserialize(paradisu.commands().vparadisu().reload().output().get(0))
         ));
     }
 }

@@ -16,6 +16,7 @@ velocity-api = "3.0.1"
 shadow = "8.1.1"
 blossom = "1.2.0"
 indra = "3.1.1"
+lombok = "8.0.1"
 
 [libraries]
 dotenv-kotlin = { group = "io.github.cdimascio", name = "dotenv-kotlin", version.ref = "dotenv-kotlin" }
@@ -63,3 +64,4 @@ adventure = [
 shadow = { id = "com.github.johnrengelman.shadow", version.ref = "shadow" }
 blossom = { id = "net.kyori.blossom", version.ref = "blossom" }
 indra-git = { id = "net.kyori.indra.git", version.ref = "indra" }
+lombok = { id = "io.freefair.lombok", version.ref = "lombok" }

@@ -26,7 +26,7 @@ public final class TeleportDenyCommand extends AbstractVelocityCommand {
         var builder = this.commandManager.commandBuilder("tpd", "tpdeny")
             .permission("vparadisu.tpa")
             .meta(CommandMeta.DESCRIPTION, paradisu.commands().tpa().helpMsg())
-            .argument(PlayerArgument.optional("target"), ArgumentDescription.of(paradisu.commands().tpd().helpArgs(0)))
+            .argument(PlayerArgument.optional("target"), ArgumentDescription.of(paradisu.commands().tpd().helpArgs().get(0)))
             .handler(this::teleportDenyCommand);
         this.commandManager.command(builder);
     }
@@ -51,24 +51,24 @@ public final class TeleportDenyCommand extends AbstractVelocityCommand {
 
             target.sendMessage(
                 Messages.prefixed(MiniMessage.miniMessage().deserialize(
-                    paradisu.commands().tpd().output(0),
+                    paradisu.commands().tpd().output().get(0),
                     Placeholder.component("player", Component.text(sender.getUsername()))
                 )
             ));
 
             sender.sendMessage(
                 Messages.prefixed(MiniMessage.miniMessage().deserialize(
-                    paradisu.commands().tpd().output(1),
+                    paradisu.commands().tpd().output().get(1),
                     Placeholder.component("player", Component.text(target.getUsername()))
                 )
             ));
         } else {
             if (context.getOrDefault("target", null) == null) {
-                sender.sendMessage(Messages.prefixed(MiniMessage.miniMessage().deserialize(paradisu.commands().tpd().output(2))));
+                sender.sendMessage(Messages.prefixed(MiniMessage.miniMessage().deserialize(paradisu.commands().tpd().output().get(2))));
             } else {
                 sender.sendMessage(Messages.prefixed(
                     MiniMessage.miniMessage().deserialize(
-                        paradisu.commands().tpd().output(3),
+                        paradisu.commands().tpd().output().get(3),
                         Placeholder.component("player", Component.text(target.getUsername()))
                     )
                 ));

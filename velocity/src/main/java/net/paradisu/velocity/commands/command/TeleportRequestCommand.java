@@ -28,7 +28,7 @@ public final class TeleportRequestCommand extends AbstractVelocityCommand {
         var builder = this.commandManager.commandBuilder("tpr", "tprequest")
             .permission("vparadisu.tpr")
             .meta(CommandMeta.DESCRIPTION, paradisu.commands().tpr().helpMsg())
-            .argument(PlayerArgument.of("target"), ArgumentDescription.of(paradisu.commands().tpr().helpArgs(0)))
+            .argument(PlayerArgument.of("target"), ArgumentDescription.of(paradisu.commands().tpr().helpArgs().get(0)))
             .handler(this::teleportRequestCommand);
         this.commandManager.command(builder);
     }
@@ -54,7 +54,7 @@ public final class TeleportRequestCommand extends AbstractVelocityCommand {
             String acceptCommand = "/tpa " + player.getUsername();
             target.sendMessage(
                 Messages.prefixed(MiniMessage.miniMessage().deserialize(
-                    paradisu.commands().tpr().output(0),
+                    paradisu.commands().tpr().output().get(0),
                     Placeholder.component("player", Component.text(player.getUsername())),
                     Placeholder.component("command", Component.text(acceptCommand)
                         .clickEvent(ClickEvent.runCommand(acceptCommand))
@@ -64,14 +64,14 @@ public final class TeleportRequestCommand extends AbstractVelocityCommand {
 
             player.sendMessage(
                 Messages.prefixed(MiniMessage.miniMessage().deserialize(
-                    paradisu.commands().tpr().output(1),
+                    paradisu.commands().tpr().output().get(1),
                     Placeholder.component("player", Component.text(target.getUsername()))
                 )
             ));
         } else {
             player.sendMessage(
                 Messages.prefixed(MiniMessage.miniMessage().deserialize(
-                    paradisu.commands().tpr().output(2),
+                    paradisu.commands().tpr().output().get(2),
                     Placeholder.component("player", Component.text(target.getUsername()))
                 )
             ));

@@ -1,4 +1,5 @@
 plugins {
+    alias(libs.plugins.lombok)
     id("net.paradisu.platform-conventions")
 }
 

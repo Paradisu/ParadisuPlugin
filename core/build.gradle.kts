@@ -3,6 +3,7 @@ import net.kyori.blossom.BlossomExtension
 plugins {
     alias(libs.plugins.blossom)
     alias(libs.plugins.indra.git)
+    alias(libs.plugins.lombok)
     id("net.paradisu.shadow-conventions")
 }
 

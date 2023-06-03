@@ -25,7 +25,7 @@ public final class TeleportHereCommand extends AbstractVelocityCommand {
         var builder = this.commandManager.commandBuilder("tph", "tphere")
             .permission("vparadisu.tph")
             .meta(CommandMeta.DESCRIPTION, paradisu.commands().tph().helpMsg())
-            .argument(PlayerArgument.of("target"), ArgumentDescription.of(paradisu.commands().tph().helpArgs(0)))
+            .argument(PlayerArgument.of("target"), ArgumentDescription.of(paradisu.commands().tph().helpArgs().get(0)))
             .handler(this::teleportCommand);
         this.commandManager.command(builder);
     }
@@ -50,7 +50,7 @@ public final class TeleportHereCommand extends AbstractVelocityCommand {
                     if (success) {
                         player.sendMessage(
                             Messages.prefixed(MiniMessage.miniMessage().deserialize(
-                                paradisu.commands().tph().output(0),
+                                paradisu.commands().tph().output().get(0),
                                 Placeholder.component("player", Component.text(target.getUsername()))
                             )
                         )); 
