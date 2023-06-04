@@ -1,12 +1,11 @@
 package net.paradisu.velocity.commands.command;
 
-import com.velocitypowered.api.command.CommandSource;
-import com.velocitypowered.api.proxy.Player;
-
 import cloud.commandframework.ArgumentDescription;
 import cloud.commandframework.context.CommandContext;
 import cloud.commandframework.meta.CommandMeta;
 import cloud.commandframework.velocity.arguments.PlayerArgument;
+import com.velocitypowered.api.command.CommandSource;
+import com.velocitypowered.api.proxy.Player;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -26,8 +25,8 @@ public final class TeleportAcceptCommand extends AbstractVelocityCommand {
     public void register() {
         var builder = this.commandManager.commandBuilder("tpa", "tpaccept")
             .permission("vparadisu.tpa")
-            .meta(CommandMeta.DESCRIPTION, paradisu.commands().tpa().helpMsg())
-            .argument(PlayerArgument.optional("target"), ArgumentDescription.of(paradisu.commands().tpa().helpArgs().get(0)))
+            .meta(CommandMeta.DESCRIPTION, paradisu.messagesConfig().commands().tpa().helpMsg())
+            .argument(PlayerArgument.optional("target"), ArgumentDescription.of(paradisu.messagesConfig().commands().tpa().helpArgs().get(0)))
             .handler(this::teleportAcceptCommand);
         this.commandManager.command(builder);
     }
@@ -66,13 +65,13 @@ public final class TeleportAcceptCommand extends AbstractVelocityCommand {
                         if (success) {
                             teleportingPlayer.sendMessage(
                                 Messages.prefixed(MiniMessage.miniMessage().deserialize(
-                                    paradisu.commands().tpa().output().get(0),
+                                    paradisu.messagesConfig().commands().tpa().output().get(0),
                                     Placeholder.component("player", Component.text(stationaryPlayer.getUsername()))
                                 )
                             ));
                             stationaryPlayer.sendMessage(
                                 Messages.prefixed(MiniMessage.miniMessage().deserialize(
-                                    paradisu.commands().tpa().output().get(1),
+                                    paradisu.messagesConfig().commands().tpa().output().get(1),
                                     Placeholder.component("player", Component.text(teleportingPlayer.getUsername()))
                                 )
                             ));
@@ -86,11 +85,11 @@ public final class TeleportAcceptCommand extends AbstractVelocityCommand {
             });
         } else {
             if (context.getOrDefault("target", null) == null) {
-                sender.sendMessage(Messages.prefixed(MiniMessage.miniMessage().deserialize(paradisu.commands().tpa().output().get(2))));
+                sender.sendMessage(Messages.prefixed(MiniMessage.miniMessage().deserialize(paradisu.messagesConfig().commands().tpa().output().get(2))));
             } else {
                 sender.sendMessage(Messages.prefixed(
                     MiniMessage.miniMessage().deserialize(
-                        paradisu.commands().tpa().output().get(3),
+                        paradisu.messagesConfig().commands().tpa().output().get(3),
                         Placeholder.component("player", Component.text(target.getUsername()))
                     )
                 ));

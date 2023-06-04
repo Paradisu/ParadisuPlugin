@@ -14,6 +14,7 @@ repositories {
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/") {
         mavenContent { snapshotsOnly() }
     }
+    maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://repo.dmulloy2.net/repository/public/")
     maven("https://repo.minebench.de/")
     maven("https://oss.sonatype.org/content/repositories/snapshots") {
@@ -48,12 +49,12 @@ tasks.withType<Javadoc>() {
 
 tasks {
     processResources {
-        filesMatching(listOf("plugin.yml", "velocity-plugin.json", "*_en.properties")) {
+        filesMatching(listOf("plugin.yml", "velocity-plugin.json", "*.properties")) {
             expand(
                 "id" to properties["id"],
                 "name" to properties["pluginName"],
                 "version" to properties["version"],
-                "spigotApiVersion" to parseApiVersion(libs.versions.spigot.api.toString()),
+                "paperApiVersion" to parseApiVersion(libs.versions.paper.api.get()),
                 "description" to properties["description"],
                 "url" to properties["url"],
                 "authors" to properties["authors"]

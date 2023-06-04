@@ -1,12 +1,11 @@
 package net.paradisu.velocity.commands.command;
 
-import com.velocitypowered.api.command.CommandSource;
-import com.velocitypowered.api.proxy.Player;
-
 import cloud.commandframework.ArgumentDescription;
 import cloud.commandframework.context.CommandContext;
 import cloud.commandframework.meta.CommandMeta;
 import cloud.commandframework.velocity.arguments.PlayerArgument;
+import com.velocitypowered.api.command.CommandSource;
+import com.velocitypowered.api.proxy.Player;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -27,8 +26,8 @@ public final class TeleportHereRequestCommand extends AbstractVelocityCommand {
     public void register() {
         var builder = this.commandManager.commandBuilder("tprh", "tprhere")
             .permission("vparadisu.tprh")
-            .meta(CommandMeta.DESCRIPTION, paradisu.commands().tprh().helpMsg())
-            .argument(PlayerArgument.of("target"), ArgumentDescription.of(paradisu.commands().tprh().helpArgs().get(0)))
+            .meta(CommandMeta.DESCRIPTION, paradisu.messagesConfig().commands().tprh().helpMsg())
+            .argument(PlayerArgument.of("target"), ArgumentDescription.of(paradisu.messagesConfig().commands().tprh().helpArgs().get(0)))
             .handler(this::teleportHereRequestCommand);
         this.commandManager.command(builder);
     }
@@ -54,7 +53,7 @@ public final class TeleportHereRequestCommand extends AbstractVelocityCommand {
             String acceptCommand = "/tpa " + player.getUsername();
             target.sendMessage(
                 Messages.prefixed(MiniMessage.miniMessage().deserialize(
-                    paradisu.commands().tprh().output().get(0),
+                    paradisu.messagesConfig().commands().tprh().output().get(0),
                     Placeholder.component("player", Component.text(player.getUsername())),
                     Placeholder.component("command", Component.text(acceptCommand)
                         .clickEvent(ClickEvent.runCommand(acceptCommand))
@@ -64,14 +63,14 @@ public final class TeleportHereRequestCommand extends AbstractVelocityCommand {
 
             player.sendMessage(
                 Messages.prefixed(MiniMessage.miniMessage().deserialize(
-                    paradisu.commands().tprh().output().get(1),
+                    paradisu.messagesConfig().commands().tprh().output().get(1),
                     Placeholder.component("player", Component.text(target.getUsername()))
                 )
             ));
         } else {
             player.sendMessage(
                 Messages.prefixed(MiniMessage.miniMessage().deserialize(
-                    paradisu.commands().tprh().output().get(2),
+                    paradisu.messagesConfig().commands().tprh().output().get(2),
                     Placeholder.component("player", Component.text(target.getUsername()))
                 )
             ));

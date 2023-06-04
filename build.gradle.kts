@@ -5,7 +5,7 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":bukkit"))
+    implementation(project(":paper"))
     implementation(project(":velocity"))
 }
 
@@ -18,4 +18,10 @@ tasks {
     build {
         dependsOn(shadowJar)
     }
+}
+
+tasks.named("shadowJar") {
+    this.dependsOn(":core:shadowJar")
+    this.dependsOn(":paper:shadowJar")
+    this.dependsOn(":velocity:shadowJar")
 }

@@ -1,16 +1,9 @@
 package net.paradisu.velocity.commands.command;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
-
-import com.velocitypowered.api.command.CommandSource;
-import com.velocitypowered.api.proxy.Player;
-
 import cloud.commandframework.context.CommandContext;
 import cloud.commandframework.meta.CommandMeta;
+import com.velocitypowered.api.command.CommandSource;
+import com.velocitypowered.api.proxy.Player;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -21,6 +14,12 @@ import net.paradisu.core.locale.Messages;
 import net.paradisu.velocity.ParadisuVelocity;
 import net.paradisu.velocity.commands.AbstractVelocityCommand;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
+
 public final class ListCommand extends AbstractVelocityCommand {
     public ListCommand(ParadisuVelocity paradisu) {
         super(paradisu);
@@ -30,7 +29,7 @@ public final class ListCommand extends AbstractVelocityCommand {
     public void register() {
         var builder = this.commandManager.commandBuilder("ls", "list")
             .permission("vparadisu.list")
-            .meta(CommandMeta.DESCRIPTION, paradisu.commands().ls().helpMsg())
+            .meta(CommandMeta.DESCRIPTION, paradisu.messagesConfig().commands().ls().helpMsg())
             .handler(this::listCommand);
         this.commandManager.command(builder);
     }
@@ -59,7 +58,7 @@ public final class ListCommand extends AbstractVelocityCommand {
         onlinePlayerPrefixesSorted.forEach((index, players) -> {
             textComponentWrapper.textComponent.add(
                 Component.text()
-                    .append(MiniMessage.miniMessage().deserialize(paradisu.utility().listPrefixes(index)))
+                    .append(MiniMessage.miniMessage().deserialize(paradisu.messagesConfig().utility().listPrefixes(index)))
                     .append(Component.text(players.stream().map(Player::getUsername).collect(Collectors.joining(", "))))
                     .append(Component.newline())
                     .build());
@@ -69,14 +68,14 @@ public final class ListCommand extends AbstractVelocityCommand {
         int playerCount = paradisu.getServer().getPlayerCount();
         context.getSender().sendMessage(
             Component.text()
-                .append(MiniMessage.miniMessage().deserialize(paradisu.utility().messageDivider()))
+                .append(MiniMessage.miniMessage().deserialize(paradisu.messagesConfig().utility().messageDivider()))
                 .append(Component.newline())
                 .append(Messages.prefixed(
                     MiniMessage.miniMessage().deserialize(
-                        paradisu.commands().ls().output().get(Math.min(playerCount, 2)),
+                        paradisu.messagesConfig().commands().ls().output().get(Math.min(playerCount, 2)),
                         Placeholder.component("count", Component.text(playerCount)))))
                 .append(textComponentWrapper.textComponent)
-                .append(MiniMessage.miniMessage().deserialize(paradisu.utility().messageDivider()))
+                .append(MiniMessage.miniMessage().deserialize(paradisu.messagesConfig().utility().messageDivider()))
                 .build());
     }
 }

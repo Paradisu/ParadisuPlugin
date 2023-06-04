@@ -1,10 +1,9 @@
 package net.paradisu.velocity.commands.util.teleport;
 
-import java.util.HashMap;
-
 import com.velocitypowered.api.proxy.Player;
-
 import de.themoep.connectorplugin.LocationInfo;
+
+import java.util.HashMap;
 
 public class TeleportHistory {
     private static HashMap<Player, LocationInfo> teleportHistory = new HashMap<Player, LocationInfo>();

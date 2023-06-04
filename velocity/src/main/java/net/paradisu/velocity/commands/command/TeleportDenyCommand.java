@@ -25,8 +25,8 @@ public final class TeleportDenyCommand extends AbstractVelocityCommand {
     public void register() {
         var builder = this.commandManager.commandBuilder("tpd", "tpdeny")
             .permission("vparadisu.tpa")
-            .meta(CommandMeta.DESCRIPTION, paradisu.commands().tpa().helpMsg())
-            .argument(PlayerArgument.optional("target"), ArgumentDescription.of(paradisu.commands().tpd().helpArgs().get(0)))
+            .meta(CommandMeta.DESCRIPTION, paradisu.messagesConfig().commands().tpa().helpMsg())
+            .argument(PlayerArgument.optional("target"), ArgumentDescription.of(paradisu.messagesConfig().commands().tpd().helpArgs().get(0)))
             .handler(this::teleportDenyCommand);
         this.commandManager.command(builder);
     }
@@ -51,24 +51,24 @@ public final class TeleportDenyCommand extends AbstractVelocityCommand {
 
             target.sendMessage(
                 Messages.prefixed(MiniMessage.miniMessage().deserialize(
-                    paradisu.commands().tpd().output().get(0),
+                    paradisu.messagesConfig().commands().tpd().output().get(0),
                     Placeholder.component("player", Component.text(sender.getUsername()))
                 )
             ));
 
             sender.sendMessage(
                 Messages.prefixed(MiniMessage.miniMessage().deserialize(
-                    paradisu.commands().tpd().output().get(1),
+                    paradisu.messagesConfig().commands().tpd().output().get(1),
                     Placeholder.component("player", Component.text(target.getUsername()))
                 )
             ));
         } else {
             if (context.getOrDefault("target", null) == null) {
-                sender.sendMessage(Messages.prefixed(MiniMessage.miniMessage().deserialize(paradisu.commands().tpd().output().get(2))));
+                sender.sendMessage(Messages.prefixed(MiniMessage.miniMessage().deserialize(paradisu.messagesConfig().commands().tpd().output().get(2))));
             } else {
                 sender.sendMessage(Messages.prefixed(
                     MiniMessage.miniMessage().deserialize(
-                        paradisu.commands().tpd().output().get(3),
+                        paradisu.messagesConfig().commands().tpd().output().get(3),
                         Placeholder.component("player", Component.text(target.getUsername()))
                     )
                 ));

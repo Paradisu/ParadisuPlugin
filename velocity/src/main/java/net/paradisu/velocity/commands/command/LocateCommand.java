@@ -1,12 +1,11 @@
 package net.paradisu.velocity.commands.command;
 
-import com.velocitypowered.api.command.CommandSource;
-import com.velocitypowered.api.proxy.Player;
-
 import cloud.commandframework.ArgumentDescription;
 import cloud.commandframework.context.CommandContext;
 import cloud.commandframework.meta.CommandMeta;
 import cloud.commandframework.velocity.arguments.PlayerArgument;
+import com.velocitypowered.api.command.CommandSource;
+import com.velocitypowered.api.proxy.Player;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -23,8 +22,8 @@ public final class LocateCommand extends AbstractVelocityCommand {
     public void register() {
         var builder = this.commandManager.commandBuilder("locate", "locateplayer", "find", "findplayer")
             .permission("vparadisu.locate")
-            .meta(CommandMeta.DESCRIPTION, paradisu.commands().locate().helpMsg())
-            .argument(PlayerArgument.of("player"), ArgumentDescription.of(paradisu.commands().locate().helpArgs().get(0)))
+            .meta(CommandMeta.DESCRIPTION, paradisu.messagesConfig().commands().locate().helpMsg())
+            .argument(PlayerArgument.of("player"), ArgumentDescription.of(paradisu.messagesConfig().commands().locate().helpArgs().get(0)))
             .handler(this::locateCommand);
         this.commandManager.command(builder);
     }
@@ -41,7 +40,7 @@ public final class LocateCommand extends AbstractVelocityCommand {
             if (exception == null) {
                 context.getSender().sendMessage(Messages.prefixed(
                     MiniMessage.miniMessage().deserialize(
-                        paradisu.commands().locate().output().get(0),
+                        paradisu.messagesConfig().commands().locate().output().get(0),
                         Placeholder.component("player", Component.text(player.getUsername())),
                         Placeholder.component("server", Component.text(location.getServer())),
                         Placeholder.component("posx", Component.text((int) location.getX())),

@@ -1,12 +1,12 @@
 package net.paradisu.velocity.commands.util.teleport;
 
-import java.util.Arrays;
-import java.util.concurrent.TimeUnit;
-
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.velocitypowered.api.proxy.Player;
+
+import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 public class TeleportQueue {
     private static LoadingCache<TeleportRequestHeader, Player[]> teleportQueue = CacheBuilder.newBuilder()

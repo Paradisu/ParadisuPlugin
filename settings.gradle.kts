@@ -1,5 +1,5 @@
 include(":core")
-include(":bukkit")
+include(":paper")
 include(":velocity")
 
 

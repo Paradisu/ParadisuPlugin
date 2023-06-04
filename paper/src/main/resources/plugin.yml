@@ -1,0 +1,7 @@
+name: ${name}
+version: ${version}
+website: ${url}
+authors: [${authors}]
+main: net.paradisu.paper.ParadisuPaper
+api-version: ${paperApiVersion}
+depend: [ConnectorPlugin]

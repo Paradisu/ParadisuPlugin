@@ -1,12 +1,11 @@
 package net.paradisu.velocity.commands.command;
 
-import com.velocitypowered.api.command.CommandSource;
-import com.velocitypowered.api.proxy.Player;
-
 import cloud.commandframework.ArgumentDescription;
 import cloud.commandframework.context.CommandContext;
 import cloud.commandframework.meta.CommandMeta;
 import cloud.commandframework.velocity.arguments.PlayerArgument;
+import com.velocitypowered.api.command.CommandSource;
+import com.velocitypowered.api.proxy.Player;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -25,8 +24,8 @@ public final class TeleportCancelCommand extends AbstractVelocityCommand {
     public void register() {
         var builder = this.commandManager.commandBuilder("tpc", "tpcancel")
             .permission("vparadisu.tprh")
-            .meta(CommandMeta.DESCRIPTION, paradisu.commands().tprh().helpMsg())
-            .argument(PlayerArgument.of("target"), ArgumentDescription.of(paradisu.commands().tpc().helpArgs().get(0)))
+            .meta(CommandMeta.DESCRIPTION, paradisu.messagesConfig().commands().tprh().helpMsg())
+            .argument(PlayerArgument.of("target"), ArgumentDescription.of(paradisu.messagesConfig().commands().tpc().helpArgs().get(0)))
             .handler(this::teleportCancelCommand);
         this.commandManager.command(builder);
     }
@@ -50,21 +49,21 @@ public final class TeleportCancelCommand extends AbstractVelocityCommand {
 
             target.sendMessage(
                 Messages.prefixed(MiniMessage.miniMessage().deserialize(
-                    paradisu.commands().tpc().output().get(0),
+                    paradisu.messagesConfig().commands().tpc().output().get(0),
                     Placeholder.component("player", Component.text(player.getUsername()))
                 )
             ));
 
             player.sendMessage(
                 Messages.prefixed(MiniMessage.miniMessage().deserialize(
-                    paradisu.commands().tpc().output().get(1),
+                    paradisu.messagesConfig().commands().tpc().output().get(1),
                     Placeholder.component("player", Component.text(target.getUsername()))
                 )
             ));
         } else {
             player.sendMessage(
                 Messages.prefixed(MiniMessage.miniMessage().deserialize(
-                    paradisu.commands().tpc().output().get(2),
+                    paradisu.messagesConfig().commands().tpc().output().get(2),
                     Placeholder.component("player", Component.text(target.getUsername()))
                 )
             ));

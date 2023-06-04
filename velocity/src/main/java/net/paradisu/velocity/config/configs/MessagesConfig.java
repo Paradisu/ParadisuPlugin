@@ -1,12 +1,12 @@
 package net.paradisu.velocity.config.configs;
 
-import java.util.List;
-
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Comment;
 import org.spongepowered.configurate.objectmapping.meta.Setting;
+
+import java.util.List;
 
 @Accessors(fluent = true)
 @Getter

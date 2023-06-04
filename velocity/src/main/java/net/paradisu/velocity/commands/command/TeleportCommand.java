@@ -1,12 +1,11 @@
 package net.paradisu.velocity.commands.command;
 
-import com.velocitypowered.api.command.CommandSource;
-import com.velocitypowered.api.proxy.Player;
-
 import cloud.commandframework.ArgumentDescription;
 import cloud.commandframework.context.CommandContext;
 import cloud.commandframework.meta.CommandMeta;
 import cloud.commandframework.velocity.arguments.PlayerArgument;
+import com.velocitypowered.api.command.CommandSource;
+import com.velocitypowered.api.proxy.Player;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -24,9 +23,9 @@ public final class TeleportCommand extends AbstractVelocityCommand {
     public void register() {
         var builder = this.commandManager.commandBuilder("tp", "vteleport")
             .permission("vparadisu.tp")
-            .meta(CommandMeta.DESCRIPTION, paradisu.commands().tp().helpMsg())
-            .argument(PlayerArgument.of("target"), ArgumentDescription.of(paradisu.commands().tp().helpArgs().get(0)))
-            .argument(PlayerArgument.optional("player"), ArgumentDescription.of(paradisu.commands().tp().helpArgs().get(1)))
+            .meta(CommandMeta.DESCRIPTION, paradisu.messagesConfig().commands().tp().helpMsg())
+            .argument(PlayerArgument.of("target"), ArgumentDescription.of(paradisu.messagesConfig().commands().tp().helpArgs().get(0)))
+            .argument(PlayerArgument.optional("player"), ArgumentDescription.of(paradisu.messagesConfig().commands().tp().helpArgs().get(1)))
             .handler(this::teleportHereCommand);
         this.commandManager.command(builder);
     }
@@ -51,7 +50,7 @@ public final class TeleportCommand extends AbstractVelocityCommand {
                     if (success) {
                         context.getSender().sendMessage(
                             Messages.prefixed(MiniMessage.miniMessage().deserialize(
-                                paradisu.commands().tp().output().get(0),
+                                paradisu.messagesConfig().commands().tp().output().get(0),
                                 Placeholder.component("player", Component.text(player.getUsername())),
                                 Placeholder.component("target", Component.text(target.getUsername()))
                             )

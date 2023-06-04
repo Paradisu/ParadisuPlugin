@@ -1,12 +1,11 @@
 package net.paradisu.velocity.commands.command;
 
-import com.velocitypowered.api.command.CommandSource;
-import com.velocitypowered.api.proxy.Player;
-
 import cloud.commandframework.ArgumentDescription;
 import cloud.commandframework.context.CommandContext;
 import cloud.commandframework.meta.CommandMeta;
 import cloud.commandframework.velocity.arguments.PlayerArgument;
+import com.velocitypowered.api.command.CommandSource;
+import com.velocitypowered.api.proxy.Player;
 import de.themoep.connectorplugin.LocationInfo;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -25,8 +24,8 @@ public final class BackCommand extends AbstractVelocityCommand {
     public void register() {
         var builder = this.commandManager.commandBuilder("back", "return")
             .permission("vparadisu.back")
-            .meta(CommandMeta.DESCRIPTION, paradisu.commands().back().helpMsg())
-            .argument(PlayerArgument.optional("player"), ArgumentDescription.of(paradisu.commands().back().helpArgs().get(0)))
+            .meta(CommandMeta.DESCRIPTION, paradisu.messagesConfig().commands().back().helpMsg())
+            .argument(PlayerArgument.optional("player"), ArgumentDescription.of(paradisu.messagesConfig().commands().back().helpArgs().get(0)))
             .handler(this::backCommand);
         this.commandManager.command(builder);
     }
@@ -53,7 +52,7 @@ public final class BackCommand extends AbstractVelocityCommand {
                         if (success) {
                             context.getSender().sendMessage(
                                 Messages.prefixed(MiniMessage.miniMessage().deserialize(
-                                    paradisu.commands().back().output().get(0),
+                                    paradisu.messagesConfig().commands().back().output().get(0),
                                     Placeholder.component("player", Component.text(player.getUsername()))
                                 )
                             ));
@@ -68,7 +67,7 @@ public final class BackCommand extends AbstractVelocityCommand {
         } else {
             context.getSender().sendMessage(
                 Messages.prefixed(MiniMessage.miniMessage().deserialize(
-                    paradisu.commands().back().output().get(1),
+                    paradisu.messagesConfig().commands().back().output().get(1),
                     Placeholder.component("player", Component.text(player.getUsername()))
                 )
             ));

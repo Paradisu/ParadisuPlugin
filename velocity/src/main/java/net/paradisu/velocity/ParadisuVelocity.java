@@ -1,58 +1,51 @@
 package net.paradisu.velocity;
 
-import com.google.inject.Inject;
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.execution.CommandExecutionCoordinator;
 import cloud.commandframework.velocity.VelocityCommandManager;
-import de.themoep.connectorplugin.velocity.VelocityConnectorPlugin;
-import net.paradisu.velocity.config.VelocityConfigManager;
-import net.paradisu.velocity.config.configs.MessagesConfig;
-import net.paradisu.core.locale.TranslationManager;
-import net.paradisu.core.utils.Constants;
-import net.paradisu.core.ParadisuPlugin;
-import net.paradisu.velocity.commands.AbstractVelocityCommand;
-import net.paradisu.velocity.commands.command.*;
-
+import com.google.inject.Inject;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
-import com.velocitypowered.api.plugin.annotation.DataDirectory;
-import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.plugin.Dependency;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.PluginContainer;
+import com.velocitypowered.api.plugin.annotation.DataDirectory;
+import com.velocitypowered.api.proxy.ProxyServer;
+import de.themoep.connectorplugin.velocity.VelocityConnectorPlugin;
+import net.paradisu.core.ParadisuPlugin;
+import net.paradisu.core.locale.TranslationManager;
+import net.paradisu.core.utils.Constants;
+import net.paradisu.velocity.commands.AbstractVelocityCommand;
+import net.paradisu.velocity.config.VelocityConfigManager;
+import net.paradisu.velocity.config.configs.MessagesConfig;
+import net.paradisu.velocity.util.VelocityLogger;
+import org.reflections.Reflections;
+import org.slf4j.Logger;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
-import java.util.stream.Stream;
 
-import org.slf4j.Logger;
-@Plugin(
-    id = Constants.Plugin.ID, 
-    name = Constants.Plugin.NAME,
-    version = Constants.Plugin.VERSION,
-    description = Constants.Plugin.DESCRIPTION,
-    authors = { Constants.Plugin.AUTHORS },
-    url = Constants.Plugin.URL,
-    dependencies = @Dependency(id = "connectorplugin")
-    )
+@Plugin(id = Constants.Plugin.ID, name = Constants.Plugin.NAME, version = Constants.Plugin.VERSION, description = Constants.Plugin.DESCRIPTION, authors = {
+        Constants.Plugin.AUTHORS }, url = Constants.Plugin.URL, dependencies = @Dependency(id = "connectorplugin"))
 public final class ParadisuVelocity implements ParadisuPlugin {
-
     private final ProxyServer server;
-    private final Logger logger;
+    private final VelocityLogger velocityLogger;
     private final Path dataDirectory;
     private VelocityConfigManager configManager;
     private TranslationManager translationManager;
     private VelocityCommandManager<CommandSource> commandManager;
     private boolean connectorEnabled;
     private VelocityConnectorPlugin connector;
-    //private final VelocityConnectorPlugin connectorPlugin;
-    
+
     @Inject
     public ParadisuVelocity(ProxyServer server, Logger logger, @DataDirectory Path dataDirectory) {
         this.server = server;
-        this.logger = logger;
+        this.velocityLogger = new VelocityLogger(logger);
         this.dataDirectory = dataDirectory;
     }
 
@@ -67,12 +60,11 @@ public final class ParadisuVelocity implements ParadisuPlugin {
 
         // Initialize the command manager
         this.commandManager = new VelocityCommandManager<>(
-            this.server.getPluginManager().ensurePluginContainer(this), 
-            this.server, 
-            CommandExecutionCoordinator.simpleCoordinator(), 
-            Function.identity(), 
-            Function.identity()
-            );
+                this.server.getPluginManager().ensurePluginContainer(this),
+                this.server,
+                CommandExecutionCoordinator.simpleCoordinator(),
+                Function.identity(),
+                Function.identity());
         registerCommands();
 
         // Initialize the connector plugin
@@ -90,14 +82,16 @@ public final class ParadisuVelocity implements ParadisuPlugin {
 
     /**
      * Returns the logger for this plugin.
+     * 
      * @return the logger for this plugin
      */
-    public Logger logger() {
-        return this.logger;
+    public VelocityLogger logger() {
+        return this.velocityLogger;
     }
 
     /**
      * Returns the data directory for this plugin.
+     * 
      * @return the data directory for this plugin
      */
     public Path dataDirectory() {
@@ -106,6 +100,7 @@ public final class ParadisuVelocity implements ParadisuPlugin {
 
     /**
      * Returns the Velocity Command Manager for this plugin.
+     * 
      * @return the Velocity Command Manager for this plugin
      */
     public CommandManager<CommandSource> commandManager() {
@@ -114,6 +109,7 @@ public final class ParadisuVelocity implements ParadisuPlugin {
 
     /**
      * Returns the config manager for this plugin.
+     * 
      * @return the config manager for this plugin
      */
     public VelocityConfigManager configManager() {
@@ -122,6 +118,7 @@ public final class ParadisuVelocity implements ParadisuPlugin {
 
     /**
      * Returns the messages config for this plugin.
+     * 
      * @return the messages config for this plugin
      */
     public MessagesConfig messagesConfig() {
@@ -129,23 +126,8 @@ public final class ParadisuVelocity implements ParadisuPlugin {
     }
 
     /**
-     * Returns the utility section of the messages config for this plugin.
-     * @return the utility section of the messages config for this plugin
-     */
-    public MessagesConfig.Utility utility() {
-        return configManager.getConfig("messages", MessagesConfig.class).utility();
-    }
-
-    /**
-     * Returns the commands section of the messages config for this plugin.
-     * @return the commands section of the messages config for this plugin
-     */
-    public MessagesConfig.Commands commands() {
-        return configManager.getConfig("messages", MessagesConfig.class).commands();
-    }
-
-    /**
      * Returns the translation manager for this plugin.
+     * 
      * @return the translation manager for this plugin
      */
     public TranslationManager translationManager() {
@@ -154,6 +136,7 @@ public final class ParadisuVelocity implements ParadisuPlugin {
 
     /**
      * Returns the proxy server.
+     * 
      * @return the proxy server
      */
     public ProxyServer getServer() {
@@ -163,33 +146,30 @@ public final class ParadisuVelocity implements ParadisuPlugin {
     /**
      * Returns the Velocity Connector Plugin instance.
      * See https://github.com/Phoenix616/ConnectorPlugin
+     * 
      * @return the Velocity Connector Plugin instance
      */
     public VelocityConnectorPlugin connector() {
         return this.connector;
     }
-    
 
     /**
-     * Registers all commands for this plugin.
+     * Registers all commands for this plugin via reflection.
      * Each class contains cloud commands for a specific category.
      */
     private void registerCommands() {
-        Stream.of(
-            new BackCommand(this),
-            new ListCommand(this),
-            new LocateCommand(this),
-            new TeleportAcceptCommand(this),
-            new TeleportCancelCommand(this),
-            new TeleportDenyCommand(this),
-            new TeleportCommand(this),
-            new TeleportHereCommand(this),
-            new TeleportHereRequestCommand(this),
-            new TeleportPositionCommand(this),
-            new TeleportRequestCommand(this),
-            new VParadisuCommand(this),
-            new WarpCommand(this)
-        ).forEach(AbstractVelocityCommand::register);
+        Reflections reflections = new Reflections("net.paradisu.velocity.commands.command");
+        Set<Class<? extends AbstractVelocityCommand>> classes = reflections
+                .getSubTypesOf(AbstractVelocityCommand.class);
+        for (Class<? extends AbstractVelocityCommand> clazz : classes) {
+            try {
+                Constructor<? extends AbstractVelocityCommand> constructor = clazz.getDeclaredConstructor(this.getClass());
+                AbstractVelocityCommand command = constructor.newInstance(this);
+                command.register();
+            } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
@@ -198,7 +178,7 @@ public final class ParadisuVelocity implements ParadisuPlugin {
     public void reload() {
         this.configManager.loadConfigs();
         this.translationManager.reload();
-        logger().info("Reloaded plugin");
+        logger().info("Reloaded Paradisu Velocity plugin");
     }
 
 }
