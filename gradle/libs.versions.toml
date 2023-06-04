@@ -18,7 +18,6 @@ shadow = "8.1.1"
 blossom = "1.2.0"
 indra = "3.1.1"
 lombok = "8.0.1"
-reflections = "0.10.2"
 
 [libraries]
 dotenv-kotlin = { group = "io.github.cdimascio", name = "dotenv-kotlin", version.ref = "dotenv-kotlin" }
@@ -43,7 +42,6 @@ connectorplugin-velocity = { group = "de.themoep.connectorplugin", name = "veloc
 connectorplugin-bukkit = { group = "de.themoep.connectorplugin", name = "bukkit", version.ref = "connectorplugin" }
 log4j-slf4j-impl = { group = "org.apache.logging.log4j", name = "log4j-slf4j-impl", version.ref = "log4j-slf4j-impl" }
 shadow = { group = "com.github.johnrengelman", name = "shadow", version.ref = "shadow" }
-reflections = { group = "org.reflections", name = "reflections", version.ref = "reflections" }
 
 [bundles]
 cloud-velocity = [

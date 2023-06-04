@@ -6,19 +6,15 @@ import cloud.commandframework.paper.PaperCommandManager;
 import de.themoep.connectorplugin.bukkit.BukkitConnectorPlugin;
 import net.paradisu.core.ParadisuPlugin;
 import net.paradisu.core.locale.TranslationManager;
-import net.paradisu.paper.commands.AbstractPaperCommand;
+import net.paradisu.paper.commands.PaperCommandRegistrar;
 import net.paradisu.paper.config.PaperConfigManager;
 import net.paradisu.paper.config.configs.MessagesConfig;
 import net.paradisu.paper.util.PaperLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.reflections.Reflections;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
-import java.util.Set;
 import java.util.function.Function;
 
 public class ParadisuPaper extends JavaPlugin implements ParadisuPlugin {
@@ -44,7 +40,7 @@ public class ParadisuPaper extends JavaPlugin implements ParadisuPlugin {
             this.translationManager.reload();
 
             this.commandManager = new PaperCommandManager<>(this, CommandExecutionCoordinator.simpleCoordinator(), Function.identity(), Function.identity());
-            registerCommands();
+            PaperCommandRegistrar.registerCommands(this);
 
             this.connectorEnabled = Bukkit.getPluginManager().isPluginEnabled("ConnectorPlugin");
             if (this.connectorEnabled) {
@@ -87,25 +83,6 @@ public class ParadisuPaper extends JavaPlugin implements ParadisuPlugin {
     @Override
     public PaperLogger logger() {
         return logger;
-    }
-
-    /**
-     * Registers all commands for this plugin via reflection.
-     * Each class contains cloud commands for a specific category.
-     */
-    private void registerCommands() {
-        Reflections reflections = new Reflections("net.paradisu.paper.commands.command");
-        Set<Class<? extends AbstractPaperCommand>> classes = reflections
-                .getSubTypesOf(AbstractPaperCommand.class);
-        for (Class<? extends AbstractPaperCommand> clazz : classes) {
-            try {
-                Constructor<? extends AbstractPaperCommand> constructor = clazz.getDeclaredConstructor(this.getClass());
-                AbstractPaperCommand command = constructor.newInstance(this);
-                command.register();
-            } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     @Override

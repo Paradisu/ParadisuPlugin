@@ -16,18 +16,14 @@ import de.themoep.connectorplugin.velocity.VelocityConnectorPlugin;
 import net.paradisu.core.ParadisuPlugin;
 import net.paradisu.core.locale.TranslationManager;
 import net.paradisu.core.utils.Constants;
-import net.paradisu.velocity.commands.AbstractVelocityCommand;
+import net.paradisu.velocity.commands.VelocityCommandRegistrar;
 import net.paradisu.velocity.config.VelocityConfigManager;
 import net.paradisu.velocity.config.configs.MessagesConfig;
 import net.paradisu.velocity.util.VelocityLogger;
-import org.reflections.Reflections;
 import org.slf4j.Logger;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Function;
 
 @Plugin(id = Constants.Plugin.ID, name = Constants.Plugin.NAME, version = Constants.Plugin.VERSION, description = Constants.Plugin.DESCRIPTION, authors = {
@@ -65,7 +61,7 @@ public final class ParadisuVelocity implements ParadisuPlugin {
                 CommandExecutionCoordinator.simpleCoordinator(),
                 Function.identity(),
                 Function.identity());
-        registerCommands();
+        VelocityCommandRegistrar.registerCommands(this);
 
         // Initialize the connector plugin
         Optional<PluginContainer> connectorPlugin = getServer().getPluginManager().getPlugin("connectorplugin");
@@ -151,25 +147,6 @@ public final class ParadisuVelocity implements ParadisuPlugin {
      */
     public VelocityConnectorPlugin connector() {
         return this.connector;
-    }
-
-    /**
-     * Registers all commands for this plugin via reflection.
-     * Each class contains cloud commands for a specific category.
-     */
-    private void registerCommands() {
-        Reflections reflections = new Reflections("net.paradisu.velocity.commands.command");
-        Set<Class<? extends AbstractVelocityCommand>> classes = reflections
-                .getSubTypesOf(AbstractVelocityCommand.class);
-        for (Class<? extends AbstractVelocityCommand> clazz : classes) {
-            try {
-                Constructor<? extends AbstractVelocityCommand> constructor = clazz.getDeclaredConstructor(this.getClass());
-                AbstractVelocityCommand command = constructor.newInstance(this);
-                command.register();
-            } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     /**

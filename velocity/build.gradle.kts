@@ -9,7 +9,6 @@ dependencies {
     implementation(libs.bundles.adventure.velocity)
     implementation(libs.configurate.yaml)
     implementation(libs.guava)
-    implementation(libs.reflections)
     compileOnly(libs.velocity.api)
     compileOnly(libs.connectorplugin.velocity)
     compileOnly(libs.luckperms.api)

@@ -12,7 +12,6 @@ dependencies {
     implementation(libs.bundles.adventure.bukkit)
     implementation(libs.configurate.yaml)
     implementation(libs.inventorygui)
-    implementation(libs.reflections)
     compileOnly(libs.connectorplugin.bukkit)
     compileOnly(libs.paper.api)
     compileOnly(libs.protocollib)
