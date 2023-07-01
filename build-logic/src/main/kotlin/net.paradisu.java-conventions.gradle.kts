@@ -64,7 +64,7 @@ tasks {
 }
 
 fun parseApiVersion(input: String): String {
-    val regex = Regex("""^(\d+\.\d+)(?=[.\D])""")
+    val regex = Regex("""^(\d+\.\d+)""")
     val matchResult = regex.find(input)
     val version = matchResult?.groupValues?.get(1)
 
