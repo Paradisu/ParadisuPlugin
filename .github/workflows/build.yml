@@ -1,0 +1,73 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - "*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+        release_id: ${{ steps.release.outputs.releaseID }}
+    steps:
+    - name: Checkout Repository and Submodules
+      # See https://github.com/actions/checkout/releases
+      uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      with:
+        submodules: recursive
+    - name: Validate Gradle Wrapper
+      # See https://github.com/gradle/actions/releases
+      uses: gradle/actions/wrapper-validation@db19848a5fa7950289d3668fb053140cf3028d43 # v3.3.2
+    - name: Set up JDK 17
+      # See https://github.com/actions/setup-java/releases
+      uses: actions/setup-java@99b8673ff64fbf99d8d325f52d9a5bdedb8483e9 # v4.2.1
+      with:
+        java-version: 17
+        distribution: temurin
+    - name: Build with Gradle
+      # See https://github.com/gradle/actions/releases
+      uses: gradle/actions/setup-gradle@db19848a5fa7950289d3668fb053140cf3028d43 # v3.3.2
+      with:
+        arguments: build
+        gradle-home-cache-cleanup: true
+    - name: Archive Artifacts
+      # See https://github.com/actions/upload-artifact/releases
+      uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
+      if: success()
+      with:
+        name: ParadisuPlugin
+        path: build/libs/ParadisuPlugin.jar
+        if-no-files-found: error
+    - name: Create Release
+      # See https://github.com/Kas-tle/base-release-action/releases
+      uses: Kas-tle/base-release-action@b863fa0f89bd15267a96a72efb84aec25f168d4c # main-11
+      if: ${{ success() && github.repository == 'Paradisu/ParadisuPlugin' }}
+      id: release
+      with:
+        files: |
+          build/libs/ParadisuPlugin.jar
+        appID: ${{ secrets.RELEASE_APP_ID }}
+        appPrivateKey: ${{ secrets.RELEASE_APP_PK }}
+        preRelease: ${{ github.ref_name != 'master' }}
+    - name: Setup NodeJS
+      # See https://github.com/actions/setup-node/releases
+      uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8
+      if: ${{ success() && github.repository == 'Paradisu/ParadisuPlugin' && github.ref_name == 'master' }}
+    - name: Publish Plugin to Servers
+      if: ${{ success() && github.repository == 'Paradisu/ParadisuPlugin' && github.ref_name == 'master' }}
+      env:
+        PTEROPUB_CONFIG: ${{ secrets.PTEROPUB_CONFIG }}
+      run: npx pteropub
+  upload-logs:
+    name: Upload Logs
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+    - name: Upload Logs
+      # See https://github.com/Kas-tle/release-build-log-action/releases
+      if: ${{ success() && github.repository == 'Paradisu/ParadisuPlugin' }}
+      uses: Kas-tle/release-build-log-action@1b57448eaf9476e6e05450e4ea240449eac2c0d2 # main-3
+      with:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        releaseID: ${{ needs.build.outputs.release_id }}
