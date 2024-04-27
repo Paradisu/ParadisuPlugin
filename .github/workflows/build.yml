@@ -50,6 +50,7 @@ jobs:
         appID: ${{ secrets.RELEASE_APP_ID }}
         appPrivateKey: ${{ secrets.RELEASE_APP_PK }}
         preRelease: ${{ github.ref_name != 'master' }}
+        discordWebhook: ${{ secrets.DISCORD_WEBHOOK }}
     - name: Setup NodeJS
       # See https://github.com/actions/setup-node/releases
       uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8
