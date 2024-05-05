@@ -15,6 +15,7 @@ public class VelocityCommandRegistrar {
         Stream.of(
             new BackCommand(paradisu),
             new ListCommand(paradisu),
+            new PacksCommand(paradisu),
             new LocateCommand(paradisu),
             new TeleportAcceptCommand(paradisu),
             new TeleportCancelCommand(paradisu),

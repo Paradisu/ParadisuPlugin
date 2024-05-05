@@ -47,6 +47,7 @@ public final class MessagesConfig {
         private Locate locate = new Locate();
         private Ls ls = new Ls();
         private Back back = new Back();
+        private Packs packs = new Packs();
         private Tp tp = new Tp();
         private Tpa tpa = new Tpa();
         private Tpc tpc = new Tpc();
@@ -86,6 +87,46 @@ public final class MessagesConfig {
                 "<lang:paradisu.command.output.ls.0><br>",
                 "<lang:paradisu.command.output.ls.1><br>",
                 "<lang:paradisu.command.output.ls.2:'<gold><count>'><br>");
+        }
+
+        @Getter
+        @ConfigSerializable
+        public static final class Packs {
+            private Clear clear = new Clear();
+            private Reload reload = new Reload();
+            private Resend resend = new Resend();
+            @Setting("help-msg") private String helpMsg = "<lang:paradisu.command.help.packs>";
+            
+            @Getter
+            @ConfigSerializable
+            public static final class Clear {
+                @Setting("help-msg") private String helpMsg = "<lang:paradisu.command.help.packs.clear>";
+                @Setting("help-args") private List<String> helpArgs = List.of(
+                    "<lang:paradisu.command.help.packs.clear.0>");
+                @Setting("output") private List<String> output = List.of(
+                    "<lang:paradisu.command.output.packs.clear:'<gold><player>'>");
+            }
+
+            @Getter 
+            @ConfigSerializable
+            public static final class Reload {
+                @Setting("help-msg") private String helpMsg = "<lang:paradisu.command.help.packs.reload>";
+                @Setting("help-args") private List<String> helpArgs = List.of(
+                    "<lang:paradisu.command.help.packs.reload.0>");
+                @Setting("output") private List<String> output = List.of(
+                    "<lang:paradisu.command.output.packs.reload.0>",
+                    "<lang:paradisu.command.output.packs.reload.1>");
+            }
+
+            @Getter
+            @ConfigSerializable
+            public static final class Resend {
+                @Setting("help-msg") private String helpMsg = "<lang:paradisu.command.help.packs.resend>";
+                @Setting("help-args") private List<String> helpArgs = List.of(
+                    "<lang:paradisu.command.help.packs.resend.0>");
+                @Setting("output") private List<String> output = List.of(
+                    "<lang:paradisu.command.output.packs.resend:'<gold><player>'>");
+            }
         }
 
         @Getter 

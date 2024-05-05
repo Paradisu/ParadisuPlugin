@@ -15,10 +15,13 @@ import com.velocitypowered.api.proxy.ProxyServer;
 import de.themoep.connectorplugin.velocity.VelocityConnectorPlugin;
 import net.paradisu.core.ParadisuPlugin;
 import net.paradisu.core.locale.TranslationManager;
+import net.paradisu.core.packs.PackManager;
 import net.paradisu.core.utils.Constants;
 import net.paradisu.velocity.commands.VelocityCommandRegistrar;
 import net.paradisu.velocity.config.VelocityConfigManager;
 import net.paradisu.velocity.config.configs.MessagesConfig;
+import net.paradisu.velocity.config.configs.ParadisuConfig;
+import net.paradisu.velocity.pack.PackListener;
 import net.paradisu.velocity.util.VelocityLogger;
 import org.slf4j.Logger;
 
@@ -30,18 +33,20 @@ import java.util.function.Function;
         Constants.Plugin.AUTHORS }, url = Constants.Plugin.URL, dependencies = @Dependency(id = "connectorplugin"))
 public final class ParadisuVelocity implements ParadisuPlugin {
     private final ProxyServer server;
-    private final VelocityLogger velocityLogger;
+    private final VelocityLogger logger;
     private final Path dataDirectory;
     private VelocityConfigManager configManager;
     private TranslationManager translationManager;
     private VelocityCommandManager<CommandSource> commandManager;
     private boolean connectorEnabled;
     private VelocityConnectorPlugin connector;
+    private PackManager packManager;
+
 
     @Inject
     public ParadisuVelocity(ProxyServer server, Logger logger, @DataDirectory Path dataDirectory) {
         this.server = server;
-        this.velocityLogger = new VelocityLogger(logger);
+        this.logger = new VelocityLogger(logger);
         this.dataDirectory = dataDirectory;
     }
 
@@ -50,6 +55,8 @@ public final class ParadisuVelocity implements ParadisuPlugin {
         // Initialize the config manager
         this.configManager = new VelocityConfigManager(this);
         this.configManager.loadConfigs();
+        // Initialize the pack manager
+        this.packManager = new PackManager(this, this.paradisuConfig().resourcePackUrls());
         // Initialize the translation manager
         this.translationManager = new TranslationManager(this);
         this.translationManager.reload();
@@ -64,7 +71,7 @@ public final class ParadisuVelocity implements ParadisuPlugin {
         VelocityCommandRegistrar.registerCommands(this);
 
         // Initialize the connector plugin
-        Optional<PluginContainer> connectorPlugin = getServer().getPluginManager().getPlugin("connectorplugin");
+        Optional<PluginContainer> connectorPlugin = server().getPluginManager().getPlugin("connectorplugin");
         connectorEnabled = connectorPlugin.isPresent();
         // Debug logging: was the connector plugin found?
         logger().info("ConnectorPlugin found: " + connectorEnabled);
@@ -74,6 +81,9 @@ public final class ParadisuVelocity implements ParadisuPlugin {
             logger().info("ConnectorPlugin instance: " + this.connector.getBridge().toString());
             logger().info("ConnectorPlugin server: " + this.connector.getServerName());
         }
+
+        // Register the pack listener
+        this.server().getEventManager().register(this, new PackListener(this, this.packManager()));
     }
 
     /**
@@ -82,7 +92,7 @@ public final class ParadisuVelocity implements ParadisuPlugin {
      * @return the logger for this plugin
      */
     public VelocityLogger logger() {
-        return this.velocityLogger;
+        return this.logger;
     }
 
     /**
@@ -109,7 +119,7 @@ public final class ParadisuVelocity implements ParadisuPlugin {
      * @return the config manager for this plugin
      */
     public VelocityConfigManager configManager() {
-        return configManager;
+        return this.configManager;
     }
 
     /**
@@ -118,7 +128,11 @@ public final class ParadisuVelocity implements ParadisuPlugin {
      * @return the messages config for this plugin
      */
     public MessagesConfig messagesConfig() {
-        return configManager.getConfig("messages", MessagesConfig.class);
+        return this.configManager().getConfig("messages", MessagesConfig.class);
+    }
+
+    public ParadisuConfig paradisuConfig() {
+        return this.configManager().getConfig("paradisu", ParadisuConfig.class);
     }
 
     /**
@@ -127,7 +141,7 @@ public final class ParadisuVelocity implements ParadisuPlugin {
      * @return the translation manager for this plugin
      */
     public TranslationManager translationManager() {
-        return translationManager;
+        return this.translationManager;
     }
 
     /**
@@ -135,8 +149,8 @@ public final class ParadisuVelocity implements ParadisuPlugin {
      * 
      * @return the proxy server
      */
-    public ProxyServer getServer() {
-        return server;
+    public ProxyServer server() {
+        return this.server;
     }
 
     /**
@@ -150,6 +164,15 @@ public final class ParadisuVelocity implements ParadisuPlugin {
     }
 
     /**
+     * Returns the Pack Manager for this plugin.
+     * 
+     * @return the Pack Manager for this plugin
+     */
+    public PackManager packManager() {
+        return this.packManager;
+    }
+
+    /**
      * Reloads the plugin.
      */
     public void reload() {
@@ -157,5 +180,4 @@ public final class ParadisuVelocity implements ParadisuPlugin {
         this.translationManager.reload();
         logger().info("Reloaded Paradisu Velocity plugin");
     }
-
 }

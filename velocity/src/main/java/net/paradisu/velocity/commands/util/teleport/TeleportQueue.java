@@ -15,7 +15,7 @@ public class TeleportQueue {
             .build(
                     new CacheLoader<TeleportRequestHeader, Player[]>() {
                         @Override
-                        public Player[] load(final TeleportRequestHeader player) throws Exception {
+                        public Player[] load(@SuppressWarnings("null") final TeleportRequestHeader player) throws Exception {
                             return null;
                         }
                     });
@@ -26,7 +26,7 @@ public class TeleportQueue {
             .build(
                     new CacheLoader<Player, Player>() {
                         @Override
-                        public Player load(final Player player) throws Exception {
+                        public Player load(@SuppressWarnings("null") final Player player) throws Exception {
                             return null;
                         }
                     });

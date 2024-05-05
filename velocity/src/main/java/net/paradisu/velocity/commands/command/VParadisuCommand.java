@@ -16,7 +16,6 @@ public final class VParadisuCommand extends AbstractVelocityCommand {
 
     @Override
     public void register() {
-
         var builder = this.commandManager.commandBuilder("vparadisu")
             .meta(CommandMeta.DESCRIPTION, paradisu.messagesConfig().commands().vparadisu().helpMsg()
             );

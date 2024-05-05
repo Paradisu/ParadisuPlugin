@@ -43,7 +43,7 @@ public final class ListCommand extends AbstractVelocityCommand {
         LuckPerms luckPerms = LuckPermsProvider.get();
 
         // Map players and meta.playerlist-index.#
-        Map<Integer, List<Player>> onlinePlayerPrefixes = paradisu.getServer().getAllPlayers().stream().collect(
+        Map<Integer, List<Player>> onlinePlayerPrefixes = paradisu.server().getAllPlayers().stream().collect(
             Collectors.groupingBy(
                 (player) -> 
                     luckPerms.getPlayerAdapter(Player.class).getUser(player).getCachedData().getMetaData().getMetaValue("playerlist-index",Integer::parseInt).orElse(100)
@@ -65,7 +65,7 @@ public final class ListCommand extends AbstractVelocityCommand {
         });
 
         // Build and send the TextComponent to the player
-        int playerCount = paradisu.getServer().getPlayerCount();
+        int playerCount = paradisu.server().getPlayerCount();
         context.getSender().sendMessage(
             Component.text()
                 .append(MiniMessage.miniMessage().deserialize(paradisu.messagesConfig().utility().messageDivider()))
