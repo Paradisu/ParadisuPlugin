@@ -23,6 +23,10 @@ public class PackListener {
      */
     @Subscribe(order = PostOrder.EARLY)
     public void onPostConnect(ServerPostConnectEvent event) {
+        // TODO: Track per-player pack state
+        // For now, we can just assume they will not have any packs applied if they just joined the proxy
+        if (event.getPreviousServer() != null) return;
+
         final Player player = event.getPlayer();
         final Optional<ServerConnection> serverConnection = player.getCurrentServer();
 
