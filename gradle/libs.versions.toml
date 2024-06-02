@@ -8,14 +8,17 @@ connectorplugin = "1.5.1-SNAPSHOT"
 dotenv-kotlin = "6.4.1"
 fastutil = "8.5.2"
 guava = "31.1-jre"
+hibernate = "6.5.0.Final"
 indra = "3.1.3"
 inventorygui = "1.6.2-SNAPSHOT"
+liquibase = "4.27.0"
+liquibase-plugin = "2.2.2"
 log4j-slf4j-impl = "2.23.1"
 lombok = "8.6"
 luckperms-api = "5.4"
-mariadb-java-client = "3.3.3"
-mysql-connector-j = "8.3.0"
 paper-api = "1.20.4-R0.1-SNAPSHOT"
+picocli = "4.7.6"
+postgresql = "42.7.3"
 protocollib = "5.2.0-SNAPSHOT"
 shadow = "8.1.1"
 velocity-api = "3.3.0-SNAPSHOT"
@@ -35,12 +38,16 @@ connectorplugin-velocity = { group = "de.themoep.connectorplugin", name = "veloc
 dotenv-kotlin = { group = "io.github.cdimascio", name = "dotenv-kotlin", version.ref = "dotenv-kotlin" }
 fastutil-object-object-maps = { group = "com.nukkitx.fastutil", name = "fastutil-object-object-maps", version.ref = "fastutil" }
 guava = { group = "com.google.guava", name = "guava", version.ref = "guava" }
+hibernate-core = { group = "org.hibernate.orm", name = "hibernate-core", version.ref = "hibernate" }
+hibernate-hikaricp = { group = "org.hibernate", name = "hibernate-hikaricp", version.ref = "hibernate" }
 inventorygui = { group = "de.themoep", name = "inventorygui", version.ref = "inventorygui" }
+liquibase-core = { group = "org.liquibase", name = "liquibase-core", version.ref = "liquibase" }
+liquibase-hibernate6 = { group = "org.liquibase.ext", name = "liquibase-hibernate6", version.ref = "liquibase" }
 log4j-slf4j-impl = { group = "org.apache.logging.log4j", name = "log4j-slf4j-impl", version.ref = "log4j-slf4j-impl" }
 luckperms-api = { group = "net.luckperms", name = "api", version.ref = "luckperms-api" }
-mariadb-java-client = { group = "org.mariadb.jdbc", name = "mariadb-java-client", version.ref = "mariadb-java-client" }
-mysql-connector-j = { group = "com.mysql", name = "mysql-connector-j", version.ref = "mysql-connector-j" }
 paper-api = { group = "io.papermc.paper", name = "paper-api", version.ref = "paper-api" }
+picocli = { group = "info.picocli", name = "picocli", version.ref = "picocli" }
+postgresql = { group = "org.postgresql", name = "postgresql", version.ref = "postgresql" }
 protocollib = { group = "com.comphenix.protocol", name = "ProtocolLib", version.ref = "protocollib" }
 shadow = { group = "com.github.johnrengelman", name = "shadow", version.ref = "shadow" }
 velocity-api = { group = "com.velocitypowered", name = "velocity-api", version.ref = "velocity-api" }
@@ -56,10 +63,24 @@ adventure-velocity = ["adventure-api", "adventure-text-minimessage"]
 cloud-core = ["cloud-core", "cloud-minecraft-extras"]
 cloud-paper = ["cloud-paper", "cloud-minecraft-extras"]
 cloud-velocity = ["cloud-velocity", "cloud-minecraft-extras"]
+database = [
+    "hibernate-core", 
+    "hibernate-hikaricp",
+    "postgresql"
+]
 fastutil = ["fastutil-object-object-maps"]
+liquibase = [
+    "hibernate-core", 
+    "hibernate-hikaricp",
+    "liquibase-core",
+    "liquibase-hibernate6",
+    "picocli",
+    "postgresql"
+]
 
 [plugins]
 blossom = { id = "net.kyori.blossom", version.ref = "blossom" }
 indra-git = { id = "net.kyori.indra.git", version.ref = "indra" }
+liquibase = { id = "org.liquibase.gradle", version.ref = "liquibase-plugin"}
 lombok = { id = "io.freefair.lombok", version.ref = "lombok" }
 shadow = { id = "com.github.johnrengelman.shadow", version.ref = "shadow" }

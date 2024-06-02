@@ -8,12 +8,15 @@ plugins {
 }
 
 dependencies {
-    compileOnly(libs.configurate.yaml)
-    compileOnly(libs.bundles.cloud.core)
+    api(project(":database"))
     compileOnly(libs.bundles.adventure.core)
+    compileOnly(libs.bundles.cloud.core)
+    compileOnly(libs.bundles.database)
     compileOnly(libs.bundles.fastutil)
-    compileOnly(libs.guava)
+    compileOnly(libs.bundles.liquibase)
+    compileOnly(libs.configurate.yaml)
     compileOnly(libs.connectorplugin.core)
+    compileOnly(libs.guava)
     compileOnly(libs.log4j.slf4j.impl)
 }
 

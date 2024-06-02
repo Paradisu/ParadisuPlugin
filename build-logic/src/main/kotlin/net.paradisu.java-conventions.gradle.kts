@@ -27,6 +27,7 @@ repositories {
         mavenContent { snapshotsOnly() }
     }
     maven("https://repo.spongepowered.org/repository/maven-public/")
+    maven("https://repo.opencollab.dev/main")
 }
 
 group = properties["group"] as String

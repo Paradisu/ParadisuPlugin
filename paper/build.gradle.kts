@@ -6,8 +6,6 @@ plugins {
 dependencies {
     api(project(":core"))
     implementation(libs.dotenv.kotlin)
-    implementation(libs.mariadb.java.client)
-    implementation(libs.mysql.connector.j)
     implementation(libs.bundles.cloud.paper)
     implementation(libs.bundles.adventure.bukkit)
     implementation(libs.configurate.yaml)
