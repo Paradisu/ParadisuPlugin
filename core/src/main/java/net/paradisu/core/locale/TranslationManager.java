@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.MessageFormat;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -21,7 +22,6 @@ import java.util.stream.Stream;
 public final class TranslationManager {
     public static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
     public static final List<Locale> BUNDLED_LOCALES = List.of(
-        new Locale("fi", "FI")
         );
 
     private final ParadisuPlugin paradisu;
@@ -75,15 +75,29 @@ public final class TranslationManager {
      */
     private void loadFromResourceBundle() {
         ResourceBundle defaultBundle = ResourceBundle.getBundle("messages", DEFAULT_LOCALE);
-        try {
-            this.registry.registerAll(DEFAULT_LOCALE, defaultBundle, false);
-            BUNDLED_LOCALES.forEach(locale -> {
-                ResourceBundle bundle = ResourceBundle.getBundle("messages", locale);
-                this.registry.registerAll(locale, bundle, false);
-            });
-        } catch (IllegalArgumentException e) {
-            this.paradisu.logger().warn("Error loading default locale file", e);
-        }
+        loadLocaleBundle(defaultBundle, DEFAULT_LOCALE);
+
+        BUNDLED_LOCALES.forEach(locale -> {
+            ResourceBundle bundle = ResourceBundle.getBundle("messages", locale);
+            loadLocaleBundle(bundle, locale);
+        });
+    }
+
+    /**
+     * Loads a locale bundle into the translation registry key by key.
+     * @param bundle the bundle to load
+     * @param locale the locale of the bundle
+     */
+    private void loadLocaleBundle(ResourceBundle bundle, Locale locale) {
+        bundle.getKeys().asIterator().forEachRemaining(key -> {
+            try {
+                this.registry.register(key, locale, new MessageFormat(bundle.getString(key)));
+            } catch (IllegalArgumentException e) {
+                if (!isAdventureDuplicatesException(e)) {
+                    this.paradisu.logger().warn("Error loading locale file: " + locale, e);
+                }
+            }
+        });
     }
 
     /**
@@ -113,14 +127,12 @@ public final class TranslationManager {
             }
         }
 
-        // try registering the locale without a country code - if we don't already have a registration for that
         loaded.forEach((locale, bundle) -> {
-            Locale localeWithoutCountry = new Locale(locale.getLanguage());
-            if (!locale.equals(localeWithoutCountry) && !localeWithoutCountry.equals(DEFAULT_LOCALE) && this.installed.add(localeWithoutCountry)) {
+            if (this.installed.add(locale)) {
                 try {
-                    this.registry.registerAll(localeWithoutCountry, bundle, false);
+                    this.registry.registerAll(locale, bundle, false);
                 } catch (IllegalArgumentException e) {
-                    // ignore
+                    this.paradisu.logger().warn("Error loading locale file: " + locale, e);
                 }
             }
         });
