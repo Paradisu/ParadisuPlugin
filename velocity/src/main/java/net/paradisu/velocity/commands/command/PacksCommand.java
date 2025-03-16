@@ -1,10 +1,9 @@
 package net.paradisu.velocity.commands.command;
 
-import cloud.commandframework.ArgumentDescription;
-import cloud.commandframework.arguments.standard.BooleanArgument;
-import cloud.commandframework.context.CommandContext;
-import cloud.commandframework.meta.CommandMeta;
-import cloud.commandframework.velocity.arguments.PlayerArgument;
+import org.incendo.cloud.context.CommandContext;
+import org.incendo.cloud.description.Description;
+import org.incendo.cloud.parser.standard.BooleanParser;
+import org.incendo.cloud.velocity.parser.PlayerParser;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.Player;
 import net.kyori.adventure.text.Component;
@@ -22,27 +21,27 @@ public class PacksCommand extends AbstractVelocityCommand {
     @Override
     public void register() {
         var builder = this.commandManager.commandBuilder("packs")
-            .meta(CommandMeta.DESCRIPTION, paradisu.messagesConfig().commands().packs().helpMsg()
+            .commandDescription(Description.of(paradisu.messagesConfig().commands().packs().helpMsg())
             );
 
         this.commandManager.command(builder.literal("clear")
             .permission("vparadisu.packs.clear")
-            .meta(CommandMeta.DESCRIPTION, paradisu.messagesConfig().commands().packs().clear().helpMsg())
-            .argument(PlayerArgument.optional("player"), ArgumentDescription.of(paradisu.messagesConfig().commands().packs().clear().helpArgs().get(0)))
+            .commandDescription(Description.of(paradisu.messagesConfig().commands().packs().clear().helpMsg()))
+            .required("player", PlayerParser.playerParser(), Description.of(paradisu.messagesConfig().commands().packs().clear().helpArgs().get(0)))
             .handler(this::clearCommand)
         );
         
         this.commandManager.command(builder.literal("reload")
             .permission("vparadisu.packs.reload")
-            .meta(CommandMeta.DESCRIPTION, paradisu.messagesConfig().commands().packs().reload().helpMsg())
-            .argument(BooleanArgument.optional("resend"), ArgumentDescription.of(paradisu.messagesConfig().commands().packs().reload().helpArgs().get(0)))
+            .commandDescription(Description.of(paradisu.messagesConfig().commands().packs().reload().helpMsg()))
+            .required("resend", BooleanParser.booleanParser(), Description.of(paradisu.messagesConfig().commands().packs().reload().helpArgs().get(0)))
             .handler(this::reloadCommand)
         );
 
         this.commandManager.command(builder.literal(("resend"))
             .permission("vparadisu.packs.resend")
-            .meta(CommandMeta.DESCRIPTION, paradisu.messagesConfig().commands().packs().resend().helpMsg())
-            .argument(PlayerArgument.optional("player"), ArgumentDescription.of(paradisu.messagesConfig().commands().packs().resend().helpArgs().get(0)))
+            .commandDescription(Description.of(paradisu.messagesConfig().commands().packs().resend().helpMsg()))
+            .required("player", PlayerParser.playerParser(), Description.of(paradisu.messagesConfig().commands().packs().resend().helpArgs().get(0)))
             .handler(this::resendCommand)
         );
     }
@@ -53,11 +52,11 @@ public class PacksCommand extends AbstractVelocityCommand {
      * @param context the data specified on registration of the command
      */
     private void clearCommand(CommandContext<CommandSource> context) {
-        Player player = context.getOrDefault("player", (Player) context.getSender());
+        Player player = context.getOrDefault("player", (Player) context.sender());
 
         player.clearResourcePacks();
 
-        context.getSender().sendMessage(Messages.prefixed(
+        context.sender().sendMessage(Messages.prefixed(
             MiniMessage.miniMessage().deserialize(
                 paradisu.messagesConfig().commands().packs().clear().output().get(0),
                 Placeholder.component("player", Component.text(player.getUsername()))
@@ -85,7 +84,7 @@ public class PacksCommand extends AbstractVelocityCommand {
             });
         }
 
-        context.getSender().sendMessage(Messages.prefixed(
+        context.sender().sendMessage(Messages.prefixed(
                 MiniMessage.miniMessage().deserialize(paradisu.messagesConfig().commands().packs().reload().output().get(resend ? 1 : 0))
         ));
     }
@@ -96,7 +95,7 @@ public class PacksCommand extends AbstractVelocityCommand {
      * @param context the data specified on registration of the command
      */
     private void resendCommand(CommandContext<CommandSource> context) {
-        Player player = context.getOrDefault("player", (Player) context.getSender());
+        Player player = context.getOrDefault("player", (Player) context.sender());
 
         paradisu.packManager().defaultRequest().whenCompleteAsync((packs, e) -> {
             if (e == null) {
@@ -104,7 +103,7 @@ public class PacksCommand extends AbstractVelocityCommand {
             }
         });
 
-        context.getSender().sendMessage(Messages.prefixed(
+        context.sender().sendMessage(Messages.prefixed(
                 MiniMessage.miniMessage().deserialize(
                     paradisu.messagesConfig().commands().packs().resend().output().get(0),
                     Placeholder.component("player", Component.text(player.getUsername()))

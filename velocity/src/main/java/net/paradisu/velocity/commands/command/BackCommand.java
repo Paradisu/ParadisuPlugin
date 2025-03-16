@@ -1,9 +1,8 @@
 package net.paradisu.velocity.commands.command;
 
-import cloud.commandframework.ArgumentDescription;
-import cloud.commandframework.context.CommandContext;
-import cloud.commandframework.meta.CommandMeta;
-import cloud.commandframework.velocity.arguments.PlayerArgument;
+import org.incendo.cloud.context.CommandContext;
+import org.incendo.cloud.description.Description;
+import org.incendo.cloud.velocity.parser.PlayerParser;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.Player;
 import de.themoep.connectorplugin.LocationInfo;
@@ -24,8 +23,8 @@ public final class BackCommand extends AbstractVelocityCommand {
     public void register() {
         var builder = this.commandManager.commandBuilder("back", "return")
             .permission("vparadisu.back")
-            .meta(CommandMeta.DESCRIPTION, paradisu.messagesConfig().commands().back().helpMsg())
-            .argument(PlayerArgument.optional("player"), ArgumentDescription.of(paradisu.messagesConfig().commands().back().helpArgs().get(0)))
+            .commandDescription(Description.of(paradisu.messagesConfig().commands().back().helpMsg()))
+            .optional("player", PlayerParser.playerParser(), Description.of(paradisu.messagesConfig().commands().back().helpArgs().get(0)))
             .handler(this::backCommand);
         this.commandManager.command(builder);
     }
@@ -38,7 +37,7 @@ public final class BackCommand extends AbstractVelocityCommand {
     private void backCommand(CommandContext<CommandSource> context) {
         TeleportHistory history = new TeleportHistory();
 
-        Player player = (Player) context.getOrDefault("player", context.getSender());
+        Player player = (Player) context.getOrDefault("player", context.sender());
         LocationInfo previousLocation = history.getTeleport(player);
         boolean validRequest = (previousLocation != null);
 
@@ -50,7 +49,7 @@ public final class BackCommand extends AbstractVelocityCommand {
                     paradisu.connector().getBridge().teleport(player.getUsername(), previousLocation, m -> {})
                     .whenComplete((success, teleportException) -> {
                         if (success) {
-                            context.getSender().sendMessage(
+                            context.sender().sendMessage(
                                 Messages.prefixed(MiniMessage.miniMessage().deserialize(
                                     paradisu.messagesConfig().commands().back().output().get(0),
                                     Placeholder.component("player", Component.text(player.getUsername()))
@@ -65,7 +64,7 @@ public final class BackCommand extends AbstractVelocityCommand {
                 }
             });
         } else {
-            context.getSender().sendMessage(
+            context.sender().sendMessage(
                 Messages.prefixed(MiniMessage.miniMessage().deserialize(
                     paradisu.messagesConfig().commands().back().output().get(1),
                     Placeholder.component("player", Component.text(player.getUsername()))

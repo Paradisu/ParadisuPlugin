@@ -1,6 +1,6 @@
 package net.paradisu.core;
 
-import cloud.commandframework.CommandManager;
+import org.incendo.cloud.CommandManager;
 import de.themoep.connectorplugin.ConnectorPlugin;
 import net.paradisu.core.config.ConfigManager;
 import net.paradisu.core.locale.TranslationManager;

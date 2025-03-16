@@ -35,3 +35,9 @@ configurations {
 tasks.withType<org.liquibase.gradle.LiquibaseTask>().configureEach {
     dependsOn(tasks.named("build"))
 }
+
+buildscript {
+    dependencies {
+        classpath(libs.liquibase.core)
+    }
+}

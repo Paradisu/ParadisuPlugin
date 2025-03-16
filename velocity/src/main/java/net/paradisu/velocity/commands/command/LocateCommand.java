@@ -1,9 +1,8 @@
 package net.paradisu.velocity.commands.command;
 
-import cloud.commandframework.ArgumentDescription;
-import cloud.commandframework.context.CommandContext;
-import cloud.commandframework.meta.CommandMeta;
-import cloud.commandframework.velocity.arguments.PlayerArgument;
+import org.incendo.cloud.context.CommandContext;
+import org.incendo.cloud.description.Description;
+import org.incendo.cloud.velocity.parser.PlayerParser;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.Player;
 import net.kyori.adventure.text.Component;
@@ -22,8 +21,8 @@ public final class LocateCommand extends AbstractVelocityCommand {
     public void register() {
         var builder = this.commandManager.commandBuilder("locate", "locateplayer", "find", "findplayer")
             .permission("vparadisu.locate")
-            .meta(CommandMeta.DESCRIPTION, paradisu.messagesConfig().commands().locate().helpMsg())
-            .argument(PlayerArgument.of("player"), ArgumentDescription.of(paradisu.messagesConfig().commands().locate().helpArgs().get(0)))
+            .commandDescription(Description.of(paradisu.messagesConfig().commands().locate().helpMsg()))
+            .required("player", PlayerParser.playerParser(), Description.of(paradisu.messagesConfig().commands().locate().helpArgs().get(0)))
             .handler(this::locateCommand);
         this.commandManager.command(builder);
     }
@@ -38,7 +37,7 @@ public final class LocateCommand extends AbstractVelocityCommand {
         paradisu.connector().getBridge().getLocation(player)
         .whenComplete((location, exception) -> {
             if (exception == null) {
-                context.getSender().sendMessage(Messages.prefixed(
+                context.sender().sendMessage(Messages.prefixed(
                     MiniMessage.miniMessage().deserialize(
                         paradisu.messagesConfig().commands().locate().output().get(0),
                         Placeholder.component("player", Component.text(player.getUsername())),

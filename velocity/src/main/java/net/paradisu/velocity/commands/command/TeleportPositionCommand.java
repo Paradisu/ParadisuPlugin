@@ -1,11 +1,10 @@
 package net.paradisu.velocity.commands.command;
 
-import cloud.commandframework.ArgumentDescription;
-import cloud.commandframework.arguments.standard.DoubleArgument;
-import cloud.commandframework.context.CommandContext;
-import cloud.commandframework.meta.CommandMeta;
-import cloud.commandframework.velocity.arguments.PlayerArgument;
-import cloud.commandframework.velocity.arguments.ServerArgument;
+import org.incendo.cloud.context.CommandContext;
+import org.incendo.cloud.description.Description;
+import org.incendo.cloud.parser.standard.DoubleParser;
+import org.incendo.cloud.velocity.parser.PlayerParser;
+import org.incendo.cloud.velocity.parser.ServerParser;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
@@ -27,12 +26,12 @@ public final class TeleportPositionCommand extends AbstractVelocityCommand {
     public void register() {
         var builder = this.commandManager.commandBuilder("tppos", "tpposition")
             .permission("vparadisu.tppos")
-            .meta(CommandMeta.DESCRIPTION, paradisu.messagesConfig().commands().tppos().helpMsg())
-            .argument(DoubleArgument.of("x"), ArgumentDescription.of(paradisu.messagesConfig().commands().tppos().helpArgs().get(0)))
-            .argument(DoubleArgument.of("y"), ArgumentDescription.of(paradisu.messagesConfig().commands().tppos().helpArgs().get(1)))
-            .argument(DoubleArgument.of("z"), ArgumentDescription.of(paradisu.messagesConfig().commands().tppos().helpArgs().get(2)))
-            .argument(ServerArgument.optional("server"), ArgumentDescription.of(paradisu.messagesConfig().commands().tppos().helpArgs().get(3)))
-            .argument(PlayerArgument.optional("player"), ArgumentDescription.of(paradisu.messagesConfig().commands().tppos().helpArgs().get(4)))
+            .commandDescription(Description.of(paradisu.messagesConfig().commands().tppos().helpMsg()))
+            .required("x", DoubleParser.doubleParser(), Description.of(paradisu.messagesConfig().commands().tppos().helpArgs().get(0)))
+            .required("y", DoubleParser.doubleParser(), Description.of(paradisu.messagesConfig().commands().tppos().helpArgs().get(1)))
+            .required("z", DoubleParser.doubleParser(), Description.of(paradisu.messagesConfig().commands().tppos().helpArgs().get(2)))
+            .optional("server", ServerParser.serverParser(), Description.of(paradisu.messagesConfig().commands().tppos().helpArgs().get(3)))
+            .optional("player", PlayerParser.playerParser(), Description.of(paradisu.messagesConfig().commands().tppos().helpArgs().get(4)))
             .handler(this::teleportPositionCommand);
         this.commandManager.command(builder);
     }
@@ -45,7 +44,7 @@ public final class TeleportPositionCommand extends AbstractVelocityCommand {
     private void teleportPositionCommand(CommandContext<CommandSource> context) {
         TeleportHistory history = new TeleportHistory();
 
-        Player player = (Player) context.getOrDefault("player", context.getSender());
+        Player player = (Player) context.getOrDefault("player", context.sender());
 
         paradisu.connector().getBridge().getLocation(player)
         .whenComplete((location, locationException) -> {
@@ -61,7 +60,7 @@ public final class TeleportPositionCommand extends AbstractVelocityCommand {
                 paradisu.connector().getBridge().teleport(player.getUsername(), telportLocation, m -> {})
                 .whenComplete((success, teleportException) -> {
                     if (success) {
-                        context.getSender().sendMessage(Messages.prefixed(
+                        context.sender().sendMessage(Messages.prefixed(
                                 MiniMessage.miniMessage().deserialize(
                                     paradisu.messagesConfig().commands().tppos().output().get(0),
                                     Placeholder.component("player", Component.text(player.getUsername())),

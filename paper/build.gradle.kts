@@ -10,8 +10,8 @@ dependencies {
     implementation(libs.bundles.adventure.bukkit)
     implementation(libs.configurate.yaml)
     implementation(libs.inventorygui)
-    compileOnly(libs.connectorplugin.bukkit)
     compileOnly(libs.paper.api)
+    compileOnly(libs.connectorplugin.bukkit)
     compileOnly(libs.protocollib)
     compileOnly(libs.luckperms.api)
 }

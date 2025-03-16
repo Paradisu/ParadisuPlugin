@@ -1,36 +1,39 @@
 [versions]
-adventure = "4.17.0-SNAPSHOT"
-adventure-platform = "4.3.3-SNAPSHOT"
+adventure = "4.20.0-SNAPSHOT"
+adventure-platform = "4.3.5-SNAPSHOT"
 blossom = "1.2.0"
-cloud = "1.8.4"
-configurate-yaml = "4.1.2"
-connectorplugin = "1.5.1-SNAPSHOT"
-dotenv-kotlin = "6.4.1"
+cloud-core = "2.0.0-rc.2"
+cloud-minecraft = "2.0.0-beta.10"
+commons-lang3 = "3.14.0"
+configurate-yaml = "4.2.0"
+connectorplugin = "1.5.2-SNAPSHOT"
+dotenv-kotlin = "6.5.1"
 fastutil = "8.5.2"
-guava = "31.1-jre"
+guava = "33.4.0-jre"
 hibernate = "6.5.0.Final"
 indra = "3.1.3"
-inventorygui = "1.6.2-SNAPSHOT"
-liquibase = "4.27.0"
-liquibase-plugin = "2.2.2"
-log4j-slf4j-impl = "2.23.1"
-lombok = "8.6"
+inventorygui = "1.6.5-SNAPSHOT"
+liquibase = "4.31.1"
+liquibase-plugin = "3.0.2"
+log4j-slf4j-impl = "2.24.3"
+lombok = "8.13"
 luckperms-api = "5.4"
-paper-api = "1.20.4-R0.1-SNAPSHOT"
+paper-api = "1.21.4-R0.1-SNAPSHOT"
 picocli = "4.7.6"
-postgresql = "42.7.3"
-protocollib = "5.2.0-SNAPSHOT"
-shadow = "8.1.1"
-velocity-api = "3.3.0-SNAPSHOT"
+postgresql = "42.7.5"
+protocollib = "5.3.0"
+shadow = "8.3.6"
+velocity-api = "3.4.0-SNAPSHOT"
 
 [libraries]
 adventure-api = { group = "net.kyori", name = "adventure-api", version.ref = "adventure" }
 adventure-platform-bukkit = { group = "net.kyori", name = "adventure-platform-bukkit", version.ref = "adventure-platform" }
 adventure-text-minimessage = { group = "net.kyori", name = "adventure-text-minimessage", version.ref = "adventure" }
-cloud-core = { group = "cloud.commandframework", name = "cloud-core", version.ref = "cloud" }
-cloud-minecraft-extras = { group = "cloud.commandframework", name = "cloud-minecraft-extras", version.ref = "cloud" }
-cloud-paper = { group = "cloud.commandframework", name = "cloud-paper", version.ref = "cloud" }
-cloud-velocity = { group = "cloud.commandframework", name = "cloud-velocity", version.ref = "cloud" }
+cloud-core = { group = "org.incendo", name = "cloud-core", version.ref = "cloud-core" }
+cloud-minecraft-extras = { group = "org.incendo", name = "cloud-minecraft-extras", version.ref = "cloud-minecraft" }
+cloud-paper = { group = "org.incendo", name = "cloud-paper", version.ref = "cloud-minecraft" }
+cloud-velocity = { group = "org.incendo", name = "cloud-velocity", version.ref = "cloud-minecraft" }
+commons-lang3 = { group = "org.apache.commons", name = "commons-lang3", version.ref = "commons-lang3" }
 configurate-yaml = { group = "org.spongepowered", name = "configurate-yaml", version.ref = "configurate-yaml" }
 connectorplugin-bukkit = { group = "de.themoep.connectorplugin", name = "bukkit", version.ref = "connectorplugin" }
 connectorplugin-core = { group = "de.themoep.connectorplugin", name = "core", version.ref = "connectorplugin" }
@@ -49,7 +52,7 @@ paper-api = { group = "io.papermc.paper", name = "paper-api", version.ref = "pap
 picocli = { group = "info.picocli", name = "picocli", version.ref = "picocli" }
 postgresql = { group = "org.postgresql", name = "postgresql", version.ref = "postgresql" }
 protocollib = { group = "com.comphenix.protocol", name = "ProtocolLib", version.ref = "protocollib" }
-shadow = { group = "com.github.johnrengelman", name = "shadow", version.ref = "shadow" }
+shadow = { group = "com.gradleup.shadow", name = "shadow-gradle-plugin", version.ref = "shadow" }
 velocity-api = { group = "com.velocitypowered", name = "velocity-api", version.ref = "velocity-api" }
 
 [bundles]
@@ -75,7 +78,8 @@ liquibase = [
     "liquibase-core",
     "liquibase-hibernate6",
     "picocli",
-    "postgresql"
+    "postgresql",
+    "commons-lang3"
 ]
 
 [plugins]
@@ -83,4 +87,4 @@ blossom = { id = "net.kyori.blossom", version.ref = "blossom" }
 indra-git = { id = "net.kyori.indra.git", version.ref = "indra" }
 liquibase = { id = "org.liquibase.gradle", version.ref = "liquibase-plugin"}
 lombok = { id = "io.freefair.lombok", version.ref = "lombok" }
-shadow = { id = "com.github.johnrengelman.shadow", version.ref = "shadow" }
+shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }

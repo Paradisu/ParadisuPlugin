@@ -1,8 +1,8 @@
 package net.paradisu.velocity.commands.command;
 
-import cloud.commandframework.arguments.standard.StringArgument;
-import cloud.commandframework.context.CommandContext;
-import cloud.commandframework.meta.CommandMeta;
+import org.incendo.cloud.context.CommandContext;
+import org.incendo.cloud.description.Description;
+import org.incendo.cloud.parser.standard.StringParser;
 import com.velocitypowered.api.command.CommandSource;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.paradisu.core.locale.Messages;
@@ -17,24 +17,23 @@ public final class VParadisuCommand extends AbstractVelocityCommand {
     @Override
     public void register() {
         var builder = this.commandManager.commandBuilder("vparadisu")
-            .meta(CommandMeta.DESCRIPTION, paradisu.messagesConfig().commands().vparadisu().helpMsg()
-            );
+            .commandDescription(Description.of(paradisu.messagesConfig().commands().vparadisu().helpMsg()));
 
         this.commandManager.command(builder.literal("help")
-        .argument(StringArgument.optional("query", StringArgument.StringMode.GREEDY))
-        .handler(context -> {
-            this.helpManager.getMinecraftHelp().queryCommands(context.getOrDefault("query", ""), context.getSender());
-        }));
+            .optional("query", StringParser.greedyStringParser())
+            .handler(context -> {
+                this.helpManager.getMinecraftHelp().queryCommands(context.getOrDefault("query", ""), context.sender());
+            }));
         
         this.commandManager.command(builder.literal("about")
             .permission("vparadisu.about")
-            .meta(CommandMeta.DESCRIPTION, paradisu.messagesConfig().commands().vparadisu().about().helpMsg())
+            .commandDescription(Description.of(paradisu.messagesConfig().commands().vparadisu().about().helpMsg()))
             .handler(this::aboutCommand)
         );
 
         this.commandManager.command(builder.literal("reload")
             .permission("vparadisu.reload")
-            .meta(CommandMeta.DESCRIPTION, paradisu.messagesConfig().commands().vparadisu().reload().helpMsg())
+            .commandDescription(Description.of(paradisu.messagesConfig().commands().vparadisu().reload().helpMsg()))
             .handler(this::reloadCommand)
         );
     }
@@ -44,7 +43,7 @@ public final class VParadisuCommand extends AbstractVelocityCommand {
      * @param context the data specified on registration of the command
      */
     private void aboutCommand(CommandContext<CommandSource> context) {
-        context.getSender().sendMessage(Messages.prefixed(
+        context.sender().sendMessage(Messages.prefixed(
             MiniMessage.miniMessage().deserialize(
                 paradisu.messagesConfig().commands().vparadisu().about().output().get(0)
             )
@@ -57,7 +56,7 @@ public final class VParadisuCommand extends AbstractVelocityCommand {
      */
     private void reloadCommand(CommandContext<CommandSource> context) {
         paradisu.reload();
-        context.getSender().sendMessage(Messages.prefixed(
+        context.sender().sendMessage(Messages.prefixed(
                 MiniMessage.miniMessage().deserialize(paradisu.messagesConfig().commands().vparadisu().reload().output().get(0))
         ));
     }

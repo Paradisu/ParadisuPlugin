@@ -1,9 +1,10 @@
 package net.paradisu.paper;
 
-import cloud.commandframework.CommandManager;
-import cloud.commandframework.execution.CommandExecutionCoordinator;
-import cloud.commandframework.paper.PaperCommandManager;
+import org.incendo.cloud.CommandManager;
+import org.incendo.cloud.execution.ExecutionCoordinator;
+import org.incendo.cloud.paper.PaperCommandManager;
 import de.themoep.connectorplugin.bukkit.BukkitConnectorPlugin;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
 import net.paradisu.core.ParadisuPlugin;
 import net.paradisu.core.locale.TranslationManager;
 import net.paradisu.paper.commands.PaperCommandRegistrar;
@@ -11,14 +12,12 @@ import net.paradisu.paper.config.PaperConfigManager;
 import net.paradisu.paper.config.configs.MessagesConfig;
 import net.paradisu.paper.util.PaperLogger;
 import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.nio.file.Path;
-import java.util.function.Function;
 
 public class ParadisuPaper extends JavaPlugin implements ParadisuPlugin {
-    private CommandManager<CommandSender> commandManager;
+    private PaperCommandManager<CommandSourceStack> commandManager;
     private PaperLogger logger;
     private BukkitConnectorPlugin connector;
     private boolean connectorEnabled;
@@ -39,7 +38,9 @@ public class ParadisuPaper extends JavaPlugin implements ParadisuPlugin {
             this.translationManager = new TranslationManager(this);
             this.translationManager.reload();
 
-            this.commandManager = new PaperCommandManager<>(this, CommandExecutionCoordinator.simpleCoordinator(), Function.identity(), Function.identity());
+            this.commandManager = PaperCommandManager.builder()
+                .executionCoordinator(ExecutionCoordinator.simpleCoordinator())
+                .buildOnEnable(this);
             PaperCommandRegistrar.registerCommands(this);
 
             this.connectorEnabled = Bukkit.getPluginManager().isPluginEnabled("ConnectorPlugin");
@@ -52,7 +53,7 @@ public class ParadisuPaper extends JavaPlugin implements ParadisuPlugin {
     }
 
     @Override
-    public CommandManager<CommandSender> commandManager() {
+    public CommandManager<CommandSourceStack> commandManager() {
         return commandManager;
     }
 

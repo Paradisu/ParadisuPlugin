@@ -1,7 +1,7 @@
 package net.paradisu.velocity.commands.command;
 
-import cloud.commandframework.context.CommandContext;
-import cloud.commandframework.meta.CommandMeta;
+import org.incendo.cloud.context.CommandContext;
+import org.incendo.cloud.description.Description;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.Player;
 import net.kyori.adventure.text.Component;
@@ -29,7 +29,7 @@ public final class ListCommand extends AbstractVelocityCommand {
     public void register() {
         var builder = this.commandManager.commandBuilder("ls", "list")
             .permission("vparadisu.list")
-            .meta(CommandMeta.DESCRIPTION, paradisu.messagesConfig().commands().ls().helpMsg())
+            .commandDescription(Description.of(paradisu.messagesConfig().commands().ls().helpMsg()))
             .handler(this::listCommand);
         this.commandManager.command(builder);
     }
@@ -66,7 +66,7 @@ public final class ListCommand extends AbstractVelocityCommand {
 
         // Build and send the TextComponent to the player
         int playerCount = paradisu.server().getPlayerCount();
-        context.getSender().sendMessage(
+        context.sender().sendMessage(
             Component.text()
                 .append(MiniMessage.miniMessage().deserialize(paradisu.messagesConfig().utility().messageDivider()))
                 .append(Component.newline())

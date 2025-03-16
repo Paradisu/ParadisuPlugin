@@ -1,9 +1,8 @@
 package net.paradisu.velocity.commands.command;
 
-import cloud.commandframework.ArgumentDescription;
-import cloud.commandframework.context.CommandContext;
-import cloud.commandframework.meta.CommandMeta;
-import cloud.commandframework.velocity.arguments.PlayerArgument;
+import org.incendo.cloud.context.CommandContext;
+import org.incendo.cloud.description.Description;
+import org.incendo.cloud.velocity.parser.PlayerParser;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.Player;
 import net.kyori.adventure.text.Component;
@@ -26,8 +25,8 @@ public final class TeleportRequestCommand extends AbstractVelocityCommand {
     public void register() {
         var builder = this.commandManager.commandBuilder("tpr", "tprequest")
             .permission("vparadisu.tpr")
-            .meta(CommandMeta.DESCRIPTION, paradisu.messagesConfig().commands().tpr().helpMsg())
-            .argument(PlayerArgument.of("target"), ArgumentDescription.of(paradisu.messagesConfig().commands().tpr().helpArgs().get(0)))
+            .commandDescription(Description.of(paradisu.messagesConfig().commands().tpr().helpMsg()))
+            .required("target", PlayerParser.playerParser(), Description.of(paradisu.messagesConfig().commands().tpr().helpArgs().get(0)))
             .handler(this::teleportRequestCommand);
         this.commandManager.command(builder);
     }
@@ -38,7 +37,7 @@ public final class TeleportRequestCommand extends AbstractVelocityCommand {
      */
     private void teleportRequestCommand(CommandContext<CommandSource> context) {
         Player target = (Player) context.get("target");
-        Player player = (Player) context.getSender();
+        Player player = (Player) context.sender();
         Player[] teleportArray = {player, target};
 
         TeleportQueue queue = new TeleportQueue();

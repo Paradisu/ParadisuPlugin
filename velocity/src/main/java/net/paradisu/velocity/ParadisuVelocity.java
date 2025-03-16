@@ -1,8 +1,9 @@
 package net.paradisu.velocity;
 
-import cloud.commandframework.CommandManager;
-import cloud.commandframework.execution.CommandExecutionCoordinator;
-import cloud.commandframework.velocity.VelocityCommandManager;
+import org.incendo.cloud.CommandManager;
+import org.incendo.cloud.SenderMapper;
+import org.incendo.cloud.execution.ExecutionCoordinator;
+import org.incendo.cloud.velocity.VelocityCommandManager;
 import com.google.inject.Inject;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.event.Subscribe;
@@ -27,7 +28,6 @@ import org.slf4j.Logger;
 
 import java.nio.file.Path;
 import java.util.Optional;
-import java.util.function.Function;
 
 @Plugin(id = Constants.Plugin.ID, name = Constants.Plugin.NAME, version = Constants.Plugin.VERSION, description = Constants.Plugin.DESCRIPTION, authors = {
         Constants.Plugin.AUTHORS }, url = Constants.Plugin.URL, dependencies = @Dependency(id = "connectorplugin"))
@@ -65,9 +65,8 @@ public final class ParadisuVelocity implements ParadisuPlugin {
         this.commandManager = new VelocityCommandManager<>(
                 this.server.getPluginManager().ensurePluginContainer(this),
                 this.server,
-                CommandExecutionCoordinator.simpleCoordinator(),
-                Function.identity(),
-                Function.identity());
+                ExecutionCoordinator.simpleCoordinator(),
+                SenderMapper.identity());
         VelocityCommandRegistrar.registerCommands(this);
 
         // Initialize the connector plugin

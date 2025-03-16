@@ -3,10 +3,9 @@ package net.paradisu.velocity.commands.command;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.Player;
 
-import cloud.commandframework.ArgumentDescription;
-import cloud.commandframework.context.CommandContext;
-import cloud.commandframework.meta.CommandMeta;
-import cloud.commandframework.velocity.arguments.PlayerArgument;
+import org.incendo.cloud.context.CommandContext;
+import org.incendo.cloud.description.Description;
+import org.incendo.cloud.velocity.parser.PlayerParser;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -25,8 +24,8 @@ public final class TeleportDenyCommand extends AbstractVelocityCommand {
     public void register() {
         var builder = this.commandManager.commandBuilder("tpd", "tpdeny")
             .permission("vparadisu.tpa")
-            .meta(CommandMeta.DESCRIPTION, paradisu.messagesConfig().commands().tpa().helpMsg())
-            .argument(PlayerArgument.optional("target"), ArgumentDescription.of(paradisu.messagesConfig().commands().tpd().helpArgs().get(0)))
+            .commandDescription(Description.of(paradisu.messagesConfig().commands().tpd().helpMsg()))
+            .optional("target", PlayerParser.playerParser(), Description.of(paradisu.messagesConfig().commands().tpd().helpArgs().get(0)))
             .handler(this::teleportDenyCommand);
         this.commandManager.command(builder);
     }
@@ -38,7 +37,7 @@ public final class TeleportDenyCommand extends AbstractVelocityCommand {
     private void teleportDenyCommand(CommandContext<CommandSource> context) {
         TeleportQueue queue = new TeleportQueue();
         
-        Player sender = (Player) context.getSender();
+        Player sender = (Player) context.sender();
         Player target = (Player) context.getOrDefault("target", queue.getRecentTeleport(sender));
 
         TeleportRequestHeader requestHeader = new TeleportRequestHeader();

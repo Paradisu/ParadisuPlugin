@@ -1,7 +1,7 @@
 package net.paradisu.velocity.commands;
 
-import cloud.commandframework.CommandManager;
-import cloud.commandframework.minecraft.extras.MinecraftHelp;
+import org.incendo.cloud.CommandManager;
+import org.incendo.cloud.minecraft.extras.MinecraftHelp;
 import com.velocitypowered.api.command.CommandSource;
 import net.paradisu.core.commands.AbstractCommand;
 import net.paradisu.core.commands.HelpManager;
@@ -20,7 +20,7 @@ public abstract class AbstractVelocityCommand implements AbstractCommand {
         // Initialize the command manager
         this.paradisu = paradisu;
         this.commandManager = paradisu.commandManager();
-        this.helpManager = new HelpManager<>(new MinecraftHelp<>("/vparadisu help", p -> p, this.commandManager));
+        this.helpManager = new HelpManager<>(MinecraftHelp.create("/vparadisu help", this.commandManager, p -> p));
     }
 
     @Override
