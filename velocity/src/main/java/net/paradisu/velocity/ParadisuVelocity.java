@@ -1,5 +1,6 @@
 package net.paradisu.velocity;
 
+import org.hibernate.Session;
 import org.incendo.cloud.CommandManager;
 import org.incendo.cloud.SenderMapper;
 import org.incendo.cloud.execution.ExecutionCoordinator;
@@ -14,7 +15,15 @@ import com.velocitypowered.api.plugin.PluginContainer;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
 import de.themoep.connectorplugin.velocity.VelocityConnectorPlugin;
+import liquibase.Contexts;
+import liquibase.LabelExpression;
+import liquibase.Liquibase;
+import liquibase.database.DatabaseFactory;
+import liquibase.database.jvm.JdbcConnection;
+import liquibase.exception.LiquibaseException;
+import liquibase.resource.ClassLoaderResourceAccessor;
 import net.paradisu.core.ParadisuPlugin;
+import net.paradisu.core.database.DatabaseSession;
 import net.paradisu.core.locale.TranslationManager;
 import net.paradisu.core.packs.PackManager;
 import net.paradisu.core.utils.Constants;
@@ -22,7 +31,9 @@ import net.paradisu.velocity.commands.VelocityCommandRegistrar;
 import net.paradisu.velocity.config.VelocityConfigManager;
 import net.paradisu.velocity.config.configs.MessagesConfig;
 import net.paradisu.velocity.config.configs.ParadisuConfig;
-import net.paradisu.velocity.pack.PackListener;
+import net.paradisu.velocity.listeners.ConnectionListener;
+import net.paradisu.velocity.listeners.LimboListener;
+import net.paradisu.velocity.listeners.PackListener;
 import net.paradisu.velocity.util.VelocityLogger;
 import org.slf4j.Logger;
 
@@ -38,9 +49,9 @@ public final class ParadisuVelocity implements ParadisuPlugin {
     private VelocityConfigManager configManager;
     private TranslationManager translationManager;
     private VelocityCommandManager<CommandSource> commandManager;
-    private boolean connectorEnabled;
     private VelocityConnectorPlugin connector;
     private PackManager packManager;
+    private DatabaseSession databaseSession;
 
 
     @Inject
@@ -55,6 +66,43 @@ public final class ParadisuVelocity implements ParadisuPlugin {
         // Initialize the config manager
         this.configManager = new VelocityConfigManager(this);
         this.configManager.loadConfigs();
+        // Initialize the database session
+        this.databaseSession = new DatabaseSession(
+                this,
+                this.paradisuConfig().database().url(),
+                this.paradisuConfig().database().username(),
+                this.paradisuConfig().database().password());
+        if (this.databaseSession.open()) {
+            // Run Liquibase migrations
+            // This will occur before players can connect to the server
+            try (var em = this.databaseSession.factory().createEntityManager()) { // Create an EntityManager
+                em.getTransaction().begin(); // Start a transaction to access the session
+
+                // Unwrap the EntityManager to get the Hibernate Session
+                em.unwrap(Session.class).doWork(connection -> {
+                    ClassLoader previousContextClassLoader = Thread.currentThread().getContextClassLoader();
+                    Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+                    try (
+                        Liquibase liquibase = new Liquibase(
+                            "db/migrations.xml",
+                            new ClassLoaderResourceAccessor(),
+                            DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection))
+                        )
+                    ) {
+                        liquibase.update(new Contexts(), new LabelExpression());
+                        this.logger.info("Database migrations applied successfully.");
+                    } catch (LiquibaseException e) {
+                        this.logger.error("Failed to migrate database", e);
+                    } finally {
+                        Thread.currentThread().setContextClassLoader(previousContextClassLoader);
+                    }
+                });
+            } catch (Exception e) {
+                this.logger.error("An error occurred during database migration.", e);
+            }
+        } else {
+            this.logger.error("Failed to open database session. The plugin will not function correctly without a valid database connection.");
+        }
         // Initialize the pack manager
         this.packManager = new PackManager(this, this.paradisuConfig().resourcePackUrls());
         // Initialize the translation manager
@@ -71,18 +119,14 @@ public final class ParadisuVelocity implements ParadisuPlugin {
 
         // Initialize the connector plugin
         Optional<PluginContainer> connectorPlugin = server().getPluginManager().getPlugin("connectorplugin");
-        connectorEnabled = connectorPlugin.isPresent();
-        // Debug logging: was the connector plugin found?
-        logger().info("ConnectorPlugin found: " + connectorEnabled);
-        if (connectorEnabled) {
+        if (connectorPlugin.isPresent()) {
             this.connector = (VelocityConnectorPlugin) connectorPlugin.get().getInstance().get();
-            // Debug logging: what is the connector plugin bridge?
-            logger().info("ConnectorPlugin instance: " + this.connector.getBridge().toString());
-            logger().info("ConnectorPlugin server: " + this.connector.getServerName());
         }
 
-        // Register the pack listener
+        // Register listeners
         this.server().getEventManager().register(this, new PackListener(this, this.packManager()));
+        this.server().getEventManager().register(this, new LimboListener(this));
+        this.server().getEventManager().register(this, new ConnectionListener(this));
     }
 
     /**
@@ -90,6 +134,7 @@ public final class ParadisuVelocity implements ParadisuPlugin {
      * 
      * @return the logger for this plugin
      */
+    @Override
     public VelocityLogger logger() {
         return this.logger;
     }
@@ -99,6 +144,7 @@ public final class ParadisuVelocity implements ParadisuPlugin {
      * 
      * @return the data directory for this plugin
      */
+    @Override
     public Path dataDirectory() {
         return this.dataDirectory;
     }
@@ -108,6 +154,7 @@ public final class ParadisuVelocity implements ParadisuPlugin {
      * 
      * @return the Velocity Command Manager for this plugin
      */
+    @Override
     public CommandManager<CommandSource> commandManager() {
         return this.commandManager;
     }
@@ -117,6 +164,7 @@ public final class ParadisuVelocity implements ParadisuPlugin {
      * 
      * @return the config manager for this plugin
      */
+    @Override
     public VelocityConfigManager configManager() {
         return this.configManager;
     }
@@ -139,6 +187,7 @@ public final class ParadisuVelocity implements ParadisuPlugin {
      * 
      * @return the translation manager for this plugin
      */
+    @Override
     public TranslationManager translationManager() {
         return this.translationManager;
     }
@@ -158,6 +207,7 @@ public final class ParadisuVelocity implements ParadisuPlugin {
      * 
      * @return the Velocity Connector Plugin instance
      */
+    @Override
     public VelocityConnectorPlugin connector() {
         return this.connector;
     }
@@ -172,8 +222,19 @@ public final class ParadisuVelocity implements ParadisuPlugin {
     }
 
     /**
+     * Returns the database session for this plugin.
+     * 
+     * @return the database session for this plugin
+     */
+    @Override
+    public DatabaseSession databaseSession() {
+        return this.databaseSession;
+    }
+
+    /**
      * Reloads the plugin.
      */
+    @Override
     public void reload() {
         this.configManager.loadConfigs();
         this.translationManager.reload();

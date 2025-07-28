@@ -1,0 +1,66 @@
+package net.paradisu.database.models.playerdata;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.Accessors;
+
+import java.time.Instant;
+import java.util.UUID;
+
+@Accessors(fluent = true)
+@Getter
+@Entity
+@Builder(toBuilder = true)
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "PLAYER_INVENTORIES")
+public class PlayerInventoryModel {
+    @Id
+    @GeneratedValue
+    @Column(name = "id", nullable = false)
+    private UUID id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_player", nullable = false)
+    @Setter
+    private PlayerModel player;
+
+    @Setter
+    @Column(name = "inventory")
+    private byte[] inventory;
+
+    @Setter
+    @Column(name = "armor")
+    private byte[] armor;
+
+    @Setter
+    @Column(name = "ender_chest")
+    private byte[] enderChest;
+
+    @Setter
+    @Column(name = "off_hand")
+    private byte[] offHand;
+
+    @Setter
+    @Column(name = "held_slot")
+    private int heldSlot;
+
+    @Setter
+    @Column(name = "context")
+    private String context;
+
+    @Setter
+    @Column(name = "created", columnDefinition = "TIMESTAMP", nullable = false)
+    private Instant created;
+}

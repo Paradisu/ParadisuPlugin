@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <property name="blob_type" value="bytea" dbms="postgresql" />
+    <property name="blob_type" value="blob" dbms="h2,mysql,mariadb,mssql" />
+    <property name="timestamp_type" value="timestamp with time zone" dbms="postgresql" />
+    <property name="timestamp_type" value="timestamp" dbms="h2,mysql,mariadb,mssql" />
+
+    <include file="db/changelog/001.xml" />
+</databaseChangeLog> 

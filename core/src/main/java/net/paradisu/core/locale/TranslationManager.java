@@ -5,7 +5,7 @@ import net.paradisu.core.ParadisuPlugin;
 import net.paradisu.core.utils.FileUtils;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.translation.GlobalTranslator;
-import net.kyori.adventure.translation.TranslationRegistry;
+import net.kyori.adventure.translation.TranslationStore;
 import net.kyori.adventure.translation.Translator;
 
 import java.io.BufferedReader;
@@ -27,7 +27,7 @@ public final class TranslationManager {
     private final ParadisuPlugin paradisu;
     private final Set<Locale> installed = ConcurrentHashMap.newKeySet();
     private final Path translationsDirectory;
-    private TranslationRegistry registry;
+    private TranslationStore.StringBased<MessageFormat> registry;
 
     public TranslationManager(ParadisuPlugin paradisu) {
         this.paradisu = paradisu;
@@ -59,7 +59,7 @@ public final class TranslationManager {
         }
 
         // create a translation registry
-        this.registry = TranslationRegistry.create(Key.key("paradisu", "main"));
+        this.registry = TranslationStore.messageFormat(Key.key("paradisu", "main"));
         this.registry.defaultLocale(DEFAULT_LOCALE);
 
         // load custom translations first, then the base (built-in) translations after.

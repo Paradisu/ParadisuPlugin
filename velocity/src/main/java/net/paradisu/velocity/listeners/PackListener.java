@@ -1,4 +1,4 @@
-package net.paradisu.velocity.pack;
+package net.paradisu.velocity.listeners;
 
 import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;

@@ -9,7 +9,7 @@ plugins {
 val libs = the<LibrariesForLibs>()
 
 repositories {
-    mavenLocal()
+    // mavenLocal()
     maven("https://repo.maven.apache.org/maven2/")
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/") {
         mavenContent { snapshotsOnly() }

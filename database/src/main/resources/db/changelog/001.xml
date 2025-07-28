@@ -1,0 +1,106 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="1" author="paradisu">
+        <createTable tableName="PLAYERS">
+            <column name="uuid" type="UUID">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="display_name" type="VARCHAR(255)" />
+            <column name="online" type="BOOLEAN" />
+            <column name="first_joined" type="TIMESTAMP" />
+            <column name="last_joined" type="TIMESTAMP" />
+            <column name="last_seen" type="TIMESTAMP" />
+            <column name="last_server" type="VARCHAR(255)" />
+            <column name="playtime" type="BIGINT" />
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2" author="paradisu">
+        <createTable tableName="PLAYER_SERVER_SESSIONS">
+            <column name="id" type="UUID" autoIncrement="false">
+                <constraints primaryKey="true" nullable="false" unique="true" />
+            </column>
+            <column name="id_player" type="UUID">
+                <constraints nullable="false" foreignKeyName="fk_server_sessions_player"
+                    references="PLAYERS(uuid)" />
+            </column>
+            <column name="server" type="VARCHAR(255)" />
+            <column name="joined" type="TIMESTAMP" />
+            <column name="left" type="TIMESTAMP" />
+        </createTable>
+    </changeSet>
+
+    
+
+    <changeSet id="3" author="paradisu">
+        <createTable tableName="PLAYER_PROXY_SESSIONS">
+            <column name="id" type="UUID" autoIncrement="false">
+                <constraints primaryKey="true" nullable="false" unique="true" />
+            </column>
+            <column name="id_player" type="UUID">
+                <constraints nullable="false" foreignKeyName="fk_proxy_sessions_player"
+                    references="PLAYERS(uuid)" />
+            </column>
+            <column name="joined" type="TIMESTAMP" />
+            <column name="left" type="TIMESTAMP" />
+        </createTable>
+    </changeSet>
+
+    <changeSet id="4" author="paradisu">
+        <createTable tableName="PLAYER_INVENTORIES">
+            <column name="id" type="UUID" autoIncrement="false">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="id_player" type="UUID">
+                <constraints nullable="false" foreignKeyName="fk_inventories_player"
+                    references="PLAYERS(uuid)" />
+            </column>
+            <column name="inventory" type="BLOB" />
+            <column name="armor" type="BLOB" />
+            <column name="ender_chest" type="BLOB" />
+            <column name="off_hand" type="BLOB" />
+            <column name="held_slot" type="INT" />
+            <column name="context" type="VARCHAR(255)" />
+            <column name="created" type="TIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="5" author="paradisu">
+        <createTable tableName="WARPS">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="context" type="VARCHAR(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="x" type="FLOAT">
+                <constraints nullable="false" />
+            </column>
+            <column name="y" type="FLOAT">
+                <constraints nullable="false" />
+            </column>
+            <column name="z" type="FLOAT">
+                <constraints nullable="false" />
+            </column>
+            <column name="yaw" type="FLOAT">
+                <constraints nullable="false" />
+            </column>
+            <column name="pitch" type="FLOAT">
+                <constraints nullable="false" />
+            </column>
+            <column name="permission" type="VARCHAR(255)" />
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

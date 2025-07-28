@@ -8,6 +8,7 @@ dependencies {
     implementation(libs.dotenv.kotlin)
     implementation(libs.bundles.cloud.paper)
     implementation(libs.bundles.adventure.bukkit)
+    implementation(libs.bundles.database)
     implementation(libs.configurate.yaml)
     implementation(libs.inventorygui)
     compileOnly(libs.paper.api)

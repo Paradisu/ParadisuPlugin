@@ -4,5 +4,5 @@ plugins {
 }
 
 dependencies {
-    compileOnly(libs.bundles.database)
+    implementation(libs.bundles.database)
 }
