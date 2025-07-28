@@ -16,11 +16,11 @@ jobs:
       uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       with:
         submodules: recursive
-    - name: Set up JDK 17
+    - name: Set up JDK 21
       # See https://github.com/actions/setup-java/releases
       uses: actions/setup-java@99b8673ff64fbf99d8d325f52d9a5bdedb8483e9
       with:
-        java-version: 17
+        java-version: 21
         distribution: temurin
     - name: Setup Gradle
       # See https://github.com/gradle/actions/releases
