@@ -3,35 +3,13 @@ package net.paradisu.velocity.listeners;
 import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ListenerBoundEvent;
-import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
 import com.velocitypowered.api.network.ListenerType;
-import com.velocitypowered.api.proxy.Player;
 import lombok.RequiredArgsConstructor;
 import net.paradisu.velocity.ParadisuVelocity;
-
-import java.net.InetSocketAddress;
 
 @RequiredArgsConstructor
 public class LimboListener {
     private final ParadisuVelocity paradisu;
-    
-    /**
-     * Transfers all players to the limbo server when the proxy shuts down.
-     *
-     * @param event The ProxyShutdownEvent
-     */
-    @Subscribe(order = PostOrder.LAST)
-    public void onProxyShutdown(ProxyShutdownEvent event) {
-        final InetSocketAddress limboAddress = new InetSocketAddress(
-            paradisu.paradisuConfig().limboServer().host(),
-            paradisu.paradisuConfig().limboServer().port()
-        );
-
-        for (Player player : paradisu.server().getAllPlayers()) {
-            player.transferToHost(limboAddress);
-        }
-
-    }
 
     /**
      * Runs a command to transfer all players from the limbo server when the Minecraft listener is bound.

@@ -233,6 +233,7 @@ public final class MessagesConfig {
         public static final class Vparadisu {
             private About about = new About();
             private Reload reload = new Reload();
+            private Maintenance maintenance = new Maintenance();
             @Setting("help-msg") private String helpMsg = "<lang:paradisu.command.help.vparadisu>";
 
             @Getter 
@@ -248,6 +249,14 @@ public final class MessagesConfig {
                 @Setting("help-msg") private String helpMsg = "<lang:paradisu.command.help.vparadisu.reload>";
                 @Setting("output") private List<String> output = List.of(
                     "<lang:paradisu.command.output.vparadisu.reload>");
+            }
+
+            @Getter
+            @ConfigSerializable
+            public static final class Maintenance {
+                @Setting("help-msg") private String helpMsg = "<lang:paradisu.command.help.vparadisu.maintenance>";
+                @Setting("output") private List<String> output = List.of(
+                    "<lang:paradisu.command.output.vparadisu.maintenance>");
             }
         }
     }
