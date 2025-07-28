@@ -5,6 +5,7 @@ import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ListenerBoundEvent;
 import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
 import com.velocitypowered.api.network.ListenerType;
+import com.velocitypowered.api.proxy.Player;
 import lombok.RequiredArgsConstructor;
 import net.paradisu.velocity.ParadisuVelocity;
 
@@ -25,9 +26,11 @@ public class LimboListener {
             paradisu.paradisuConfig().limboServer().host(),
             paradisu.paradisuConfig().limboServer().port()
         );
-        paradisu.server().getAllPlayers().forEach(player -> {
+
+        for (Player player : paradisu.server().getAllPlayers()) {
             player.transferToHost(limboAddress);
-        });
+        }
+
     }
 
     /**

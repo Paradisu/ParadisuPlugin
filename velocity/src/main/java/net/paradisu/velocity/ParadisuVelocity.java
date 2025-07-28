@@ -126,7 +126,7 @@ public final class ParadisuVelocity implements ParadisuPlugin {
         // Register listeners
         this.server().getEventManager().register(this, new PackListener(this, this.packManager()));
         this.server().getEventManager().register(this, new LimboListener(this));
-        this.server().getEventManager().register(this, new ConnectionListener(this));
+        // this.server().getEventManager().register(this, new ConnectionListener(this));
     }
 
     /**

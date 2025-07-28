@@ -63,8 +63,8 @@ public class ParadisuPaper extends JavaPlugin implements ParadisuPlugin {
                     this.paradisuConfig().database().username(),
                     this.paradisuConfig().database().password());
 
-            this.getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
-            this.getServer().getPluginManager().registerEvents(new PlayerQuitListener(this), this);
+            // this.getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
+            // this.getServer().getPluginManager().registerEvents(new PlayerQuitListener(this), this);
         } catch (Exception e) {
             this.logger.error("Failed to enable ParadisuPlugin", e);
         }
