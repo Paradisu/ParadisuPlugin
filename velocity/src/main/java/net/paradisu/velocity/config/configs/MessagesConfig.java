@@ -1,3 +1,20 @@
+/*
+ * The official plugin for the Paradisu server. Copyright (C) 2025 Paradisu. https://paradisu.net
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package net.paradisu.velocity.config.configs;
 
 import lombok.Getter;
@@ -12,28 +29,36 @@ import java.util.List;
 @Getter
 @ConfigSerializable
 public final class MessagesConfig {
-    @Setting("message-prefix") private String messagePrefix = "<lang:paradisu.general.prefix>";
+    @Setting("message-prefix")
+    private String messagePrefix = "<lang:paradisu.general.prefix>";
+
     private Utility utility = new Utility();
     private Commands commands = new Commands();
 
     @Getter
     @ConfigSerializable
     public static final class Utility {
-        @Setting("message-divider") private String messageDivider = "<lang:paradisu.general.line> | <lang:paradisu.general.line>";
-        @Setting("message-prefix") private String messagePrefix = "<lang:paradisu.general.prefix>";
-        @Comment("Prefixes to be displayed when /list is run. The prefix of the highest rank should be used first. Players must have the meta for the prefix to be displayed. The first entry corresponds to a meta value of meta.playerlist-index.0")
-        @Setting("list-prefixes") private List<String> listPrefixes = List.of(
-            "<#43b6c8><lang:paradisu.ranks.owner><lang:paradisu.general.arrow> ",
-            "<#f8991d><lang:paradisu.ranks.dev><lang:paradisu.general.arrow> ",
-            "<#f36c36><lang:paradisu.ranks.builder><lang:paradisu.general.arrow> ",
-            "<#fd6868><lang:paradisu.ranks.animator><lang:paradisu.general.arrow> ",
-            "<#eab134><lang:paradisu.ranks.audio_engineer><lang:paradisu.general.arrow> ",
-            "<#9800a6><lang:paradisu.ranks.graphic_designer><lang:paradisu.general.arrow> ",
-            "<#08a699><lang:paradisu.ranks.modeler><lang:paradisu.general.arrow> ",
-            "<#00d455><lang:paradisu.ranks.moderator><lang:paradisu.general.arrow> ",
-            "<#4899e0><lang:paradisu.ranks.texture_artist><lang:paradisu.general.arrow> ",
-            "<#f89ede><lang:paradisu.ranks.supporter><lang:paradisu.general.arrow> ",
-            "<#d1e3ff><lang:paradisu.ranks.visitor><lang:paradisu.general.arrow> ");
+        @Setting("message-divider")
+        private String messageDivider = "<lang:paradisu.general.line> | <lang:paradisu.general.line>";
+
+        @Setting("message-prefix")
+        private String messagePrefix = "<lang:paradisu.general.prefix>";
+
+        @Comment(
+                "Prefixes to be displayed when /list is run. The prefix of the highest rank should be used first. Players must have the meta for the prefix to be displayed. The first entry corresponds to a meta value of meta.playerlist-index.0")
+        @Setting("list-prefixes")
+        private List<String> listPrefixes = List.of(
+                "<#43b6c8><lang:paradisu.ranks.owner><lang:paradisu.general.arrow> ",
+                "<#f8991d><lang:paradisu.ranks.dev><lang:paradisu.general.arrow> ",
+                "<#f36c36><lang:paradisu.ranks.builder><lang:paradisu.general.arrow> ",
+                "<#fd6868><lang:paradisu.ranks.animator><lang:paradisu.general.arrow> ",
+                "<#eab134><lang:paradisu.ranks.audio_engineer><lang:paradisu.general.arrow> ",
+                "<#9800a6><lang:paradisu.ranks.graphic_designer><lang:paradisu.general.arrow> ",
+                "<#08a699><lang:paradisu.ranks.modeler><lang:paradisu.general.arrow> ",
+                "<#00d455><lang:paradisu.ranks.moderator><lang:paradisu.general.arrow> ",
+                "<#4899e0><lang:paradisu.ranks.texture_artist><lang:paradisu.general.arrow> ",
+                "<#f89ede><lang:paradisu.ranks.supporter><lang:paradisu.general.arrow> ",
+                "<#d1e3ff><lang:paradisu.ranks.visitor><lang:paradisu.general.arrow> ");
 
         public String listPrefixes(int index) {
             int size = this.listPrefixes.size();
@@ -41,7 +66,7 @@ public final class MessagesConfig {
         }
     }
 
-    @Getter 
+    @Getter
     @ConfigSerializable
     public static final class Commands {
         private Locate locate = new Locate();
@@ -58,35 +83,46 @@ public final class MessagesConfig {
         private Tprh tprh = new Tprh();
         private Vparadisu vparadisu = new Vparadisu();
 
-        @Getter 
+        @Getter
         @ConfigSerializable
         public static final class Back {
-            @Setting("help-msg") private String helpMsg = "<lang:paradisu.command.help.back>";
-            @Setting("help-args") private List<String> helpArgs = List.of(
-                "<lang:paradisu.command.help.back.0>");
-            @Setting("output") private List<String> output = List.of(
-                "<lang:paradisu.command.output.back.0:'<gold><player>'>",
-                "<lang:paradisu.command.output.back.1:'<gold><player>'>");
+            @Setting("help-msg")
+            private String helpMsg = "<lang:paradisu.command.help.back>";
+
+            @Setting("help-args")
+            private List<String> helpArgs = List.of("<lang:paradisu.command.help.back.0>");
+
+            @Setting("output")
+            private List<String> output = List.of(
+                    "<lang:paradisu.command.output.back.0:'<gold><player>'>",
+                    "<lang:paradisu.command.output.back.1:'<gold><player>'>");
         }
 
-        @Getter 
+        @Getter
         @ConfigSerializable
         public static final class Locate {
-            @Setting("help-msg") private String helpMsg = "<lang:paradisu.command.help.locate>";
-            @Setting("help-args") private List<String> helpArgs = List.of(
-                "<lang:paradisu.command.help.locate.0>");
-            @Setting("output") private List<String> output = List.of(
-                "<lang:paradisu.command.output.locate:'<gold><player>':'<gold><server>':'<gold><posx>':'<gold><posy>':'<gold><posz>'>");
+            @Setting("help-msg")
+            private String helpMsg = "<lang:paradisu.command.help.locate>";
+
+            @Setting("help-args")
+            private List<String> helpArgs = List.of("<lang:paradisu.command.help.locate.0>");
+
+            @Setting("output")
+            private List<String> output = List.of(
+                    "<lang:paradisu.command.output.locate:'<gold><player>':'<gold><server>':'<gold><posx>':'<gold><posy>':'<gold><posz>'>");
         }
 
-        @Getter 
+        @Getter
         @ConfigSerializable
         public static final class Ls {
-            @Setting("help-msg") private String helpMsg = "<lang:paradisu.command.help.ls>";
-            @Setting("output") private List<String> output = List.of(
-                "<lang:paradisu.command.output.ls.0><br>",
-                "<lang:paradisu.command.output.ls.1><br>",
-                "<lang:paradisu.command.output.ls.2:'<gold><count>'><br>");
+            @Setting("help-msg")
+            private String helpMsg = "<lang:paradisu.command.help.ls>";
+
+            @Setting("output")
+            private List<String> output = List.of(
+                    "<lang:paradisu.command.output.ls.0><br>",
+                    "<lang:paradisu.command.output.ls.1><br>",
+                    "<lang:paradisu.command.output.ls.2:'<gold><count>'><br>");
         }
 
         @Getter
@@ -95,168 +131,221 @@ public final class MessagesConfig {
             private Clear clear = new Clear();
             private Reload reload = new Reload();
             private Resend resend = new Resend();
-            @Setting("help-msg") private String helpMsg = "<lang:paradisu.command.help.packs>";
-            
+
+            @Setting("help-msg")
+            private String helpMsg = "<lang:paradisu.command.help.packs>";
+
             @Getter
             @ConfigSerializable
             public static final class Clear {
-                @Setting("help-msg") private String helpMsg = "<lang:paradisu.command.help.packs.clear>";
-                @Setting("help-args") private List<String> helpArgs = List.of(
-                    "<lang:paradisu.command.help.packs.clear.0>");
-                @Setting("output") private List<String> output = List.of(
-                    "<lang:paradisu.command.output.packs.clear:'<gold><player>'>");
+                @Setting("help-msg")
+                private String helpMsg = "<lang:paradisu.command.help.packs.clear>";
+
+                @Setting("help-args")
+                private List<String> helpArgs = List.of("<lang:paradisu.command.help.packs.clear.0>");
+
+                @Setting("output")
+                private List<String> output = List.of("<lang:paradisu.command.output.packs.clear:'<gold><player>'>");
             }
 
-            @Getter 
+            @Getter
             @ConfigSerializable
             public static final class Reload {
-                @Setting("help-msg") private String helpMsg = "<lang:paradisu.command.help.packs.reload>";
-                @Setting("help-args") private List<String> helpArgs = List.of(
-                    "<lang:paradisu.command.help.packs.reload.0>");
-                @Setting("output") private List<String> output = List.of(
-                    "<lang:paradisu.command.output.packs.reload.0>",
-                    "<lang:paradisu.command.output.packs.reload.1>");
+                @Setting("help-msg")
+                private String helpMsg = "<lang:paradisu.command.help.packs.reload>";
+
+                @Setting("help-args")
+                private List<String> helpArgs = List.of("<lang:paradisu.command.help.packs.reload.0>");
+
+                @Setting("output")
+                private List<String> output = List.of(
+                        "<lang:paradisu.command.output.packs.reload.0>",
+                        "<lang:paradisu.command.output.packs.reload.1>");
             }
 
             @Getter
             @ConfigSerializable
             public static final class Resend {
-                @Setting("help-msg") private String helpMsg = "<lang:paradisu.command.help.packs.resend>";
-                @Setting("help-args") private List<String> helpArgs = List.of(
-                    "<lang:paradisu.command.help.packs.resend.0>");
-                @Setting("output") private List<String> output = List.of(
-                    "<lang:paradisu.command.output.packs.resend:'<gold><player>'>");
+                @Setting("help-msg")
+                private String helpMsg = "<lang:paradisu.command.help.packs.resend>";
+
+                @Setting("help-args")
+                private List<String> helpArgs = List.of("<lang:paradisu.command.help.packs.resend.0>");
+
+                @Setting("output")
+                private List<String> output = List.of("<lang:paradisu.command.output.packs.resend:'<gold><player>'>");
             }
         }
 
-        @Getter 
+        @Getter
         @ConfigSerializable
         public static final class Tp {
-            @Setting("help-msg") private String helpMsg = "<lang:paradisu.command.help.tp>";
-            @Setting("help-args") private List<String> helpArgs = List.of(
-                "<lang:paradisu.command.help.tp.0>",
-                "<lang:paradisu.command.help.tp.1>");
-            @Setting("output") private List<String> output = List.of(
-                "<lang:paradisu.command.output.tp:'<gold><player>':'<gold><target>'>");
+            @Setting("help-msg")
+            private String helpMsg = "<lang:paradisu.command.help.tp>";
+
+            @Setting("help-args")
+            private List<String> helpArgs =
+                    List.of("<lang:paradisu.command.help.tp.0>", "<lang:paradisu.command.help.tp.1>");
+
+            @Setting("output")
+            private List<String> output =
+                    List.of("<lang:paradisu.command.output.tp:'<gold><player>':'<gold><target>'>");
         }
 
-        @Getter 
+        @Getter
         @ConfigSerializable
         public static final class Tpa {
-            @Setting("help-msg") private String helpMsg = "<lang:paradisu.command.help.tpa>";
-            @Setting("help-args") private List<String> helpArgs = List.of(
-                "<lang:paradisu.command.help.tpa.0>");
-            @Setting("output") private List<String> output = List.of(
-                "<lang:paradisu.command.output.tpa.0:'<gold><player>'>",
-                "<lang:paradisu.command.output.tpa.1:'<gold><player>'>",
-                "<lang:paradisu.command.output.tpa.2>",
-                "<lang:paradisu.command.output.tpa.3:'<gold><player>'>");
+            @Setting("help-msg")
+            private String helpMsg = "<lang:paradisu.command.help.tpa>";
+
+            @Setting("help-args")
+            private List<String> helpArgs = List.of("<lang:paradisu.command.help.tpa.0>");
+
+            @Setting("output")
+            private List<String> output = List.of(
+                    "<lang:paradisu.command.output.tpa.0:'<gold><player>'>",
+                    "<lang:paradisu.command.output.tpa.1:'<gold><player>'>",
+                    "<lang:paradisu.command.output.tpa.2>",
+                    "<lang:paradisu.command.output.tpa.3:'<gold><player>'>");
         }
 
-        @Getter 
+        @Getter
         @ConfigSerializable
         public static final class Tpc {
-            @Setting("help-msg") private String helpMsg = "<lang:paradisu.command.help.tpc>";
-            @Setting("help-args") private List<String> helpArgs = List.of(
-                "<lang:paradisu.command.help.tpc.0>");
-            @Setting("output") private List<String> output = List.of(
-                "<lang:paradisu.command.output.tpc.0:'<gold><player>'>",
-                "<lang:paradisu.command.output.tpc.1:'<gold><player>'>",
-                "<lang:paradisu.command.output.tpc.2>",
-                "<lang:paradisu.command.output.tpc.3:'<gold><player>'>");
+            @Setting("help-msg")
+            private String helpMsg = "<lang:paradisu.command.help.tpc>";
+
+            @Setting("help-args")
+            private List<String> helpArgs = List.of("<lang:paradisu.command.help.tpc.0>");
+
+            @Setting("output")
+            private List<String> output = List.of(
+                    "<lang:paradisu.command.output.tpc.0:'<gold><player>'>",
+                    "<lang:paradisu.command.output.tpc.1:'<gold><player>'>",
+                    "<lang:paradisu.command.output.tpc.2>",
+                    "<lang:paradisu.command.output.tpc.3:'<gold><player>'>");
         }
 
         @Getter
         @ConfigSerializable
         public static final class Tpd {
-            @Setting("help-msg") private String helpMsg = "<lang:paradisu.command.help.tpd>";
-            @Setting("help-args") private List<String> helpArgs = List.of(
-                "<lang:paradisu.command.help.tpd.0>");
-            @Setting("output") private List<String> output = List.of(
-                "<lang:paradisu.command.output.tpd.0:'<gold><player>'>",
-                "<lang:paradisu.command.output.tpd.1:'<gold><player>'>",
-                "<lang:paradisu.command.output.tpd.2>",
-                "<lang:paradisu.command.output.tpc.3:'<gold><player>'>");
+            @Setting("help-msg")
+            private String helpMsg = "<lang:paradisu.command.help.tpd>";
+
+            @Setting("help-args")
+            private List<String> helpArgs = List.of("<lang:paradisu.command.help.tpd.0>");
+
+            @Setting("output")
+            private List<String> output = List.of(
+                    "<lang:paradisu.command.output.tpd.0:'<gold><player>'>",
+                    "<lang:paradisu.command.output.tpd.1:'<gold><player>'>",
+                    "<lang:paradisu.command.output.tpd.2>",
+                    "<lang:paradisu.command.output.tpc.3:'<gold><player>'>");
         }
 
-        @Getter 
+        @Getter
         @ConfigSerializable
         public static final class Tph {
-            @Setting("help-msg") private String helpMsg = "<lang:paradisu.command.help.tph>";
-            @Setting("help-args") private List<String> helpArgs = List.of(
-                "<lang:paradisu.command.help.tph.0>");
-            @Setting("output") private List<String> output = List.of(
-                "<lang:paradisu.command.output.tph:'<gold><player>'>");
+            @Setting("help-msg")
+            private String helpMsg = "<lang:paradisu.command.help.tph>";
+
+            @Setting("help-args")
+            private List<String> helpArgs = List.of("<lang:paradisu.command.help.tph.0>");
+
+            @Setting("output")
+            private List<String> output = List.of("<lang:paradisu.command.output.tph:'<gold><player>'>");
         }
 
-        @Getter 
+        @Getter
         @ConfigSerializable
         public static final class Tppos {
-            @Setting("help-msg") private String helpMsg = "<lang:paradisu.command.help.tppos>";
-            @Setting("help-args") private List<String> helpArgs = List.of(
-                "<lang:paradisu.command.help.tppos.0>",
-                "<lang:paradisu.command.help.tppos.1>",
-                "<lang:paradisu.command.help.tppos.2>",
-                "<lang:paradisu.command.help.tppos.3>",
-                "<lang:paradisu.command.help.tppos.4>");
-            @Setting("output") private List<String> output = List.of(
-                "<lang:paradisu.command.output.tppos:'<gold><player>':'<gold><posx>':'<gold><posy>':'<gold><posz>':'<gold><server>'>"
-                );
+            @Setting("help-msg")
+            private String helpMsg = "<lang:paradisu.command.help.tppos>";
+
+            @Setting("help-args")
+            private List<String> helpArgs = List.of(
+                    "<lang:paradisu.command.help.tppos.0>",
+                    "<lang:paradisu.command.help.tppos.1>",
+                    "<lang:paradisu.command.help.tppos.2>",
+                    "<lang:paradisu.command.help.tppos.3>",
+                    "<lang:paradisu.command.help.tppos.4>");
+
+            @Setting("output")
+            private List<String> output = List.of(
+                    "<lang:paradisu.command.output.tppos:'<gold><player>':'<gold><posx>':'<gold><posy>':'<gold><posz>':'<gold><server>'>");
         }
 
-        @Getter 
+        @Getter
         @ConfigSerializable
         public static final class Tpr {
-            @Setting("help-msg") private String helpMsg = "<lang:paradisu.command.help.tpr>";
-            @Setting("help-args") private List<String> helpArgs = List.of(
-                "<lang:paradisu.command.help.tpr.0>");
-            @Setting("output") private List<String> output = List.of(
-                "<lang:paradisu.command.output.tpr.0:'<gold><player>'><br><lang:paradisu.command.output.tpr.1:\"<gold><command>\">",
-                "<lang:paradisu.command.output.tpr.2:'<gold><player>'>",
-                "<lang:paradisu.command.output.tpr.3:'<gold><player>'>");
+            @Setting("help-msg")
+            private String helpMsg = "<lang:paradisu.command.help.tpr>";
+
+            @Setting("help-args")
+            private List<String> helpArgs = List.of("<lang:paradisu.command.help.tpr.0>");
+
+            @Setting("output")
+            private List<String> output = List.of(
+                    "<lang:paradisu.command.output.tpr.0:'<gold><player>'><br><lang:paradisu.command.output.tpr.1:\"<gold><command>\">",
+                    "<lang:paradisu.command.output.tpr.2:'<gold><player>'>",
+                    "<lang:paradisu.command.output.tpr.3:'<gold><player>'>");
         }
 
-        @Getter 
+        @Getter
         @ConfigSerializable
         public static final class Tprh {
-            @Setting("help-msg") private String helpMsg = "<lang:paradisu.command.help.tprh>";
-            @Setting("help-args") private List<String> helpArgs = List.of(
-                "<lang:paradisu.command.help.tprh.0>");
-            @Setting("output") private List<String> output = List.of(
-                "<lang:paradisu.command.output.tprh.0:'<gold><player>'><br><lang:paradisu.command.output.tprh.1:\"<gold><command>\">",
-                "<lang:paradisu.command.output.tprh.2:'<gold><player>'>",
-                "<lang:paradisu.command.output.tprh.3:'<gold><player>'>");
+            @Setting("help-msg")
+            private String helpMsg = "<lang:paradisu.command.help.tprh>";
+
+            @Setting("help-args")
+            private List<String> helpArgs = List.of("<lang:paradisu.command.help.tprh.0>");
+
+            @Setting("output")
+            private List<String> output = List.of(
+                    "<lang:paradisu.command.output.tprh.0:'<gold><player>'><br><lang:paradisu.command.output.tprh.1:\"<gold><command>\">",
+                    "<lang:paradisu.command.output.tprh.2:'<gold><player>'>",
+                    "<lang:paradisu.command.output.tprh.3:'<gold><player>'>");
         }
 
-        @Getter 
+        @Getter
         @ConfigSerializable
         public static final class Vparadisu {
             private About about = new About();
             private Reload reload = new Reload();
             private Maintenance maintenance = new Maintenance();
-            @Setting("help-msg") private String helpMsg = "<lang:paradisu.command.help.vparadisu>";
 
-            @Getter 
+            @Setting("help-msg")
+            private String helpMsg = "<lang:paradisu.command.help.vparadisu>";
+
+            @Getter
             @ConfigSerializable
             public static final class About {
-                @Setting("help-msg") private String helpMsg = "<lang:paradisu.command.help.vparadisu.about>";
-                @Setting("output") private List<String> output = List.of(
-                    "<lang:paradisu.command.output.vparadisu.about:'<gold><lang:paradisu.general.version>'>");
+                @Setting("help-msg")
+                private String helpMsg = "<lang:paradisu.command.help.vparadisu.about>";
+
+                @Setting("output")
+                private List<String> output = List.of(
+                        "<lang:paradisu.command.output.vparadisu.about:'<gold><lang:paradisu.general.version>'>");
             }
-            @Getter 
+
+            @Getter
             @ConfigSerializable
             public static final class Reload {
-                @Setting("help-msg") private String helpMsg = "<lang:paradisu.command.help.vparadisu.reload>";
-                @Setting("output") private List<String> output = List.of(
-                    "<lang:paradisu.command.output.vparadisu.reload>");
+                @Setting("help-msg")
+                private String helpMsg = "<lang:paradisu.command.help.vparadisu.reload>";
+
+                @Setting("output")
+                private List<String> output = List.of("<lang:paradisu.command.output.vparadisu.reload>");
             }
 
             @Getter
             @ConfigSerializable
             public static final class Maintenance {
-                @Setting("help-msg") private String helpMsg = "<lang:paradisu.command.help.vparadisu.maintenance>";
-                @Setting("output") private List<String> output = List.of(
-                    "<lang:paradisu.command.output.vparadisu.maintenance>");
+                @Setting("help-msg")
+                private String helpMsg = "<lang:paradisu.command.help.vparadisu.maintenance>";
+
+                @Setting("output")
+                private List<String> output = List.of("<lang:paradisu.command.output.vparadisu.maintenance>");
             }
         }
     }

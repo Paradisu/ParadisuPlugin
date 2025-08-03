@@ -1,10 +1,22 @@
+/*
+ * The official plugin for the Paradisu server. Copyright (C) 2025 Paradisu. https://paradisu.net
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package net.paradisu.velocity;
 
-import org.hibernate.Session;
-import org.incendo.cloud.CommandManager;
-import org.incendo.cloud.SenderMapper;
-import org.incendo.cloud.execution.ExecutionCoordinator;
-import org.incendo.cloud.velocity.VelocityCommandManager;
 import com.google.inject.Inject;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.event.Subscribe;
@@ -35,13 +47,24 @@ import net.paradisu.velocity.listeners.ConnectionListener;
 import net.paradisu.velocity.listeners.LimboListener;
 import net.paradisu.velocity.listeners.PackListener;
 import net.paradisu.velocity.util.VelocityLogger;
+import org.hibernate.Session;
+import org.incendo.cloud.CommandManager;
+import org.incendo.cloud.SenderMapper;
+import org.incendo.cloud.execution.ExecutionCoordinator;
+import org.incendo.cloud.velocity.VelocityCommandManager;
 import org.slf4j.Logger;
 
 import java.nio.file.Path;
 import java.util.Optional;
 
-@Plugin(id = Constants.Plugin.ID, name = Constants.Plugin.NAME, version = Constants.Plugin.VERSION, description = Constants.Plugin.DESCRIPTION, authors = {
-        Constants.Plugin.AUTHORS }, url = Constants.Plugin.URL, dependencies = @Dependency(id = "connectorplugin"))
+@Plugin(
+        id = Constants.Plugin.ID,
+        name = Constants.Plugin.NAME,
+        version = Constants.Plugin.VERSION,
+        description = Constants.Plugin.DESCRIPTION,
+        authors = {Constants.Plugin.AUTHORS},
+        url = Constants.Plugin.URL,
+        dependencies = @Dependency(id = "connectorplugin"))
 public final class ParadisuVelocity implements ParadisuPlugin {
     private final ProxyServer server;
     private final VelocityLogger logger;
@@ -52,7 +75,6 @@ public final class ParadisuVelocity implements ParadisuPlugin {
     private VelocityConnectorPlugin connector;
     private PackManager packManager;
     private DatabaseSession databaseSession;
-
 
     @Inject
     public ParadisuVelocity(ProxyServer server, Logger logger, @DataDirectory Path dataDirectory) {
@@ -80,15 +102,14 @@ public final class ParadisuVelocity implements ParadisuPlugin {
 
                 // Unwrap the EntityManager to get the Hibernate Session
                 em.unwrap(Session.class).doWork(connection -> {
-                    ClassLoader previousContextClassLoader = Thread.currentThread().getContextClassLoader();
+                    ClassLoader previousContextClassLoader =
+                            Thread.currentThread().getContextClassLoader();
                     Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
-                    try (
-                        Liquibase liquibase = new Liquibase(
+                    try (Liquibase liquibase = new Liquibase(
                             "db/migrations.xml",
                             new ClassLoaderResourceAccessor(),
-                            DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection))
-                        )
-                    ) {
+                            DatabaseFactory.getInstance()
+                                    .findCorrectDatabaseImplementation(new JdbcConnection(connection)))) {
                         liquibase.update(new Contexts(), new LabelExpression());
                         this.logger.info("Database migrations applied successfully.");
                     } catch (LiquibaseException e) {
@@ -101,7 +122,8 @@ public final class ParadisuVelocity implements ParadisuPlugin {
                 this.logger.error("An error occurred during database migration.", e);
             }
         } else {
-            this.logger.error("Failed to open database session. The plugin will not function correctly without a valid database connection.");
+            this.logger.error(
+                    "Failed to open database session. The plugin will not function correctly without a valid database connection.");
         }
         // Initialize the pack manager
         this.packManager = new PackManager(this, this.paradisuConfig().resourcePackUrls());
@@ -120,7 +142,8 @@ public final class ParadisuVelocity implements ParadisuPlugin {
         // Initialize the connector plugin
         Optional<PluginContainer> connectorPlugin = server().getPluginManager().getPlugin("connectorplugin");
         if (connectorPlugin.isPresent()) {
-            this.connector = (VelocityConnectorPlugin) connectorPlugin.get().getInstance().get();
+            this.connector = (VelocityConnectorPlugin)
+                    connectorPlugin.get().getInstance().get();
         }
 
         // Register listeners
@@ -131,7 +154,7 @@ public final class ParadisuVelocity implements ParadisuPlugin {
 
     /**
      * Returns the logger for this plugin.
-     * 
+     *
      * @return the logger for this plugin
      */
     @Override
@@ -141,7 +164,7 @@ public final class ParadisuVelocity implements ParadisuPlugin {
 
     /**
      * Returns the data directory for this plugin.
-     * 
+     *
      * @return the data directory for this plugin
      */
     @Override
@@ -151,7 +174,7 @@ public final class ParadisuVelocity implements ParadisuPlugin {
 
     /**
      * Returns the Velocity Command Manager for this plugin.
-     * 
+     *
      * @return the Velocity Command Manager for this plugin
      */
     @Override
@@ -161,7 +184,7 @@ public final class ParadisuVelocity implements ParadisuPlugin {
 
     /**
      * Returns the config manager for this plugin.
-     * 
+     *
      * @return the config manager for this plugin
      */
     @Override
@@ -171,7 +194,7 @@ public final class ParadisuVelocity implements ParadisuPlugin {
 
     /**
      * Returns the messages config for this plugin.
-     * 
+     *
      * @return the messages config for this plugin
      */
     public MessagesConfig messagesConfig() {
@@ -184,7 +207,7 @@ public final class ParadisuVelocity implements ParadisuPlugin {
 
     /**
      * Returns the translation manager for this plugin.
-     * 
+     *
      * @return the translation manager for this plugin
      */
     @Override
@@ -194,7 +217,7 @@ public final class ParadisuVelocity implements ParadisuPlugin {
 
     /**
      * Returns the proxy server.
-     * 
+     *
      * @return the proxy server
      */
     public ProxyServer server() {
@@ -202,9 +225,8 @@ public final class ParadisuVelocity implements ParadisuPlugin {
     }
 
     /**
-     * Returns the Velocity Connector Plugin instance.
-     * See https://github.com/Phoenix616/ConnectorPlugin
-     * 
+     * Returns the Velocity Connector Plugin instance. See https://github.com/Phoenix616/ConnectorPlugin
+     *
      * @return the Velocity Connector Plugin instance
      */
     @Override
@@ -214,7 +236,7 @@ public final class ParadisuVelocity implements ParadisuPlugin {
 
     /**
      * Returns the Pack Manager for this plugin.
-     * 
+     *
      * @return the Pack Manager for this plugin
      */
     public PackManager packManager() {
@@ -223,7 +245,7 @@ public final class ParadisuVelocity implements ParadisuPlugin {
 
     /**
      * Returns the database session for this plugin.
-     * 
+     *
      * @return the database session for this plugin
      */
     @Override
@@ -231,9 +253,7 @@ public final class ParadisuVelocity implements ParadisuPlugin {
         return this.databaseSession;
     }
 
-    /**
-     * Reloads the plugin.
-     */
+    /** Reloads the plugin. */
     @Override
     public void reload() {
         this.configManager.loadConfigs();

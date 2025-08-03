@@ -1,3 +1,20 @@
+/*
+ * The official plugin for the Paradisu server. Copyright (C) 2025 Paradisu. https://paradisu.net
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package net.paradisu.paper.sync;
 
 import jakarta.persistence.EntityManager;
@@ -13,75 +30,82 @@ import java.util.UUID;
 
 @RequiredArgsConstructor
 public class PlayerQuitSync implements Runnable {
-        private final ParadisuPaper paradisu;
-        private final UUID playerUUID;
-        private final byte[] inventoryBytes;
-        private final byte[] armorBytes;
-        private final byte[] offHandBytes;
-        private final byte[] enderChestBytes;
-        private final int heldSlot;
-        private final Instant calltime;
+    private final ParadisuPaper paradisu;
+    private final UUID playerUUID;
+    private final byte[] inventoryBytes;
+    private final byte[] armorBytes;
+    private final byte[] offHandBytes;
+    private final byte[] enderChestBytes;
+    private final int heldSlot;
+    private final Instant calltime;
 
-        public PlayerQuitSync(ParadisuPaper paradisu, Player player) {
-            this(paradisu,
-                    new UUID(player.getUniqueId().getMostSignificantBits(), player.getUniqueId().getLeastSignificantBits()),
-                    paradisu.safeItemSerializer().serializeItemsAsBytes(player.getInventory().getContents()),
-                    paradisu.safeItemSerializer().serializeItemsAsBytes(player.getInventory().getArmorContents()),
-                    paradisu.safeItemSerializer().serializeBytes(player.getInventory().getItemInOffHand()),
-                    paradisu.safeItemSerializer().serializeItemsAsBytes(player.getEnderChest().getContents()),
-                    player.getInventory().getHeldItemSlot(),
-                    Instant.now());
-        }
+    public PlayerQuitSync(ParadisuPaper paradisu, Player player) {
+        this(
+                paradisu,
+                new UUID(
+                        player.getUniqueId().getMostSignificantBits(),
+                        player.getUniqueId().getLeastSignificantBits()),
+                paradisu.safeItemSerializer()
+                        .serializeItemsAsBytes(player.getInventory().getContents()),
+                paradisu.safeItemSerializer()
+                        .serializeItemsAsBytes(player.getInventory().getArmorContents()),
+                paradisu.safeItemSerializer()
+                        .serializeBytes(player.getInventory().getItemInOffHand()),
+                paradisu.safeItemSerializer()
+                        .serializeItemsAsBytes(player.getEnderChest().getContents()),
+                player.getInventory().getHeldItemSlot(),
+                Instant.now());
+    }
 
-        /**
-         * Saves the player's inventory and updates their session data when they quit.
-         */
-        @Override
-        public void run() {
-            try (
-                EntityManager entityManager = paradisu.databaseSession().factory().createEntityManager();
-            ) {
-                entityManager.getTransaction().begin();
+    /** Saves the player's inventory and updates their session data when they quit. */
+    @Override
+    public void run() {
+        try (EntityManager entityManager = paradisu.databaseSession().factory().createEntityManager(); ) {
+            entityManager.getTransaction().begin();
 
-                PlayerModel playerModel = entityManager.find(PlayerModel.class, playerUUID);
-                if (playerModel == null) {
-                    return;
-                }
+            PlayerModel playerModel = entityManager.find(PlayerModel.class, playerUUID);
+            if (playerModel == null) {
+                return;
+            }
 
-                List<UUID> outdatedIds = entityManager.createQuery(
-                    "SELECT p.id FROM PlayerInventoryModel p WHERE p.player.uuid = :uuid AND p.context = :context ORDER BY p.created DESC",
-                    UUID.class)
+            List<UUID> outdatedIds = entityManager
+                    .createQuery(
+                            "SELECT p.id FROM PlayerInventoryModel p WHERE p.player.uuid = :uuid AND p.context = :context ORDER BY p.created DESC",
+                            UUID.class)
                     .setParameter("uuid", playerUUID)
                     .setParameter("context", paradisu.paradisuConfig().context().inventory())
                     .setFirstResult(16)
                     .getResultList();
 
-                if (!outdatedIds.isEmpty()) {
-                    entityManager.createQuery("DELETE FROM PlayerInventoryModel p WHERE p.id IN :ids")
+            if (!outdatedIds.isEmpty()) {
+                entityManager
+                        .createQuery("DELETE FROM PlayerInventoryModel p WHERE p.id IN :ids")
                         .setParameter("ids", outdatedIds)
                         .executeUpdate();
-                }
-    
-                PlayerInventoryModel playerInventoryModel = PlayerInventoryModel.builder()
-                        .player(playerModel)
-                        .inventory(inventoryBytes)
-                        .armor(armorBytes)
-                        .offHand(offHandBytes)
-                        .enderChest(enderChestBytes)
-                        .heldSlot(heldSlot)
-                        .created(calltime)
-                        .context(paradisu.paradisuConfig().context().inventory())
-                        .build();
-    
-                playerModel.inventories().add(playerInventoryModel);
-
-                entityManager.createQuery("UPDATE PlayerServerSessionModel p SET p.leftAt = :leftAt WHERE p.player.uuid = :uuid AND p.server = :server AND p.leftAt IS NULL")
-                        .setParameter("leftAt", calltime)
-                        .setParameter("uuid", playerUUID)
-                        .setParameter("server", paradisu.paradisuConfig().context().server())
-                        .executeUpdate();
-
-                entityManager.getTransaction().commit();
             }
+
+            PlayerInventoryModel playerInventoryModel = PlayerInventoryModel.builder()
+                    .player(playerModel)
+                    .inventory(inventoryBytes)
+                    .armor(armorBytes)
+                    .offHand(offHandBytes)
+                    .enderChest(enderChestBytes)
+                    .heldSlot(heldSlot)
+                    .created(calltime)
+                    .context(paradisu.paradisuConfig().context().inventory())
+                    .build();
+
+            playerModel.inventories().add(playerInventoryModel);
+
+            entityManager
+                    .createQuery(
+                            "UPDATE PlayerServerSessionModel p SET p.leftAt = :leftAt WHERE p.player.uuid = :uuid AND p.server = :server AND p.leftAt IS NULL")
+                    .setParameter("leftAt", calltime)
+                    .setParameter("uuid", playerUUID)
+                    .setParameter("server", paradisu.paradisuConfig().context().server())
+                    .executeUpdate();
+
+            entityManager.getTransaction().commit();
         }
+    }
 }

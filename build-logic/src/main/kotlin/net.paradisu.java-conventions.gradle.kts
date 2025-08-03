@@ -3,6 +3,7 @@ import org.gradle.accessors.dm.LibrariesForLibs
 plugins {
     `java-library`
     `maven-publish`
+    id("com.diffplug.spotless")
 }
 
 // https://github.com/gradle/gradle/issues/15383
@@ -37,6 +38,19 @@ java {
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(21))
     }
+}
+
+spotless {
+    java {
+        palantirJavaFormat("2.39.0").formatJavadoc(true)
+        importOrder("", "javax|java", "\\#")
+        removeUnusedImports()
+    }
+
+    format("license", {
+        licenseHeaderFile(rootProject.file("build-logic/src/main/resources/licenseHeaderFile"), "package ");
+        target("src/main/java/**/*.java")
+    })
 }
 
 publishing {

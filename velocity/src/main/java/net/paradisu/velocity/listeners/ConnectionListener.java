@@ -1,3 +1,20 @@
+/*
+ * The official plugin for the Paradisu server. Copyright (C) 2025 Paradisu. https://paradisu.net
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package net.paradisu.velocity.listeners;
 
 import com.velocitypowered.api.event.PostOrder;
@@ -25,12 +42,11 @@ public class ConnectionListener {
     @Subscribe(order = PostOrder.EARLY)
     public void onPlayerChooseInitialServer(PlayerChooseInitialServerEvent event) {
         final Instant calltime = Instant.now();
-        
-        try (
-            EntityManager entityManager = paradisu.databaseSession().factory().createEntityManager();
-        ) {
+
+        try (EntityManager entityManager = paradisu.databaseSession().factory().createEntityManager(); ) {
             entityManager.getTransaction().begin();
-            PlayerModel playerModel = entityManager.find(PlayerModel.class, event.getPlayer().getUniqueId());
+            PlayerModel playerModel =
+                    entityManager.find(PlayerModel.class, event.getPlayer().getUniqueId());
 
             if (playerModel == null) {
                 playerModel = PlayerModel.builder()
@@ -50,7 +66,7 @@ public class ConnectionListener {
                     .player(playerModel)
                     .joinedAt(calltime)
                     .build();
-            
+
             playerModel.proxySessions().add(sessionModel);
             entityManager.getTransaction().commit();
 
@@ -77,15 +93,16 @@ public class ConnectionListener {
      */
     @Subscribe(order = PostOrder.EARLY)
     public void onServerConnected(ServerConnectedEvent event) {
-        
-        try (
-            EntityManager entityManager = paradisu.databaseSession().factory().createEntityManager();
-        ) {
+
+        try (EntityManager entityManager = paradisu.databaseSession().factory().createEntityManager(); ) {
             entityManager.getTransaction().begin();
-            PlayerModel playerModel = entityManager.find(PlayerModel.class, event.getPlayer().getUniqueId());
+            PlayerModel playerModel =
+                    entityManager.find(PlayerModel.class, event.getPlayer().getUniqueId());
 
             if (playerModel == null) {
-                paradisu.logger().warn("Player model not found on server connect for UUID: " + event.getPlayer().getUniqueId());
+                paradisu.logger()
+                        .warn("Player model not found on server connect for UUID: "
+                                + event.getPlayer().getUniqueId());
                 return;
             }
 
@@ -103,25 +120,29 @@ public class ConnectionListener {
     public void onDisconnect(DisconnectEvent event) {
         final Instant calltime = Instant.now();
 
-        try (
-            EntityManager entityManager = paradisu.databaseSession().factory().createEntityManager();
-        ) {
+        try (EntityManager entityManager = paradisu.databaseSession().factory().createEntityManager(); ) {
             entityManager.getTransaction().begin();
-            PlayerModel playerModel = entityManager.find(PlayerModel.class, event.getPlayer().getUniqueId());
+            PlayerModel playerModel =
+                    entityManager.find(PlayerModel.class, event.getPlayer().getUniqueId());
 
             if (playerModel == null) {
-                paradisu.logger().warn("Player model not found on proxy disconnect for UUID: " + event.getPlayer().getUniqueId());
+                paradisu.logger()
+                        .warn("Player model not found on proxy disconnect for UUID: "
+                                + event.getPlayer().getUniqueId());
                 return;
             }
 
             playerModel.lastSeen(calltime);
 
-            entityManager.createQuery("UPDATE PlayerProxySessionModel p SET p.leftAt = :leftAt WHERE p.player.uuid = :uuid AND p.leftAt IS NULL")
-                .setParameter("leftAt", calltime)
-                .setParameter("uuid", event.getPlayer().getUniqueId())
-                .executeUpdate();
+            entityManager
+                    .createQuery(
+                            "UPDATE PlayerProxySessionModel p SET p.leftAt = :leftAt WHERE p.player.uuid = :uuid AND p.leftAt IS NULL")
+                    .setParameter("leftAt", calltime)
+                    .setParameter("uuid", event.getPlayer().getUniqueId())
+                    .executeUpdate();
 
-            playerModel.playtime(playerModel.playtime() + (calltime.toEpochMilli() - playerModel.lastJoined().toEpochMilli()));
+            playerModel.playtime(playerModel.playtime()
+                    + (calltime.toEpochMilli() - playerModel.lastJoined().toEpochMilli()));
             entityManager.getTransaction().commit();
         }
     }

@@ -1,12 +1,29 @@
+/*
+ * The official plugin for the Paradisu server. Copyright (C) 2025 Paradisu. https://paradisu.net
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package net.paradisu.core.locale;
 
 import com.google.common.collect.Maps;
-import net.paradisu.core.ParadisuPlugin;
-import net.paradisu.core.utils.FileUtils;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.translation.GlobalTranslator;
 import net.kyori.adventure.translation.TranslationStore;
 import net.kyori.adventure.translation.Translator;
+import net.paradisu.core.ParadisuPlugin;
+import net.paradisu.core.utils.FileUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,8 +38,7 @@ import java.util.stream.Stream;
 
 public final class TranslationManager {
     public static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
-    public static final List<Locale> BUNDLED_LOCALES = List.of(
-        );
+    public static final List<Locale> BUNDLED_LOCALES = List.of();
 
     private final ParadisuPlugin paradisu;
     private final Set<Locale> installed = ConcurrentHashMap.newKeySet();
@@ -45,7 +61,9 @@ public final class TranslationManager {
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private static boolean isAdventureDuplicatesException(Exception e) {
-        return e instanceof IllegalArgumentException && (e.getMessage().startsWith("Invalid key") || e.getMessage().startsWith("Translation already exists"));
+        return e instanceof IllegalArgumentException
+                && (e.getMessage().startsWith("Invalid key")
+                        || e.getMessage().startsWith("Translation already exists"));
     }
 
     public static Locale parseLocale(String locale) {
@@ -70,9 +88,7 @@ public final class TranslationManager {
         GlobalTranslator.translator().addSource(this.registry);
     }
 
-    /**
-     * Loads the bundled translations from the jar file.
-     */
+    /** Loads the bundled translations from the jar file. */
     private void loadFromResourceBundle() {
         ResourceBundle defaultBundle = ResourceBundle.getBundle("messages", DEFAULT_LOCALE);
         loadLocaleBundle(defaultBundle, DEFAULT_LOCALE);
@@ -85,6 +101,7 @@ public final class TranslationManager {
 
     /**
      * Loads a locale bundle into the translation registry key by key.
+     *
      * @param bundle the bundle to load
      * @param locale the locale of the bundle
      */
@@ -100,13 +117,12 @@ public final class TranslationManager {
         });
     }
 
-    /**
-     * Loads any custom translations from the plugin configuration folder.
-     */
+    /** Loads any custom translations from the plugin configuration folder. */
     public void loadFromFileSystem(Path directory, boolean suppressDuplicatesError) {
         List<Path> translationFiles;
         try (Stream<Path> stream = Files.list(directory)) {
-            translationFiles = stream.filter(TranslationManager::isTranslationFile).collect(Collectors.toList());
+            translationFiles =
+                    stream.filter(TranslationManager::isTranslationFile).collect(Collectors.toList());
         } catch (IOException e) {
             translationFiles = Collections.emptyList();
         }
@@ -157,4 +173,3 @@ public final class TranslationManager {
         return Maps.immutableEntry(locale, bundle);
     }
 }
-

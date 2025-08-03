@@ -1,7 +1,22 @@
+/*
+ * The official plugin for the Paradisu server. Copyright (C) 2025 Paradisu. https://paradisu.net
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package net.paradisu.velocity.commands.command;
 
-import org.incendo.cloud.context.CommandContext;
-import org.incendo.cloud.description.Description;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.Player;
 import net.kyori.adventure.text.Component;
@@ -13,6 +28,8 @@ import net.luckperms.api.LuckPermsProvider;
 import net.paradisu.core.locale.Messages;
 import net.paradisu.velocity.ParadisuVelocity;
 import net.paradisu.velocity.commands.AbstractVelocityCommand;
+import org.incendo.cloud.context.CommandContext;
+import org.incendo.cloud.description.Description;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,15 +44,18 @@ public final class ListCommand extends AbstractVelocityCommand {
 
     @Override
     public void register() {
-        var builder = this.commandManager.commandBuilder("ls", "list")
-            .permission("vparadisu.list")
-            .commandDescription(Description.of(paradisu.messagesConfig().commands().ls().helpMsg()))
-            .handler(this::listCommand);
+        var builder = this.commandManager
+                .commandBuilder("ls", "list")
+                .permission("vparadisu.list")
+                .commandDescription(
+                        Description.of(paradisu.messagesConfig().commands().ls().helpMsg()))
+                .handler(this::listCommand);
         this.commandManager.command(builder);
     }
 
     /**
      * Handeler for the /ls command
+     *
      * @param context the data specified on registration of the command
      */
     private void listCommand(CommandContext<CommandSource> context) {
@@ -43,39 +63,52 @@ public final class ListCommand extends AbstractVelocityCommand {
         LuckPerms luckPerms = LuckPermsProvider.get();
 
         // Map players and meta.playerlist-index.#
-        Map<Integer, List<Player>> onlinePlayerPrefixes = paradisu.server().getAllPlayers().stream().collect(
-            Collectors.groupingBy(
-                (player) -> 
-                    luckPerms.getPlayerAdapter(Player.class).getUser(player).getCachedData().getMetaData().getMetaValue("playerlist-index",Integer::parseInt).orElse(100)
-            ));
+        Map<Integer, List<Player>> onlinePlayerPrefixes = paradisu.server().getAllPlayers().stream()
+                .collect(Collectors.groupingBy((player) -> luckPerms
+                        .getPlayerAdapter(Player.class)
+                        .getUser(player)
+                        .getCachedData()
+                        .getMetaData()
+                        .getMetaValue("playerlist-index", Integer::parseInt)
+                        .orElse(100)));
         // Sort onlinePlayerPrefixes by playerlist-index keys in ascending order
-        Map<Integer, List<Player>> onlinePlayerPrefixesSorted = new TreeMap<Integer, List<Player>>(onlinePlayerPrefixes);
+        Map<Integer, List<Player>> onlinePlayerPrefixesSorted =
+                new TreeMap<Integer, List<Player>>(onlinePlayerPrefixes);
 
         // Create a wraper for the TextComponent so it can be accessed in forEach
-        var textComponentWrapper = new Object(){List<TextComponent> textComponent = new ArrayList<>();};
+        var textComponentWrapper = new Object() {
+            List<TextComponent> textComponent = new ArrayList<>();
+        };
 
         // Create a TextComponent for each playerlist-index key
         onlinePlayerPrefixesSorted.forEach((index, players) -> {
-            textComponentWrapper.textComponent.add(
-                Component.text()
-                    .append(MiniMessage.miniMessage().deserialize(paradisu.messagesConfig().utility().listPrefixes(index)))
-                    .append(Component.text(players.stream().map(Player::getUsername).collect(Collectors.joining(", "))))
+            textComponentWrapper.textComponent.add(Component.text()
+                    .append(MiniMessage.miniMessage()
+                            .deserialize(paradisu.messagesConfig().utility().listPrefixes(index)))
+                    .append(Component.text(
+                            players.stream().map(Player::getUsername).collect(Collectors.joining(", "))))
                     .append(Component.newline())
                     .build());
         });
 
         // Build and send the TextComponent to the player
         int playerCount = paradisu.server().getPlayerCount();
-        context.sender().sendMessage(
-            Component.text()
-                .append(MiniMessage.miniMessage().deserialize(paradisu.messagesConfig().utility().messageDivider()))
-                .append(Component.newline())
-                .append(Messages.prefixed(
-                    MiniMessage.miniMessage().deserialize(
-                        paradisu.messagesConfig().commands().ls().output().get(Math.min(playerCount, 2)),
-                        Placeholder.component("count", Component.text(playerCount)))))
-                .append(textComponentWrapper.textComponent)
-                .append(MiniMessage.miniMessage().deserialize(paradisu.messagesConfig().utility().messageDivider()))
-                .build());
+        context.sender()
+                .sendMessage(Component.text()
+                        .append(MiniMessage.miniMessage()
+                                .deserialize(paradisu.messagesConfig().utility().messageDivider()))
+                        .append(Component.newline())
+                        .append(Messages.prefixed(MiniMessage.miniMessage()
+                                .deserialize(
+                                        paradisu.messagesConfig()
+                                                .commands()
+                                                .ls()
+                                                .output()
+                                                .get(Math.min(playerCount, 2)),
+                                        Placeholder.component("count", Component.text(playerCount)))))
+                        .append(textComponentWrapper.textComponent)
+                        .append(MiniMessage.miniMessage()
+                                .deserialize(paradisu.messagesConfig().utility().messageDivider()))
+                        .build());
     }
 }

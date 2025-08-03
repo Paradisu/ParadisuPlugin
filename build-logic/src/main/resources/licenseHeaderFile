@@ -1,5 +1,5 @@
 /*
- * The official plugin for the Paradisu server. Copyright (C) 2025 Paradisu. https://paradisu.net
+ * The official plugin for the Paradisu server. Copyright (C) $YEAR Paradisu. https://paradisu.net
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -15,8 +15,3 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.paradisu.core.commands;
-
-public interface AbstractCommand {
-    public void register();
-}

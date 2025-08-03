@@ -1,8 +1,22 @@
+/*
+ * The official plugin for the Paradisu server. Copyright (C) 2025 Paradisu. https://paradisu.net
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package net.paradisu.velocity.commands.command;
 
-import org.incendo.cloud.context.CommandContext;
-import org.incendo.cloud.description.Description;
-import org.incendo.cloud.velocity.parser.PlayerParser;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.Player;
 import net.kyori.adventure.text.Component;
@@ -15,6 +29,9 @@ import net.paradisu.velocity.ParadisuVelocity;
 import net.paradisu.velocity.commands.AbstractVelocityCommand;
 import net.paradisu.velocity.commands.util.teleport.TeleportQueue;
 import net.paradisu.velocity.commands.util.teleport.TeleportRequestHeader;
+import org.incendo.cloud.context.CommandContext;
+import org.incendo.cloud.description.Description;
+import org.incendo.cloud.velocity.parser.PlayerParser;
 
 public final class TeleportHereRequestCommand extends AbstractVelocityCommand {
     public TeleportHereRequestCommand(ParadisuVelocity paradisu) {
@@ -23,16 +40,26 @@ public final class TeleportHereRequestCommand extends AbstractVelocityCommand {
 
     @Override
     public void register() {
-        var builder = this.commandManager.commandBuilder("tprh", "tprhere")
-            .permission("vparadisu.tprh")
-            .commandDescription(Description.of(paradisu.messagesConfig().commands().tprh().helpMsg()))
-            .required("target", PlayerParser.playerParser(), Description.of(paradisu.messagesConfig().commands().tprh().helpArgs().get(0)))
-            .handler(this::teleportHereRequestCommand);
+        var builder = this.commandManager
+                .commandBuilder("tprh", "tprhere")
+                .permission("vparadisu.tprh")
+                .commandDescription(Description.of(
+                        paradisu.messagesConfig().commands().tprh().helpMsg()))
+                .required(
+                        "target",
+                        PlayerParser.playerParser(),
+                        Description.of(paradisu.messagesConfig()
+                                .commands()
+                                .tprh()
+                                .helpArgs()
+                                .get(0)))
+                .handler(this::teleportHereRequestCommand);
         this.commandManager.command(builder);
     }
 
     /**
      * Handeler for the /tprh command
+     *
      * @param context the data specified on registration of the command
      */
     private void teleportHereRequestCommand(CommandContext<CommandSource> context) {
@@ -50,29 +77,26 @@ public final class TeleportHereRequestCommand extends AbstractVelocityCommand {
             queue.queueTeleport(requestHeader, teleportArray);
 
             String acceptCommand = "/tpa " + player.getUsername();
-            target.sendMessage(
-                Messages.prefixed(MiniMessage.miniMessage().deserialize(
-                    paradisu.messagesConfig().commands().tprh().output().get(0),
-                    Placeholder.component("player", Component.text(player.getUsername())),
-                    Placeholder.component("command", Component.text(acceptCommand)
-                        .clickEvent(ClickEvent.runCommand(acceptCommand))
-                        .hoverEvent(Component.text(acceptCommand).color(NamedTextColor.GREEN)))
-                )
-            ));
+            target.sendMessage(Messages.prefixed(MiniMessage.miniMessage()
+                    .deserialize(
+                            paradisu.messagesConfig().commands().tprh().output().get(0),
+                            Placeholder.component("player", Component.text(player.getUsername())),
+                            Placeholder.component(
+                                    "command",
+                                    Component.text(acceptCommand)
+                                            .clickEvent(ClickEvent.runCommand(acceptCommand))
+                                            .hoverEvent(Component.text(acceptCommand)
+                                                    .color(NamedTextColor.GREEN))))));
 
-            player.sendMessage(
-                Messages.prefixed(MiniMessage.miniMessage().deserialize(
-                    paradisu.messagesConfig().commands().tprh().output().get(1),
-                    Placeholder.component("player", Component.text(target.getUsername()))
-                )
-            ));
+            player.sendMessage(Messages.prefixed(MiniMessage.miniMessage()
+                    .deserialize(
+                            paradisu.messagesConfig().commands().tprh().output().get(1),
+                            Placeholder.component("player", Component.text(target.getUsername())))));
         } else {
-            player.sendMessage(
-                Messages.prefixed(MiniMessage.miniMessage().deserialize(
-                    paradisu.messagesConfig().commands().tprh().output().get(2),
-                    Placeholder.component("player", Component.text(target.getUsername()))
-                )
-            ));
+            player.sendMessage(Messages.prefixed(MiniMessage.miniMessage()
+                    .deserialize(
+                            paradisu.messagesConfig().commands().tprh().output().get(2),
+                            Placeholder.component("player", Component.text(target.getUsername())))));
         }
     }
 }

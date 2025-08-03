@@ -8,7 +8,7 @@ plugins {
 tasks {
     shadowJar {
         archiveClassifier.set("")
-        relocate("de.themoep.inventorygui", "net.paradisu.libs")
+        // relocate("some.class.path", "net.paradisu.libs")
     }
 
     build {

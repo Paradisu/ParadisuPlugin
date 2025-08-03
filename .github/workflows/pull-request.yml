@@ -1,14 +1,50 @@
 name: Process Pull Request
 
 on:
-  pull_request_target:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
 
 jobs:
   build:
-    # Forbid access to secrets nor GH Token perms while building the PR
-    permissions: {}
-    secrets: {}
-    uses: ./.github/workflows/build-remote.yml
-    with:
-      repository: ${{ github.event.pull_request.head.repo.full_name }}
-      ref: ${{ github.event.pull_request.head.sha }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+    - name: Checkout Repository and Submodules
+      # See https://github.com/actions/checkout/releases
+      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      with:
+        submodules: recursive
+    - name: Set up JDK 21
+      # See https://github.com/actions/setup-java/releases
+      uses: actions/setup-java@99b8673ff64fbf99d8d325f52d9a5bdedb8483e9
+      with:
+        java-version: 21
+        distribution: temurin
+    - name: Setup Gradle
+      # See https://github.com/gradle/actions/releases
+      uses: gradle/actions/setup-gradle@94baf225fe0a508e581a564467443d0e2379123b
+    - name: Apply Spotless
+      run: ./gradlew spotlessApply
+    - name: Commit Formatting Changes
+      # See https://github.com/planetscale/ghcommit-action/releases
+      uses: planetscale/ghcommit-action@322be9669498a4be9ce66efc1169f8f43f6bd883
+      with:
+        commit_message: "Apply spotless code formatting"
+        repo: ${{ github.repository }}
+        branch: ${{ github.head_ref || github.ref_name }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Build with Gradle
+      run: ./gradlew build
+    - name: Archive Artifacts
+      # See https://github.com/actions/upload-artifact/releases
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: success()
+      with:
+        name: ParadisuPlugin
+        path: build/libs/ParadisuPlugin.jar
+        if-no-files-found: error
