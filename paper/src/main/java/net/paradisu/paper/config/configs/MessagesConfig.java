@@ -47,7 +47,6 @@ public final class MessagesConfig {
         private Paradisu paradisu = new Paradisu();
         private Hat hat = new Hat();
 
-
         @Getter
         @ConfigSerializable
         public static final class Hat {
