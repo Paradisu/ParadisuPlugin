@@ -1,6 +1,5 @@
 package net.paradisu.paper.commands.command;
 
-import com.comphenix.protocol.PacketType;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import lombok.extern.slf4j.Slf4j;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -25,8 +24,7 @@ public class HatCommand extends AbstractPaperCommand {
         var builder = this.commandManager.commandBuilder("hat")
                 .commandDescription(Description.of(paradisu.messagesConfig().commands().hat().helpMsg()))
                 .handler(this::replaceHat);
-
-
+        this.commandManager.command(builder);
     }
 
     public void replaceHat(CommandContext<CommandSourceStack> context){
