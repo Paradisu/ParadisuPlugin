@@ -41,10 +41,10 @@ public class PlayerServerSessionModel {
     private String server;
 
     @Setter
-    @Column(name = "joined", columnDefinition = "TIMESTAMP")
-    private Instant joined;
+    @Column(name = "joined_at", columnDefinition = "TIMESTAMP")
+    private Instant joinedAt;
 
     @Setter
-    @Column(name = "left", columnDefinition = "TIMESTAMP")
-    private Instant left;
+    @Column(name = "left_at", columnDefinition = "TIMESTAMP")
+    private Instant leftAt;
 }

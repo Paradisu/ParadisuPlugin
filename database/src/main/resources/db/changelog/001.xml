@@ -31,8 +31,8 @@
                     references="PLAYERS(uuid)" />
             </column>
             <column name="server" type="VARCHAR(255)" />
-            <column name="joined" type="TIMESTAMP" />
-            <column name="left" type="TIMESTAMP" />
+            <column name="joined_at" type="TIMESTAMP" />
+            <column name="left_at" type="TIMESTAMP" />
         </createTable>
     </changeSet>
 
@@ -47,8 +47,8 @@
                 <constraints nullable="false" foreignKeyName="fk_proxy_sessions_player"
                     references="PLAYERS(uuid)" />
             </column>
-            <column name="joined" type="TIMESTAMP" />
-            <column name="left" type="TIMESTAMP" />
+            <column name="joined_at" type="TIMESTAMP" />
+            <column name="left_at" type="TIMESTAMP" />
         </createTable>
     </changeSet>
 
@@ -61,10 +61,10 @@
                 <constraints nullable="false" foreignKeyName="fk_inventories_player"
                     references="PLAYERS(uuid)" />
             </column>
-            <column name="inventory" type="BLOB" />
-            <column name="armor" type="BLOB" />
-            <column name="ender_chest" type="BLOB" />
-            <column name="off_hand" type="BLOB" />
+            <column name="inventory" type="LONGBLOB" />
+            <column name="armor" type="LONGBLOB" />
+            <column name="ender_chest" type="LONGBLOB" />
+            <column name="off_hand" type="LONGBLOB" />
             <column name="held_slot" type="INT" />
             <column name="context" type="VARCHAR(255)" />
             <column name="created" type="TIMESTAMP">

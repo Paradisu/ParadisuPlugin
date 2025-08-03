@@ -1,10 +1,12 @@
 import net.kyori.blossom.BlossomExtension
+import groovy.util.Node
 
 plugins {
     alias(libs.plugins.blossom)
     alias(libs.plugins.indra.git)
     alias(libs.plugins.lombok)
     id("net.paradisu.shadow-conventions")
+    `eclipse`
 }
 
 dependencies {
@@ -63,6 +65,22 @@ inner class GitInfo {
         val git = indraGit.git()
         commitMessage = git?.commit()?.message ?: ""
         repository = git?.repository?.config?.getString("remote", "origin", "url") ?: ""
+    }
+}
+
+eclipse {
+    classpath {
+        file {
+            withXml {
+                val node = asNode()
+                val removed = node.children().removeAll { child: Any? ->
+                    if (child !is Node) return@removeAll false
+                    if (child.name() != "classpathentry") return@removeAll false
+                    val attrs = child.attributes()
+                    attrs["kind"] == "src" && attrs["path"] == "build/sources/java"
+                }
+            }
+        }
     }
 }
 

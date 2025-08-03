@@ -29,44 +29,44 @@ public class ConnectionListener {
         try (
             EntityManager entityManager = paradisu.databaseSession().factory().createEntityManager();
         ) {
-            PlayerModel playerModel = entityManager.find(PlayerModel.class, event.getPlayer().getUniqueId());
-            PlayerModel.PlayerModelBuilder builder;
-
             entityManager.getTransaction().begin();
+            PlayerModel playerModel = entityManager.find(PlayerModel.class, event.getPlayer().getUniqueId());
 
             if (playerModel == null) {
-                builder = PlayerModel.builder()
-                    .uuid(event.getPlayer().getUniqueId())
-                    .firstJoined(calltime);
-                entityManager.persist(builder.build());
+                playerModel = PlayerModel.builder()
+                        .uuid(event.getPlayer().getUniqueId())
+                        .firstJoined(calltime)
+                        .lastJoined(calltime)
+                        .online(true)
+                        .proxySessions(new java.util.HashSet<>())
+                        .build();
+                entityManager.persist(playerModel);
             } else {
-                builder = playerModel.toBuilder();
+                playerModel.lastJoined(calltime);
+                playerModel.online(true);
             }
-            builder.lastJoined(calltime)
-                .online(true);
-            playerModel = builder.build();
-            entityManager.merge(playerModel);
 
             PlayerProxySessionModel sessionModel = PlayerProxySessionModel.builder()
-                .player(playerModel)
-                .joined(calltime)
-                .build();
-            entityManager.persist(sessionModel);
+                    .player(playerModel)
+                    .joinedAt(calltime)
+                    .build();
+            
+            playerModel.proxySessions().add(sessionModel);
             entityManager.getTransaction().commit();
 
             event.getInitialServer().ifPresent(server -> {
                 event.getPlayer().getVirtualHost().ifPresent(host -> {
                     if (paradisu.server().getConfiguration().getForcedHosts().get(host.getHostName()) != null) {
-                        // If the player is connecting to a forced host, we do not want to change their
-                        // initial server
                         return;
                     }
                 });
             });
 
-            paradisu.server().getServer(playerModel.lastServer()).ifPresent(server -> {
-                event.setInitialServer(server);
-            });
+            if (playerModel.lastServer() == null) {
+                return;
+            }
+
+            paradisu.server().getServer(playerModel.lastServer()).ifPresent(event::setInitialServer);
         }
     }
 
@@ -81,6 +81,7 @@ public class ConnectionListener {
         try (
             EntityManager entityManager = paradisu.databaseSession().factory().createEntityManager();
         ) {
+            entityManager.getTransaction().begin();
             PlayerModel playerModel = entityManager.find(PlayerModel.class, event.getPlayer().getUniqueId());
 
             if (playerModel == null) {
@@ -88,9 +89,7 @@ public class ConnectionListener {
                 return;
             }
 
-            entityManager.getTransaction().begin();
             playerModel.lastServer(event.getServer().getServerInfo().getName());
-            entityManager.merge(playerModel);
             entityManager.getTransaction().commit();
         }
     }
@@ -107,6 +106,7 @@ public class ConnectionListener {
         try (
             EntityManager entityManager = paradisu.databaseSession().factory().createEntityManager();
         ) {
+            entityManager.getTransaction().begin();
             PlayerModel playerModel = entityManager.find(PlayerModel.class, event.getPlayer().getUniqueId());
 
             if (playerModel == null) {
@@ -115,15 +115,13 @@ public class ConnectionListener {
             }
 
             playerModel.lastSeen(calltime);
-            
-            entityManager.createQuery("UPDATE PlayerProxySessionModel p SET p.left = :left WHERE p.player.uuid = :uuid AND p.left IS NULL")
-                .setParameter("left", calltime)
+
+            entityManager.createQuery("UPDATE PlayerProxySessionModel p SET p.leftAt = :leftAt WHERE p.player.uuid = :uuid AND p.leftAt IS NULL")
+                .setParameter("leftAt", calltime)
                 .setParameter("uuid", event.getPlayer().getUniqueId())
                 .executeUpdate();
 
             playerModel.playtime(playerModel.playtime() + (calltime.toEpochMilli() - playerModel.lastJoined().toEpochMilli()));
-            entityManager.merge(playerModel);
-
             entityManager.getTransaction().commit();
         }
     }

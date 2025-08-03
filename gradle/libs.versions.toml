@@ -27,7 +27,6 @@ velocity-api = "3.4.0-SNAPSHOT"
 
 [libraries]
 adventure-api = { group = "net.kyori", name = "adventure-api", version.ref = "adventure" }
-adventure-platform-bukkit = { group = "net.kyori", name = "adventure-platform-bukkit", version.ref = "adventure-platform" }
 adventure-text-minimessage = { group = "net.kyori", name = "adventure-text-minimessage", version.ref = "adventure" }
 cloud-core = { group = "org.incendo", name = "cloud-core", version.ref = "cloud-core" }
 cloud-minecraft-extras = { group = "org.incendo", name = "cloud-minecraft-extras", version.ref = "cloud-minecraft" }
@@ -56,10 +55,9 @@ shadow = { group = "com.gradleup.shadow", name = "shadow-gradle-plugin", version
 velocity-api = { group = "com.velocitypowered", name = "velocity-api", version.ref = "velocity-api" }
 
 [bundles]
-adventure-bukkit = [
+adventure-paper = [
     "adventure-api",
-    "adventure-text-minimessage",
-    "adventure-platform-bukkit",
+    "adventure-text-minimessage"
 ]
 adventure-core = ["adventure-api", "adventure-text-minimessage"]
 adventure-velocity = ["adventure-api", "adventure-text-minimessage"]
@@ -77,9 +75,7 @@ liquibase = [
     "hibernate-hikaricp",
     "liquibase-core",
     "liquibase-slf4j",
-    "picocli",
-    "postgresql",
-    "commons-lang3"
+    "postgresql"
 ]
 
 [plugins]

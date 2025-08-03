@@ -51,10 +51,10 @@ public class PlayerQuitSync implements Runnable {
                 List<UUID> outdatedIds = entityManager.createQuery(
                     "SELECT p.id FROM PlayerInventoryModel p WHERE p.player.uuid = :uuid AND p.context = :context ORDER BY p.created DESC",
                     UUID.class)
-                .setParameter("uuid", playerUUID)
-                .setParameter("context", paradisu.paradisuConfig().context())
-                .setFirstResult(16)
-                .getResultList();
+                    .setParameter("uuid", playerUUID)
+                    .setParameter("context", paradisu.paradisuConfig().context().inventory())
+                    .setFirstResult(16)
+                    .getResultList();
 
                 if (!outdatedIds.isEmpty()) {
                     entityManager.createQuery("DELETE FROM PlayerInventoryModel p WHERE p.id IN :ids")
@@ -73,15 +73,13 @@ public class PlayerQuitSync implements Runnable {
                         .context(paradisu.paradisuConfig().context().inventory())
                         .build();
     
-                entityManager.persist(playerInventoryModel);
+                playerModel.inventories().add(playerInventoryModel);
 
-                entityManager.createQuery("UPDATE PlayerServerSessionModel p SET p.left = :left WHERE p.player.uuid = :uuid AND p.server = :server AND p.left IS NULL")
-                        .setParameter("left", calltime)
+                entityManager.createQuery("UPDATE PlayerServerSessionModel p SET p.leftAt = :leftAt WHERE p.player.uuid = :uuid AND p.server = :server AND p.leftAt IS NULL")
+                        .setParameter("leftAt", calltime)
                         .setParameter("uuid", playerUUID)
                         .setParameter("server", paradisu.paradisuConfig().context().server())
                         .executeUpdate();
-
-                entityManager.merge(playerModel);
 
                 entityManager.getTransaction().commit();
             }

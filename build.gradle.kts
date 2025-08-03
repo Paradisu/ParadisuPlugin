@@ -2,6 +2,7 @@ plugins {
     id("net.paradisu.java-conventions")
     alias(libs.plugins.shadow)
     `java-library`
+    `eclipse`
 }
 
 dependencies {

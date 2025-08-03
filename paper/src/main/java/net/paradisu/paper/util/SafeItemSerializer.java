@@ -68,7 +68,7 @@ public class SafeItemSerializer {
      * @return a byte array representing the serialized item or null if the input is null
      */
     public byte[] serializeBytes(ItemStack item) {
-        if (item == null) {
+        if (item == null || item.isEmpty()) {
             return null;
         }
         try {

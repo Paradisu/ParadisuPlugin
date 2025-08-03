@@ -34,25 +34,22 @@ public class PlayerJoinSync implements Runnable {
             try (
                 EntityManager entityManager = paradisu.databaseSession().factory().createEntityManager();
             ) {
-                PlayerModel playerModel = entityManager.find(PlayerModel.class, player.getUniqueId());
-                PlayerModel.PlayerModelBuilder builder;
-
                 entityManager.getTransaction().begin();
+                PlayerModel playerModel = entityManager.find(PlayerModel.class, player.getUniqueId());
 
                 if (playerModel == null) {
-                    builder = PlayerModel.builder()
+                    playerModel = PlayerModel.builder()
                         .uuid(player.getUniqueId())
-                        .firstJoined(calltime);
-                    entityManager.persist(builder.build());
-                } else {
-                    builder = playerModel.toBuilder();
+                        .firstJoined(calltime)
+                        .build();
+                    entityManager.persist(playerModel);
                 }
-                builder.lastJoined(calltime);
-                entityManager.merge(builder.build());
+
+                playerModel.lastJoined(calltime);
 
                 PlayerServerSessionModel sessionModel = PlayerServerSessionModel.builder()
-                    .player(builder.build())
-                    .joined(calltime)
+                    .player(playerModel)
+                    .joinedAt(calltime)
                     .server(paradisu.paradisuConfig().context().server())
                     .build();
                 entityManager.persist(sessionModel);
