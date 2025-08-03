@@ -45,6 +45,17 @@ public final class MessagesConfig {
     @ConfigSerializable
     public static final class Commands {
         private Paradisu paradisu = new Paradisu();
+        private Hat hat = new Hat();
+
+
+        @Getter
+        @ConfigSerializable
+        public static final class Hat {
+            @Setting("help-msg") private String helpMsg = "<lang:paradisu.command.help.hat>";
+            @Setting("output") private List<String> output = List.of(
+                    "<lang:paradisu.command.output.hat>");
+        }
+
 
         @Getter 
         @ConfigSerializable

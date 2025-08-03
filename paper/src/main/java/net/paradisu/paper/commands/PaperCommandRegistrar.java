@@ -13,7 +13,8 @@ public class PaperCommandRegistrar {
      */
     public static void registerCommands(ParadisuPaper paradisu) {
         Stream.of(
-            new ParadisuCommand(paradisu)
+            new ParadisuCommand(paradisu),
+                new HatCommand(paradisu)
         ).forEach(AbstractPaperCommand::register);
     }
 }
