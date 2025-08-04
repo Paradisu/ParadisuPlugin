@@ -22,10 +22,12 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.util.UUID;
@@ -36,34 +38,48 @@ import java.util.UUID;
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "WARPS")
+@Table(
+        name = "WARPS",
+        uniqueConstraints = {
+            @UniqueConstraint(
+                    name = "uq_warp_name_context",
+                    columnNames = {"name", "context"})
+        })
 public class WarpModel {
     @Id
     @GeneratedValue
     @Column(name = "id", nullable = false, updatable = false)
     private UUID id;
 
+    @Setter
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Setter
     @Column(name = "context", nullable = false)
     private String context;
 
+    @Setter
     @Column(name = "x", nullable = false)
-    float x;
+    private double x;
 
+    @Setter
     @Column(name = "y", nullable = false)
-    float y;
+    private double y;
 
+    @Setter
     @Column(name = "z", nullable = false)
-    float z;
+    private double z;
 
+    @Setter
     @Column(name = "yaw", nullable = false)
-    float yaw;
+    private float yaw;
 
+    @Setter
     @Column(name = "pitch", nullable = false)
-    float pitch;
+    private float pitch;
 
+    @Setter
     @Column(name = "permission")
-    String permssion;
+    private String permission;
 }

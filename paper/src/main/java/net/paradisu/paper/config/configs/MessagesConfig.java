@@ -87,6 +87,7 @@ public final class MessagesConfig {
         public static final class Paradisu {
             private About about = new About();
             private Reload reload = new Reload();
+            private Warp warp = new Warp();
 
             @Setting("help-msg")
             private String helpMsg = "<lang:paradisu.command.help.paradisu>";
@@ -110,6 +111,66 @@ public final class MessagesConfig {
 
                 @Setting("output")
                 private List<String> output = List.of("<lang:paradisu.command.output.paradisu.reload>");
+            }
+
+            @Getter
+            @ConfigSerializable
+            public static final class Warp {
+                private Delete delete = new Delete();
+                private Create create = new Create();
+                private Update update = new Update();
+
+                @Setting("help-msg")
+                private String helpMsg = "<lang:paradisu.command.help.paradisu.warp>";
+
+                @Getter
+                @ConfigSerializable
+                public static final class Create {
+                    @Setting("help-msg")
+                    private String helpMsg = "<lang:paradisu.command.help.paradisu.warp.create>";
+
+                    @Setting("help-args")
+                    private List<String> helpArgs = List.of(
+                            "<lang:paradisu.command.help.paradisu.warp.create.0>",
+                            "<lang:paradisu.command.help.paradisu.warp.create.1>");
+
+                    @Setting("output")
+                    private List<String> output = List.of(
+                            "<lang:paradisu.command.output.paradisu.warp.create.0>",
+                            "<lang:paradisu.command.output.paradisu.warp.create.1>");
+                }
+
+                @Getter
+                @ConfigSerializable
+                public static final class Update {
+                    @Setting("help-msg")
+                    private String helpMsg = "<lang:paradisu.command.help.paradisu.warp.update>";
+
+                    @Setting("help-args")
+                    private List<String> helpArgs = List.of(
+                            "<lang:paradisu.command.help.paradisu.warp.update.0>",
+                            "<lang:paradisu.command.help.paradisu.warp.update.1>");
+
+                    @Setting("output")
+                    private List<String> output = List.of(
+                            "<lang:paradisu.command.output.paradisu.warp.update.0>",
+                            "<lang:paradisu.command.output.paradisu.warp.update.1>");
+                }
+
+                @Getter
+                @ConfigSerializable
+                public static final class Delete {
+                    @Setting("help-msg")
+                    private String helpMsg = "<lang:paradisu.command.help.paradisu.warp.delete>";
+
+                    @Setting("help-args")
+                    private List<String> helpArgs = List.of("<lang:paradisu.command.help.paradisu.warp.delete.0>");
+
+                    @Setting("output")
+                    private List<String> output = List.of(
+                            "<lang:paradisu.command.output.paradisu.warp.delete.0>",
+                            "<lang:paradisu.command.output.paradisu.warp.delete.1>");
+                }
             }
         }
     }

@@ -28,8 +28,10 @@ import net.paradisu.paper.config.configs.MessagesConfig;
 import net.paradisu.paper.config.configs.ParadisuConfig;
 import net.paradisu.paper.listeners.PlayerJoinListener;
 import net.paradisu.paper.listeners.PlayerQuitListener;
+import net.paradisu.paper.messaging.PaperMessagingManager;
 import net.paradisu.paper.util.PaperLogger;
 import net.paradisu.paper.util.SafeItemSerializer;
+import net.paradisu.paper.warps.WarpManager;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.incendo.cloud.CommandManager;
@@ -47,6 +49,8 @@ public class ParadisuPaper extends JavaPlugin implements ParadisuPlugin {
     private TranslationManager translationManager;
     private DatabaseSession databaseSession;
     private SafeItemSerializer safeItemSerializer;
+    private WarpManager warpManager;
+    private PaperMessagingManager messagingManager;
 
     @Override
     public void onLoad() {
@@ -79,6 +83,12 @@ public class ParadisuPaper extends JavaPlugin implements ParadisuPlugin {
                     this.paradisuConfig().database().url(),
                     this.paradisuConfig().database().username(),
                     this.paradisuConfig().database().password());
+
+            this.warpManager = new WarpManager(this);
+            this.warpManager.syncWarps();
+
+            this.messagingManager = new PaperMessagingManager(this);
+            this.messagingManager.registerMessages();
 
             this.getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
             this.getServer().getPluginManager().registerEvents(new PlayerQuitListener(this), this);
@@ -182,6 +192,24 @@ public class ParadisuPaper extends JavaPlugin implements ParadisuPlugin {
      */
     public SafeItemSerializer safeItemSerializer() {
         return safeItemSerializer;
+    }
+
+    /**
+     * Returns the WarpManager for this plugin.
+     *
+     * @return the WarpManager for this plugin
+     */
+    public WarpManager warpManager() {
+        return warpManager;
+    }
+
+    /**
+     * Returns the PaperMessagingManager for this plugin.
+     *
+     * @return the PaperMessagingManager for this plugin
+     */
+    public PaperMessagingManager messagingManager() {
+        return messagingManager;
     }
 
     /** Reloads the plugin. */

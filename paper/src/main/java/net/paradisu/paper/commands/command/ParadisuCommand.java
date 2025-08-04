@@ -20,8 +20,10 @@ package net.paradisu.paper.commands.command;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.paradisu.core.locale.Messages;
+import net.paradisu.database.models.WarpModel;
 import net.paradisu.paper.ParadisuPaper;
 import net.paradisu.paper.commands.AbstractPaperCommand;
+import org.bukkit.entity.Player;
 import org.incendo.cloud.context.CommandContext;
 import org.incendo.cloud.description.CommandDescription;
 import org.incendo.cloud.description.Description;
@@ -58,6 +60,91 @@ public final class ParadisuCommand extends AbstractPaperCommand {
                 .commandDescription(CommandDescription.commandDescription(
                         paradisu.messagesConfig().commands().paradisu().reload().helpMsg()))
                 .handler(this::reloadCommand));
+
+        var warpBuilder = builder.literal("warp");
+
+        this.commandManager.command(warpBuilder
+                .literal("create")
+                .permission("paradisu.warp.create")
+                .commandDescription(CommandDescription.commandDescription(paradisu.messagesConfig()
+                        .commands()
+                        .paradisu()
+                        .warp()
+                        .create()
+                        .helpMsg()))
+                .required(
+                        "name",
+                        StringParser.quotedStringParser(),
+                        Description.of(paradisu.messagesConfig()
+                                .commands()
+                                .paradisu()
+                                .warp()
+                                .create()
+                                .helpArgs()
+                                .get(0)))
+                .optional(
+                        "permission",
+                        StringParser.stringParser(),
+                        Description.of(paradisu.messagesConfig()
+                                .commands()
+                                .paradisu()
+                                .warp()
+                                .create()
+                                .helpArgs()
+                                .get(1)))
+                .handler(this::createWarpCommand));
+
+        this.commandManager.command(warpBuilder
+                .literal("update")
+                .permission("paradisu.warp.update")
+                .commandDescription(CommandDescription.commandDescription(paradisu.messagesConfig()
+                        .commands()
+                        .paradisu()
+                        .warp()
+                        .update()
+                        .helpMsg()))
+                .required(
+                        "name",
+                        StringParser.quotedStringParser(),
+                        Description.of(paradisu.messagesConfig()
+                                .commands()
+                                .paradisu()
+                                .warp()
+                                .update()
+                                .helpArgs()
+                                .get(0)))
+                .optional(
+                        "permission",
+                        StringParser.stringParser(),
+                        Description.of(paradisu.messagesConfig()
+                                .commands()
+                                .paradisu()
+                                .warp()
+                                .update()
+                                .helpArgs()
+                                .get(1)))
+                .handler(this::updateWarpCommand));
+
+        this.commandManager.command(warpBuilder
+                .literal("delete")
+                .permission("paradisu.warp.delete")
+                .commandDescription(CommandDescription.commandDescription(paradisu.messagesConfig()
+                        .commands()
+                        .paradisu()
+                        .warp()
+                        .delete()
+                        .helpMsg()))
+                .required(
+                        "name",
+                        StringParser.quotedStringParser(),
+                        Description.of(paradisu.messagesConfig()
+                                .commands()
+                                .paradisu()
+                                .warp()
+                                .delete()
+                                .helpArgs()
+                                .get(0)))
+                .handler(this::deleteWarpCommand));
     }
 
     /**
@@ -93,5 +180,127 @@ public final class ParadisuCommand extends AbstractPaperCommand {
                                 .reload()
                                 .output()
                                 .get(0))));
+    }
+
+    /**
+     * Handler for the /paradisu warp create command
+     *
+     * @param context the data specified on registration of the command
+     */
+    private void createWarpCommand(CommandContext<CommandSourceStack> context) {
+        String name = context.get("name");
+        String permission = context.getOrDefault("permission", null);
+
+        Player sender = (Player) context.sender().getSender();
+
+        WarpModel warp = WarpModel.builder()
+                .name(name)
+                .permission(permission)
+                .context(paradisu.paradisuConfig().context().warp())
+                .x(sender.getLocation().getX())
+                .y(sender.getLocation().getY())
+                .z(sender.getLocation().getZ())
+                .yaw(sender.getLocation().getYaw())
+                .pitch(sender.getLocation().getPitch())
+                .build();
+
+        paradisu.warpManager().createWarp(warp).thenAccept(success -> {
+            if (success) {
+                sender.sendMessage(Messages.prefixed(MiniMessage.miniMessage()
+                        .deserialize(paradisu.messagesConfig()
+                                .commands()
+                                .paradisu()
+                                .warp()
+                                .create()
+                                .output()
+                                .get(0))));
+            } else {
+                sender.sendMessage(Messages.prefixed(MiniMessage.miniMessage()
+                        .deserialize(paradisu.messagesConfig()
+                                .commands()
+                                .paradisu()
+                                .warp()
+                                .create()
+                                .output()
+                                .get(1))));
+            }
+        });
+    }
+
+    /**
+     * Handler for the /paradisu warp update command
+     *
+     * @param context the data specified on registration of the command
+     */
+    private void updateWarpCommand(CommandContext<CommandSourceStack> context) {
+        String name = context.get("name");
+        String permission = context.getOrDefault("permission", null);
+
+        Player sender = (Player) context.sender().getSender();
+
+        WarpModel warp = WarpModel.builder()
+                .name(name)
+                .permission(permission)
+                .context(paradisu.paradisuConfig().context().warp())
+                .x(sender.getLocation().getX())
+                .y(sender.getLocation().getY())
+                .z(sender.getLocation().getZ())
+                .yaw(sender.getLocation().getYaw())
+                .pitch(sender.getLocation().getPitch())
+                .build();
+
+        paradisu.warpManager().updateWarp(warp).thenAccept(success -> {
+            if (success) {
+                sender.sendMessage(Messages.prefixed(MiniMessage.miniMessage()
+                        .deserialize(paradisu.messagesConfig()
+                                .commands()
+                                .paradisu()
+                                .warp()
+                                .update()
+                                .output()
+                                .get(0))));
+            } else {
+                sender.sendMessage(Messages.prefixed(MiniMessage.miniMessage()
+                        .deserialize(paradisu.messagesConfig()
+                                .commands()
+                                .paradisu()
+                                .warp()
+                                .update()
+                                .output()
+                                .get(1))));
+            }
+        });
+    }
+
+    /**
+     * Handler for the /paradisu warp delete command
+     *
+     * @param context the data specified on registration of the command
+     */
+    private void deleteWarpCommand(CommandContext<CommandSourceStack> context) {
+        String name = context.get("name");
+        Player sender = (Player) context.sender().getSender();
+
+        paradisu.warpManager().deleteWarp(name).thenAccept(success -> {
+            if (success) {
+                sender.sendMessage(Messages.prefixed(MiniMessage.miniMessage()
+                        .deserialize(paradisu.messagesConfig()
+                                .commands()
+                                .paradisu()
+                                .warp()
+                                .delete()
+                                .output()
+                                .get(0))));
+            } else {
+                sender.sendMessage(Messages.prefixed(MiniMessage.miniMessage()
+                        .deserialize(paradisu.messagesConfig()
+                                .commands()
+                                .paradisu()
+                                .warp()
+                                .delete()
+                                .output()
+                                .get(1))));
+            }
+        });
     }
 }
