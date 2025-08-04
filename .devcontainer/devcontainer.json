@@ -1,0 +1,11 @@
+{
+    "name": "Java",
+    "image": "mcr.microsoft.com/devcontainers/java:1-21-buster",
+    "features": {
+        "ghcr.io/devcontainers/features/java:1": {
+            "version": "21",
+            "installMaven": "false",
+            "installGradle": "true"
+        }
+    }
+}

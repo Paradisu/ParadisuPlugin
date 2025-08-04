@@ -4,6 +4,15 @@ on:
   push:
     branches:
       - '**'
+    paths-ignore:
+      - '.github/ISSUE_TEMPLATE/*.yml'
+      - '.github/workflows/build.yml'
+      - '.github/workflows/pull-request.yml'
+      - '.gitignore'
+      - .devcontainer/devcontainer.json
+      - 'CONTRIBUTING.md'
+      - 'LICENSE'
+      - 'README.md'
 
 jobs:
   build:
