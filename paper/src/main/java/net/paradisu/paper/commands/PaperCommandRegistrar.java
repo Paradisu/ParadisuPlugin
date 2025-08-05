@@ -14,7 +14,8 @@ public class PaperCommandRegistrar {
     public static void registerCommands(ParadisuPaper paradisu) {
         Stream.of(
             new ParadisuCommand(paradisu),
-                new HatCommand(paradisu)
+            new HatCommand(paradisu),
+            new RealSizeCommand(paradisu)
         ).forEach(AbstractPaperCommand::register);
     }
 }
