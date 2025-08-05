@@ -18,16 +18,31 @@
 package net.paradisu.core.messaging;
 
 import de.themoep.connectorplugin.ConnectorPlugin;
-import de.themoep.connectorplugin.connector.MessageTarget;
 
-public interface MessagingManager<P extends ConnectorPlugin<R>, R> {
-    public void register(RegisteredMessage<P, R> message);
+public abstract class RegisteredMessage<P extends ConnectorPlugin<R>, R> {
+    private final String action;
 
-    public void registerMessages();
+    public RegisteredMessage(String action) {
+        this.action = action;
+    }
 
-    public void sendData(String action, MessageTarget target, byte[] data);
+    public abstract void handleMessage(R player, byte[] message);
 
-    default void send(MessageTarget target, RegisteredMessage.SerialMessage message) {
-        this.sendData(message.action(), target, message.serialize());
+    public String action() {
+        return this.action;
+    }
+
+    public interface SerialMessage {
+        public String action();
+
+        public default byte[] serialize() {
+            return null;
+        }
+        ;
+
+        public default SerialMessage deserialize(byte[] data) {
+            return null;
+        }
+        ;
     }
 }

@@ -17,10 +17,13 @@
 
 package net.paradisu.paper.warps;
 
+import de.themoep.connectorplugin.connector.MessageTarget;
 import jakarta.persistence.EntityManager;
 import net.paradisu.database.models.WarpModel;
 import net.paradisu.paper.ParadisuPaper;
+import net.paradisu.paper.messaging.messages.SyncWarpsMessage;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -30,10 +33,14 @@ import java.util.stream.Collectors;
 public class WarpManager {
     private final ParadisuPaper paradisu;
     private List<WarpModel> warps;
+
     private Map<WarpKey, WarpModel> warpMap;
+    private Map<String, List<WarpModel>> nameWarpMap = new HashMap<>();
 
     public WarpManager(ParadisuPaper paradisu) {
         this.paradisu = paradisu;
+        this.warpMap = new HashMap<>();
+        this.nameWarpMap = new HashMap<>();
         this.syncWarps();
     }
 
@@ -45,6 +52,7 @@ public class WarpManager {
             this.warps.forEach(w -> entityManager.detach(w));
             this.warpMap = this.warps.stream()
                     .collect(Collectors.toMap(warp -> new WarpKey(warp.name(), warp.context()), warp -> warp));
+            this.nameWarpMap = this.warps.stream().collect(Collectors.groupingBy(WarpModel::name, Collectors.toList()));
             return true;
         } catch (Exception e) {
             paradisu.logger().error("Failed to load warps from the database", e);
@@ -59,7 +67,7 @@ public class WarpManager {
                 entityManager.getTransaction().begin();
                 entityManager.persist(warp);
                 entityManager.getTransaction().commit();
-                paradisu.messagingManager().sendSyncWarps();
+                paradisu.messagingManager().send(MessageTarget.ALL_QUEUE, new SyncWarpsMessage.Message());
                 return true;
             } catch (Exception e) {
                 paradisu.logger().error("Failed to create warp in the database", e);
@@ -77,7 +85,7 @@ public class WarpManager {
                 if (warp != null) {
                     entityManager.remove(warp);
                     entityManager.getTransaction().commit();
-                    paradisu.messagingManager().sendSyncWarps();
+                    paradisu.messagingManager().send(MessageTarget.ALL_QUEUE, new SyncWarpsMessage.Message());
                     return true;
                 } else {
                     paradisu.logger().warn("Warp " + warpName + " not found for deletion");
@@ -104,7 +112,7 @@ public class WarpManager {
                     existingWarp.yaw(warp.yaw());
                     existingWarp.pitch(warp.pitch());
                     entityManager.getTransaction().commit();
-                    paradisu.messagingManager().sendSyncWarps();
+                    paradisu.messagingManager().send(MessageTarget.ALL_QUEUE, new SyncWarpsMessage.Message());
                     return true;
                 } else {
                     paradisu.logger().warn("Warp " + warp.name() + " not found for update");
@@ -115,6 +123,26 @@ public class WarpManager {
                 return false;
             }
         });
+    }
+
+    public WarpModel getClosestWarp(String name) {
+        List<WarpModel> warps = this.nameWarpMap.get(name);
+        if (warps.isEmpty()) {
+            return null;
+        }
+        if (warps.size() == 1) {
+            return warps.getFirst();
+        }
+
+        String context = paradisu.paradisuConfig().context().warp();
+        return warps.stream()
+                .filter(warp -> warp.context().equals(context))
+                .findFirst()
+                .orElseGet(() -> warps.getFirst());
+    }
+
+    public WarpModel getExactWarp(String name, String context) {
+        return this.warpMap.get(new WarpKey(name, context));
     }
 
     record WarpKey(String name, String context) {

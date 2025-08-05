@@ -27,7 +27,7 @@ import java.util.Map;
 public abstract class ConfigManager {
     protected Map<String, ConfigEntry<?>> configs = new HashMap<>();
 
-    public ConfigManager(ParadisuPlugin paradisu) {}
+    public ConfigManager(ParadisuPlugin<?, ?> paradisu) {}
 
     public void loadConfigs() {
         try {

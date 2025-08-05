@@ -25,6 +25,7 @@ import com.velocitypowered.api.plugin.Dependency;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.PluginContainer;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
+import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import de.themoep.connectorplugin.velocity.VelocityConnectorPlugin;
 import liquibase.Contexts;
@@ -37,6 +38,7 @@ import liquibase.resource.ClassLoaderResourceAccessor;
 import net.paradisu.core.ParadisuPlugin;
 import net.paradisu.core.database.DatabaseSession;
 import net.paradisu.core.locale.TranslationManager;
+import net.paradisu.core.messaging.MessagingManager;
 import net.paradisu.core.packs.PackManager;
 import net.paradisu.core.utils.Constants;
 import net.paradisu.velocity.commands.VelocityCommandRegistrar;
@@ -65,7 +67,7 @@ import java.util.Optional;
         authors = {Constants.Plugin.AUTHORS},
         url = Constants.Plugin.URL,
         dependencies = @Dependency(id = "connectorplugin"))
-public final class ParadisuVelocity implements ParadisuPlugin {
+public final class ParadisuVelocity implements ParadisuPlugin<VelocityConnectorPlugin, Player> {
     private final ProxyServer server;
     private final VelocityLogger logger;
     private final Path dataDirectory;
@@ -251,6 +253,12 @@ public final class ParadisuVelocity implements ParadisuPlugin {
     @Override
     public DatabaseSession databaseSession() {
         return this.databaseSession;
+    }
+
+    @Override
+    public MessagingManager<VelocityConnectorPlugin, Player> messagingManager() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'messagingManager'");
     }
 
     /** Reloads the plugin. */

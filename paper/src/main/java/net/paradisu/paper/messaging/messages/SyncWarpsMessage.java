@@ -15,31 +15,32 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.paradisu.paper.messaging;
+package net.paradisu.paper.messaging.messages;
 
-import de.themoep.connectorplugin.bukkit.Bridge;
 import de.themoep.connectorplugin.bukkit.BukkitConnectorPlugin;
-import net.paradisu.core.messaging.MessagingManager;
 import net.paradisu.core.messaging.RegisteredMessage;
 import net.paradisu.paper.ParadisuPaper;
-import net.paradisu.paper.messaging.messages.SyncWarpsMessage;
 import org.bukkit.entity.Player;
 
-public class PaperMessagingManager extends Bridge implements MessagingManager<BukkitConnectorPlugin, Player> {
-    private final ParadisuPaper paradisu;
+public class SyncWarpsMessage extends RegisteredMessage<BukkitConnectorPlugin, Player> {
+    public static final String ACTION = "SYNC_WARPS";
 
-    public PaperMessagingManager(ParadisuPaper paradisu) {
-        super(paradisu.connector());
+    private ParadisuPaper paradisu;
+
+    public SyncWarpsMessage(ParadisuPaper paradisu) {
+        super(ACTION);
         this.paradisu = paradisu;
     }
 
     @Override
-    public void register(RegisteredMessage<BukkitConnectorPlugin, Player> message) {
-        this.registerHandler(message.action(), message::handleMessage);
+    public void handleMessage(Player player, byte[] message) {
+        this.paradisu.warpManager().syncWarps();
     }
 
-    @Override
-    public void registerMessages() {
-        this.register(new SyncWarpsMessage(paradisu));
+    public static class Message implements SerialMessage {
+        @Override
+        public String action() {
+            return ACTION;
+        }
     }
 }

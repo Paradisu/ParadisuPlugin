@@ -38,7 +38,7 @@ import java.util.concurrent.ExecutionException;
 @Getter
 public class PackManager {
     /** The plugin instance */
-    private ParadisuPlugin paradisu;
+    private ParadisuPlugin<?, ?> paradisu;
     /** The list of resource pack urls */
     private List<String> resourcePackUrls;
     /** The default request for the resource packs */
@@ -52,7 +52,7 @@ public class PackManager {
      * @param paradisu the plugin instance
      * @param resourcePackUrls the list of resource pack urls
      */
-    public PackManager(ParadisuPlugin paradisu, List<String> resourcePackUrls) {
+    public PackManager(ParadisuPlugin<?, ?> paradisu, List<String> resourcePackUrls) {
         this.paradisu = paradisu;
         this.resourcePackUrls = resourcePackUrls;
         this.stagingPackRequests = new Object2ObjectOpenHashMap<>();

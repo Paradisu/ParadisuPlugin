@@ -33,6 +33,7 @@ import net.paradisu.paper.util.PaperLogger;
 import net.paradisu.paper.util.SafeItemSerializer;
 import net.paradisu.paper.warps.WarpManager;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.incendo.cloud.CommandManager;
 import org.incendo.cloud.execution.ExecutionCoordinator;
@@ -40,7 +41,7 @@ import org.incendo.cloud.paper.PaperCommandManager;
 
 import java.nio.file.Path;
 
-public class ParadisuPaper extends JavaPlugin implements ParadisuPlugin {
+public class ParadisuPaper extends JavaPlugin implements ParadisuPlugin<BukkitConnectorPlugin, Player> {
     private PaperCommandManager<CommandSourceStack> commandManager;
     private PaperLogger logger;
     private BukkitConnectorPlugin connector;
