@@ -29,6 +29,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.hibernate.annotations.Array;
 
 import java.util.UUID;
 
@@ -58,6 +59,11 @@ public class WarpModel {
     @Setter
     @Column(name = "context", nullable = false)
     private String context;
+
+    @Setter
+    @Column(name = "aliases", nullable = false)
+    @Array(length = 100)
+    private String[] aliases;
 
     @Setter
     @Column(name = "x", nullable = false)

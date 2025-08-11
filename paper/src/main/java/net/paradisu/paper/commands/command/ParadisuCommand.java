@@ -18,11 +18,12 @@
 package net.paradisu.paper.commands.command;
 
 import io.papermc.paper.command.brigadier.CommandSourceStack;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.paradisu.core.locale.Messages;
 import net.paradisu.database.models.WarpModel;
 import net.paradisu.paper.ParadisuPaper;
 import net.paradisu.paper.commands.AbstractPaperCommand;
+import net.paradisu.paper.config.configs.MessagesConfig.Commands.Paradisu;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.incendo.cloud.context.CommandContext;
 import org.incendo.cloud.description.CommandDescription;
@@ -40,6 +41,7 @@ public final class ParadisuCommand extends AbstractPaperCommand {
                 .commandBuilder("paradisu")
                 .commandDescription(Description.of(
                         paradisu.messagesConfig().commands().paradisu().helpMsg()));
+        Paradisu cText = paradisu.messagesConfig().commands().paradisu();
 
         this.commandManager.command(builder.literal("help")
                 .optional("query", StringParser.greedyStringParser())
@@ -51,99 +53,58 @@ public final class ParadisuCommand extends AbstractPaperCommand {
 
         this.commandManager.command(builder.literal("about")
                 .permission("paradisu.about")
-                .commandDescription(CommandDescription.commandDescription(
-                        paradisu.messagesConfig().commands().paradisu().about().helpMsg()))
+                .commandDescription(
+                        CommandDescription.commandDescription(cText.about().helpMsg()))
                 .handler(this::aboutCommand));
 
         this.commandManager.command(builder.literal("reload")
                 .permission("paradisu.reload")
-                .commandDescription(CommandDescription.commandDescription(
-                        paradisu.messagesConfig().commands().paradisu().reload().helpMsg()))
+                .commandDescription(
+                        CommandDescription.commandDescription(cText.reload().helpMsg()))
                 .handler(this::reloadCommand));
 
         var warpBuilder = builder.literal("warp");
+        Paradisu.Warp wText = cText.warp();
 
         this.commandManager.command(warpBuilder
                 .literal("create")
                 .permission("paradisu.warp.create")
-                .commandDescription(CommandDescription.commandDescription(paradisu.messagesConfig()
-                        .commands()
-                        .paradisu()
-                        .warp()
-                        .create()
-                        .helpMsg()))
+                .commandDescription(
+                        CommandDescription.commandDescription(wText.create().helpMsg()))
                 .required(
                         "name",
                         StringParser.quotedStringParser(),
-                        Description.of(paradisu.messagesConfig()
-                                .commands()
-                                .paradisu()
-                                .warp()
-                                .create()
-                                .helpArgs()
-                                .get(0)))
+                        Description.of(wText.create().helpArgs().get(0)))
                 .optional(
                         "permission",
                         StringParser.stringParser(),
-                        Description.of(paradisu.messagesConfig()
-                                .commands()
-                                .paradisu()
-                                .warp()
-                                .create()
-                                .helpArgs()
-                                .get(1)))
+                        Description.of(wText.create().helpArgs().get(1)))
                 .handler(this::createWarpCommand));
 
         this.commandManager.command(warpBuilder
                 .literal("update")
                 .permission("paradisu.warp.update")
-                .commandDescription(CommandDescription.commandDescription(paradisu.messagesConfig()
-                        .commands()
-                        .paradisu()
-                        .warp()
-                        .update()
-                        .helpMsg()))
+                .commandDescription(
+                        CommandDescription.commandDescription(wText.update().helpMsg()))
                 .required(
                         "name",
                         StringParser.quotedStringParser(),
-                        Description.of(paradisu.messagesConfig()
-                                .commands()
-                                .paradisu()
-                                .warp()
-                                .update()
-                                .helpArgs()
-                                .get(0)))
+                        Description.of(wText.update().helpArgs().get(0)))
                 .optional(
                         "permission",
                         StringParser.stringParser(),
-                        Description.of(paradisu.messagesConfig()
-                                .commands()
-                                .paradisu()
-                                .warp()
-                                .update()
-                                .helpArgs()
-                                .get(1)))
+                        Description.of(wText.update().helpArgs().get(1)))
                 .handler(this::updateWarpCommand));
 
         this.commandManager.command(warpBuilder
                 .literal("delete")
                 .permission("paradisu.warp.delete")
-                .commandDescription(CommandDescription.commandDescription(paradisu.messagesConfig()
-                        .commands()
-                        .paradisu()
-                        .warp()
-                        .delete()
-                        .helpMsg()))
+                .commandDescription(
+                        CommandDescription.commandDescription(wText.delete().helpMsg()))
                 .required(
                         "name",
                         StringParser.quotedStringParser(),
-                        Description.of(paradisu.messagesConfig()
-                                .commands()
-                                .paradisu()
-                                .warp()
-                                .delete()
-                                .helpArgs()
-                                .get(0)))
+                        Description.of(wText.delete().helpArgs().get(0)))
                 .handler(this::deleteWarpCommand));
     }
 
@@ -153,15 +114,9 @@ public final class ParadisuCommand extends AbstractPaperCommand {
      * @param context the data specified on registration of the command
      */
     private void aboutCommand(CommandContext<CommandSourceStack> context) {
-        context.sender()
-                .getSender()
-                .sendMessage(Messages.prefixed(MiniMessage.miniMessage()
-                        .deserialize(paradisu.messagesConfig()
-                                .commands()
-                                .paradisu()
-                                .about()
-                                .output()
-                                .get(0))));
+        Messages.sendPrefixed(
+                context.sender().getSender(),
+                paradisu.messagesConfig().commands().paradisu().about().output().get(0));
     }
 
     /**
@@ -171,15 +126,14 @@ public final class ParadisuCommand extends AbstractPaperCommand {
      */
     private void reloadCommand(CommandContext<CommandSourceStack> context) {
         paradisu.reload();
-        context.sender()
-                .getSender()
-                .sendMessage(Messages.prefixed(MiniMessage.miniMessage()
-                        .deserialize(paradisu.messagesConfig()
-                                .commands()
-                                .paradisu()
-                                .reload()
-                                .output()
-                                .get(0))));
+        Messages.sendPrefixed(
+                context.sender().getSender(),
+                paradisu.messagesConfig()
+                        .commands()
+                        .paradisu()
+                        .reload()
+                        .output()
+                        .get(0));
     }
 
     /**
@@ -192,37 +146,26 @@ public final class ParadisuCommand extends AbstractPaperCommand {
         String permission = context.getOrDefault("permission", null);
 
         Player sender = (Player) context.sender().getSender();
+        Location location = sender.getLocation();
 
         WarpModel warp = WarpModel.builder()
                 .name(name)
                 .permission(permission)
                 .context(paradisu.paradisuConfig().context().warp())
-                .x(sender.getLocation().getX())
-                .y(sender.getLocation().getY())
-                .z(sender.getLocation().getZ())
-                .yaw(sender.getLocation().getYaw())
-                .pitch(sender.getLocation().getPitch())
+                .x(location.getX())
+                .y(location.getY())
+                .z(location.getZ())
+                .yaw(location.getYaw())
+                .pitch(location.getPitch())
                 .build();
 
         paradisu.warpManager().createWarp(warp).thenAccept(success -> {
+            Paradisu.Warp.Create cText =
+                    paradisu.messagesConfig().commands().paradisu().warp().create();
             if (success) {
-                sender.sendMessage(Messages.prefixed(MiniMessage.miniMessage()
-                        .deserialize(paradisu.messagesConfig()
-                                .commands()
-                                .paradisu()
-                                .warp()
-                                .create()
-                                .output()
-                                .get(0))));
+                Messages.sendPrefixed(sender, cText.output().get(0));
             } else {
-                sender.sendMessage(Messages.prefixed(MiniMessage.miniMessage()
-                        .deserialize(paradisu.messagesConfig()
-                                .commands()
-                                .paradisu()
-                                .warp()
-                                .create()
-                                .output()
-                                .get(1))));
+                Messages.sendPrefixed(sender, cText.output().get(1));
             }
         });
     }
@@ -237,37 +180,26 @@ public final class ParadisuCommand extends AbstractPaperCommand {
         String permission = context.getOrDefault("permission", null);
 
         Player sender = (Player) context.sender().getSender();
+        Location location = sender.getLocation();
 
         WarpModel warp = WarpModel.builder()
                 .name(name)
                 .permission(permission)
                 .context(paradisu.paradisuConfig().context().warp())
-                .x(sender.getLocation().getX())
-                .y(sender.getLocation().getY())
-                .z(sender.getLocation().getZ())
-                .yaw(sender.getLocation().getYaw())
-                .pitch(sender.getLocation().getPitch())
+                .x(location.getX())
+                .y(location.getY())
+                .z(location.getZ())
+                .yaw(location.getYaw())
+                .pitch(location.getPitch())
                 .build();
 
         paradisu.warpManager().updateWarp(warp).thenAccept(success -> {
+            Paradisu.Warp.Update uText =
+                    paradisu.messagesConfig().commands().paradisu().warp().update();
             if (success) {
-                sender.sendMessage(Messages.prefixed(MiniMessage.miniMessage()
-                        .deserialize(paradisu.messagesConfig()
-                                .commands()
-                                .paradisu()
-                                .warp()
-                                .update()
-                                .output()
-                                .get(0))));
+                Messages.sendPrefixed(sender, uText.output().get(0));
             } else {
-                sender.sendMessage(Messages.prefixed(MiniMessage.miniMessage()
-                        .deserialize(paradisu.messagesConfig()
-                                .commands()
-                                .paradisu()
-                                .warp()
-                                .update()
-                                .output()
-                                .get(1))));
+                Messages.sendPrefixed(sender, uText.output().get(1));
             }
         });
     }
@@ -282,24 +214,12 @@ public final class ParadisuCommand extends AbstractPaperCommand {
         Player sender = (Player) context.sender().getSender();
 
         paradisu.warpManager().deleteWarp(name).thenAccept(success -> {
+            Paradisu.Warp.Delete dText =
+                    paradisu.messagesConfig().commands().paradisu().warp().delete();
             if (success) {
-                sender.sendMessage(Messages.prefixed(MiniMessage.miniMessage()
-                        .deserialize(paradisu.messagesConfig()
-                                .commands()
-                                .paradisu()
-                                .warp()
-                                .delete()
-                                .output()
-                                .get(0))));
+                Messages.sendPrefixed(sender, dText.output().get(0));
             } else {
-                sender.sendMessage(Messages.prefixed(MiniMessage.miniMessage()
-                        .deserialize(paradisu.messagesConfig()
-                                .commands()
-                                .paradisu()
-                                .warp()
-                                .delete()
-                                .output()
-                                .get(1))));
+                Messages.sendPrefixed(sender, dText.output().get(1));
             }
         });
     }

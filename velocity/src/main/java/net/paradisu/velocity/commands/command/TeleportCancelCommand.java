@@ -19,17 +19,17 @@ package net.paradisu.velocity.commands.command;
 
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.Player;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.paradisu.core.locale.Messages;
 import net.paradisu.velocity.ParadisuVelocity;
 import net.paradisu.velocity.commands.AbstractVelocityCommand;
 import net.paradisu.velocity.commands.util.teleport.TeleportQueue;
 import net.paradisu.velocity.commands.util.teleport.TeleportRequestHeader;
+import net.paradisu.velocity.config.configs.MessagesConfig;
 import org.incendo.cloud.context.CommandContext;
 import org.incendo.cloud.description.Description;
 import org.incendo.cloud.velocity.parser.PlayerParser;
+
+import java.util.List;
 
 public final class TeleportCancelCommand extends AbstractVelocityCommand {
     public TeleportCancelCommand(ParadisuVelocity paradisu) {
@@ -38,19 +38,15 @@ public final class TeleportCancelCommand extends AbstractVelocityCommand {
 
     @Override
     public void register() {
+        MessagesConfig.Commands.Tpc tText = paradisu.messagesConfig().commands().tpc();
         var builder = this.commandManager
                 .commandBuilder("tpc", "tpcancel")
                 .permission("vparadisu.tprh")
-                .commandDescription(Description.of(
-                        paradisu.messagesConfig().commands().tpc().helpMsg()))
+                .commandDescription(Description.of(tText.helpMsg()))
                 .required(
                         "target",
                         PlayerParser.playerParser(),
-                        Description.of(paradisu.messagesConfig()
-                                .commands()
-                                .tpc()
-                                .helpArgs()
-                                .get(0)))
+                        Description.of(tText.helpArgs().get(0)))
                 .handler(this::teleportCancelCommand);
         this.commandManager.command(builder);
     }
@@ -69,24 +65,14 @@ public final class TeleportCancelCommand extends AbstractVelocityCommand {
         requestHeader.setRequestHeader(player, target);
 
         boolean existingRequest = queue.isTeleportQueued(requestHeader);
+        List<String> tpcOutput = paradisu.messagesConfig().commands().tpc().output();
 
         if (existingRequest) {
             queue.removeTeleport(requestHeader);
-
-            target.sendMessage(Messages.prefixed(MiniMessage.miniMessage()
-                    .deserialize(
-                            paradisu.messagesConfig().commands().tpc().output().get(0),
-                            Placeholder.component("player", Component.text(player.getUsername())))));
-
-            player.sendMessage(Messages.prefixed(MiniMessage.miniMessage()
-                    .deserialize(
-                            paradisu.messagesConfig().commands().tpc().output().get(1),
-                            Placeholder.component("player", Component.text(target.getUsername())))));
+            Messages.sendPrefixedPlaceholder(target, tpcOutput.get(0), "player", player.getUsername());
+            Messages.sendPrefixedPlaceholder(player, tpcOutput.get(1), "player", target.getUsername());
         } else {
-            player.sendMessage(Messages.prefixed(MiniMessage.miniMessage()
-                    .deserialize(
-                            paradisu.messagesConfig().commands().tpc().output().get(2),
-                            Placeholder.component("player", Component.text(target.getUsername())))));
+            Messages.sendPrefixedPlaceholder(player, tpcOutput.get(2), "player", target.getUsername());
         }
     }
 }

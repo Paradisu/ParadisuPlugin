@@ -42,8 +42,7 @@ public class VelocityCommandRegistrar {
                         new TeleportHereRequestCommand(paradisu),
                         new TeleportPositionCommand(paradisu),
                         new TeleportRequestCommand(paradisu),
-                        new VParadisuCommand(paradisu),
-                        new WarpCommand(paradisu))
+                        new VParadisuCommand(paradisu))
                 .forEach(AbstractVelocityCommand::register);
     }
 }

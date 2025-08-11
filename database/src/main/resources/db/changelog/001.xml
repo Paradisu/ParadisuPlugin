@@ -36,6 +36,8 @@
         </createTable>
     </changeSet>
 
+    
+
     <changeSet id="3" author="paradisu">
         <createTable tableName="PLAYER_PROXY_SESSIONS">
             <column name="id" type="UUID" autoIncrement="false">
@@ -82,13 +84,13 @@
             <column name="context" type="VARCHAR(255)">
                 <constraints nullable="false" />
             </column>
-            <column name="x" type="DOUBLE">
+            <column name="x" type="FLOAT">
                 <constraints nullable="false" />
             </column>
-            <column name="y" type="DOUBLE">
+            <column name="y" type="FLOAT">
                 <constraints nullable="false" />
             </column>
-            <column name="z" type="DOUBLE">
+            <column name="z" type="FLOAT">
                 <constraints nullable="false" />
             </column>
             <column name="yaw" type="FLOAT">
@@ -99,13 +101,6 @@
             </column>
             <column name="permission" type="VARCHAR(255)" />
         </createTable>
-    </changeSet>
-
-    <changeSet id="6" author="paradisu">
-        <addUniqueConstraint
-            constraintName="uq_warp_name_context"
-            tableName="WARPS"
-            columnNames="name, context"/>
     </changeSet>
 
 </databaseChangeLog>

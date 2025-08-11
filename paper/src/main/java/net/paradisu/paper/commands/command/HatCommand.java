@@ -18,7 +18,6 @@
 package net.paradisu.paper.commands.command;
 
 import io.papermc.paper.command.brigadier.CommandSourceStack;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.paradisu.core.locale.Messages;
 import net.paradisu.paper.ParadisuPaper;
 import net.paradisu.paper.commands.AbstractPaperCommand;
@@ -57,7 +56,7 @@ public class HatCommand extends AbstractPaperCommand {
         }
         player.getInventory().setHelmet(handItem);
         player.getInventory().setItemInMainHand(currentHelmet);
-        player.sendMessage(Messages.prefixed(MiniMessage.miniMessage()
-                .deserialize(paradisu.messagesConfig().commands().hat().output().get(0))));
+        Messages.sendPrefixed(
+                player, paradisu.messagesConfig().commands().hat().output().get(0));
     }
 }

@@ -19,9 +19,13 @@ package net.paradisu.paper.warps;
 
 import de.themoep.connectorplugin.connector.MessageTarget;
 import jakarta.persistence.EntityManager;
+import lombok.Getter;
+import lombok.experimental.Accessors;
 import net.paradisu.database.models.WarpModel;
 import net.paradisu.paper.ParadisuPaper;
 import net.paradisu.paper.messaging.messages.SyncWarpsMessage;
+import net.paradisu.paper.sync.WarpSync;
+import org.bukkit.Bukkit;
 
 import java.util.HashMap;
 import java.util.List;
@@ -30,9 +34,13 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
+@Accessors(fluent = true)
 public class WarpManager {
     private final ParadisuPaper paradisu;
     private List<WarpModel> warps;
+
+    @Getter
+    private List<String> warpNames;
 
     private Map<WarpKey, WarpModel> warpMap;
     private Map<String, List<WarpModel>> nameWarpMap = new HashMap<>();
@@ -44,20 +52,16 @@ public class WarpManager {
         this.syncWarps();
     }
 
-    public boolean syncWarps() {
-        try (EntityManager entityManager = paradisu.databaseSession().factory().createEntityManager(); ) {
-            this.warps = entityManager
-                    .createQuery("SELECT w FROM WarpModel w", WarpModel.class)
-                    .getResultList();
-            this.warps.forEach(w -> entityManager.detach(w));
-            this.warpMap = this.warps.stream()
-                    .collect(Collectors.toMap(warp -> new WarpKey(warp.name(), warp.context()), warp -> warp));
-            this.nameWarpMap = this.warps.stream().collect(Collectors.groupingBy(WarpModel::name, Collectors.toList()));
-            return true;
-        } catch (Exception e) {
-            paradisu.logger().error("Failed to load warps from the database", e);
-            return false;
-        }
+    public void syncWarps() {
+        Bukkit.getScheduler().runTaskAsynchronously(paradisu, new WarpSync(paradisu));
+    }
+
+    public void setWarps(List<WarpModel> warps) {
+        this.warps = warps;
+        this.warpMap = warps.stream()
+                .collect(Collectors.toMap(warp -> new WarpKey(warp.name(), warp.context()), warp -> warp));
+        this.nameWarpMap = warps.stream().collect(Collectors.groupingBy(WarpModel::name, Collectors.toList()));
+        this.warpNames = warps.stream().map(WarpModel::name).distinct().collect(Collectors.toList());
     }
 
     public CompletableFuture<Boolean> createWarp(WarpModel warp) {
@@ -125,9 +129,9 @@ public class WarpManager {
         });
     }
 
-    public WarpModel getClosestWarp(String name) {
+    public WarpModel closestWarp(String name) {
         List<WarpModel> warps = this.nameWarpMap.get(name);
-        if (warps.isEmpty()) {
+        if (warps == null || warps.isEmpty()) {
             return null;
         }
         if (warps.size() == 1) {
@@ -141,7 +145,7 @@ public class WarpManager {
                 .orElseGet(() -> warps.getFirst());
     }
 
-    public WarpModel getExactWarp(String name, String context) {
+    public WarpModel exactWarp(String name, String context) {
         return this.warpMap.get(new WarpKey(name, context));
     }
 
