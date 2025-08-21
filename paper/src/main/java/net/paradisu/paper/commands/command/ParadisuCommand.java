@@ -18,6 +18,7 @@
 package net.paradisu.paper.commands.command;
 
 import io.papermc.paper.command.brigadier.CommandSourceStack;
+import lombok.Getter;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.paradisu.core.locale.Messages;
 import net.paradisu.paper.ParadisuPaper;

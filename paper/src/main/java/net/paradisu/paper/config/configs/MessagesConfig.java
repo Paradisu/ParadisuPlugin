@@ -71,6 +71,18 @@ public final class MessagesConfig {
     public static final class Commands {
         private Paradisu paradisu = new Paradisu();
         private Hat hat = new Hat();
+        private RealSize realSize = new RealSize();
+
+        @Getter
+        @ConfigSerializable
+        public static final class RealSize {
+            @Setting("help-msg") private String helpMsg = "<lang:paradisu.command.help.realsize>";
+            @Setting("help-msg") private String tootall = "<lang:paradisu.command.output.realsize.tootall>";
+            @Setting("help-msg") private String tooshort = "<lang:paradisu.command.output.realsize.toosmall>";
+            @Setting("output")
+            private List<String> output = List.of("<lang:paradisu.command.output.realsize>");
+        }
+
 
         @Getter
         @ConfigSerializable
