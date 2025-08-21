@@ -22,6 +22,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.paradisu.core.locale.Messages;
 import net.paradisu.paper.ParadisuPaper;
 import net.paradisu.paper.commands.AbstractPaperCommand;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.incendo.cloud.context.CommandContext;
@@ -59,5 +60,6 @@ public class HatCommand extends AbstractPaperCommand {
         player.getInventory().setItemInMainHand(currentHelmet);
         player.sendMessage(Messages.prefixed(MiniMessage.miniMessage()
                 .deserialize(paradisu.messagesConfig().commands().hat().output().get(0))));
+
     }
 }

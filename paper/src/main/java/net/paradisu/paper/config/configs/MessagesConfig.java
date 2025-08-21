@@ -72,6 +72,17 @@ public final class MessagesConfig {
         private Paradisu paradisu = new Paradisu();
         private Hat hat = new Hat();
         private RealSize realSize = new RealSize();
+        private MetaCmd meta = new MetaCmd();
+
+        @Getter
+        @ConfigSerializable
+        public static final class MetaCmd {
+            @Setting("help-msg") private String helpMsg = "<lang:paradisu.command.help.meta>";
+            // TBD
+            @Setting("output")
+            private List<String> output = List.of("<lang:paradisu.command.output.meta>");
+        }
+
 
         @Getter
         @ConfigSerializable
