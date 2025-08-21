@@ -12,7 +12,6 @@ dependencies {
     compileOnly(libs.bundles.adventure.paper)
     compileOnly(libs.paper.api)
     compileOnly(libs.connectorplugin.bukkit)
-    compileOnly(libs.protocollib)
     compileOnly(libs.luckperms.api)
 }
 

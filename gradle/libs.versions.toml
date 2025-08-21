@@ -17,7 +17,6 @@ lombok = "8.13"
 luckperms-api = "5.5"
 paper-api = "1.21.8-R0.1-SNAPSHOT"
 postgresql = "42.7.5"
-protocollib = "5.3.0"
 shadow = "8.3.8"
 spotless = "7.0.4"
 velocity-api = "3.4.0-SNAPSHOT"
@@ -44,7 +43,6 @@ log4j-slf4j-impl = { group = "org.apache.logging.log4j", name = "log4j-slf4j-imp
 luckperms-api = { group = "net.luckperms", name = "api", version.ref = "luckperms-api" }
 paper-api = { group = "io.papermc.paper", name = "paper-api", version.ref = "paper-api" }
 postgresql = { group = "org.postgresql", name = "postgresql", version.ref = "postgresql" }
-protocollib = { group = "com.comphenix.protocol", name = "ProtocolLib", version.ref = "protocollib" }
 shadow = { group = "com.gradleup.shadow", name = "shadow-gradle-plugin", version.ref = "shadow" }
 spotless = { group = "com.diffplug.spotless", name = "spotless-plugin-gradle", version.ref = "spotless" }
 velocity-api = { group = "com.velocitypowered", name = "velocity-api", version.ref = "velocity-api" }
