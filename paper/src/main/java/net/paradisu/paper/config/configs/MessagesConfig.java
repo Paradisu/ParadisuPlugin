@@ -77,23 +77,28 @@ public final class MessagesConfig {
         @Getter
         @ConfigSerializable
         public static final class MetaCmd {
-            @Setting("help-msg") private String helpMsg = "<lang:paradisu.command.help.meta>";
+            @Setting("help-msg")
+            private String helpMsg = "<lang:paradisu.command.help.meta>";
             // TBD
             @Setting("output")
             private List<String> output = List.of("<lang:paradisu.command.output.meta>");
         }
 
-
         @Getter
         @ConfigSerializable
         public static final class RealSize {
-            @Setting("help-msg") private String helpMsg = "<lang:paradisu.command.help.realsize>";
-            @Setting("help-msg") private String tootall = "<lang:paradisu.command.output.realsize.tootall>";
-            @Setting("help-msg") private String tooshort = "<lang:paradisu.command.output.realsize.toosmall>";
+            @Setting("help-msg")
+            private String helpMsg = "<lang:paradisu.command.help.realsize>";
+
+            @Setting("help-msg")
+            private String tootall = "<lang:paradisu.command.output.realsize.tootall>";
+
+            @Setting("help-msg")
+            private String tooshort = "<lang:paradisu.command.output.realsize.toosmall>";
+
             @Setting("output")
             private List<String> output = List.of("<lang:paradisu.command.output.realsize>");
         }
-
 
         @Getter
         @ConfigSerializable
