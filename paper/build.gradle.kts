@@ -5,7 +5,6 @@ plugins {
 
 dependencies {
     api(project(":core"))
-    implementation(libs.dotenv.kotlin)
     implementation(libs.bundles.cloud.paper)
     implementation(libs.bundles.database)
     implementation(libs.configurate.yaml)

@@ -1,3 +1,6 @@
+import org.eclipse.jgit.api.Git
+import org.eclipse.jgit.revwalk.RevWalk
+import net.kyori.indra.git.RepositoryValueSource
 import net.kyori.blossom.BlossomExtension
 import groovy.util.Node
 
@@ -22,50 +25,62 @@ dependencies {
     compileOnly(libs.log4j.slf4j.impl)
 }
 
-// Mostly mirrors Geyser's setup https://github.com/GeyserMC/Geyser/blob/master/core/build.gradle.kts#L87-L134
-configure<BlossomExtension> {
-    val constantsFile = "src/main/java/net/paradisu/core/utils/Constants.java"
-    val info = GitInfo()
+abstract class CommitMessageValueSource : RepositoryValueSource.Parameterless<String>() {
+    override fun obtain(repository: Git): String? {
+        val headCommitId = repository.repository.resolve("HEAD")
 
-    replaceToken("\${plugin.id}", properties["id"], constantsFile)
-    replaceToken("\${plugin.name}", properties["pluginName"], constantsFile)
-    replaceToken("\${plugin.version}", properties["version"], constantsFile)
-    replaceToken("\${plugin.description}", properties["description"], constantsFile)
-    replaceToken("\${plugin.url}", properties["url"], constantsFile)
-    replaceToken("\${plugin.authors}", properties["authors"], constantsFile)
+        if (headCommitId == null) {
+            return ""
+        }
 
-    replaceToken("\${git.branch}", info.branch, constantsFile)
-    replaceToken("\${git.commit}", info.commit, constantsFile)
-    replaceToken("\${git.commitAbbrev}", info.commitAbbrev, constantsFile)
-    replaceToken("\${git.buildNumber}", info.buildNumber, constantsFile)
-    replaceToken("\${git.commitMessage}", info.commitMessage, constantsFile)
-    replaceToken("\${git.repository}", info.repository, constantsFile)
+        RevWalk(repository.repository).use { walk ->
+            val commit = walk.parseCommit(headCommitId)
+            return commit.fullMessage
+        }
+    }
 }
 
-inner class GitInfo {
-    val branch: String
-    val commit: String
-    val commitAbbrev: String
-
-    val buildNumber: String
-
-    val commitMessage: String
-    val repository: String
-
-    
-    init {
-        branch = indraGit.branchName() ?: System.getenv("BRANCH_NAME") ?: "DEV"
-
-        val commit = indraGit.commit()
-        this.commit = commit?.name ?: "0".repeat(40)
-        commitAbbrev = commit?.name?.substring(0, 7) ?: "0".repeat(7)
-
-        buildNumber = (System.getenv("GITHUB_RUN_NUMBER")) ?: "-1"
-
-        val git = indraGit.git()
-        commitMessage = git?.commit()?.message ?: ""
-        repository = git?.repository?.config?.getString("remote", "origin", "url") ?: ""
+abstract class RepositoryUrlValueSource : RepositoryValueSource.Parameterless<String>() {
+    override fun obtain(repository: Git): String? {
+        return repository.repository.config.getString("remote", "origin", "url")
     }
+}
+
+val gitBranch = indraGit.branchName().orElse("DEV")
+val gitCommit = indraGit.commit()
+
+val gitCommitName = gitCommit.map { it?.name ?: "0".repeat(40) }
+val gitCommitAbbrev = gitCommit.map { it?.name?.substring(0, 7) ?: "0".repeat(7) }
+
+val gitCommitMessage = indraGit.repositoryValue(CommitMessageValueSource::class.java).orElse("")
+val gitRepositoryUrl = indraGit.repositoryValue(RepositoryUrlValueSource::class.java).orElse("").map {
+    it.replace("git@github.com:", "https://github.com/")
+}
+
+sourceSets {
+    main {
+        blossom {
+            javaSources {
+                property("plugin.id", rootProject.property("id") as String)
+                property("plugin.name", rootProject.property("pluginName") as String)
+                property("plugin.version", rootProject.property("version") as String)
+                property("plugin.description", rootProject.property("description") as String)
+                property("plugin.url", rootProject.property("url") as String)
+                property("plugin.authors", rootProject.property("authors") as String)
+                
+                property("git.branch", gitBranch)
+                property("git.commit", gitCommitName)
+                property("git.commitAbbrev", gitCommitAbbrev)
+                property("git.buildNumber", System.getenv("GITHUB_RUN_NUMBER") ?: "-1")
+                property("git.commitMessage", gitCommitMessage)
+                property("git.repository", gitRepositoryUrl)
+            }
+        }
+    }
+}
+
+fun isDevBuild(branch: String, repository: String): Boolean {
+    return branch != "master" || repository.equals("https://github.com/Paradisu/ParadisuPlugin", ignoreCase = true).not()
 }
 
 eclipse {
