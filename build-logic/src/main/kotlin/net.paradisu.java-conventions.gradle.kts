@@ -42,7 +42,7 @@ java {
 
 spotless {
     java {
-        palantirJavaFormat("2.39.0").formatJavadoc(true)
+        palantirJavaFormat("2.83.0").formatJavadoc(true)
         importOrder("", "javax|java", "\\#")
         removeUnusedImports()
     }
@@ -71,13 +71,13 @@ tasks {
     processResources {
         filesMatching(listOf("plugin.yml", "velocity-plugin.json", "*.properties")) {
             expand(
-                "id" to properties["id"],
-                "name" to properties["pluginName"],
-                "version" to properties["version"],
+                "id" to properties["id"]!!,
+                "name" to properties["pluginName"]!!,
+                "version" to properties["version"]!!,
                 "paperApiVersion" to parseApiVersion(libs.versions.paper.api.get()),
-                "description" to properties["description"],
-                "url" to properties["url"],
-                "authors" to properties["authors"]
+                "description" to properties["description"]!!,
+                "url" to properties["url"]!!,
+                "authors" to properties["authors"]!!
             )
         }
     }
