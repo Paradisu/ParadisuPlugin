@@ -71,6 +71,7 @@ public final class MessagesConfig {
     public static final class Commands {
         private Paradisu paradisu = new Paradisu();
         private Hat hat = new Hat();
+        private Warp warp = new Warp();
 
         @Getter
         @ConfigSerializable
@@ -172,6 +173,24 @@ public final class MessagesConfig {
                             "<lang:paradisu.command.output.paradisu.warp.delete.1>");
                 }
             }
+        }
+
+        @Getter
+        @ConfigSerializable
+        public static final class Warp {
+            @Setting("help-msg")
+            private String helpMsg = "<lang:paradisu.command.help.warp>";
+
+            @Setting("help-args")
+            private List<String> helpArgs =
+                    List.of("<lang:paradisu.command.help.warp.0>", "<lang:paradisu.command.help.warp.1>");
+
+            @Setting("output")
+            private List<String> output = List.of(
+                    "<lang:paradisu.command.output.warp.0>",
+                    "<lang:paradisu.command.output.warp.1:'<gold><warp>'>",
+                    "<lang:paradisu.command.output.warp.2:'<gold><player><gray>':'<gold><warp>'>",
+                    "<lang:paradisu.command.output.warp.3>");
         }
     }
 }

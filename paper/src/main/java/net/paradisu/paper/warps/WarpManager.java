@@ -17,20 +17,27 @@
 
 package net.paradisu.paper.warps;
 
+import de.themoep.connectorplugin.LocationInfo;
 import de.themoep.connectorplugin.connector.MessageTarget;
 import jakarta.persistence.EntityManager;
 import lombok.Getter;
 import lombok.experimental.Accessors;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.paradisu.core.locale.Messages;
 import net.paradisu.database.models.WarpModel;
 import net.paradisu.paper.ParadisuPaper;
+import net.paradisu.paper.messaging.ServerState;
 import net.paradisu.paper.messaging.messages.SyncWarpsMessage;
 import net.paradisu.paper.sync.WarpSync;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -58,10 +65,10 @@ public class WarpManager {
 
     public void setWarps(List<WarpModel> warps) {
         this.warps = warps;
-        this.warpMap = warps.stream()
+        this.warpMap = this.warps.stream()
                 .collect(Collectors.toMap(warp -> new WarpKey(warp.name(), warp.context()), warp -> warp));
-        this.nameWarpMap = warps.stream().collect(Collectors.groupingBy(WarpModel::name, Collectors.toList()));
-        this.warpNames = warps.stream().map(WarpModel::name).distinct().collect(Collectors.toList());
+        this.nameWarpMap = this.warps.stream().collect(Collectors.groupingBy(WarpModel::name, Collectors.toList()));
+        this.warpNames = this.warps.stream().map(WarpModel::name).distinct().collect(Collectors.toList());
     }
 
     public CompletableFuture<Boolean> createWarp(WarpModel warp) {
@@ -147,6 +154,56 @@ public class WarpManager {
 
     public WarpModel exactWarp(String name, String context) {
         return this.warpMap.get(new WarpKey(name, context));
+    }
+
+    @SuppressWarnings("unchecked")
+    public void teleportPlayer(Player player, WarpModel warp, Player sender) {
+        if (warp.permission() != null && !player.hasPermission(warp.permission())) {
+            Messages.sendPrefixed(
+                    sender, paradisu.messagesConfig().commands().warp().output().get(0));
+            return;
+        }
+
+        if (warp.context().equals(paradisu.paradisuConfig().context().warp())) {
+            Location loc =
+                    new Location(Bukkit.getWorld(warp.world()), warp.x(), warp.y(), warp.z(), warp.yaw(), warp.pitch());
+            player.teleportAsync(loc).thenAccept(success -> {
+                if (success) sendTeleportSuccess(player, warp, sender);
+            });
+            return;
+        }
+
+        Optional<ServerState> targetServer = paradisu.messagingManager().findBestServerForContext(warp.context());
+
+        if (targetServer.isEmpty()) {
+            Messages.sendPrefixed(
+                    sender, paradisu.messagesConfig().commands().warp().output().get(3));
+            return;
+        }
+
+        LocationInfo locInfo = new LocationInfo(
+                targetServer.get().serverName(), warp.world(), warp.x(), warp.y(), warp.z(), warp.yaw(), warp.pitch());
+
+        paradisu.messagingManager().teleport(player, locInfo, result -> {
+            paradisu.logger().info("Teleport result: " + result);
+        });
+
+        sendTeleportSuccess(player, warp, sender);
+    }
+
+    private void sendTeleportSuccess(Player target, WarpModel warp, Player sender) {
+        if (target.equals(sender)) {
+            Messages.sendPrefixed(
+                    target,
+                    paradisu.messagesConfig().commands().warp().output().get(1),
+                    Placeholder.parsed("warp", warp.name()));
+        } else {
+            Messages.sendPrefixed(
+                    sender,
+                    paradisu.messagesConfig().commands().warp().output().get(2),
+                    Placeholder.parsed("warp", warp.name()),
+                    Placeholder.parsed("player", target.getName()));
+        }
     }
 
     record WarpKey(String name, String context) {

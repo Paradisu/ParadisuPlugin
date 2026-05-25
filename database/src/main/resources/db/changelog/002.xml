@@ -17,6 +17,9 @@
         <addColumn tableName="WARPS">
             <column name="aliases" type="VARCHAR(255) [100]" />
         </addColumn>
+        <addColumn tableName="WARPS">
+            <column name="world" type="VARCHAR(255)" />
+        </addColumn>
     </changeSet>
 
 </databaseChangeLog>

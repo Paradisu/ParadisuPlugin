@@ -66,6 +66,10 @@ public class WarpModel {
     private String[] aliases;
 
     @Setter
+    @Column(name = "world", nullable = false)
+    private String world;
+
+    @Setter
     @Column(name = "x", nullable = false)
     private double x;
 

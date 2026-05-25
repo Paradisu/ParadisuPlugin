@@ -220,4 +220,13 @@ public class ParadisuPaper extends JavaPlugin implements ParadisuPlugin<BukkitCo
         this.translationManager.reload();
         logger().info("Reloaded Paradisu Paper plugin");
     }
+
+    /** Disables the plugin. */
+    @Override
+    public void onDisable() {
+        if (this.messagingManager != null) {
+            this.messagingManager.broadcastHeartbeat(true);
+        }
+        super.onDisable(); //
+    }
 }
