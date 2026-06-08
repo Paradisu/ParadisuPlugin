@@ -18,6 +18,9 @@
 package net.paradisu.paper.listeners;
 
 import lombok.AllArgsConstructor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.paradisu.paper.ParadisuPaper;
 import net.paradisu.paper.sync.PlayerQuitSync;
 import org.bukkit.Bukkit;
@@ -34,7 +37,16 @@ public class PlayerQuitListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
+        String name = player.getName();
 
         Bukkit.getScheduler().runTaskAsynchronously(paradisu, new PlayerQuitSync(paradisu, player));
+
+        event.quitMessage(MiniMessage.miniMessage().deserialize(paradisu.messagesConfig()
+                .asyncevents()
+                .leaveevent()
+                .get(0),
+                Placeholder.component(
+                        "player",
+                        Component.text(name))));
     }
 }

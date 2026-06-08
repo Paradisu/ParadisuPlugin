@@ -19,6 +19,7 @@ package net.paradisu.paper.config.configs;
 
 import lombok.Getter;
 import lombok.experimental.Accessors;
+import org.jetbrains.annotations.Async;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Comment;
 import org.spongepowered.configurate.objectmapping.meta.Setting;
@@ -34,6 +35,7 @@ public final class MessagesConfig {
 
     private Utility utility = new Utility();
     private Commands commands = new Commands();
+    private AsyncEvents asyncevents = new AsyncEvents();
 
     @Getter
     @ConfigSerializable
@@ -64,6 +66,16 @@ public final class MessagesConfig {
             int size = this.listPrefixes.size();
             return index < size ? this.listPrefixes.get(index) : this.listPrefixes.get(size - 1);
         }
+    }
+
+
+    @Getter
+    @ConfigSerializable
+    public static final class AsyncEvents {
+        @Setting("output") private List<String> joinevent =
+                List.of("<lang:paradisu.event.output.join:'<player>'>");
+        @Setting("output") private List<String> leaveevent =
+                List.of("<lang:paradisu.event.output.leave:'<player>'>");
     }
 
     @Getter

@@ -18,6 +18,9 @@
 package net.paradisu.paper.listeners;
 
 import lombok.AllArgsConstructor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.paradisu.paper.ParadisuPaper;
 import net.paradisu.paper.sync.PlayerJoinSync;
 import org.bukkit.Bukkit;
@@ -34,7 +37,18 @@ public class PlayerJoinListener implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
+        String name = player.getName();
 
         Bukkit.getScheduler().runTaskAsynchronously(paradisu, new PlayerJoinSync(paradisu, player));
+
+        event.joinMessage(MiniMessage.miniMessage().deserialize(paradisu.messagesConfig()
+                        .asyncevents()
+                        .joinevent()
+                        .get(0),
+                Placeholder.component(
+                        "player",
+                        Component.text(name))));
+
+
     }
 }
