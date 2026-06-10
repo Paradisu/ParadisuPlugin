@@ -18,6 +18,7 @@
             <column name="last_seen" type="TIMESTAMP" />
             <column name="last_server" type="VARCHAR(255)" />
             <column name="playtime" type="BIGINT" />
+            <column name="balance" type="BIGINT" />
         </createTable>
     </changeSet>
 

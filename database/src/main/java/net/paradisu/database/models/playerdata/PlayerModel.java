@@ -76,6 +76,10 @@ public class PlayerModel {
     @Column(name = "playtime")
     private long playtime;
 
+    @Setter
+    @Column(name = "balance")
+    private long balance;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "player", cascade = CascadeType.ALL, orphanRemoval = true)
     @Setter
     private Set<PlayerServerSessionModel> serverSessions;

@@ -27,17 +27,6 @@ jobs:
     - name: Setup Gradle
       # See https://github.com/gradle/actions/releases
       uses: gradle/actions/setup-gradle@50e97c2cd7a37755bbfafc9c5b7cafaece252f6e
-    - name: Apply Spotless
-      run: ./gradlew spotlessApply
-    - name: Commit Formatting Changes
-      # See https://github.com/planetscale/ghcommit-action/releases
-      uses: planetscale/ghcommit-action@25309d8005ac7c3bcd61d3fe19b69e0fe47dbdde
-      with:
-        commit_message: "Apply spotless code formatting"
-        repo: ${{ github.repository }}
-        branch: ${{ github.head_ref || github.ref_name }}
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Build with Gradle
       run: ./gradlew build
     - name: Archive Artifacts
@@ -48,3 +37,5 @@ jobs:
         name: ParadisuPlugin
         path: build/libs/ParadisuPlugin.jar
         if-no-files-found: error
+    - name: Check Spotless Formatting
+      run: ./gradlew spotlessCheck

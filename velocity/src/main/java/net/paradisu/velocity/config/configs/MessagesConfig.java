@@ -72,7 +72,9 @@ public final class MessagesConfig {
         private Locate locate = new Locate();
         private Ls ls = new Ls();
         private Back back = new Back();
+        private Balance balance = new Balance();
         private Packs packs = new Packs();
+        private SetBalance setBalance = new SetBalance();
         private Tp tp = new Tp();
         private Tpa tpa = new Tpa();
         private Tpc tpc = new Tpc();
@@ -96,6 +98,36 @@ public final class MessagesConfig {
             private List<String> output = List.of(
                     "<lang:paradisu.command.output.back.0:'<gold><player>'>",
                     "<lang:paradisu.command.output.back.1:'<gold><player>'>");
+        }
+
+        @Getter
+        @ConfigSerializable
+        public static final class Balance {
+            @Setting("help-msg")
+            private String helpMsg = "<lang:paradisu.command.help.balance>";
+
+            @Setting("help-args")
+            private List<String> helpArgs =
+                    List.of("<lang:paradisu.command.help.balance.0>");
+
+            @Setting("output")
+            private List<String> output = List.of("<lang:paradisu.command.output.balance:'<gold><player>':'<gold><balance>'>");
+        }
+
+        @Getter
+        @ConfigSerializable
+        public static final class SetBalance {
+            @Setting("help-msg")
+            private String helpMsg = "<lang:paradisu.command.help.setbalance>";
+
+            @Setting("help-args")
+            private List<String> helpArgs =
+                    List.of("<lang:paradisu.command.help.setbalance.0>", "<lang:paradisu.command.help.setbalance.1>");
+
+            @Setting("output")
+            private List<String> output =
+                    List.of("<lang:paradisu.command.output.setbalance.0:'<gold><player>':'<gold><newbalance>'>",
+                    "<lang:paradisu.command.output.setbalance.1>");
         }
 
         @Getter
