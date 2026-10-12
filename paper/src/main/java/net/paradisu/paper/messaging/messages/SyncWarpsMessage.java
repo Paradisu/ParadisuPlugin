@@ -1,5 +1,5 @@
 /*
- * The official plugin for the Paradisu server. Copyright (C) 2025 Paradisu. https://paradisu.net
+ * The official plugin for the Paradisu server. Copyright (C) 2026 Paradisu. https://paradisu.net
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -18,14 +18,16 @@
 package net.paradisu.paper.messaging.messages;
 
 import de.themoep.connectorplugin.bukkit.BukkitConnectorPlugin;
+import de.themoep.connectorplugin.connector.Message;
 import net.paradisu.core.messaging.RegisteredMessage;
 import net.paradisu.paper.ParadisuPaper;
 import org.bukkit.entity.Player;
 
+/** Tells servers that warps changed in the database and should be reloaded. */
 public class SyncWarpsMessage extends RegisteredMessage<BukkitConnectorPlugin, Player> {
     public static final String ACTION = "SYNC_WARPS";
 
-    private ParadisuPaper paradisu;
+    private final ParadisuPaper paradisu;
 
     public SyncWarpsMessage(ParadisuPaper paradisu) {
         super(ACTION);
@@ -33,11 +35,12 @@ public class SyncWarpsMessage extends RegisteredMessage<BukkitConnectorPlugin, P
     }
 
     @Override
-    public void handleMessage(Player player, byte[] message) {
+    public void handle(Player receiver, Message message) {
         this.paradisu.warpManager().syncWarps();
     }
 
-    public static class Message implements SerialMessage {
+    /** Empty payload; receiving it is the signal. */
+    public record Payload() implements SerialMessage {
         @Override
         public String action() {
             return ACTION;

@@ -1,5 +1,5 @@
 /*
- * The official plugin for the Paradisu server. Copyright (C) 2026 Paradisu. https://paradisu.net
+ * The official plugin for the Paradisu server. Copyright (C) 2025 Paradisu. https://paradisu.net
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -17,47 +17,42 @@
 
 package net.paradisu.paper.commands.parser;
 
+import io.papermc.paper.command.brigadier.CommandSourceStack;
 import lombok.RequiredArgsConstructor;
 import net.paradisu.paper.ParadisuPaper;
 import net.paradisu.paper.messaging.ClusterPlayer;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.incendo.cloud.context.CommandContext;
 import org.incendo.cloud.context.CommandInput;
 import org.incendo.cloud.parser.ArgumentParseResult;
 import org.incendo.cloud.parser.ArgumentParser;
+import org.incendo.cloud.parser.ParserDescriptor;
 import org.incendo.cloud.suggestion.BlockingSuggestionProvider;
 
-import java.util.Optional;
-
+/** Parses a player online anywhere in the cluster, using the server heartbeats. */
 @RequiredArgsConstructor
-public class ClusterPlayerParser<C> implements ArgumentParser<C, ClusterPlayer>, BlockingSuggestionProvider.Strings<C> {
+public class ClusterPlayerParser
+        implements ArgumentParser<CommandSourceStack, ClusterPlayer>,
+                BlockingSuggestionProvider.Strings<CommandSourceStack> {
     private final ParadisuPaper paradisu;
+
+    /**
+     * Creates a parser descriptor for cluster players.
+     *
+     * @param paradisu the plugin instance
+     * @return the parser descriptor
+     */
+    public static ParserDescriptor<CommandSourceStack, ClusterPlayer> clusterPlayerParser(ParadisuPaper paradisu) {
+        return ParserDescriptor.of(new ClusterPlayerParser(paradisu), ClusterPlayer.class);
+    }
 
     @Override
     public @NonNull ArgumentParseResult<@NonNull ClusterPlayer> parse(
-            @NonNull CommandContext<@NonNull C> commandContext, @NonNull CommandInput commandInput) {
-
+            @NonNull CommandContext<@NonNull CommandSourceStack> commandContext, @NonNull CommandInput commandInput) {
         final String input = commandInput.readString();
-
-        Player localPlayer = Bukkit.getPlayer(input);
-        if (localPlayer != null) {
-            return ArgumentParseResult.success(new ClusterPlayer(
-                    localPlayer.getUniqueId(),
-                    localPlayer.getName(),
-                    paradisu.connector().getServerName(),
-                    true));
-        }
-
-        Optional<ClusterPlayer> remotePlayer = paradisu.messagingManager().clusterState().values().stream()
-                .filter(state -> System.currentTimeMillis() - state.lastHeartbeat() < 15000)
-                .flatMap(state -> state.onlinePlayers().stream()
-                        .filter(p -> p.name().equalsIgnoreCase(input))
-                        .map(p -> new ClusterPlayer(p.uuid(), p.name(), state.serverName(), false)))
-                .findFirst();
-
-        return remotePlayer
+        return this.paradisu
+                .messagingManager()
+                .findPlayer(input)
                 .map(ArgumentParseResult::success)
                 .orElseGet(() -> ArgumentParseResult.failure(
                         new IllegalArgumentException("Player not found in cluster: " + input)));
@@ -65,7 +60,7 @@ public class ClusterPlayerParser<C> implements ArgumentParser<C, ClusterPlayer>,
 
     @Override
     public @NonNull Iterable<@NonNull String> stringSuggestions(
-            @NonNull CommandContext<C> context, @NonNull CommandInput input) {
-        return paradisu.messagingManager().getAllOnlinePlayerNames();
+            @NonNull CommandContext<CommandSourceStack> context, @NonNull CommandInput input) {
+        return this.paradisu.messagingManager().onlinePlayerNames();
     }
 }

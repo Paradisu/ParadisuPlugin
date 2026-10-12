@@ -18,19 +18,23 @@
 package net.paradisu.paper.messaging.messages;
 
 import com.google.common.io.ByteArrayDataInput;
+import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import de.themoep.connectorplugin.bukkit.BukkitConnectorPlugin;
+import de.themoep.connectorplugin.connector.Message;
 import net.paradisu.core.messaging.RegisteredMessage;
 import net.paradisu.paper.ParadisuPaper;
-import net.paradisu.paper.messaging.ServerState;
+import net.paradisu.paper.messaging.ServerState.PlayerState;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/** Periodic broadcast of a server's warp context and online players, used to route warps and find players. */
 public class ServerHeartbeatMessage extends RegisteredMessage<BukkitConnectorPlugin, Player> {
     public static final String ACTION = "SERVER_HEARTBEAT";
+
     private final ParadisuPaper paradisu;
 
     public ServerHeartbeatMessage(ParadisuPaper paradisu) {
@@ -39,24 +43,60 @@ public class ServerHeartbeatMessage extends RegisteredMessage<BukkitConnectorPlu
     }
 
     @Override
-    public void handleMessage(Player player, byte[] message) {
-        @SuppressWarnings("null")
-        ByteArrayDataInput in = ByteStreams.newDataInput(message);
-        String serverName = in.readUTF();
-        String context = in.readUTF();
-        boolean isClosing = in.readBoolean();
+    public void handle(Player receiver, Message message) {
+        Payload payload = Payload.deserialize(message.getData());
+        String serverName = message.getSendingServer();
 
-        if (isClosing) {
-            paradisu.messagingManager().removeServerState(serverName);
-            return;
+        if (payload.closing()) {
+            this.paradisu.messagingManager().removeServerState(serverName);
+        } else {
+            this.paradisu.messagingManager().updateServerState(serverName, payload.warpContext(), payload.players());
+        }
+    }
+
+    /**
+     * Heartbeat payload. The sending server's name is taken from the message itself.
+     *
+     * @param warpContext the warp context of the sending server
+     * @param closing whether the sending server is shutting down
+     * @param players the players online on the sending server
+     */
+    public record Payload(String warpContext, boolean closing, List<PlayerState> players) implements SerialMessage {
+        @Override
+        public String action() {
+            return ACTION;
         }
 
-        int playerCount = in.readInt();
-        List<ServerState.PlayerState> players = new ArrayList<>(playerCount);
-        for (int i = 0; i < playerCount; i++) {
-            players.add(new ServerState.PlayerState(new UUID(in.readLong(), in.readLong()), in.readUTF()));
+        @Override
+        public byte[] serialize() {
+            ByteArrayDataOutput out = ByteStreams.newDataOutput();
+            out.writeUTF(this.warpContext);
+            out.writeBoolean(this.closing);
+            out.writeInt(this.players.size());
+            for (PlayerState player : this.players) {
+                out.writeLong(player.uuid().getMostSignificantBits());
+                out.writeLong(player.uuid().getLeastSignificantBits());
+                out.writeUTF(player.name());
+            }
+            return out.toByteArray();
         }
 
-        paradisu.messagingManager().updateServerState(serverName, context, players);
+        /**
+         * Reads a payload written by {@link #serialize()}.
+         *
+         * @param data the serialized payload
+         * @return the payload
+         */
+        public static Payload deserialize(byte[] data) {
+            ByteArrayDataInput in = ByteStreams.newDataInput(data);
+            String warpContext = in.readUTF();
+            boolean closing = in.readBoolean();
+            int playerCount = in.readInt();
+            List<PlayerState> players = new ArrayList<>(playerCount);
+            for (int i = 0; i < playerCount; i++) {
+                players.add(new PlayerState(new UUID(in.readLong(), in.readLong()), in.readUTF()));
+            }
+            return new Payload(warpContext, closing, players);
+        }
     }
 }

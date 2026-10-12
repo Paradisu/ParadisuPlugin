@@ -72,6 +72,7 @@ public final class MessagesConfig {
         private Paradisu paradisu = new Paradisu();
         private Hat hat = new Hat();
         private Warp warp = new Warp();
+        private Warps warps = new Warps();
 
         @Getter
         @ConfigSerializable
@@ -117,12 +118,33 @@ public final class MessagesConfig {
             @Getter
             @ConfigSerializable
             public static final class Warp {
-                private Delete delete = new Delete();
+                private Send send = new Send();
                 private Create create = new Create();
                 private Update update = new Update();
+                private Delete delete = new Delete();
+                private Permission permission = new Permission();
+                private Aliases aliases = new Aliases();
 
                 @Setting("help-msg")
                 private String helpMsg = "<lang:paradisu.command.help.paradisu.warp>";
+
+                @Setting("output")
+                private List<String> output = List.of(
+                        "<lang:paradisu.command.output.paradisu.warp.0:'<gold><warp>':'<gold><context>'>",
+                        "<lang:paradisu.command.output.paradisu.warp.1>",
+                        "<lang:paradisu.command.output.paradisu.warp.2:'<gold><warp>'>");
+
+                @Getter
+                @ConfigSerializable
+                public static final class Send {
+                    @Setting("help-msg")
+                    private String helpMsg = "<lang:paradisu.command.help.paradisu.warp.send>";
+
+                    @Setting("help-args")
+                    private List<String> helpArgs = List.of(
+                            "<lang:paradisu.command.help.paradisu.warp.send.0>",
+                            "<lang:paradisu.command.help.paradisu.warp.send.1>");
+                }
 
                 @Getter
                 @ConfigSerializable
@@ -137,8 +159,9 @@ public final class MessagesConfig {
 
                     @Setting("output")
                     private List<String> output = List.of(
-                            "<lang:paradisu.command.output.paradisu.warp.create.0>",
-                            "<lang:paradisu.command.output.paradisu.warp.create.1>");
+                            "<lang:paradisu.command.output.paradisu.warp.create.0:'<gold><warp>'>",
+                            "<lang:paradisu.command.output.paradisu.warp.create.1:'<gold><warp>'>",
+                            "<lang:paradisu.command.output.paradisu.warp.create.2:'<gold><max>'>");
                 }
 
                 @Getter
@@ -148,14 +171,11 @@ public final class MessagesConfig {
                     private String helpMsg = "<lang:paradisu.command.help.paradisu.warp.update>";
 
                     @Setting("help-args")
-                    private List<String> helpArgs = List.of(
-                            "<lang:paradisu.command.help.paradisu.warp.update.0>",
-                            "<lang:paradisu.command.help.paradisu.warp.update.1>");
+                    private List<String> helpArgs = List.of("<lang:paradisu.command.help.paradisu.warp.update.0>");
 
                     @Setting("output")
-                    private List<String> output = List.of(
-                            "<lang:paradisu.command.output.paradisu.warp.update.0>",
-                            "<lang:paradisu.command.output.paradisu.warp.update.1>");
+                    private List<String> output =
+                            List.of("<lang:paradisu.command.output.paradisu.warp.update:'<gold><warp>'>");
                 }
 
                 @Getter
@@ -168,9 +188,42 @@ public final class MessagesConfig {
                     private List<String> helpArgs = List.of("<lang:paradisu.command.help.paradisu.warp.delete.0>");
 
                     @Setting("output")
+                    private List<String> output =
+                            List.of("<lang:paradisu.command.output.paradisu.warp.delete:'<gold><warp>'>");
+                }
+
+                @Getter
+                @ConfigSerializable
+                public static final class Permission {
+                    @Setting("help-msg")
+                    private String helpMsg = "<lang:paradisu.command.help.paradisu.warp.permission>";
+
+                    @Setting("help-args")
+                    private List<String> helpArgs = List.of(
+                            "<lang:paradisu.command.help.paradisu.warp.permission.0>",
+                            "<lang:paradisu.command.help.paradisu.warp.permission.1>");
+
+                    @Setting("output")
                     private List<String> output = List.of(
-                            "<lang:paradisu.command.output.paradisu.warp.delete.0>",
-                            "<lang:paradisu.command.output.paradisu.warp.delete.1>");
+                            "<lang:paradisu.command.output.paradisu.warp.permission.0:'<gold><warp>':'<gold><permission>'>",
+                            "<lang:paradisu.command.output.paradisu.warp.permission.1:'<gold><warp>'>");
+                }
+
+                @Getter
+                @ConfigSerializable
+                public static final class Aliases {
+                    @Setting("help-msg")
+                    private String helpMsg = "<lang:paradisu.command.help.paradisu.warp.aliases>";
+
+                    @Setting("help-args")
+                    private List<String> helpArgs = List.of(
+                            "<lang:paradisu.command.help.paradisu.warp.aliases.0>",
+                            "<lang:paradisu.command.help.paradisu.warp.aliases.1>");
+
+                    @Setting("output")
+                    private List<String> output = List.of(
+                            "<lang:paradisu.command.output.paradisu.warp.aliases.0:'<gold><warp>':'<gold><aliases>'>",
+                            "<lang:paradisu.command.output.paradisu.warp.aliases.1:'<gold><warp>'>");
                 }
             }
         }
@@ -182,15 +235,29 @@ public final class MessagesConfig {
             private String helpMsg = "<lang:paradisu.command.help.warp>";
 
             @Setting("help-args")
-            private List<String> helpArgs =
-                    List.of("<lang:paradisu.command.help.warp.0>", "<lang:paradisu.command.help.warp.1>");
+            private List<String> helpArgs = List.of("<lang:paradisu.command.help.warp.0>");
 
             @Setting("output")
             private List<String> output = List.of(
                     "<lang:paradisu.command.output.warp.0>",
                     "<lang:paradisu.command.output.warp.1:'<gold><warp>'>",
-                    "<lang:paradisu.command.output.warp.2:'<gold><player><gray>':'<gold><warp>'>",
-                    "<lang:paradisu.command.output.warp.3>");
+                    "<lang:paradisu.command.output.warp.2:'<gold><player>':'<gold><warp>'>",
+                    "<lang:paradisu.command.output.warp.3>",
+                    "<lang:paradisu.command.output.warp.4:'<gold><warp>'>",
+                    "<lang:paradisu.command.output.warp.5>",
+                    "<lang:paradisu.command.output.warp.6:'<gold><warp>'>",
+                    "<lang:paradisu.command.output.warp.7:'<gold><seconds>'>");
+        }
+
+        @Getter
+        @ConfigSerializable
+        public static final class Warps {
+            @Setting("help-msg")
+            private String helpMsg = "<lang:paradisu.command.help.warps>";
+
+            @Setting("output")
+            private List<String> output = List.of(
+                    "<lang:paradisu.command.output.warps.0:'<gold><warps>'>", "<lang:paradisu.command.output.warps.1>");
         }
     }
 }

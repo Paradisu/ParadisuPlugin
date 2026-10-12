@@ -38,7 +38,6 @@ import liquibase.resource.ClassLoaderResourceAccessor;
 import net.paradisu.core.ParadisuPlugin;
 import net.paradisu.core.database.DatabaseSession;
 import net.paradisu.core.locale.TranslationManager;
-import net.paradisu.core.messaging.MessagingManager;
 import net.paradisu.core.packs.PackManager;
 import net.paradisu.core.utils.Constants;
 import net.paradisu.velocity.commands.VelocityCommandRegistrar;
@@ -48,6 +47,7 @@ import net.paradisu.velocity.config.configs.ParadisuConfig;
 import net.paradisu.velocity.listeners.ConnectionListener;
 import net.paradisu.velocity.listeners.LimboListener;
 import net.paradisu.velocity.listeners.PackListener;
+import net.paradisu.velocity.messaging.VelocityMessagingManager;
 import net.paradisu.velocity.util.VelocityLogger;
 import org.hibernate.Session;
 import org.incendo.cloud.CommandManager;
@@ -77,6 +77,7 @@ public final class ParadisuVelocity implements ParadisuPlugin<VelocityConnectorP
     private VelocityConnectorPlugin connector;
     private PackManager packManager;
     private DatabaseSession databaseSession;
+    private VelocityMessagingManager messagingManager;
 
     @Inject
     public ParadisuVelocity(ProxyServer server, Logger logger, @DataDirectory Path dataDirectory) {
@@ -146,6 +147,8 @@ public final class ParadisuVelocity implements ParadisuPlugin<VelocityConnectorP
         if (connectorPlugin.isPresent()) {
             this.connector = (VelocityConnectorPlugin)
                     connectorPlugin.get().getInstance().get();
+            this.messagingManager = new VelocityMessagingManager(this);
+            this.messagingManager.registerMessages();
         }
 
         // Register listeners
@@ -255,10 +258,14 @@ public final class ParadisuVelocity implements ParadisuPlugin<VelocityConnectorP
         return this.databaseSession;
     }
 
+    /**
+     * Returns the messaging manager for this plugin.
+     *
+     * @return the messaging manager for this plugin
+     */
     @Override
-    public MessagingManager<VelocityConnectorPlugin, Player> messagingManager() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'messagingManager'");
+    public VelocityMessagingManager messagingManager() {
+        return this.messagingManager;
     }
 
     /** Reloads the plugin. */

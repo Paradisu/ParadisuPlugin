@@ -68,11 +68,6 @@ public class ParadisuPaper extends JavaPlugin implements ParadisuPlugin<BukkitCo
             this.translationManager = new TranslationManager(this);
             this.translationManager.reload();
 
-            this.commandManager = PaperCommandManager.builder()
-                    .executionCoordinator(ExecutionCoordinator.simpleCoordinator())
-                    .buildOnEnable(this);
-            PaperCommandRegistrar.registerCommands(this);
-
             this.connectorEnabled = Bukkit.getPluginManager().isPluginEnabled("ConnectorPlugin");
             if (this.connectorEnabled) {
                 this.connector =
@@ -85,11 +80,17 @@ public class ParadisuPaper extends JavaPlugin implements ParadisuPlugin<BukkitCo
                     this.paradisuConfig().database().username(),
                     this.paradisuConfig().database().password());
 
+            this.messagingManager = new PaperMessagingManager(this);
+            this.messagingManager.registerMessages();
+            this.messagingManager.startHeartbeat();
+
             this.warpManager = new WarpManager(this);
             this.warpManager.syncWarps();
 
-            this.messagingManager = new PaperMessagingManager(this);
-            this.messagingManager.registerMessages();
+            this.commandManager = PaperCommandManager.builder()
+                    .executionCoordinator(ExecutionCoordinator.simpleCoordinator())
+                    .buildOnEnable(this);
+            PaperCommandRegistrar.registerCommands(this);
 
             this.getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
             this.getServer().getPluginManager().registerEvents(new PlayerQuitListener(this), this);
@@ -218,6 +219,8 @@ public class ParadisuPaper extends JavaPlugin implements ParadisuPlugin<BukkitCo
     public void reload() {
         this.configManager.loadConfigs();
         this.translationManager.reload();
+        this.warpManager.syncWarps();
+        this.warpManager.reloadRateLimiter();
         logger().info("Reloaded Paradisu Paper plugin");
     }
 
@@ -226,7 +229,7 @@ public class ParadisuPaper extends JavaPlugin implements ParadisuPlugin<BukkitCo
     public void onDisable() {
         if (this.messagingManager != null) {
             this.messagingManager.broadcastHeartbeat(true);
+            this.messagingManager.unregisterAll();
         }
-        super.onDisable(); //
     }
 }

@@ -20,6 +20,7 @@ package net.paradisu.paper.config.configs;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
+import org.spongepowered.configurate.objectmapping.meta.Comment;
 import org.spongepowered.configurate.objectmapping.meta.Setting;
 
 @Accessors(fluent = true)
@@ -28,6 +29,7 @@ import org.spongepowered.configurate.objectmapping.meta.Setting;
 public final class ParadisuConfig {
     private Context context = new Context();
     private Database database = new Database();
+    private Warps warps = new Warps();
 
     @Getter
     @ConfigSerializable
@@ -53,5 +55,37 @@ public final class ParadisuConfig {
 
         @Setting("inventory")
         private String inventory = "paradisu";
+    }
+
+    @Getter
+    @ConfigSerializable
+    public static final class Warps {
+        @Comment("Limits how often a player can use /warp. Players with paradisu.warp.bypass-ratelimit are exempt.")
+        @Setting("rate-limit")
+        private RateLimit rateLimit = new RateLimit();
+
+        @Getter
+        @ConfigSerializable
+        public static final class RateLimit {
+            @Comment("Warps allowed in quick succession")
+            @Setting("burst")
+            private int burst = 3;
+
+            @Comment("Seconds to regain one warp")
+            @Setting("refill-seconds")
+            private long refillSeconds = 5;
+
+            @Comment("Lockout in seconds when a player warps with none left; doubles with every repeat")
+            @Setting("base-timeout-seconds")
+            private long baseTimeoutSeconds = 10;
+
+            @Comment("Longest lockout in seconds")
+            @Setting("max-timeout-seconds")
+            private long maxTimeoutSeconds = 600;
+
+            @Comment("Seconds without a lockout after which one repeat is forgiven")
+            @Setting("strike-decay-seconds")
+            private long strikeDecaySeconds = 300;
+        }
     }
 }

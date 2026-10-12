@@ -8,6 +8,8 @@ Thanks for helping out! This guide covers how the project is laid out and how to
 - [Database changes](#database-changes)
 - [Adding commands](#adding-commands)
 - [Sending messages and text](#sending-messages-and-text)
+- [Cross-server messaging](#cross-server-messaging)
+- [Reusable utilities](#reusable-utilities)
 - [Updating dependencies](#updating-dependencies)
 
 ## Project structure
@@ -32,9 +34,9 @@ graph TD
 | Module | Contents |
 | --- | --- |
 | `database` | Hibernate/JPA entities (`models/`), the `Models` registry, and Liquibase changelogs (`src/main/resources/db/`). No platform code. |
-| `core` | Code shared by both platforms: the `ParadisuPlugin` interface, `DatabaseSession`, config loading (`ConfigManager`, `ConfigEntry`), `TranslationManager` and `Messages`, `HelpManager`, `PackManager`, and utilities. Also holds the default language file `messages_en.properties`. |
-| `paper` | `ParadisuPaper`, Paper commands/listeners, `sync/` (async DB work on join/quit), `config/configs/` (`paradisu.yml`, `messages.yml` models), `plugin.yml`. |
-| `velocity` | `ParadisuVelocity` (also runs Liquibase), Velocity commands/listeners, teleport utilities, config models, `velocity-plugin.json`. |
+| `core` | Code shared by both platforms: the `ParadisuPlugin` interface, `DatabaseSession`, config loading (`ConfigManager`, `ConfigEntry`), `TranslationManager` and `Messages`, `HelpManager`, `PackManager`, the `messaging/` base classes, and utilities. Also holds the default language file `messages_en.properties`. |
+| `paper` | `ParadisuPaper`, Paper commands/parsers/listeners, `sync/` (async DB work), `warps/` (`WarpManager`), `messaging/` (`PaperMessagingManager`, heartbeat/cluster state, message classes), `config/configs/` (`paradisu.yml`, `messages.yml` models), `plugin.yml`. |
+| `velocity` | `ParadisuVelocity` (also runs Liquibase), Velocity commands/listeners, teleport utilities, `messaging/` (`VelocityMessagingManager`), config models, `velocity-plugin.json`. |
 | `build-logic` | Included build with convention plugins (`net.paradisu.java-conventions`, `platform-conventions`, `shadow-conventions`): repositories, Java toolchain, Spotless, `processResources` templating. |
 
 Dependencies are declared per module in each `build.gradle.kts` using the version catalog [gradle/libs.versions.toml](gradle/libs.versions.toml). `core` uses `compileOnly` for most libraries; the platform modules decide what is bundled.
@@ -44,7 +46,7 @@ Dependencies are declared per module in each `build.gradle.kts` using the versio
 ```mermaid
 graph LR
     P["Player"] --> V["Velocity proxy<br/>(ParadisuVelocity)"]
-    V <-->|ConnectorPlugin bridge| S["Paper server(s)<br/>(ParadisuPaper)"]
+    V <-->|ConnectorPlugin bridge + Paradisu messages| S["Paper server(s)<br/>(ParadisuPaper)"]
     V -->|Hibernate + Liquibase migrations| DB[("PostgreSQL")]
     S -->|Hibernate| DB
 ```
@@ -102,7 +104,7 @@ Files live in `database/src/main/resources/db/`:
 
 Rules:
 - **Never edit a changeSet that has been merged or released.** Liquibase checksums them; changing one breaks existing databases. Add a new changeSet instead.
-- For a new change, create the next file (e.g. `002.xml`) and add `<include file="db/changelog/002.xml" />` after the existing include in `migrations.xml`. Continue the numeric changeSet `id`s and use `author="paradisu"`, as in `001.xml`.
+- For a new change, create the next file (e.g. `004.xml`) and add `<include file="db/changelog/002.xml" />` after the existing include in `migrations.xml`. Continue the numeric changeSet `id`s and use `author="paradisu"`, as in `001.xml`.
 - Prefer Liquibase change types (`createTable`, `addColumn`, `createIndex`, ...) over raw SQL so it stays portable. Provide a sensible `defaultValue`/`nullable` when adding columns to tables that already hold data.
 - Table names are upper snake case (`PLAYERS`, `PLAYER_SERVER_SESSIONS`); column names are lower snake case. Foreign keys are named `fk_<table>_<ref>` and join columns `id_<entity>`.
 - Migrations run only when the **proxy** starts (`ParadisuVelocity`), before players can connect. Deploy the proxy before Paper servers that depend on the new schema.
@@ -111,7 +113,7 @@ Example:
 
 ```xml
 <databaseChangeLog ...>
-    <changeSet id="6" author="paradisu">
+    <changeSet id="8" author="paradisu">
         <addColumn tableName="WARPS">
             <column name="created" type="TIMESTAMP" />
         </addColumn>
@@ -280,6 +282,107 @@ Then add the nested class as a field of `Commands` (`private Hat hat = new Hat()
 - `help-msg` is the command description, `help-args` lists argument descriptions in order, `output` is a list of message variants indexed in code (`output().get(0)`) in the same order as the `...output.<command>.<n>` keys.
 - Because the config exposes these strings, handlers should read them from `paradisu.messagesConfig()` rather than from the translator directly.
 - Config files are registered in `PaperConfigManager` / `VelocityConfigManager` (`paradisu.yml`, `messages.yml`). To add a new config file, create the `@ConfigSerializable` class and register a `ConfigEntry` there. Configs are reloaded by `/paradisu reload` and `/vparadisu reload`.
+
+## Cross-server messaging
+
+Paradisu sends its own messages between servers and proxies on top of [ConnectorPlugin](https://github.com/Phoenix616/ConnectorPlugin). Use it when one server has to tell others something (e.g. "warps changed") or share state (e.g. which players are online where). For player movement and remote commands, use ConnectorPlugin's bridge directly (`paradisu.connector().getBridge()`).
+
+```mermaid
+flowchart LR
+    subgraph A["Paper server A"]
+        MA["PaperMessagingManager<br/>send(target, payload)"]
+    end
+    subgraph Proxy
+        CP["ConnectorPlugin<br/>(routes by MessageTarget)"]
+    end
+    subgraph B["Paper server B"]
+        MB["Connector → handler for<br/>(ParadisuPlugin, action)"] --> H["RegisteredMessage.handle(...)"]
+    end
+    MA -->|"Redis / MQTT / plugin message"| CP --> MB
+```
+
+### Pieces
+
+| Class | Module | Role |
+| --- | --- | --- |
+| `MessagingManager` | `core` | Base class. Registers handlers and sends data under the plugin's own name (`Constants.Plugin.NAME`), so Paradisu actions never collide with ConnectorPlugin's own. Catches and logs handler exceptions. |
+| `RegisteredMessage` | `core` | Handler for one action: `handle(receiver, Message)`. Its nested `SerialMessage` interface is the outgoing payload (`action()` + `serialize()`, which returns an empty array by default). |
+| `PaperMessagingManager` | `paper` | Registers the Paper messages, runs the heartbeat, and holds the cluster state (`clusterState()`, `liveServers()`, `findPlayer(...)`, `findServerForContext(...)`). |
+| `VelocityMessagingManager` | `velocity` | Registers the proxy's messages (none yet). |
+
+Existing messages (`paper/.../messaging/messages/`):
+
+| Action | Target | Payload | Effect |
+| --- | --- | --- | --- |
+| `SERVER_HEARTBEAT` | `OTHERS_WITH_PLAYERS`, every 5 s and on shutdown | warp context, closing flag, online players | Updates (or removes) the sender in `clusterState`. Servers that have not sent a heartbeat for 15 s are ignored and pruned. |
+| `SYNC_WARPS` | `OTHERS_QUEUE`, after any warp change | none | The receiver reloads warps from the database. The sending server reloads itself directly. |
+
+### Adding a message
+
+1. Create `FooMessage extends RegisteredMessage<BukkitConnectorPlugin, Player>` in `paper/.../messaging/messages/` (or the Velocity equivalent with `VelocityConnectorPlugin` and the Velocity `Player`). Give it a unique `public static final String ACTION`.
+2. Add a nested `record Payload(...) implements SerialMessage` with `serialize()` and a `static Payload deserialize(byte[])`. Write and read fields in the same order with Guava's `ByteStreams.newDataOutput()` / `newDataInput(...)`. Never return `null` from `serialize()`.
+3. Implement `handle(receiver, message)`: deserialize `message.getData()`; the sender is `message.getSendingServer()`, so it does not need to be in the payload. `receiver` may be null.
+4. Register it in `registerMessages()` of `PaperMessagingManager` / `VelocityMessagingManager`. Unregistered actions are dropped silently by ConnectorPlugin.
+5. Send it with `paradisu.messagingManager().send(MessageTarget.X, new FooMessage.Payload(...))`, or `send(MessageTarget.SERVER, "server:<name>", payload)` for one server.
+
+```java
+public class FooMessage extends RegisteredMessage<BukkitConnectorPlugin, Player> {
+    public static final String ACTION = "FOO";
+    private final ParadisuPaper paradisu;
+
+    public FooMessage(ParadisuPaper paradisu) {
+        super(ACTION);
+        this.paradisu = paradisu;
+    }
+
+    @Override
+    public void handle(Player receiver, Message message) {
+        Payload payload = Payload.deserialize(message.getData());
+        // ...
+    }
+
+    public record Payload(String value) implements SerialMessage {
+        @Override
+        public String action() {
+            return ACTION;
+        }
+
+        @Override
+        public byte[] serialize() {
+            ByteArrayDataOutput out = ByteStreams.newDataOutput();
+            out.writeUTF(this.value);
+            return out.toByteArray();
+        }
+
+        public static Payload deserialize(byte[] data) {
+            return new Payload(ByteStreams.newDataInput(data).readUTF());
+        }
+    }
+}
+```
+
+### Rules
+
+- **Threading.** On Paper, ConnectorPlugin runs handlers on the main thread. Keep them fast and never do database work in them; schedule it asynchronously, as `SyncWarpsMessage` does via `WarpManager.syncWarps()`. **Send from the main thread** on Paper: the plugin message messenger is not thread-safe, so from an async task hop back with `Bukkit.getScheduler().runTask(...)` first. On Velocity, handlers run on a connector thread.
+- **Do not extend or create ConnectorPlugin's `Bridge`.** A second `Bridge` re-registers ConnectorPlugin's built-in handlers and listeners and breaks its teleports and responses. Use `paradisu.connector().getBridge()`.
+- **Choose the target deliberately.** `*_QUEUE` targets are held by the plugin message messenger until a player is on the server, so use them only for messages that are still valid late (like `SYNC_WARPS`). Use `*_WITH_PLAYERS` for periodic or time-sensitive state (like heartbeats). `OTHERS_*` skips the sending server, so apply the change locally yourself.
+- **Payload changes are protocol changes.** Every server must run the same plugin version, since there is no versioning inside payloads. To change a payload incompatibly, add a new action rather than changing the old one.
+- Cluster state comes from heartbeats, so it lags by up to 5 s and only covers servers that sent one in the last 15 s. With the plugin message messenger, empty servers cannot send, so they do not appear. Code that uses `clusterState()` must handle a server or player being missing.
+
+## Reusable utilities
+
+`core/src/main/java/net/paradisu/core/utils/` has platform-independent helpers. Prefer them over writing new versions:
+
+- **`ExponentialBackoffLimiter<K>`**: per-key rate limiting. A token bucket (`burst`, `refillInterval`) allows short bursts; an attempt with no tokens left is a strike that locks the key out for `baseTimeout * 2^strikes` (capped at `maxTimeout`). Strikes are forgiven one per `strikeDecay`. It is thread-safe and drops idle keys by itself. Check it **before** doing the expensive part of a command (as `/warp` does before matching names), make the settings configurable, and offer a bypass permission:
+
+  ```java
+  ExponentialBackoffLimiter.Result result = limiter.tryAcquire(player.getUniqueId());
+  if (!result.allowed()) {
+      // tell the player to retry in result.retryAfterSeconds() seconds
+      return;
+  }
+  ```
+- **`FuzzyMatcher<T>`**: an immutable index for "closest name" lookups. Build it once when the data changes (`FuzzyMatcher.builder().add(name, value).add(alias, value, true).build()`), and look up with `match(input, filter, tieBreaker)`. Check for an exact match with a map first. Lookups cost little and are bounded (input up to 64 characters, edit distance up to 3), but they are still linear in the number of keys, so run them after the rate limit check, not in a suggestion provider.
 
 ## Updating dependencies
 

@@ -48,6 +48,10 @@ public class HatCommand extends AbstractPaperCommand {
      * @param context the data specified on registration of the command
      */
     private void hatCommand(CommandContext<CommandSourceStack> context) {
+        if (!(context.sender().getSender() instanceof Player)) {
+            // Console can't wear hats
+            return;
+        }
         Player player = (Player) context.sender().getSender();
         ItemStack currentHelmet = player.getInventory().getHelmet();
         ItemStack handItem = player.getInventory().getItemInMainHand().clone();
