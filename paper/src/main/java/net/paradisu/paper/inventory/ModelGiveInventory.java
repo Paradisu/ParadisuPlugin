@@ -1,3 +1,19 @@
+/*
+ * The official plugin for the Paradisu server. Copyright (C) 2026 Paradisu. https://paradisu.net
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 
 package net.paradisu.paper.inventory;
 
@@ -30,46 +46,33 @@ public class ModelGiveInventory implements InventoryHolder {
     private final int page;
     private final int totalPages;
 
-    public ModelGiveInventory(
-            int page,
-            int totalPages,
-            List<ItemModel> models,
-            ModelItemFactory factory) {
+    public ModelGiveInventory(int page, int totalPages, List<ItemModel> models, ModelItemFactory factory) {
 
         this.page = page;
         this.totalPages = totalPages;
         this.models = List.copyOf(models);
 
-        this.inventory = Bukkit.createInventory(
-                this,
-                54,
-                Component.text("Models - Page "
-                        + (page + 1) + "/" + totalPages));
+        this.inventory =
+                Bukkit.createInventory(this, 54, Component.text("Models - Page " + (page + 1) + "/" + totalPages));
 
         // Populate the first 45 slots.
         for (int i = 0; i < models.size(); i++) {
-            inventory.setItem(
-                    i, factory.createPreview(models.get(i)));
+            inventory.setItem(i, factory.createPreview(models.get(i)));
         }
 
         // Fill the navigation row.
         for (int i = 45; i < 54; i++) {
-            inventory.setItem(i, button(
-                    Material.GRAY_STAINED_GLASS_PANE, " "));
+            inventory.setItem(i, button(Material.GRAY_STAINED_GLASS_PANE, " "));
         }
 
         if (page > 0) {
-            inventory.setItem(PREVIOUS_SLOT,
-                    button(Material.ARROW, "Previous Page"));
+            inventory.setItem(PREVIOUS_SLOT, button(Material.ARROW, "Previous Page"));
         }
 
-        inventory.setItem(PAGE_SLOT,
-                button(Material.PAPER,
-                        "Page " + (page + 1) + "/" + totalPages));
+        inventory.setItem(PAGE_SLOT, button(Material.PAPER, "Page " + (page + 1) + "/" + totalPages));
 
         if (page + 1 < totalPages) {
-            inventory.setItem(NEXT_SLOT,
-                    button(Material.ARROW, "Next Page"));
+            inventory.setItem(NEXT_SLOT, button(Material.ARROW, "Next Page"));
         }
     }
 
@@ -77,8 +80,7 @@ public class ModelGiveInventory implements InventoryHolder {
         ItemStack item = new ItemStack(material);
         ItemMeta meta = item.getItemMeta();
 
-        meta.displayName(Component.text(
-                name, NamedTextColor.YELLOW));
+        meta.displayName(Component.text(name, NamedTextColor.YELLOW));
 
         item.setItemMeta(meta);
         return item;
@@ -104,10 +106,7 @@ public class ModelGiveInventory implements InventoryHolder {
         return inventory;
     }
 
-    public static void openPage(
-            ParadisuPaper paradisu,
-            Player player,
-            int requestedPage) {
+    public static void openPage(ParadisuPaper paradisu, Player player, int requestedPage) {
 
         if (!player.hasPermission("paradisu.mgive")) {
             return;
@@ -118,58 +117,43 @@ public class ModelGiveInventory implements InventoryHolder {
             return;
         }
 
-        Bukkit.getScheduler().runTaskAsynchronously(
-                paradisu, () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(paradisu, () -> {
+            try (EntityManager em = paradisu.databaseSession().factory().createEntityManager()) {
 
-                    try (EntityManager em = paradisu
-                            .databaseSession()
-                            .factory()
-                            .createEntityManager()) {
+                long total = em.createQuery("SELECT COUNT(i) FROM ItemModel i", Long.class)
+                        .getSingleResult();
 
-                        long total = em.createQuery(
-                                "SELECT COUNT(i) FROM ItemModel i",
-                                Long.class).getSingleResult();
+                int totalPages = (int) Math.max(1, (total + PAGE_SIZE - 1) / PAGE_SIZE);
 
-                        int totalPages = (int) Math.max(
-                                1, (total + PAGE_SIZE - 1) / PAGE_SIZE);
+                int page = Math.max(0, Math.min(requestedPage, totalPages - 1));
 
-                        int page = Math.max(0,
-                                Math.min(requestedPage, totalPages - 1));
+                List<ItemModel> models = em.createQuery(
+                                "SELECT i FROM ItemModel i " + "ORDER BY i.identifier ASC", ItemModel.class)
+                        .setFirstResult(page * PAGE_SIZE)
+                        .setMaxResults(PAGE_SIZE)
+                        .getResultList();
 
-                        List<ItemModel> models = em.createQuery(
-                                        "SELECT i FROM ItemModel i "
-                                                + "ORDER BY i.identifier ASC",
-                                        ItemModel.class)
-                                .setFirstResult(page * PAGE_SIZE)
-                                .setMaxResults(PAGE_SIZE)
-                                .getResultList();
+                Bukkit.getScheduler().runTask(paradisu, () -> {
+                    if (!player.isOnline()) {
+                        return;
+                    }
 
-                        Bukkit.getScheduler().runTask(paradisu, () -> {
-                            if (!player.isOnline()) {
-                                return;
-                            }
+                    ModelItemFactory factory = new ModelItemFactory(paradisu);
 
-                            ModelItemFactory factory =
-                                    new ModelItemFactory(paradisu);
+                    ModelGiveInventory menu = new ModelGiveInventory(page, totalPages, models, factory);
 
-                            ModelGiveInventory menu =
-                                    new ModelGiveInventory(
-                                            page, totalPages, models, factory);
+                    player.openInventory(menu.getInventory());
+                });
 
-                            player.openInventory(menu.getInventory());
-                        });
+            } catch (Exception ex) {
+                paradisu.getLogger().log(Level.SEVERE, "Failed to load models", ex);
 
-                    } catch (Exception ex) {
-                        paradisu.getLogger().log(
-                                Level.SEVERE, "Failed to load models", ex);
-
-                        Bukkit.getScheduler().runTask(paradisu, () -> {
-                            if (player.isOnline()) {
-                                player.sendMessage(
-                                        "Failed to load custom models.");
-                            }
-                        });
+                Bukkit.getScheduler().runTask(paradisu, () -> {
+                    if (player.isOnline()) {
+                        player.sendMessage("Failed to load custom models.");
                     }
                 });
+            }
+        });
     }
 }

@@ -1,3 +1,19 @@
+/*
+ * The official plugin for the Paradisu server. Copyright (C) 2026 Paradisu. https://paradisu.net
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 
 package net.paradisu.paper.util;
 
@@ -45,29 +61,23 @@ public class ModelItemFactory {
                     item.setAmount(1);
                 }
             } catch (Exception ex) {
-                paradisu.getLogger().warning(
-                        "Could not deserialize item data for model "
-                                + model.identifier());
+                paradisu.getLogger().warning("Could not deserialize item data for model " + model.identifier());
             }
         }
 
         ItemMeta meta = item.getItemMeta();
 
-        if (model.display_name() != null
-                && !model.display_name().isBlank()) {
+        if (model.display_name() != null && !model.display_name().isBlank()) {
             meta.displayName(Component.text(model.display_name()));
         }
 
-        if (model.model_path() != null
-                && !model.model_path().isBlank()) {
-            NamespacedKey key =
-                    NamespacedKey.fromString(model.model_path());
+        if (model.model_path() != null && !model.model_path().isBlank()) {
+            NamespacedKey key = NamespacedKey.fromString(model.model_path());
 
             if (key != null) {
                 meta.setItemModel(key);
             } else {
-                paradisu.getLogger().warning(
-                        "Invalid model path: " + model.model_path());
+                paradisu.getLogger().warning("Invalid model path: " + model.model_path());
             }
         }
 
@@ -81,23 +91,18 @@ public class ModelItemFactory {
         if (item == null) {
             item = new ItemStack(Material.BARRIER);
             ItemMeta invalidMeta = item.getItemMeta();
-            invalidMeta.displayName(
-                    Component.text("Invalid Model", NamedTextColor.RED));
+            invalidMeta.displayName(Component.text("Invalid Model", NamedTextColor.RED));
             item.setItemMeta(invalidMeta);
         }
 
         ItemMeta meta = item.getItemMeta();
 
-        List<Component> lore = meta.lore() == null
-                ? new ArrayList<>()
-                : new ArrayList<>(meta.lore());
+        List<Component> lore = meta.lore() == null ? new ArrayList<>() : new ArrayList<>(meta.lore());
 
         lore.add(Component.empty());
-        lore.add(Component.text(
-                "ID: " + model.identifier(), NamedTextColor.GRAY));
+        lore.add(Component.text("ID: " + model.identifier(), NamedTextColor.GRAY));
 
-        lore.add(Component.text(
-                "Left-click to receive one", NamedTextColor.YELLOW));
+        lore.add(Component.text("Left-click to receive one", NamedTextColor.YELLOW));
 
         meta.lore(lore);
         item.setItemMeta(meta);

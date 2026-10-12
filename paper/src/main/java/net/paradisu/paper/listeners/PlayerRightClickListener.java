@@ -19,7 +19,6 @@ package net.paradisu.paper.listeners;
 
 import lombok.AllArgsConstructor;
 import net.paradisu.paper.ParadisuPaper;
-
 import net.paradisu.paper.items.ItemsBlindbox;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -42,39 +41,38 @@ public class PlayerRightClickListener implements Listener {
         ItemStack item = event.getItem();
 
         // SAFETY CHECKS
-        if(item == null || item.getType().isAir()) {
+        if (item == null || item.getType().isAir()) {
             return;
         }
         if (event.getHand() != EquipmentSlot.HAND) { // prevents double opens
             return;
         }
-        if(event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
+        if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
             return;
         }
 
         ItemStack blindbox = ItemsBlindbox.createBlindbox();
 
         // BLIND BOXES
-                if(item.isSimilar(blindbox)) {
-                    event.setCancelled(true);
-                    int rolledNumber = ThreadLocalRandom.current().nextInt(1, 9);
-                    ItemStack rewardMinion = ItemsBlindbox.minionBlindBoxReward(String.valueOf(rolledNumber));
+        if (item.isSimilar(blindbox)) {
+            event.setCancelled(true);
+            int rolledNumber = ThreadLocalRandom.current().nextInt(1, 9);
+            ItemStack rewardMinion = ItemsBlindbox.minionBlindBoxReward(String.valueOf(rolledNumber));
 
-                    if (item.getAmount() > 1) {
-                        // Decrease blindbox stack size by one
-                        item.setAmount(item.getAmount() - 1);
-                        // Put reward directly into inventory
-                        player.getInventory().addItem(rewardMinion);
+            if (item.getAmount() > 1) {
+                // Decrease blindbox stack size by one
+                item.setAmount(item.getAmount() - 1);
+                // Put reward directly into inventory
+                player.getInventory().addItem(rewardMinion);
 
-                    } else {
-                        // Fully replace single item in hand
-                        player.getInventory().setItem(event.getHand(), rewardMinion);
-                }
-
+            } else {
+                // Fully replace single item in hand
+                player.getInventory().setItem(event.getHand(), rewardMinion);
+            }
         } // if it is the correct item
 
         // WANDS
-            // if(meta == wands.getItemMeta())
+        // if(meta == wands.getItemMeta())
 
     }
 }

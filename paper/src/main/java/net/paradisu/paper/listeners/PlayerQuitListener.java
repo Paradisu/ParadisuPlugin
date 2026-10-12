@@ -41,12 +41,9 @@ public class PlayerQuitListener implements Listener {
 
         Bukkit.getScheduler().runTaskAsynchronously(paradisu, new PlayerQuitSync(paradisu, player));
 
-        event.quitMessage(MiniMessage.miniMessage().deserialize(paradisu.messagesConfig()
-                .asyncevents()
-                .leaveevent()
-                .get(0),
-                Placeholder.component(
-                        "player",
-                        Component.text(name))));
+        event.quitMessage(MiniMessage.miniMessage()
+                .deserialize(
+                        paradisu.messagesConfig().asyncevents().leaveevent().get(0),
+                        Placeholder.component("player", Component.text(name))));
     }
 }

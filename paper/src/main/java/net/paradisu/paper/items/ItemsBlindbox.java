@@ -36,7 +36,7 @@ public class ItemsBlindbox {
         ItemMeta meta = item.getItemMeta();
 
         Component name = MiniMessage.miniMessage()
-                        .deserialize("<gradient:#da95ed:#ed959e:#ed959e>Minions Zodiac Bind Box</gradient>");
+                .deserialize("<gradient:#da95ed:#ed959e:#ed959e>Minions Zodiac Bind Box</gradient>");
         meta.displayName(name);
 
         CustomModelDataComponent cmd = meta.getCustomModelDataComponent();
@@ -60,5 +60,4 @@ public class ItemsBlindbox {
 
         return item;
     }
-
 }

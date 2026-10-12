@@ -41,14 +41,9 @@ public class PlayerJoinListener implements Listener {
 
         Bukkit.getScheduler().runTaskAsynchronously(paradisu, new PlayerJoinSync(paradisu, player));
 
-        event.joinMessage(MiniMessage.miniMessage().deserialize(paradisu.messagesConfig()
-                        .asyncevents()
-                        .joinevent()
-                        .get(0),
-                Placeholder.component(
-                        "player",
-                        Component.text(name))));
-
-
+        event.joinMessage(MiniMessage.miniMessage()
+                .deserialize(
+                        paradisu.messagesConfig().asyncevents().joinevent().get(0),
+                        Placeholder.component("player", Component.text(name))));
     }
 }

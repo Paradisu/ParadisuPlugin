@@ -19,7 +19,6 @@ package net.paradisu.paper.config.configs;
 
 import lombok.Getter;
 import lombok.experimental.Accessors;
-import org.jetbrains.annotations.Async;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Comment;
 import org.spongepowered.configurate.objectmapping.meta.Setting;
@@ -68,14 +67,14 @@ public final class MessagesConfig {
         }
     }
 
-
     @Getter
     @ConfigSerializable
     public static final class AsyncEvents {
-        @Setting("output") private List<String> joinevent =
-                List.of("<lang:paradisu.event.output.join:'<player>'>");
-        @Setting("output") private List<String> leaveevent =
-                List.of("<lang:paradisu.event.output.leave:'<player>'>");
+        @Setting("output")
+        private List<String> joinevent = List.of("<lang:paradisu.event.output.join:'<player>'>");
+
+        @Setting("output")
+        private List<String> leaveevent = List.of("<lang:paradisu.event.output.leave:'<player>'>");
     }
 
     @Getter
@@ -98,9 +97,15 @@ public final class MessagesConfig {
         @Getter
         @ConfigSerializable
         public static final class RealSize {
-            @Setting("help-msg") private String helpMsg = "<lang:paradisu.command.help.realsize>";
-            @Setting("help-msg") private String tootall = "<lang:paradisu.command.output.realsize.tootall>";
-            @Setting("help-msg") private String tooshort = "<lang:paradisu.command.output.realsize.toosmall>";
+            @Setting("help-msg")
+            private String helpMsg = "<lang:paradisu.command.help.realsize>";
+
+            @Setting("help-msg")
+            private String tootall = "<lang:paradisu.command.output.realsize.tootall>";
+
+            @Setting("help-msg")
+            private String tooshort = "<lang:paradisu.command.output.realsize.toosmall>";
+
             @Setting("output")
             private List<String> output = List.of("<lang:paradisu.command.output.realsize>");
         }
@@ -134,8 +139,6 @@ public final class MessagesConfig {
                 @Setting("output")
                 private List<String> output = List.of("<lang:paradisu.command.output.paradisu.reload>");
             }
-
-
         }
     }
 }

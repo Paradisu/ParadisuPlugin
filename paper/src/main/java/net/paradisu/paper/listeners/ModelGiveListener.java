@@ -1,3 +1,19 @@
+/*
+ * The official plugin for the Paradisu server. Copyright (C) 2026 Paradisu. https://paradisu.net
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 
 package net.paradisu.paper.listeners;
 
@@ -26,8 +42,7 @@ public class ModelGiveListener implements Listener {
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
 
-        if (!(event.getView().getTopInventory().getHolder()
-                instanceof ModelGiveInventory menu)) {
+        if (!(event.getView().getTopInventory().getHolder() instanceof ModelGiveInventory menu)) {
             return;
         }
 
@@ -51,16 +66,14 @@ public class ModelGiveListener implements Listener {
 
         if (slot == ModelGiveInventory.PREVIOUS_SLOT) {
             if (menu.page() > 0) {
-                ModelGiveInventory.openPage(
-                        paradisu, player, menu.page() - 1);
+                ModelGiveInventory.openPage(paradisu, player, menu.page() - 1);
             }
             return;
         }
 
         if (slot == ModelGiveInventory.NEXT_SLOT) {
             if (menu.page() + 1 < menu.totalPages()) {
-                ModelGiveInventory.openPage(
-                        paradisu, player, menu.page() + 1);
+                ModelGiveInventory.openPage(paradisu, player, menu.page() + 1);
             }
             return;
         }
@@ -94,8 +107,7 @@ public class ModelGiveListener implements Listener {
     @EventHandler
     public void onInventoryDrag(InventoryDragEvent event) {
 
-        if (event.getView().getTopInventory().getHolder()
-                instanceof ModelGiveInventory) {
+        if (event.getView().getTopInventory().getHolder() instanceof ModelGiveInventory) {
             event.setCancelled(true);
         }
     }
