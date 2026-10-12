@@ -17,8 +17,9 @@ repositories {
     maven("https://repo.minebench.de/")
 }
 
-group = properties["group"] as String
-version = properties["version"] as String
+// Use providers.gradleProperty(...) instead of properties[...]
+group = providers.gradleProperty("group").get()
+version = providers.gradleProperty("version").get()
 
 java {
     toolchain {
@@ -33,10 +34,10 @@ spotless {
         removeUnusedImports()
     }
 
-    format("license", {
-        licenseHeaderFile(rootProject.file("build-logic/src/main/resources/licenseHeaderFile"), "package ");
+    format("license") {
+        licenseHeaderFile(rootProject.file("build-logic/src/main/resources/licenseHeaderFile"), "package ")
         target("src/main/java/**/*.java")
-    })
+    }
 }
 
 publishing {
@@ -45,11 +46,11 @@ publishing {
     }
 }
 
-tasks.withType<JavaCompile>() {
+tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
 }
 
-tasks.withType<Javadoc>() {
+tasks.withType<Javadoc> {
     options.encoding = "UTF-8"
 }
 
@@ -57,13 +58,13 @@ tasks {
     processResources {
         filesMatching(listOf("plugin.yml", "velocity-plugin.json", "*.properties")) {
             expand(
-                "id" to properties["id"]!!,
-                "name" to properties["pluginName"]!!,
-                "version" to properties["version"]!!,
+                "id" to providers.gradleProperty("id").get(),
+                "name" to providers.gradleProperty("pluginName").get(),
+                "version" to providers.gradleProperty("version").get(),
                 "paperApiVersion" to parseApiVersion(libs.versions.paper.api.get()),
-                "description" to properties["description"]!!,
-                "url" to properties["url"]!!,
-                "authors" to properties["authors"]!!
+                "description" to providers.gradleProperty("description").get(),
+                "url" to providers.gradleProperty("url").get(),
+                "authors" to providers.gradleProperty("authors").get()
             )
         }
     }
