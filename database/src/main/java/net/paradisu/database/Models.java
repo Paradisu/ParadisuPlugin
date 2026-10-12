@@ -24,7 +24,8 @@ public class Models {
             net.paradisu.database.models.playerdata.PlayerServerSessionModel.class,
             net.paradisu.database.models.playerdata.PlayerProxySessionModel.class,
             net.paradisu.database.models.playerdata.PlayerInventoryModel.class,
-            net.paradisu.database.models.WarpModel.class
+            net.paradisu.database.models.WarpModel.class,
+            net.paradisu.database.models.ItemModel.class
         };
     }
 }

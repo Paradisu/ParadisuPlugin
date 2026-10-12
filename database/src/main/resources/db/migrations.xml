@@ -9,4 +9,5 @@
     <property name="timestamp_type" value="timestamp" dbms="h2,mysql,mariadb,mssql" />
 
     <include file="db/changelog/001.xml" />
+    <include file="db/changelog/002.xml" />
 </databaseChangeLog> 
