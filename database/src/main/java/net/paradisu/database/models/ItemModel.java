@@ -45,7 +45,7 @@ public class ItemModel {
     private UUID id;
 
     @Column(name = "identifier", nullable = false)
-    private  int identifier;
+    private int identifier;
 
     @Column(name = "item_type")
     private String item_type;
