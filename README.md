@@ -1,6 +1,6 @@
 # Paradisu Plugin [![GitHub release](https://img.shields.io/github/release/Paradisu/ParadisuPlugin.svg)](https://GitHub.com/Paradisu/ParadisuPlugin/releases/) [![Discord](https://badgen.net/badge/icon/discord?icon=discord&label)](https://discord.gg/5aSZPDnt7n)
 
-The official plugin for the Paradisu server. It provides essential network utilities as well as features specific to the Paradisu project. For more information about Paradisu, join the [Discord](https://discord.gg/gQcu2XYd2K).
+The official plugin for the Paradisu server. It provides essential network utilities as well as features specific to the Paradisu project. For more information about Paradisu, join the [Discord](https://discord.gg/5aSZPDnt7n).
 
 The plugin is in early development and is heavily customized for Paradisu, so it is **not recommended for use on other servers**; extensive modification would likely be required.
 
