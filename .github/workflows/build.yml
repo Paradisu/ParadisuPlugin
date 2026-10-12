@@ -22,23 +22,23 @@ jobs:
     steps:
     - name: Checkout Repository and Submodules
       # See https://github.com/actions/checkout/releases
-      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
       with:
         submodules: recursive
-    - name: Set up JDK 21
+    - name: Set up JDK
       # See https://github.com/actions/setup-java/releases
-      uses: actions/setup-java@99b8673ff64fbf99d8d325f52d9a5bdedb8483e9
+      uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654
       with:
-        java-version: 21
+        java-version: 25
         distribution: temurin
     - name: Setup Gradle
       # See https://github.com/gradle/actions/releases
-      uses: gradle/actions/setup-gradle@94baf225fe0a508e581a564467443d0e2379123b
+      uses: gradle/actions/setup-gradle@50e97c2cd7a37755bbfafc9c5b7cafaece252f6e
     - name: Build with Gradle
       run: ./gradlew build
     - name: Archive Artifacts
       # See https://github.com/actions/upload-artifact/releases
-      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
       if: success()
       with:
         name: ParadisuPlugin
@@ -46,7 +46,7 @@ jobs:
         if-no-files-found: error
     - name: Create Release
       # See https://github.com/Kas-tle/base-release-action/releases
-      uses: Kas-tle/base-release-action@65d06f835be34757c6d73c16959c97e92c2a3c7f
+      uses: Kas-tle/base-release-action@b89ab10da9dfaa0b5fb0ca9e77679c7c7d1297f8
       if: ${{ success() && github.repository == 'Paradisu/ParadisuPlugin' }}
       id: release
       with:
@@ -58,7 +58,7 @@ jobs:
         discordWebhook: ${{ secrets.DISCORD_WEBHOOK }}
     - name: Setup NodeJS
       # See https://github.com/actions/setup-node/releases
-      uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e
+      uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e
       if: ${{ success() && github.repository == 'Paradisu/ParadisuPlugin' && github.ref_name == 'master' }}
     - name: Publish Plugin to Servers
       if: ${{ success() && github.repository == 'Paradisu/ParadisuPlugin' && github.ref_name == 'master' }}

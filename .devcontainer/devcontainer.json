@@ -1,9 +1,9 @@
 {
     "name": "Java",
-    "image": "mcr.microsoft.com/devcontainers/java:21",
+    "image": "mcr.microsoft.com/devcontainers/java:25-trixie",
     "features": {
         "ghcr.io/devcontainers/features/java:1": {
-            "version": "21",
+            "version": "25",
             "installMaven": "false",
             "installGradle": "true"
         }

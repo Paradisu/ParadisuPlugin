@@ -1,24 +1,24 @@
 [versions]
-adventure = "4.26.1"
+adventure = "5.2.0"
 blossom = "2.2.0"
-cloud-core = "2.0.0-rc.2"
-cloud-minecraft = "2.0.0-beta.14"
+cloud-core = "2.1.0"
+cloud-minecraft = "2.0.1"
 configurate-yaml = "4.2.0"
 connectorplugin = "1.5.2-SNAPSHOT"
 fastutil = "8.5.2"
-guava = "33.5.0-jre"
-hibernate = "7.2.0.Final"
+guava = "33.7.2-jre"
+hibernate = "7.4.13.Final"
 indra = "4.0.0"
-liquibase = "5.0.1"
+liquibase = "5.0.4"
 liquibase-slf4j = "5.1.0"
-log4j-slf4j-impl = "2.25.3"
-lombok = "9.1.0"
+log4j-slf4j-impl = "2.26.1"
+lombok = "9.8.0"
 luckperms-api = "5.5"
-paper-api = "1.21.11-R0.1-SNAPSHOT"
-postgresql = "42.7.8"
-shadow = "9.3.0"
-spotless = "8.1.0"
-velocity-api = "3.4.0-SNAPSHOT"
+paper-api = "26.3.build.157-beta"
+postgresql = "42.7.14"
+shadow = "9.6.1"
+spotless = "8.10.2"
+velocity-api = "4.2.1-20261007.005346-9"
 
 [libraries]
 adventure-api = { group = "net.kyori", name = "adventure-api", version.ref = "adventure" }
@@ -34,7 +34,7 @@ connectorplugin-velocity = { group = "de.themoep.connectorplugin", name = "veloc
 fastutil-object-object-maps = { group = "com.nukkitx.fastutil", name = "fastutil-object-object-maps", version.ref = "fastutil" }
 guava = { group = "com.google.guava", name = "guava", version.ref = "guava" }
 hibernate-core = { group = "org.hibernate.orm", name = "hibernate-core", version.ref = "hibernate" }
-hibernate-hikaricp = { group = "org.hibernate", name = "hibernate-hikaricp", version.ref = "hibernate" }
+hibernate-hikaricp = { group = "org.hibernate.orm", name = "hibernate-hikaricp", version.ref = "hibernate" }
 liquibase-core = { group = "org.liquibase", name = "liquibase-core", version.ref = "liquibase" }
 liquibase-slf4j = { group = "com.mattbertolini", name = "liquibase-slf4j", version.ref = "liquibase-slf4j" }
 log4j-slf4j-impl = { group = "org.apache.logging.log4j", name = "log4j-slf4j-impl", version.ref = "log4j-slf4j-impl" }

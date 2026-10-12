@@ -12,31 +12,18 @@ val libs = the<LibrariesForLibs>()
 repositories {
     // mavenLocal()
     maven("https://repo.maven.apache.org/maven2/")
-    maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/") {
-        mavenContent { snapshotsOnly() }
-    }
     maven("https://repo.papermc.io/repository/maven-public/")
-    maven("https://repo.dmulloy2.net/repository/public/")
-    maven("https://repo.minebench.de/")
-    maven("https://oss.sonatype.org/content/repositories/snapshots") {
-        mavenContent { snapshotsOnly() }
-    }
-    maven("https://repo.velocitypowered.com/snapshots/") {
-        mavenContent { snapshotsOnly() }
-    }
-    maven("https://s01.oss.sonatype.org/content/repositories/snapshots/") {
-        mavenContent { snapshotsOnly() }
-    }
-    maven("https://repo.spongepowered.org/repository/maven-public/")
     maven("https://repo.opencollab.dev/main")
+    maven("https://repo.minebench.de/")
 }
 
-group = properties["group"] as String
-version = properties["version"] as String
+// Use providers.gradleProperty(...) instead of properties[...]
+group = providers.gradleProperty("group").get()
+version = providers.gradleProperty("version").get()
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(21))
+        languageVersion.set(JavaLanguageVersion.of(25))
     }
 }
 
@@ -47,10 +34,10 @@ spotless {
         removeUnusedImports()
     }
 
-    format("license", {
-        licenseHeaderFile(rootProject.file("build-logic/src/main/resources/licenseHeaderFile"), "package ");
+    format("license") {
+        licenseHeaderFile(rootProject.file("build-logic/src/main/resources/licenseHeaderFile"), "package ")
         target("src/main/java/**/*.java")
-    })
+    }
 }
 
 publishing {
@@ -59,11 +46,11 @@ publishing {
     }
 }
 
-tasks.withType<JavaCompile>() {
+tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
 }
 
-tasks.withType<Javadoc>() {
+tasks.withType<Javadoc> {
     options.encoding = "UTF-8"
 }
 
@@ -71,20 +58,20 @@ tasks {
     processResources {
         filesMatching(listOf("plugin.yml", "velocity-plugin.json", "*.properties")) {
             expand(
-                "id" to properties["id"]!!,
-                "name" to properties["pluginName"]!!,
-                "version" to properties["version"]!!,
+                "id" to providers.gradleProperty("id").get(),
+                "name" to providers.gradleProperty("pluginName").get(),
+                "version" to providers.gradleProperty("version").get(),
                 "paperApiVersion" to parseApiVersion(libs.versions.paper.api.get()),
-                "description" to properties["description"]!!,
-                "url" to properties["url"]!!,
-                "authors" to properties["authors"]!!
+                "description" to providers.gradleProperty("description").get(),
+                "url" to providers.gradleProperty("url").get(),
+                "authors" to providers.gradleProperty("authors").get()
             )
         }
     }
 }
 
 fun parseApiVersion(input: String): String {
-    val regex = Regex("""^(\d+\.\d+)""")
+    val regex = Regex("""^(\d+\.\d+(\.\d+)?)""")
     val matchResult = regex.find(input)
     val version = matchResult?.groupValues?.get(1)
 
