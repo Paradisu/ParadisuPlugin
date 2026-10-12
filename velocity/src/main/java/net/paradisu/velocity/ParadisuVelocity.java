@@ -25,6 +25,7 @@ import com.velocitypowered.api.plugin.Dependency;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.PluginContainer;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
+import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import de.themoep.connectorplugin.velocity.VelocityConnectorPlugin;
 import liquibase.Contexts;
@@ -46,6 +47,7 @@ import net.paradisu.velocity.config.configs.ParadisuConfig;
 import net.paradisu.velocity.listeners.ConnectionListener;
 import net.paradisu.velocity.listeners.LimboListener;
 import net.paradisu.velocity.listeners.PackListener;
+import net.paradisu.velocity.messaging.VelocityMessagingManager;
 import net.paradisu.velocity.util.VelocityLogger;
 import org.hibernate.Session;
 import org.incendo.cloud.CommandManager;
@@ -65,7 +67,7 @@ import java.util.Optional;
         authors = {Constants.Plugin.AUTHORS},
         url = Constants.Plugin.URL,
         dependencies = @Dependency(id = "connectorplugin"))
-public final class ParadisuVelocity implements ParadisuPlugin {
+public final class ParadisuVelocity implements ParadisuPlugin<VelocityConnectorPlugin, Player> {
     private final ProxyServer server;
     private final VelocityLogger logger;
     private final Path dataDirectory;
@@ -75,6 +77,7 @@ public final class ParadisuVelocity implements ParadisuPlugin {
     private VelocityConnectorPlugin connector;
     private PackManager packManager;
     private DatabaseSession databaseSession;
+    private VelocityMessagingManager messagingManager;
 
     @Inject
     public ParadisuVelocity(ProxyServer server, Logger logger, @DataDirectory Path dataDirectory) {
@@ -144,6 +147,8 @@ public final class ParadisuVelocity implements ParadisuPlugin {
         if (connectorPlugin.isPresent()) {
             this.connector = (VelocityConnectorPlugin)
                     connectorPlugin.get().getInstance().get();
+            this.messagingManager = new VelocityMessagingManager(this);
+            this.messagingManager.registerMessages();
         }
 
         // Register listeners
@@ -251,6 +256,16 @@ public final class ParadisuVelocity implements ParadisuPlugin {
     @Override
     public DatabaseSession databaseSession() {
         return this.databaseSession;
+    }
+
+    /**
+     * Returns the messaging manager for this plugin.
+     *
+     * @return the messaging manager for this plugin
+     */
+    @Override
+    public VelocityMessagingManager messagingManager() {
+        return this.messagingManager;
     }
 
     /** Reloads the plugin. */

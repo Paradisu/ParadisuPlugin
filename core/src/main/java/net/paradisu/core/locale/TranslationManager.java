@@ -40,12 +40,12 @@ public final class TranslationManager {
     public static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
     public static final List<Locale> BUNDLED_LOCALES = List.of();
 
-    private final ParadisuPlugin paradisu;
+    private final ParadisuPlugin<?, ?> paradisu;
     private final Set<Locale> installed = ConcurrentHashMap.newKeySet();
     private final Path translationsDirectory;
     private TranslationStore.StringBased<MessageFormat> registry;
 
-    public TranslationManager(ParadisuPlugin paradisu) {
+    public TranslationManager(ParadisuPlugin<?, ?> paradisu) {
         this.paradisu = paradisu;
         this.translationsDirectory = this.paradisu.dataDirectory().resolve("translations");
 

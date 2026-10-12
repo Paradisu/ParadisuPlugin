@@ -28,6 +28,7 @@ import net.luckperms.api.LuckPermsProvider;
 import net.paradisu.core.locale.Messages;
 import net.paradisu.velocity.ParadisuVelocity;
 import net.paradisu.velocity.commands.AbstractVelocityCommand;
+import net.paradisu.velocity.config.configs.MessagesConfig;
 import org.incendo.cloud.context.CommandContext;
 import org.incendo.cloud.description.Description;
 
@@ -80,11 +81,12 @@ public final class ListCommand extends AbstractVelocityCommand {
             List<TextComponent> textComponent = new ArrayList<>();
         };
 
+        MessagesConfig.Utility uText = paradisu.messagesConfig().utility();
+
         // Create a TextComponent for each playerlist-index key
         onlinePlayerPrefixesSorted.forEach((index, players) -> {
             textComponentWrapper.textComponent.add(Component.text()
-                    .append(MiniMessage.miniMessage()
-                            .deserialize(paradisu.messagesConfig().utility().listPrefixes(index)))
+                    .append(MiniMessage.miniMessage().deserialize(uText.listPrefixes(index)))
                     .append(Component.text(
                             players.stream().map(Player::getUsername).collect(Collectors.joining(", "))))
                     .append(Component.newline())
@@ -95,8 +97,7 @@ public final class ListCommand extends AbstractVelocityCommand {
         int playerCount = paradisu.server().getPlayerCount();
         context.sender()
                 .sendMessage(Component.text()
-                        .append(MiniMessage.miniMessage()
-                                .deserialize(paradisu.messagesConfig().utility().messageDivider()))
+                        .append(MiniMessage.miniMessage().deserialize(uText.messageDivider()))
                         .append(Component.newline())
                         .append(Messages.prefixed(MiniMessage.miniMessage()
                                 .deserialize(
@@ -107,8 +108,7 @@ public final class ListCommand extends AbstractVelocityCommand {
                                                 .get(Math.min(playerCount, 2)),
                                         Placeholder.component("count", Component.text(playerCount)))))
                         .append(textComponentWrapper.textComponent)
-                        .append(MiniMessage.miniMessage()
-                                .deserialize(paradisu.messagesConfig().utility().messageDivider()))
+                        .append(MiniMessage.miniMessage().deserialize(uText.messageDivider()))
                         .build());
     }
 }

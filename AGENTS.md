@@ -11,9 +11,9 @@ Paradisu Plugin: one jar containing a **Velocity** plugin and a **Paper** plugin
 | Module | Role | Depends on |
 | --- | --- | --- |
 | `database` | JPA entities (`models/`), `Models` registry, Liquibase files in `src/main/resources/db/` | none (no platform code) |
-| `core` | Shared code: `ParadisuPlugin` interface, `DatabaseSession`, config loading, `TranslationManager`, `Messages`, `HelpManager`, `PackManager`; default lang file `messages_en.properties` | `database` |
-| `paper` | `ParadisuPaper`, commands, listeners, `sync/` async DB jobs, configs | `core` |
-| `velocity` | `ParadisuVelocity` (runs migrations), commands, listeners, teleport utils, configs | `core` |
+| `core` | Shared code: `ParadisuPlugin` interface, `DatabaseSession`, config loading, `TranslationManager`, `Messages`, `HelpManager`, `PackManager`, `messaging/` base classes; default lang file `messages_en.properties` | `database` |
+| `paper` | `ParadisuPaper`, commands, parsers, listeners, `sync/` async DB jobs, `warps/WarpManager`, `messaging/` (heartbeat, cluster state, messages), configs | `core` |
+| `velocity` | `ParadisuVelocity` (runs migrations), commands, listeners, teleport utils, `messaging/VelocityMessagingManager`, configs | `core` |
 | `build-logic` | Convention plugins (repos, toolchain, Spotless, resource expansion) | - |
 
 Root project shades everything into `build/libs/ParadisuPlugin.jar`. Dependency versions live only in `gradle/libs.versions.toml`.
@@ -70,6 +70,22 @@ For a new command `foo`:
 - New config files: write a `@ConfigSerializable` class and register a `ConfigEntry` in `PaperConfigManager` / `VelocityConfigManager`.
 - Bundled extra locales: `messages_<locale>.properties` + `TranslationManager.BUNDLED_LOCALES`.
 
+## Cross-server messaging
+
+Paradisu's own server<->server/proxy messages run on ConnectorPlugin's `Connector` under the plugin's own name (`core/.../messaging/MessagingManager`). Use the bridge (`paradisu.connector().getBridge()`) for teleports/commands; use messaging for notifications and shared state.
+
+- **Never extend or instantiate ConnectorPlugin's `Bridge`**: a second instance re-registers ConnectorPlugin's handlers/listeners and breaks its teleports and responses.
+- Adding a message: `XMessage extends RegisteredMessage<BukkitConnectorPlugin, Player>` (or the Velocity types) in `paper|velocity/.../messaging/messages/` with a unique `ACTION` constant; implement `handle(receiver, Message message)` (payload: `message.getData()`, sender: `message.getSendingServer()`, `receiver` may be null); add a nested `record Payload(...) implements SerialMessage` with `serialize()` (never return null; default is an empty array) and `static deserialize(byte[])` using Guava `ByteStreams`, with fields in the same order. **Register it in `registerMessages()`** of `PaperMessagingManager`/`VelocityMessagingManager`; unregistered actions are dropped. Send with `paradisu.messagingManager().send(MessageTarget.X, payload)`.
+- Paper handlers run on the main thread: keep them fast, no DB work (schedule async). Send from the main thread on Paper (the plugin-message messenger is not thread-safe); hop back with `runTask` from async code.
+- Targets: `*_QUEUE` for messages still valid when delivered late (e.g. `SYNC_WARPS`); `*_WITH_PLAYERS` for periodic/time-sensitive state (e.g. `SERVER_HEARTBEAT`). `OTHERS_*` skips the sender, so apply the change locally too.
+- Changing a payload breaks mixed-version servers; add a new action instead of changing an existing payload incompatibly.
+- Cluster state (`PaperMessagingManager.clusterState()`, `findPlayer`, `findServerForContext`) comes from 5 s heartbeats with a 15 s timeout; handle missing servers or players.
+
+## Reusable utilities (`core/.../utils/`)
+
+- `ExponentialBackoffLimiter<K>`: per-key burst + exponential lockout rate limiting (`tryAcquire(key)` -> `Result.allowed()`/`retryAfterSeconds()`). Use it for any player-triggered command that is expensive or spammable. Check it before the expensive work, read the settings from config (see `ParadisuConfig.Warps.RateLimit`), and add a bypass permission.
+- `FuzzyMatcher<T>`: closest-name lookup. Build it on data change, not per call; check exact matches with a map first; never call it from suggestion providers.
+
 ## Updating dependencies
 
 - Edit `gradle/libs.versions.toml` `[versions]` only. Keep shared `version.ref`s together (Hibernate artifacts, Adventure, Cloud minecraft artifacts).
@@ -88,4 +104,5 @@ For a new command `foo`:
 2. New entity -> in `Models` + changelog included in `migrations.xml`.
 3. New command -> in a registrar, with properties keys and `MessagesConfig` entries.
 4. No blocking DB/network work on the main thread.
-5. Summarize what you could not verify (no automated tests, no live server run).
+5. New message -> registered in `registerMessages()`, sent from the main thread on Paper.
+6. Summarize what you could not verify (no automated tests, no live server run).

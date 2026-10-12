@@ -17,9 +17,13 @@
 
 package net.paradisu.core.locale;
 
+import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.Component.translatable;
@@ -38,5 +42,26 @@ public interface Messages {
                 .append(Component.space())
                 .append(component)
                 .build();
+    }
+
+    static void sendPrefixed(Audience target, ComponentLike component) {
+        target.sendMessage(prefixed(component));
+    }
+
+    static void sendPrefixed(Audience target, String miniMessage) {
+        target.sendMessage(prefixed(MiniMessage.miniMessage().deserialize(miniMessage)));
+    }
+
+    static void sendPrefixed(Audience target, String miniMessage, TagResolver resolver) {
+        target.sendMessage(prefixed(MiniMessage.miniMessage().deserialize(miniMessage, resolver)));
+    }
+
+    static void sendPrefixed(Audience target, String miniMessage, TagResolver... resolvers) {
+        target.sendMessage(prefixed(MiniMessage.miniMessage().deserialize(miniMessage, resolvers)));
+    }
+
+    static void sendPrefixedPlaceholder(Audience target, String miniMessage, String placeholder, String text) {
+        target.sendMessage(prefixed(MiniMessage.miniMessage()
+                .deserialize(miniMessage, Placeholder.component(placeholder, Component.text(text)))));
     }
 }

@@ -21,12 +21,13 @@ import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.Player;
 import de.themoep.connectorplugin.LocationInfo;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.paradisu.core.locale.Messages;
 import net.paradisu.velocity.ParadisuVelocity;
 import net.paradisu.velocity.commands.AbstractVelocityCommand;
 import net.paradisu.velocity.commands.util.teleport.TeleportHistory;
+import net.paradisu.velocity.config.configs.MessagesConfig.Commands;
 import org.incendo.cloud.context.CommandContext;
 import org.incendo.cloud.description.Description;
 import org.incendo.cloud.velocity.parser.PlayerParser;
@@ -67,6 +68,8 @@ public final class BackCommand extends AbstractVelocityCommand {
         Player player = (Player) context.getOrDefault("player", context.sender());
         LocationInfo previousLocation = history.getTeleport(player);
         boolean validRequest = (previousLocation != null);
+        Commands.Back bText = paradisu.messagesConfig().commands().back();
+        TagResolver.Single playerPlaceholder = Placeholder.component("player", Component.text(player.getUsername()));
 
         if (validRequest) {
             paradisu.connector().getBridge().getLocation(player).whenComplete((location, locationException) -> {
@@ -77,16 +80,8 @@ public final class BackCommand extends AbstractVelocityCommand {
                             .teleport(player.getUsername(), previousLocation, m -> {})
                             .whenComplete((success, teleportException) -> {
                                 if (success) {
-                                    context.sender()
-                                            .sendMessage(Messages.prefixed(MiniMessage.miniMessage()
-                                                    .deserialize(
-                                                            paradisu.messagesConfig()
-                                                                    .commands()
-                                                                    .back()
-                                                                    .output()
-                                                                    .get(0),
-                                                            Placeholder.component(
-                                                                    "player", Component.text(player.getUsername())))));
+                                    Messages.sendPrefixed(
+                                            context.sender(), bText.output().get(0), playerPlaceholder);
                                 } else {
                                     paradisu.logger().error("Error teleporting: " + teleportException.getMessage());
                                 }
@@ -96,15 +91,7 @@ public final class BackCommand extends AbstractVelocityCommand {
                 }
             });
         } else {
-            context.sender()
-                    .sendMessage(Messages.prefixed(MiniMessage.miniMessage()
-                            .deserialize(
-                                    paradisu.messagesConfig()
-                                            .commands()
-                                            .back()
-                                            .output()
-                                            .get(1),
-                                    Placeholder.component("player", Component.text(player.getUsername())))));
+            Messages.sendPrefixed(context.sender(), bText.output().get(1), playerPlaceholder);
         }
     }
 }

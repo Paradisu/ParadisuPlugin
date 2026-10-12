@@ -33,11 +33,11 @@ import org.postgresql.Driver;
 @Accessors(fluent = true)
 @Getter
 public class DatabaseSession {
-    private ParadisuPlugin plugin;
+    private ParadisuPlugin<?, ?> plugin;
     private EntityManagerFactory factory;
     private boolean open;
 
-    public DatabaseSession(ParadisuPlugin plugin, String url, String username, String password) {
+    public DatabaseSession(ParadisuPlugin<?, ?> plugin, String url, String username, String password) {
         this.plugin = plugin;
 
         final StandardServiceRegistryBuilder registryBuilder = new StandardServiceRegistryBuilder()

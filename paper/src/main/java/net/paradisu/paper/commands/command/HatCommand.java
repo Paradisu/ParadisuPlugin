@@ -18,7 +18,6 @@
 package net.paradisu.paper.commands.command;
 
 import io.papermc.paper.command.brigadier.CommandSourceStack;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.paradisu.core.locale.Messages;
 import net.paradisu.paper.ParadisuPaper;
 import net.paradisu.paper.commands.AbstractPaperCommand;
@@ -49,6 +48,10 @@ public class HatCommand extends AbstractPaperCommand {
      * @param context the data specified on registration of the command
      */
     private void hatCommand(CommandContext<CommandSourceStack> context) {
+        if (!(context.sender().getSender() instanceof Player)) {
+            // Console can't wear hats
+            return;
+        }
         Player player = (Player) context.sender().getSender();
         ItemStack currentHelmet = player.getInventory().getHelmet();
         ItemStack handItem = player.getInventory().getItemInMainHand().clone();
@@ -57,7 +60,7 @@ public class HatCommand extends AbstractPaperCommand {
         }
         player.getInventory().setHelmet(handItem);
         player.getInventory().setItemInMainHand(currentHelmet);
-        player.sendMessage(Messages.prefixed(MiniMessage.miniMessage()
-                .deserialize(paradisu.messagesConfig().commands().hat().output().get(0))));
+        Messages.sendPrefixed(
+                player, paradisu.messagesConfig().commands().hat().output().get(0));
     }
 }

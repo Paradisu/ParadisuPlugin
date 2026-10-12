@@ -21,12 +21,13 @@ import de.themoep.connectorplugin.ConnectorPlugin;
 import net.paradisu.core.config.ConfigManager;
 import net.paradisu.core.database.DatabaseSession;
 import net.paradisu.core.locale.TranslationManager;
+import net.paradisu.core.messaging.MessagingManager;
 import net.paradisu.core.utils.ParadisuLogger;
 import org.incendo.cloud.CommandManager;
 
 import java.nio.file.Path;
 
-public interface ParadisuPlugin {
+public interface ParadisuPlugin<P extends ConnectorPlugin<R>, R> {
     public ParadisuLogger logger();
 
     public Path dataDirectory();
@@ -37,7 +38,9 @@ public interface ParadisuPlugin {
 
     public TranslationManager translationManager();
 
-    public ConnectorPlugin<?> connector();
+    public ConnectorPlugin<R> connector();
+
+    public MessagingManager<P, R> messagingManager();
 
     public DatabaseSession databaseSession();
 

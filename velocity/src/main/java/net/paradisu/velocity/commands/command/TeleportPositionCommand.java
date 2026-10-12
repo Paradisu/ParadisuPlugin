@@ -22,12 +22,12 @@ import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import de.themoep.connectorplugin.LocationInfo;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.paradisu.core.locale.Messages;
 import net.paradisu.velocity.ParadisuVelocity;
 import net.paradisu.velocity.commands.AbstractVelocityCommand;
 import net.paradisu.velocity.commands.util.teleport.TeleportHistory;
+import net.paradisu.velocity.config.configs.MessagesConfig;
 import org.incendo.cloud.context.CommandContext;
 import org.incendo.cloud.description.Description;
 import org.incendo.cloud.parser.standard.DoubleParser;
@@ -41,51 +41,32 @@ public final class TeleportPositionCommand extends AbstractVelocityCommand {
 
     @Override
     public void register() {
+        MessagesConfig.Commands.Tppos tText =
+                paradisu.messagesConfig().commands().tppos();
         var builder = this.commandManager
                 .commandBuilder("tppos", "tpposition")
                 .permission("vparadisu.tppos")
-                .commandDescription(Description.of(
-                        paradisu.messagesConfig().commands().tppos().helpMsg()))
+                .commandDescription(Description.of(tText.helpMsg()))
                 .required(
                         "x",
                         DoubleParser.doubleParser(),
-                        Description.of(paradisu.messagesConfig()
-                                .commands()
-                                .tppos()
-                                .helpArgs()
-                                .get(0)))
+                        Description.of(tText.helpArgs().get(0)))
                 .required(
                         "y",
                         DoubleParser.doubleParser(),
-                        Description.of(paradisu.messagesConfig()
-                                .commands()
-                                .tppos()
-                                .helpArgs()
-                                .get(1)))
+                        Description.of(tText.helpArgs().get(1)))
                 .required(
                         "z",
                         DoubleParser.doubleParser(),
-                        Description.of(paradisu.messagesConfig()
-                                .commands()
-                                .tppos()
-                                .helpArgs()
-                                .get(2)))
+                        Description.of(tText.helpArgs().get(2)))
                 .optional(
                         "server",
                         ServerParser.serverParser(),
-                        Description.of(paradisu.messagesConfig()
-                                .commands()
-                                .tppos()
-                                .helpArgs()
-                                .get(3)))
+                        Description.of(tText.helpArgs().get(3)))
                 .optional(
                         "player",
                         PlayerParser.playerParser(),
-                        Description.of(paradisu.messagesConfig()
-                                .commands()
-                                .tppos()
-                                .helpArgs()
-                                .get(4)))
+                        Description.of(tText.helpArgs().get(4)))
                 .handler(this::teleportPositionCommand);
         this.commandManager.command(builder);
     }
@@ -118,25 +99,18 @@ public final class TeleportPositionCommand extends AbstractVelocityCommand {
                         .teleport(player.getUsername(), telportLocation, m -> {})
                         .whenComplete((success, teleportException) -> {
                             if (success) {
-                                context.sender()
-                                        .sendMessage(Messages.prefixed(MiniMessage.miniMessage()
-                                                .deserialize(
-                                                        paradisu.messagesConfig()
-                                                                .commands()
-                                                                .tppos()
-                                                                .output()
-                                                                .get(0),
-                                                        Placeholder.component(
-                                                                "player", Component.text(player.getUsername())),
-                                                        Placeholder.component(
-                                                                "posx", Component.text((int) telportLocation.getX())),
-                                                        Placeholder.component(
-                                                                "posy", Component.text((int) telportLocation.getY())),
-                                                        Placeholder.component(
-                                                                "posz", Component.text((int) telportLocation.getZ())),
-                                                        Placeholder.component(
-                                                                "server",
-                                                                Component.text(telportLocation.getServer())))));
+                                Messages.sendPrefixed(
+                                        context.sender(),
+                                        paradisu.messagesConfig()
+                                                .commands()
+                                                .tppos()
+                                                .output()
+                                                .get(0),
+                                        Placeholder.component("player", Component.text(player.getUsername())),
+                                        Placeholder.component("posx", Component.text((int) telportLocation.getX())),
+                                        Placeholder.component("posy", Component.text((int) telportLocation.getY())),
+                                        Placeholder.component("posz", Component.text((int) telportLocation.getZ())),
+                                        Placeholder.component("server", Component.text(telportLocation.getServer())));
                             } else {
                                 paradisu.logger().error("Error teleporting: " + teleportException.getMessage());
                             }

@@ -28,9 +28,12 @@ import net.paradisu.paper.config.configs.MessagesConfig;
 import net.paradisu.paper.config.configs.ParadisuConfig;
 import net.paradisu.paper.listeners.PlayerJoinListener;
 import net.paradisu.paper.listeners.PlayerQuitListener;
+import net.paradisu.paper.messaging.PaperMessagingManager;
 import net.paradisu.paper.util.PaperLogger;
 import net.paradisu.paper.util.SafeItemSerializer;
+import net.paradisu.paper.warps.WarpManager;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.incendo.cloud.CommandManager;
 import org.incendo.cloud.execution.ExecutionCoordinator;
@@ -38,7 +41,7 @@ import org.incendo.cloud.paper.PaperCommandManager;
 
 import java.nio.file.Path;
 
-public class ParadisuPaper extends JavaPlugin implements ParadisuPlugin {
+public class ParadisuPaper extends JavaPlugin implements ParadisuPlugin<BukkitConnectorPlugin, Player> {
     private PaperCommandManager<CommandSourceStack> commandManager;
     private PaperLogger logger;
     private BukkitConnectorPlugin connector;
@@ -47,6 +50,8 @@ public class ParadisuPaper extends JavaPlugin implements ParadisuPlugin {
     private TranslationManager translationManager;
     private DatabaseSession databaseSession;
     private SafeItemSerializer safeItemSerializer;
+    private WarpManager warpManager;
+    private PaperMessagingManager messagingManager;
 
     @Override
     public void onLoad() {
@@ -63,11 +68,6 @@ public class ParadisuPaper extends JavaPlugin implements ParadisuPlugin {
             this.translationManager = new TranslationManager(this);
             this.translationManager.reload();
 
-            this.commandManager = PaperCommandManager.builder()
-                    .executionCoordinator(ExecutionCoordinator.simpleCoordinator())
-                    .buildOnEnable(this);
-            PaperCommandRegistrar.registerCommands(this);
-
             this.connectorEnabled = Bukkit.getPluginManager().isPluginEnabled("ConnectorPlugin");
             if (this.connectorEnabled) {
                 this.connector =
@@ -79,6 +79,18 @@ public class ParadisuPaper extends JavaPlugin implements ParadisuPlugin {
                     this.paradisuConfig().database().url(),
                     this.paradisuConfig().database().username(),
                     this.paradisuConfig().database().password());
+
+            this.messagingManager = new PaperMessagingManager(this);
+            this.messagingManager.registerMessages();
+            this.messagingManager.startHeartbeat();
+
+            this.warpManager = new WarpManager(this);
+            this.warpManager.syncWarps();
+
+            this.commandManager = PaperCommandManager.builder()
+                    .executionCoordinator(ExecutionCoordinator.simpleCoordinator())
+                    .buildOnEnable(this);
+            PaperCommandRegistrar.registerCommands(this);
 
             this.getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
             this.getServer().getPluginManager().registerEvents(new PlayerQuitListener(this), this);
@@ -184,11 +196,40 @@ public class ParadisuPaper extends JavaPlugin implements ParadisuPlugin {
         return safeItemSerializer;
     }
 
+    /**
+     * Returns the WarpManager for this plugin.
+     *
+     * @return the WarpManager for this plugin
+     */
+    public WarpManager warpManager() {
+        return warpManager;
+    }
+
+    /**
+     * Returns the PaperMessagingManager for this plugin.
+     *
+     * @return the PaperMessagingManager for this plugin
+     */
+    public PaperMessagingManager messagingManager() {
+        return messagingManager;
+    }
+
     /** Reloads the plugin. */
     @Override
     public void reload() {
         this.configManager.loadConfigs();
         this.translationManager.reload();
+        this.warpManager.syncWarps();
+        this.warpManager.reloadRateLimiter();
         logger().info("Reloaded Paradisu Paper plugin");
+    }
+
+    /** Disables the plugin. */
+    @Override
+    public void onDisable() {
+        if (this.messagingManager != null) {
+            this.messagingManager.broadcastHeartbeat(true);
+            this.messagingManager.unregisterAll();
+        }
     }
 }

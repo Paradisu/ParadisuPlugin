@@ -19,12 +19,10 @@ package net.paradisu.velocity.commands.command;
 
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.Player;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.paradisu.core.locale.Messages;
 import net.paradisu.velocity.ParadisuVelocity;
 import net.paradisu.velocity.commands.AbstractVelocityCommand;
+import net.paradisu.velocity.config.configs.MessagesConfig;
 import org.incendo.cloud.context.CommandContext;
 import org.incendo.cloud.description.Description;
 import org.incendo.cloud.parser.standard.BooleanParser;
@@ -41,50 +39,34 @@ public class PacksCommand extends AbstractVelocityCommand {
                 .commandBuilder("packs")
                 .commandDescription(Description.of(
                         paradisu.messagesConfig().commands().packs().helpMsg()));
+        MessagesConfig.Commands.Packs pText =
+                paradisu.messagesConfig().commands().packs();
 
         this.commandManager.command(builder.literal("clear")
                 .permission("vparadisu.packs.clear")
-                .commandDescription(Description.of(
-                        paradisu.messagesConfig().commands().packs().clear().helpMsg()))
+                .commandDescription(Description.of(pText.clear().helpMsg()))
                 .required(
                         "player",
                         PlayerParser.playerParser(),
-                        Description.of(paradisu.messagesConfig()
-                                .commands()
-                                .packs()
-                                .clear()
-                                .helpArgs()
-                                .get(0)))
+                        Description.of(pText.clear().helpArgs().get(0)))
                 .handler(this::clearCommand));
 
         this.commandManager.command(builder.literal("reload")
                 .permission("vparadisu.packs.reload")
-                .commandDescription(Description.of(
-                        paradisu.messagesConfig().commands().packs().reload().helpMsg()))
+                .commandDescription(Description.of(pText.reload().helpMsg()))
                 .required(
                         "resend",
                         BooleanParser.booleanParser(),
-                        Description.of(paradisu.messagesConfig()
-                                .commands()
-                                .packs()
-                                .reload()
-                                .helpArgs()
-                                .get(0)))
+                        Description.of(pText.reload().helpArgs().get(0)))
                 .handler(this::reloadCommand));
 
         this.commandManager.command(builder.literal(("resend"))
                 .permission("vparadisu.packs.resend")
-                .commandDescription(Description.of(
-                        paradisu.messagesConfig().commands().packs().resend().helpMsg()))
+                .commandDescription(Description.of(pText.resend().helpMsg()))
                 .required(
                         "player",
                         PlayerParser.playerParser(),
-                        Description.of(paradisu.messagesConfig()
-                                .commands()
-                                .packs()
-                                .resend()
-                                .helpArgs()
-                                .get(0)))
+                        Description.of(pText.resend().helpArgs().get(0)))
                 .handler(this::resendCommand));
     }
 
@@ -98,16 +80,11 @@ public class PacksCommand extends AbstractVelocityCommand {
 
         player.clearResourcePacks();
 
-        context.sender()
-                .sendMessage(Messages.prefixed(MiniMessage.miniMessage()
-                        .deserialize(
-                                paradisu.messagesConfig()
-                                        .commands()
-                                        .packs()
-                                        .clear()
-                                        .output()
-                                        .get(0),
-                                Placeholder.component("player", Component.text(player.getUsername())))));
+        Messages.sendPrefixedPlaceholder(
+                context.sender(),
+                paradisu.messagesConfig().commands().packs().clear().output().get(0),
+                "player",
+                player.getUsername());
     }
 
     /**
@@ -130,14 +107,9 @@ public class PacksCommand extends AbstractVelocityCommand {
             });
         }
 
-        context.sender()
-                .sendMessage(Messages.prefixed(MiniMessage.miniMessage()
-                        .deserialize(paradisu.messagesConfig()
-                                .commands()
-                                .packs()
-                                .reload()
-                                .output()
-                                .get(resend ? 1 : 0))));
+        Messages.sendPrefixed(
+                context.sender(),
+                paradisu.messagesConfig().commands().packs().reload().output().get(resend ? 1 : 0));
     }
 
     /**
@@ -154,15 +126,10 @@ public class PacksCommand extends AbstractVelocityCommand {
             }
         });
 
-        context.sender()
-                .sendMessage(Messages.prefixed(MiniMessage.miniMessage()
-                        .deserialize(
-                                paradisu.messagesConfig()
-                                        .commands()
-                                        .packs()
-                                        .resend()
-                                        .output()
-                                        .get(0),
-                                Placeholder.component("player", Component.text(player.getUsername())))));
+        Messages.sendPrefixedPlaceholder(
+                context.sender(),
+                paradisu.messagesConfig().commands().packs().resend().output().get(0),
+                "player",
+                player.getUsername());
     }
 }

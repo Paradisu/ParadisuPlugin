@@ -1,5 +1,5 @@
 /*
- * The official plugin for the Paradisu server. Copyright (C) 2025 Paradisu. https://paradisu.net
+ * The official plugin for the Paradisu server. Copyright (C) 2026 Paradisu. https://paradisu.net
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -15,16 +15,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.paradisu.velocity.commands.command;
+package net.paradisu.paper.messaging;
 
-import net.paradisu.velocity.ParadisuVelocity;
-import net.paradisu.velocity.commands.AbstractVelocityCommand;
+import java.util.List;
+import java.util.UUID;
 
-public final class WarpCommand extends AbstractVelocityCommand {
-    public WarpCommand(ParadisuVelocity paradisu) {
-        super(paradisu);
-    }
-
-    @Override
-    public void register() {}
+/** Represents the cached state of a remote server in the cluster. */
+public record ServerState(String serverName, String warpContext, List<PlayerState> onlinePlayers, long lastHeartbeat) {
+    public record PlayerState(UUID uuid, String name) {}
 }

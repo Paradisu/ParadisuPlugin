@@ -26,6 +26,7 @@ import net.paradisu.core.locale.Messages;
 import net.paradisu.velocity.ParadisuVelocity;
 import net.paradisu.velocity.commands.AbstractVelocityCommand;
 import net.paradisu.velocity.commands.util.teleport.TeleportHistory;
+import net.paradisu.velocity.config.configs.MessagesConfig;
 import org.incendo.cloud.context.CommandContext;
 import org.incendo.cloud.description.Description;
 import org.incendo.cloud.velocity.parser.PlayerParser;
@@ -37,27 +38,19 @@ public final class TeleportCommand extends AbstractVelocityCommand {
 
     @Override
     public void register() {
+        MessagesConfig.Commands.Tp tText = paradisu.messagesConfig().commands().tp();
         var builder = this.commandManager
                 .commandBuilder("tp", "vteleport")
                 .permission("vparadisu.tp")
-                .commandDescription(
-                        Description.of(paradisu.messagesConfig().commands().tp().helpMsg()))
+                .commandDescription(Description.of(tText.helpMsg()))
                 .required(
                         "target",
                         PlayerParser.playerParser(),
-                        Description.of(paradisu.messagesConfig()
-                                .commands()
-                                .tp()
-                                .helpArgs()
-                                .get(0)))
+                        Description.of(tText.helpArgs().get(0)))
                 .optional(
                         "player",
                         PlayerParser.playerParser(),
-                        Description.of(paradisu.messagesConfig()
-                                .commands()
-                                .tp()
-                                .helpArgs()
-                                .get(1)))
+                        Description.of(tText.helpArgs().get(1)))
                 .handler(this::teleportHereCommand);
         this.commandManager.command(builder);
     }

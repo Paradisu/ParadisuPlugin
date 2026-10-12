@@ -19,10 +19,10 @@ package net.paradisu.velocity.commands.command;
 
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.Player;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.paradisu.core.locale.Messages;
 import net.paradisu.velocity.ParadisuVelocity;
 import net.paradisu.velocity.commands.AbstractVelocityCommand;
+import net.paradisu.velocity.config.configs.MessagesConfig;
 import org.incendo.cloud.context.CommandContext;
 import org.incendo.cloud.description.Description;
 import org.incendo.cloud.parser.standard.StringParser;
@@ -36,10 +36,10 @@ public final class VParadisuCommand extends AbstractVelocityCommand {
 
     @Override
     public void register() {
-        var builder = this.commandManager
-                .commandBuilder("vparadisu")
-                .commandDescription(Description.of(
-                        paradisu.messagesConfig().commands().vparadisu().helpMsg()));
+        MessagesConfig.Commands.Vparadisu vText =
+                paradisu.messagesConfig().commands().vparadisu();
+        var builder =
+                this.commandManager.commandBuilder("vparadisu").commandDescription(Description.of(vText.helpMsg()));
 
         this.commandManager.command(builder.literal("help")
                 .optional("query", StringParser.greedyStringParser())
@@ -51,26 +51,17 @@ public final class VParadisuCommand extends AbstractVelocityCommand {
 
         this.commandManager.command(builder.literal("about")
                 .permission("vparadisu.about")
-                .commandDescription(Description.of(
-                        paradisu.messagesConfig().commands().vparadisu().about().helpMsg()))
+                .commandDescription(Description.of(vText.about().helpMsg()))
                 .handler(this::aboutCommand));
 
         this.commandManager.command(builder.literal("maintenance")
                 .permission("vparadisu.maintenance")
-                .commandDescription(Description.of(paradisu.messagesConfig()
-                        .commands()
-                        .vparadisu()
-                        .maintenance()
-                        .helpMsg()))
+                .commandDescription(Description.of(vText.maintenance().helpMsg()))
                 .handler(this::maintenanceCommand));
 
         this.commandManager.command(builder.literal("reload")
                 .permission("vparadisu.reload")
-                .commandDescription(Description.of(paradisu.messagesConfig()
-                        .commands()
-                        .vparadisu()
-                        .reload()
-                        .helpMsg()))
+                .commandDescription(Description.of(vText.reload().helpMsg()))
                 .handler(this::reloadCommand));
     }
 
@@ -80,14 +71,14 @@ public final class VParadisuCommand extends AbstractVelocityCommand {
      * @param context the data specified on registration of the command
      */
     private void aboutCommand(CommandContext<CommandSource> context) {
-        context.sender()
-                .sendMessage(Messages.prefixed(MiniMessage.miniMessage()
-                        .deserialize(paradisu.messagesConfig()
-                                .commands()
-                                .vparadisu()
-                                .about()
-                                .output()
-                                .get(0))));
+        Messages.sendPrefixed(
+                context.sender(),
+                paradisu.messagesConfig()
+                        .commands()
+                        .vparadisu()
+                        .about()
+                        .output()
+                        .get(0));
     }
 
     /**
@@ -101,13 +92,14 @@ public final class VParadisuCommand extends AbstractVelocityCommand {
                 paradisu.paradisuConfig().limboServer().port());
 
         for (Player player : paradisu.server().getAllPlayers()) {
-            player.sendMessage(Messages.prefixed(MiniMessage.miniMessage()
-                    .deserialize(paradisu.messagesConfig()
+            Messages.sendPrefixed(
+                    player,
+                    paradisu.messagesConfig()
                             .commands()
                             .vparadisu()
                             .maintenance()
                             .output()
-                            .get(0))));
+                            .get(0));
             player.transferToHost(limboAddress);
         }
     }
@@ -119,13 +111,13 @@ public final class VParadisuCommand extends AbstractVelocityCommand {
      */
     private void reloadCommand(CommandContext<CommandSource> context) {
         paradisu.reload();
-        context.sender()
-                .sendMessage(Messages.prefixed(MiniMessage.miniMessage()
-                        .deserialize(paradisu.messagesConfig()
-                                .commands()
-                                .vparadisu()
-                                .reload()
-                                .output()
-                                .get(0))));
+        Messages.sendPrefixed(
+                context.sender(),
+                paradisu.messagesConfig()
+                        .commands()
+                        .vparadisu()
+                        .reload()
+                        .output()
+                        .get(0));
     }
 }
