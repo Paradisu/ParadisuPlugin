@@ -123,10 +123,15 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+    - name: Build Development Image
+      run: docker build -f .devcontainer/Dockerfile -t paradisuplugin-devcontainer:local .
     - name: Run Environment Checks
-      # Builds the image from this commit's Dockerfile, starts the full compose stack, and checks it.
       # See https://github.com/devcontainers/ci/releases
       uses: devcontainers/ci@513af61f4de4f75d37e4438f184ba4358f0fc1ca
+      env:
+        # `devcontainer build` builds a thin derived image through Docker Compose, whose bake integration refuses
+        # the Dockerfile the devcontainer CLI generates in /tmp
+        BUILDX_BAKE_ENTITLEMENTS_FS: '0'
       with:
         configFile: .devcontainer/build-local/devcontainer.json
         push: never
