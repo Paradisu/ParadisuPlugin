@@ -32,9 +32,12 @@ RUN groupadd --gid ${USER_GID} ${USERNAME} \
     && echo "${USERNAME} ALL=(root) NOPASSWD:ALL" > /etc/sudoers.d/${USERNAME} \
     && chmod 0440 /etc/sudoers.d/${USERNAME}
 
-# Mount points for the Gradle project caches (see docker-compose.yml); owned by the user so the volumes inherit it
+# Mount points for the Gradle project caches (see docker-compose.yml). New volumes inherit their owner and mode,
+# and the devcontainer CLI renumbers the user to the host user's UID (for example 1001 on GitHub runners), which
+# would lock that user out of a volume owned by UID 1000: so make them writable by anyone.
 RUN mkdir -p /workspaces/ParadisuPlugin/.gradle /workspaces/ParadisuPlugin/build-logic/.gradle \
-    && chown -R ${USERNAME}:${USER_GID} /workspaces
+    && chown -R ${USERNAME}:${USER_GID} /workspaces \
+    && chmod 0777 /workspaces/ParadisuPlugin/.gradle /workspaces/ParadisuPlugin/build-logic/.gradle
 
 # JetBrains Runtime SDK (the SDK variant includes javac, which the Gradle toolchain needs)
 RUN case "${TARGETARCH}" in amd64) arch=x64 ;; arm64) arch=aarch64 ;; *) echo "unsupported arch ${TARGETARCH}" >&2; exit 1 ;; esac \

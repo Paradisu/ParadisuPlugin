@@ -3,7 +3,9 @@ import { type DevConfig, loadConfig } from './config.ts';
 import * as db from './db.ts';
 import { setup } from './downloads.ts';
 import * as instances from './instances.ts';
-import { DevError, log, warn } from './util.ts';
+import { accessSync, constants, existsSync } from 'node:fs';
+import { join } from 'node:path';
+import { DevError, ROOT, capture, log, warn } from './util.ts';
 
 const USAGE = `Usage: dev <command>
 
@@ -129,6 +131,30 @@ async function dbCommand(config: DevConfig, args: string[], stopAll: () => Promi
   }
 }
 
+/**
+ * The Gradle project caches are Docker volumes (see docker-compose.yml). One created for a different user ID than
+ * the one running now (the CLI renumbers the container user to the host's) is not writable, so Gradle fails to start.
+ */
+function ensureGradleCachesWritable(): void {
+  for (const relative of ['.gradle', join('build-logic', '.gradle')]) {
+    const dir = join(ROOT, relative);
+    if (!existsSync(dir)) {
+      continue;
+    }
+    try {
+      accessSync(dir, constants.W_OK);
+    } catch {
+      const owner = `${process.getuid?.()}:${process.getgid?.()}`;
+      const result = capture('sudo', ['-n', 'chown', '-R', owner, dir]);
+      if (result.status === 0) {
+        log(`Fixed ownership of ${relative} (it belonged to another user ID)`);
+      } else {
+        warn(`${relative} is not writable and could not be fixed: ${result.stderr.trim()}. Remove the container's gradle volumes and reopen.`);
+      }
+    }
+  }
+}
+
 /** Devcontainer postCreate hook: never fails container creation, just warns so it can be re-run. */
 async function bootstrap(config: DevConfig): Promise<void> {
   const { run } = await import('./util.ts');
@@ -147,6 +173,7 @@ async function bootstrap(config: DevConfig): Promise<void> {
       },
     ],
   ];
+  ensureGradleCachesWritable();
   let failed = false;
   for (const [label, step] of steps) {
     log(`\n==> ${label}`);
