@@ -1,0 +1,11 @@
+debug: false
+messenger-type: redis
+group: global
+# The proxy's LimboListener addresses this server by the name "limbo"
+server-name: limbo
+redis:
+  host: ${REDIS_HOST}
+  port: 6379
+  db: 0
+  timeout: 60
+  password: paradisu

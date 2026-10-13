@@ -1,0 +1,21 @@
+{
+  "name": "paradisu-dev",
+  "private": true,
+  "type": "module",
+  "description": "Local Velocity + Paper development network for ParadisuPlugin",
+  "packageManager": "pnpm@12.11.2",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "dev": "node src/cli.ts",
+    "typecheck": "tsc -p ."
+  },
+  "dependencies": {
+    "smol-toml": "1.9.1"
+  },
+  "devDependencies": {
+    "@types/node": "24.19.2",
+    "typescript": "7.0.2"
+  }
+}

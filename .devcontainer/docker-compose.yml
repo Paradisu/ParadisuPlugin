@@ -1,0 +1,55 @@
+name: paradisu-dev
+services:
+  dev:
+    image: ghcr.io/paradisu/paradisuplugin-devcontainer:${PARADISU_DEVCONTAINER_TAG:-latest}
+    command: sleep infinity
+    # Reaps the zombie processes left behind by tmux and the servers
+    init: true
+    volumes:
+      - ..:/workspaces/ParadisuPlugin:cached
+      - gradle-cache:/home/vscode/.gradle
+      # Gradle's per-project caches and lock files live in .gradle directories inside the checkout. Keep the
+      # container's own, so it never waits on locks held by a Gradle daemon or IDE running on the host.
+      - gradle-project:/workspaces/ParadisuPlugin/.gradle
+      - gradle-build-logic:/workspaces/ParadisuPlugin/build-logic/.gradle
+    environment:
+      PARADISU_DB_HOST: postgres
+      PARADISU_DB_NAME: paradisu
+      PARADISU_DB_USER: paradisu
+      PARADISU_DB_PASSWORD: paradisu
+      PARADISU_REDIS_HOST: redis
+    ports:
+      # Binds 0.0.0.0 on the host, so the proxy is joinable from the LAN
+      - "${PARADISU_PROXY_PORT:-25565}:25565"
+      # Limbo: players are transferred to it, so clients need to reach it too
+      - "${PARADISU_LIMBO_PORT:-30000}:30000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+  postgres:
+    image: postgres:17
+    # Use our own pg_hba.conf (trust authentication). Unlike POSTGRES_HOST_AUTH_METHOD this also applies to
+    # data volumes that were initialised earlier.
+    command: ["postgres", "-c", "hba_file=/etc/postgresql/pg_hba.conf"]
+    environment:
+      POSTGRES_DB: paradisu
+      POSTGRES_USER: paradisu
+      POSTGRES_PASSWORD: paradisu
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./postgres/init:/docker-entrypoint-initdb.d:ro
+      - ./postgres/pg_hba.conf:/etc/postgresql/pg_hba.conf:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U paradisu -d paradisu"]
+      interval: 5s
+      retries: 20
+  redis:
+    image: redis:8-alpine
+    command: ["redis-server", "--requirepass", "paradisu"]
+volumes:
+  gradle-cache:
+  gradle-project:
+  gradle-build-logic:
+  pgdata:

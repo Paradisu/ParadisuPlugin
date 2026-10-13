@@ -17,6 +17,7 @@ luckperms-api = "5.5"
 paper-api = "26.3.build.157-beta"
 postgresql = "42.7.14"
 shadow = "9.6.1"
+slf4j = "2.0.20"
 spotless = "8.10.2"
 velocity-api = "4.2.1-20261007.005346-9"
 
@@ -41,6 +42,7 @@ log4j-slf4j-impl = { group = "org.apache.logging.log4j", name = "log4j-slf4j-imp
 luckperms-api = { group = "net.luckperms", name = "api", version.ref = "luckperms-api" }
 paper-api = { group = "io.papermc.paper", name = "paper-api", version.ref = "paper-api" }
 postgresql = { group = "org.postgresql", name = "postgresql", version.ref = "postgresql" }
+slf4j-simple = { group = "org.slf4j", name = "slf4j-simple", version.ref = "slf4j" }
 shadow = { group = "com.gradleup.shadow", name = "shadow-gradle-plugin", version.ref = "shadow" }
 spotless = { group = "com.diffplug.spotless", name = "spotless-plugin-gradle", version.ref = "spotless" }
 velocity-api = { group = "com.velocitypowered", name = "velocity-api", version.ref = "velocity-api" }

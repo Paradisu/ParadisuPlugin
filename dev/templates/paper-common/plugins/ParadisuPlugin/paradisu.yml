@@ -1,0 +1,10 @@
+# Paradisu Main Configuration (rendered by dev/templates; edits here are overwritten on `dev start`)
+
+context:
+  server: ${CONTEXT_SERVER}
+  warp: ${CONTEXT_WARP}
+  inventory: ${CONTEXT_INVENTORY}
+database:
+  url: '${DB_URL}'
+  username: '${DB_USER}'
+  password: '${DB_PASSWORD}'

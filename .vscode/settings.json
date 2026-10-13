@@ -1,0 +1,52 @@
+{
+    "java.debug.settings.hotCodeReplace": "auto",
+    "java.autobuild.enabled": true,
+    "java.import.exclusions": [
+        "**/node_modules/**",
+        "**/.metadata/**",
+        "**/archetype-resources/**",
+        "**/META-INF/maven/**",
+        "**/dev/run/**",
+        "**/dev/.cache/**"
+    ],
+    "files.watcherExclude": {
+        "**/dev/run/**": true,
+        "**/dev/.cache/**": true
+    },
+    "search.exclude": {
+        "**/dev/run": true,
+        "**/dev/.cache": true
+    },
+    "pgsql.serverGroups": [
+        {
+            "id": "9E2C5A64-3B1D-4F7A-8C0E-6D1B7A4F2E93",
+            "name": "Paradisu Dev"
+        }
+    ],
+    "pgsql.connections": [
+        {
+            "id": "7c8450d4-c3e1-4418-84e7-81ecdf0bb92c",
+            "groupId": "9E2C5A64-3B1D-4F7A-8C0E-6D1B7A4F2E93",
+            "profileName": "Paradisu Dev",
+            "server": "postgres",
+            "port": "5432",
+            "database": "paradisu",
+            "user": "paradisu",
+            "authenticationType": "None",
+            "sslmode": "disable",
+            "connectTimeout": 15
+        },
+        {
+            "id": "6070b116-2650-46f0-a769-38b0df47fa1d",
+            "groupId": "9E2C5A64-3B1D-4F7A-8C0E-6D1B7A4F2E93",
+            "profileName": "LuckPerms Dev",
+            "server": "postgres",
+            "port": "5432",
+            "database": "luckperms",
+            "user": "paradisu",
+            "authenticationType": "None",
+            "sslmode": "disable",
+            "connectTimeout": 15
+        }
+    ]
+}

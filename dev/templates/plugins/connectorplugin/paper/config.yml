@@ -1,0 +1,11 @@
+debug: false
+messenger-type: redis
+group: global
+# Must equal the server's name in velocity.toml
+server-name: ${SERVER_NAME}
+redis:
+  host: ${REDIS_HOST}
+  port: 6379
+  db: 0
+  timeout: 60
+  password: paradisu

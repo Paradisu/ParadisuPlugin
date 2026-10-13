@@ -165,7 +165,11 @@ local.properties
 .VSCode
 build.bat
 .env
-.vscode/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/settings.json
+!.vscode/tasks.json
 .idea/
 # Gradle
 .gradle
@@ -174,3 +178,13 @@ build.bat
 build/
 
 pteropub.json
+# Development environment (see dev/)
+.devcontainer/.env
+dev/node_modules/
+dev/run/
+dev/.cache/
+dev/dev.local.toml
+dev/db/seed/local.sql
+dev/db/snapshots/
+dev/plugins-local/*.jar
+hs_err_pid*.log

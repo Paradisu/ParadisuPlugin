@@ -1,0 +1,128 @@
+# Development network definition. Override anything in dev/dev.local.toml (gitignored):
+# tables merge, and [[servers]] / [[plugins]] entries merge by name / key.
+
+# Must be set to true in dev.local.toml: you accept https://aka.ms/MinecraftEULA
+accept_eula = true
+# "auto" derives the Minecraft version from paper-api and the Velocity version from velocity-api in
+# gradle/libs.versions.toml. Backends run Purpur (a Paper fork, like production).
+minecraft_version = "auto"
+purpur_build = "auto"      # auto = latest Purpur build for the Minecraft version, or a build number
+velocity_version = "auto"  # or e.g. "4.2.1-SNAPSHOT"
+# Online mode for the proxy; backends always trust the proxy's forwarded identity
+online_mode = true
+# Address clients use to reach this machine. The proxy transfers players to Limbo and back through it, so
+# set it to your LAN/public address (in dev.local.toml) when others join from outside.
+public_host = "localhost"
+# Limbo only publishes builds for one Minecraft version at a time ("auto" = the one for this version)
+limbo_version = "auto"
+
+[jvm]
+enhanced_redefinition = true  # -XX:+AllowEnhancedClassRedefinition (needs JetBrains Runtime)
+hotswap_agent = false         # -XX:HotswapAgent=core
+extra_flags = []
+
+[proxy]
+port = 25565
+debug_port = 5005
+memory = "512M"
+first_start_commands = []
+
+# A standalone Limbo server (waiting room used by /vparadisu maintenance). It is not part of the proxy's
+# server list: the Paradisu proxy config points at it (limbo-server) and tells it, over ConnectorPlugin, to
+# transfer players back when the proxy starts.
+[limbo]
+enabled = true
+port = 30000
+debug_port = 5008
+memory = "256M"
+first_start_commands = []
+
+[[servers]]
+name = "lobby"
+enabled = true
+port = 30066
+debug_port = 5006
+memory = "2G"
+try = true
+world_preset = "redstone_ready"  # or "void" or "default"
+first_start_commands = []
+context = { server = "lobby", warp = "paradisu", inventory = "paradisu" }
+
+[[servers]]
+name = "creative"
+enabled = true  # enable in dev.local.toml for cross-server testing
+port = 30067
+debug_port = 5007
+memory = "2G"
+try = true
+world_preset = "redstone_ready"
+first_start_commands = []
+context = { server = "creative", warp = "creative", inventory = "creative" }
+
+# Plugins: source = "modrinth" | "url" | "local"; platforms = ["paper", "velocity"]
+# Preset configs live in dev/templates/plugins/<key>/<platform>/ and land in plugins/<config_dir>/.
+[[plugins]]
+key = "connectorplugin"
+source = "url"
+platforms = ["paper", "velocity", "limbo"]
+# One universal jar (Bukkit, Velocity and Limbo); not on Modrinth
+url = "https://ci.minebench.de/job/ConnectorPlugin/lastSuccessfulBuild/artifact/target/ConnectorPlugin.jar"
+config_dir = { paper = "ConnectorPlugin", velocity = "connectorplugin", limbo = "ConnectorPlugin" }
+
+# Adds /transfer and /transferall to Limbo; GitHub releases of the repository
+[[plugins]]
+key = "limbotransfer"
+source = "github"
+repo = "Kas-tle/LimboTransfer"
+platforms = ["limbo"]
+
+[[plugins]]
+key = "luckperms"
+source = "modrinth"
+slug = "luckperms"
+platforms = ["paper", "velocity"]
+config_dir = { paper = "LuckPerms", velocity = "luckperms" }
+
+[[plugins]]
+key = "fawe"
+source = "modrinth"
+slug = "fastasyncworldedit"
+platforms = ["paper"]
+config_dir = { paper = "FastAsyncWorldEdit" }
+
+[[plugins]]
+key = "worldguard"
+source = "modrinth"
+slug = "worldguard"
+platforms = ["paper"]
+config_dir = { paper = "WorldGuard" }
+
+[[plugins]]
+key = "bkcommonlib"
+source = "modrinth"
+slug = "bkcommonlib"
+platforms = ["paper"]
+config_dir = { paper = "BKCommonLib" }
+
+[[plugins]]
+key = "traincarts"
+source = "modrinth"
+slug = "traincarts"
+platforms = ["paper"]
+config_dir = { paper = "Train_Carts" }
+
+# Not on Modrinth: the latest successful build of its Jenkins job
+[[plugins]]
+key = "tccoasters"
+source = "jenkins"
+job_url = "https://ci.mg-dev.eu/job/TC%20Coasters"
+platforms = ["paper"]
+config_dir = { paper = "TCCoasters" }
+
+[[plugins]]
+key = "carbonchat"
+source = "modrinth"
+slug = "carbon"
+platforms = ["paper"]
+allow_prerelease = true  # only betas are published
+config_dir = { paper = "CarbonChat" }

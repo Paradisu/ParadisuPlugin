@@ -1,0 +1,23 @@
+{
+    // To add a server: add its debug_port to dev/dev.toml and copy one of the configs below.
+    "version": "0.2.0",
+    "configurations": [
+        { "type": "java", "request": "attach", "name": "Attach: proxy", "hostName": "localhost", "port": 5005 },
+        { "type": "java", "request": "attach", "name": "Attach: lobby", "hostName": "localhost", "port": 5006 },
+        { "type": "java", "request": "attach", "name": "Attach: creative", "hostName": "localhost", "port": 5007 }
+    ],
+    "compounds": [
+        {
+            "name": "Debug network",
+            "configurations": ["Attach: proxy", "Attach: lobby"],
+            "preLaunchTask": "dev: start",
+            "stopAll": true
+        },
+        {
+            "name": "Debug all",
+            "configurations": ["Attach: proxy", "Attach: lobby", "Attach: creative"],
+            "preLaunchTask": "dev: start",
+            "stopAll": true
+        }
+    ]
+}

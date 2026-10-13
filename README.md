@@ -93,7 +93,7 @@ cd ParadisuPlugin
 ./gradlew build
 ```
 
-The jar is written to `build/libs/ParadisuPlugin.jar`. See [CONTRIBUTING.md](CONTRIBUTING.md) for the full development guide (project structure, formatting, database changes, commands, messages, and dependency updates).
+The jar is written to `build/libs/ParadisuPlugin.jar`. See [CONTRIBUTING.md](CONTRIBUTING.md) for the full development guide (project structure, formatting, database changes, commands, messages, and dependency updates). A ready-to-run development environment (devcontainer with a Velocity + Paper network and a seeded PostgreSQL database) is described under "Development environment" there.
 
 ## Contributing
 

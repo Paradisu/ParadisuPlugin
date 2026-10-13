@@ -1,11 +1,50 @@
 {
-    "name": "Java",
-    "image": "mcr.microsoft.com/devcontainers/java:25-trixie",
-    "features": {
-        "ghcr.io/devcontainers/features/java:1": {
-            "version": "25",
-            "installMaven": "false",
-            "installGradle": "true"
+    // Pulls the image published by .github/workflows/devcontainer.yml. Keep in sync with build-local/devcontainer.json.
+    "name": "Paradisu (prebuilt image)",
+    "dockerComposeFile": ["docker-compose.yml"],
+    "service": "dev",
+    "workspaceFolder": "/workspaces/ParadisuPlugin",
+    "shutdownAction": "stopCompose",
+    "remoteUser": "vscode",
+    "postCreateCommand": "dev bootstrap",
+    // The proxy port (25565) is published by compose; backend and JDWP ports stay inside the container.
+    // Codespaces / remote Docker hosts: forward 25565 manually.
+    "otherPortsAttributes": { "onAutoForward": "ignore" },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-ossdata.vscode-pgsql",
+                // Lombok support needs the pre-release channel of the Java and Gradle extensions
+                "redhat.java@prerelease",
+                "vscjava.vscode-java-test",
+                "vscjava.vscode-java-debug",
+                "vscjava.vscode-gradle@prerelease",
+                "redhat.vscode-xml",
+                "redhat.vscode-yaml",
+                "tamasfe.even-better-toml",
+                "github.vscode-github-actions",
+                "github.vscode-pull-request-github",
+                "misodee.vscode-nbt"
+            ],
+            "settings": {
+                "java.jdt.ls.java.home": "/opt/jbr",
+                "java.import.gradle.java.home": "/opt/jbr",
+                "java.configuration.runtimes": [
+                    { "name": "JavaSE-25", "path": "/opt/jbr", "default": true }
+                ],
+                "java.debug.settings.hotCodeReplace": "auto",
+                "java.autobuild.enabled": true,
+                "java.import.exclusions": [
+                    "**/node_modules/**",
+                    "**/.metadata/**",
+                    "**/archetype-resources/**",
+                    "**/META-INF/maven/**",
+                    "**/dev/run/**",
+                    "**/dev/.cache/**"
+                ],
+                "files.watcherExclude": { "**/dev/run/**": true, "**/dev/.cache/**": true },
+                "search.exclude": { "**/dev/run": true, "**/dev/.cache": true }
+            }
         }
     }
 }

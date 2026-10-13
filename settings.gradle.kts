@@ -2,6 +2,7 @@ include(":core")
 include(":database")
 include(":paper")
 include(":velocity")
+include(":devtools")
 
 
 pluginManagement {

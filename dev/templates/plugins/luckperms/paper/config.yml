@@ -1,0 +1,12 @@
+server: ${SERVER_NAME}
+storage-method: postgresql
+data:
+  address: ${DB_HOST}:5432
+  database: luckperms
+  username: '${DB_USER}'
+  password: '${DB_PASSWORD}'
+messaging-service: redis
+redis:
+  enabled: true
+  address: ${REDIS_HOST}:6379
+  password: 'paradisu'

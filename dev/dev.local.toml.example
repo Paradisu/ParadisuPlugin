@@ -1,0 +1,29 @@
+# Copy to dev.local.toml (gitignored) to override dev.toml.
+
+accept_eula = true
+#online_mode = false  # let any username join (UUIDs will not match production)
+
+# Address players are transferred to (Limbo and back); set it when others join from outside
+#public_host = "192.168.1.20"
+
+#[jvm]
+#hotswap_agent = true
+
+# Enable a second backend for cross-server testing
+#[[servers]]
+#name = "creative"
+#enabled = true
+
+# Add a plugin
+#[[plugins]]
+#key = "essentialsx"
+#source = "modrinth"
+#slug = "essentialsx"
+#platforms = ["paper"]
+
+# Use a jar you built yourself
+#[[plugins]]
+#key = "mything"
+#source = "local"
+#path = "dev/plugins-local/MyThing.jar"
+#platforms = ["paper"]

@@ -1,0 +1,296 @@
+import { copyFile, mkdir, readFile, readdir, rm, stat, writeFile } from 'node:fs/promises';
+import { existsSync, readdirSync, statSync } from 'node:fs';
+import { join } from 'node:path';
+import type { DevConfig } from './config.ts';
+import { readResolved, type ResolvedFiles } from './downloads.ts';
+import { type Instance, applyTemplates, instancesOf } from './templates.ts';
+import { RUN, ROOT, capture, fail, log, portListening, portOpen, run, sleep, waitFor, warn } from './util.ts';
+import { dbReachable } from './db.ts';
+
+const PLUGIN_JAR = join(ROOT, 'build', 'libs', 'ParadisuPlugin.jar');
+
+function session(instance: Instance): string {
+  return `paradisu-${instance.name}`;
+}
+
+/** TMUX is set when the shell runs inside tmux; it makes tmux refuse to nest and talk to that server instead of ours. */
+const TMUX_ENV = { unsetEnv: ['TMUX'] };
+
+function tmux(args: string[]) {
+  return capture('tmux', args, TMUX_ENV);
+}
+
+function isRunning(instance: Instance): boolean {
+  return tmux(['has-session', '-t', session(instance)]).status === 0;
+}
+
+/** Selects instances by name; no names means every enabled instance. */
+export function select(config: DevConfig, names: string[]): Instance[] {
+  const all = instancesOf(config);
+  if (names.length === 0) {
+    return all.filter((instance) => instance.enabled);
+  }
+  return names.map((name) => all.find((instance) => instance.name === name) ?? fail(`Unknown instance "${name}"`));
+}
+
+function requireTmux(): void {
+  if (capture('tmux', ['-V']).status !== 0) {
+    fail('tmux is required (it is installed in the devcontainer image).');
+  }
+}
+
+/** Finds JVM flags the installed java accepts: enhanced redefinition needs JetBrains Runtime. */
+function jvmFlags(config: DevConfig): string[] {
+  const flags: string[] = [];
+  if (config.jvm.enhanced_redefinition) {
+    const attempts = [
+      ['-XX:+AllowEnhancedClassRedefinition'],
+      // Some JBR builds reject enhanced redefinition with the default collector
+      ['-XX:+AllowEnhancedClassRedefinition', '-XX:+UseParallelGC'],
+    ];
+    const working = attempts.find((attempt) => capture('java', [...attempt, '-version']).status === 0);
+    if (working) {
+      flags.push(...working);
+    } else {
+      warn('This java does not support -XX:+AllowEnhancedClassRedefinition (is it JetBrains Runtime?); hot reload is limited');
+    }
+  }
+  if (config.jvm.hotswap_agent) {
+    flags.push('-XX:+AllowEnhancedClassRedefinition', '-XX:HotswapAgent=core');
+  }
+  flags.push(...config.jvm.extra_flags);
+  return [...new Set(flags)];
+}
+
+async function prepare(config: DevConfig, resolved: ResolvedFiles, instance: Instance): Promise<void> {
+  await mkdir(join(instance.dir, 'plugins'), { recursive: true });
+  const serverJar = {
+    paper: resolved.purpur.file,
+    velocity: resolved.velocity.file,
+    limbo: resolved.limbo?.file ?? fail('Limbo has not been downloaded; run `dev setup`'),
+  }[instance.platform];
+  await copyFile(serverJar, join(instance.dir, 'server.jar'));
+  if (instance.platform === 'paper') {
+    await writeFile(join(instance.dir, 'eula.txt'), 'eula=true\n');
+  }
+
+  // Copy (never symlink) jars: rebuilding a jar under a running JVM corrupts its open zip
+  const manifestPath = join(instance.dir, 'plugins', '.dev-managed.json');
+  const previous: string[] = existsSync(manifestPath) ? JSON.parse(await readFile(manifestPath, 'utf8')) : [];
+  const wanted = new Map<string, string>();
+  const installedKeys: string[] = [];
+  for (const plugin of resolved.plugins.filter((candidate) => candidate.platform === instance.platform)) {
+    wanted.set(`${plugin.key}.jar`, plugin.file);
+    installedKeys.push(plugin.key);
+  }
+  if (instance.platform !== 'limbo') {
+    wanted.set('ParadisuPlugin.jar', PLUGIN_JAR);
+  }
+  for (const stale of previous.filter((name) => !wanted.has(name))) {
+    await rm(join(instance.dir, 'plugins', stale), { force: true });
+  }
+  for (const [name, source] of wanted) {
+    await copyFile(source, join(instance.dir, 'plugins', name));
+  }
+  await writeFile(manifestPath, JSON.stringify([...wanted.keys()]));
+
+  await applyTemplates(config, instance, installedKeys);
+}
+
+function launch(config: DevConfig, instance: Instance, flags: string[]): void {
+  const args = [
+    `-Xms${instance.memory}`,
+    `-Xmx${instance.memory}`,
+    ...flags,
+    `-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:${instance.debugPort}`,
+    '-jar',
+    'server.jar',
+    ...(instance.platform === 'velocity' ? [] : ['--nogui']),
+  ];
+  const command = `exec java ${args.map((arg) => `'${arg}'`).join(' ')}`;
+  const result = tmux(['new-session', '-d', '-s', session(instance), '-c', instance.dir, command]);
+  if (result.status !== 0) {
+    fail(`Could not start ${instance.name}: ${result.stderr}`);
+  }
+}
+
+/** The current log file: Velocity and Paper write logs/latest.log, Limbo names logs after its start time. */
+function logFile(instance: Instance): string | undefined {
+  const dir = join(instance.dir, 'logs');
+  if (!existsSync(dir)) {
+    return undefined;
+  }
+  if (instance.platform !== 'limbo') {
+    const path = join(dir, 'latest.log');
+    return existsSync(path) ? path : undefined;
+  }
+  return readdirSync(dir)
+    .filter((name) => name.endsWith('.log'))
+    .map((name) => join(dir, name))
+    .sort((a, b) => statSync(b).mtimeMs - statSync(a).mtimeMs)[0];
+}
+
+function logTail(instance: Instance, lines = 40): string {
+  const path = logFile(instance);
+  return path ? capture('tail', ['-n', String(lines), path]).stdout : '(no log yet)';
+}
+
+/** True once the instance logged that it is ready after `since`; the port opens well before it accepts commands. */
+async function reportedDone(instance: Instance, since: number): Promise<boolean> {
+  const logPath = logFile(instance);
+  if (!logPath || (await stat(logPath)).mtimeMs < since) {
+    return false;
+  }
+  const ready = instance.platform === 'limbo' ? /Limbo server listening/ : /Done \(/;
+  return ready.test(await readFile(logPath, 'utf8'));
+}
+
+async function firstStartCommands(instance: Instance, since: number): Promise<void> {
+  const marker = join(instance.dir, '.dev-first-start-done');
+  if (existsSync(marker) || instance.firstStartCommands.length === 0) {
+    return;
+  }
+  const ready = await waitFor(() => reportedDone(instance, since), 180_000);
+  if (!ready) {
+    warn(`${instance.name} did not report "Done" in time; skipping first-start commands`);
+    return;
+  }
+  for (const command of instance.firstStartCommands) {
+    tmux(['send-keys', '-t', session(instance), command, 'Enter']);
+    await sleep(500);
+  }
+  await writeFile(marker, new Date().toISOString());
+}
+
+export async function start(config: DevConfig, names: string[], noBuild: boolean, acceptEula: boolean): Promise<void> {
+  requireTmux();
+  const instances = select(config, names);
+  if (instances.some((instance) => instance.platform === 'paper') && !acceptEula) {
+    fail('Set accept_eula = true in dev/dev.local.toml to accept the Minecraft EULA (https://aka.ms/MinecraftEULA).');
+  }
+  const resolved = await readResolved();
+  if (!noBuild) {
+    await build();
+  }
+  if (!existsSync(PLUGIN_JAR)) {
+    fail(`${PLUGIN_JAR} does not exist; run \`dev build\``);
+  }
+  if (!(await waitFor(() => dbReachable(), 60_000, 2000))) {
+    fail('PostgreSQL is not reachable (check PARADISU_DB_HOST).');
+  }
+
+  log('Starting network');
+  const launchedAt = Date.now();
+  const started: Instance[] = [];
+  const flags = jvmFlags(config);
+  // Limbo goes first so it is subscribed before the proxy tells it to transfer players back, then the proxy
+  // (it runs the database migrations before it binds its port), then the backends
+  const ordered = (['limbo', 'velocity', 'paper'] as const).flatMap((platform) =>
+    instances.filter((i) => i.platform === platform),
+  );
+  for (const instance of ordered) {
+    if (isRunning(instance)) {
+      log(`  ${instance.name}: already running`);
+      continue;
+    }
+    await prepare(config, resolved, instance);
+    launch(config, instance, flags);
+    started.push(instance);
+    log(`  ${instance.name}: starting (port ${instance.port}, debug ${instance.debugPort})`);
+    if (instance.platform === 'velocity') {
+      const up = await waitFor(() => portOpen(instance.port), 120_000);
+      if (!up) {
+        fail(`The proxy did not open port ${instance.port} within 120s. Last log lines:\n${logTail(instance)}`);
+      }
+    }
+  }
+  // Backends take much longer than the proxy to boot; don't claim readiness (or let a debugger task attach) before they are up
+  for (const instance of started) {
+    if (!(await waitFor(() => reportedDone(instance, launchedAt), 240_000))) {
+      warn(`${instance.name} did not finish starting within 240s. Last log lines:\n${logTail(instance)}`);
+    }
+  }
+  await Promise.all(started.map((instance) => firstStartCommands(instance, launchedAt)));
+
+  log('Network ready');
+  log(`  Join: localhost:${config.proxy.port} (or this machine's address for others on your network)`);
+  for (const instance of ordered) {
+    log(`  ${instance.name}: debug port ${instance.debugPort}, console: dev console ${instance.name}`);
+  }
+}
+
+export async function stop(config: DevConfig, names: string[]): Promise<void> {
+  if (capture('tmux', ['-V']).status !== 0) {
+    return;
+  }
+  const instances = select(config, names).reverse();
+  for (const instance of instances.filter((candidate) => isRunning(candidate))) {
+    log(`Stopping ${instance.name}`);
+    tmux(['send-keys', '-t', session(instance), instance.platform === 'velocity' ? 'shutdown' : 'stop', 'Enter']);
+  }
+  for (const instance of instances) {
+    const stopped = await waitFor(() => !isRunning(instance), 60_000);
+    if (!stopped) {
+      warn(`${instance.name} did not stop in 60s; killing it`);
+      tmux(['kill-session', '-t', session(instance)]);
+    }
+  }
+}
+
+export async function status(config: DevConfig): Promise<void> {
+  const tmuxAvailable = capture('tmux', ['-V']).status === 0;
+  for (const instance of instancesOf(config)) {
+    const enabled = instance.enabled;
+    const running = tmuxAvailable && isRunning(instance);
+    const listening = await portListening(instance.port);
+    log(
+      `${instance.name.padEnd(10)} ${enabled ? 'enabled ' : 'disabled'} ${running ? 'running' : 'stopped'} ` +
+        `port ${instance.port} ${listening ? 'open' : 'closed'}, debug ${instance.debugPort} ${(await portListening(instance.debugPort)) ? 'open' : 'closed'}`,
+    );
+  }
+}
+
+export function console_(config: DevConfig, name: string): void {
+  const instance = select(config, [name])[0]!;
+  if (!isRunning(instance)) {
+    fail(`${name} is not running`);
+  }
+  run('tmux', ['attach', '-t', session(instance)], TMUX_ENV);
+}
+
+export function logs(config: DevConfig, name: string, follow: boolean): void {
+  const instance = select(config, [name])[0]!;
+  const path = logFile(instance);
+  if (!path) {
+    fail(`No log for ${name} yet`);
+  }
+  run('tail', follow ? ['-n', '200', '-f', path] : ['-n', '200', path]);
+}
+
+export async function resetWorld(config: DevConfig, name: string): Promise<void> {
+  const instance = select(config, [name])[0]!;
+  if (isRunning(instance)) {
+    fail(`Stop ${name} first`);
+  }
+  if (!existsSync(instance.dir)) {
+    return;
+  }
+  for (const entry of await readdir(instance.dir)) {
+    if (entry === 'world' || entry.startsWith('world_') || entry === '.dev-first-start-done') {
+      await rm(join(instance.dir, entry), { recursive: true, force: true });
+    }
+  }
+  log(`Reset worlds of ${name}`);
+}
+
+export async function clean(all: boolean): Promise<void> {
+  await rm(RUN, { recursive: true, force: true });
+  if (all) {
+    await rm(join(ROOT, 'dev', '.cache'), { recursive: true, force: true });
+  }
+}
+
+export async function build(): Promise<void> {
+  log('Building plugin jar');
+  run('./gradlew', ['-q', 'shadowJar']);
+}

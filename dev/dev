@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -euo pipefail
+DIR="$(cd "$(dirname "$(readlink -f "$0")")" && pwd)"
+[ -d "$DIR/node_modules" ] || pnpm --dir "$DIR" install --frozen-lockfile
+exec node --disable-warning=ExperimentalWarning "$DIR/src/cli.ts" "$@"

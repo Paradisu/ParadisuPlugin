@@ -1,0 +1,17 @@
+{
+    // Lombok support needs the pre-release channel of redhat.java and vscjava.vscode-gradle
+    // (Extensions view > Switch to Pre-Release Version). The devcontainer installs them that way.
+    "recommendations": [
+        "ms-ossdata.vscode-pgsql",
+        "redhat.java",
+        "vscjava.vscode-java-test",
+        "vscjava.vscode-java-debug",
+        "vscjava.vscode-gradle",
+        "redhat.vscode-xml",
+        "redhat.vscode-yaml",
+        "tamasfe.even-better-toml",
+        "github.vscode-github-actions",
+        "github.vscode-pull-request-github",
+        "misodee.vscode-nbt"
+    ]
+}

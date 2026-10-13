@@ -1,0 +1,6 @@
+-- Copy to local.sql (gitignored). Applied once after the last seeded changelog by `dev db reset`.
+-- Use it for rows tied to you, e.g. your real UUID so you show up as a returning player:
+
+--INSERT INTO PLAYERS (uuid, display_name, online, first_joined, last_joined, last_seen, last_server, playtime)
+--VALUES ('00000000-0000-0000-0000-000000000000', 'YourName', false, now(), now(), now(), 'lobby', 0)
+--ON CONFLICT (uuid) DO NOTHING;

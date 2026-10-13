@@ -1,0 +1,6 @@
+# Override used by build-local/devcontainer.json: run the image that its initializeCommand builds from the
+# Dockerfile instead of pulling the published one. There is deliberately no `build:` section here: with one, the
+# devcontainer CLI builds through Docker Compose, whose bake integration refuses the Dockerfile the CLI generates.
+services:
+  dev:
+    image: paradisuplugin-devcontainer:local

@@ -14,6 +14,7 @@ Paradisu Plugin: one jar containing a **Velocity** plugin and a **Paper** plugin
 | `core` | Shared code: `ParadisuPlugin` interface, `DatabaseSession`, config loading, `TranslationManager`, `Messages`, `HelpManager`, `PackManager`, `messaging/` base classes; default lang file `messages_en.properties` | `database` |
 | `paper` | `ParadisuPaper`, commands, parsers, listeners, `sync/` async DB jobs, `warps/WarpManager`, `messaging/` (heartbeat, cluster state, messages), configs | `core` |
 | `velocity` | `ParadisuVelocity` (runs migrations), commands, listeners, teleport utils, `messaging/VelocityMessagingManager`, configs | `core` |
+| `devtools` | Dev-only Liquibase runner used by `dev db` (never shaded into the jar) | `database` |
 | `build-logic` | Convention plugins (repos, toolchain, Spotless, resource expansion) | - |
 
 Root project shades everything into `build/libs/ParadisuPlugin.jar`. Dependency versions live only in `gradle/libs.versions.toml`.
@@ -27,6 +28,23 @@ Root project shades everything into `build/libs/ParadisuPlugin.jar`. Dependency 
 ```
 
 There is no test suite; verify by compiling (`build`). Do not claim runtime behavior was tested unless it was.
+
+The `dev/` tool (TypeScript run directly by Node 24, pnpm) has its own check: `pnpm --dir dev typecheck`. Only erasable TS syntax is allowed (no `enum`, `namespace`, parameter properties); relative imports end in `.ts`.
+
+## Dev environment
+
+The devcontainer (`.devcontainer/`) provides JetBrains Runtime 25, PostgreSQL 17 with seed data, Redis and the `dev` command. Full guide: CONTRIBUTING.md.
+
+```bash
+dev setup                         # download Purpur, Velocity and plugins (versions follow libs.versions.toml)
+dev start / stop / status         # proxy + backends in tmux; debug ports 5005+ (VS Code: Debug network)
+dev db reset --through 00N        # rebuild the database up to changelog 00N with seed data
+```
+
+- Verify a new changelog: `dev db reset --through <previous>`, then `dev start`; the proxy applies the new changelog to seeded data.
+- A changelog that changes data shape needs `dev/db/seed/00N.sql` for its new columns/tables. Seeds target the schema as of that changelog; never make an older seed depend on a later schema.
+- Preset configs for the servers and plugins are templates in `dev/templates/`; the network and plugin list are in `dev/dev.toml`.
+- Do not claim a dev-environment flow worked unless you ran it.
 
 ## Rules
 
@@ -94,7 +112,7 @@ Paradisu's own server<->server/proxy messages run on ConnectorPlugin's `Connecto
   - `paper-api`, `velocity-api`: `https://repo.papermc.io/repository/maven-public/<group path>/<artifact>/maven-metadata.xml` (Velocity is a timestamped SNAPSHOT; Paper is a `build.N-beta`-style version).
   - `connectorplugin-*`: `https://repo.minebench.de/de/themoep/connectorplugin/` (snapshot).
   - `fastutil-object-object-maps`: `https://repo.opencollab.dev/main/com/nukkitx/fastutil/`.
-- New Minecraft version: bump `paper-api` and `velocity-api`, then check `connectorplugin`, `luckperms-api`, `cloud-*` compatibility; `plugin.yml` `api-version` derives from `paper-api` automatically. Update JDK in `build-logic` (`java-conventions` and `build-logic/build.gradle.kts`), `.github/workflows`, and the devcontainer if required. Run `./gradlew build`.
+- New Minecraft version: bump `paper-api` and `velocity-api`, then check `connectorplugin`, `luckperms-api`, `cloud-*` compatibility; `plugin.yml` `api-version` derives from `paper-api` automatically; `dev` follows the same versions. Also compare `_version` in `dev/templates/paper-common/config/paper-global.yml` with the file Paper generates. Update JDK in `build-logic` (`java-conventions` and `build-logic/build.gradle.kts`), `.github/workflows`, and the devcontainer if required. Run `./gradlew build`.
 - Upgrade Hibernate/Liquibase/PostgreSQL together and flag that migrations need testing on a database copy.
 - The Palantir Java Format version (`2.83.0`) is pinned in `net.paradisu.java-conventions.gradle.kts`, not the catalog.
 

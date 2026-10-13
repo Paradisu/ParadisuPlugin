@@ -55,7 +55,7 @@ The proxy owns schema migrations; Paper servers only read and write.
 
 ## Compiling
 
-Requirements: **JDK 25** (the Gradle toolchain also resolves it automatically through the foojay plugin) and Git. A [devcontainer](.devcontainer/devcontainer.json) with Java 25 is provided.
+Requirements: **JDK 25** (the Gradle toolchain also resolves it automatically through the foojay plugin) and Git. A [devcontainer](#development-environment) with Java 25 is provided.
 
 ```bash
 ./gradlew build           # compile, spotlessCheck, and build build/libs/ParadisuPlugin.jar
@@ -70,6 +70,77 @@ Notes:
 - Version, id, authors and URL come from [gradle.properties](gradle.properties).
 
 CI (`.github/workflows`) builds on every push. Pull requests run `spotlessApply` and push a formatting commit, then run `./gradlew build`.
+
+## Development environment
+
+The devcontainer gives you a complete, runnable network: a Velocity proxy and one or more Paper backends running your working copy of the plugin, PostgreSQL 17 with sample data, and Redis for ConnectorPlugin.
+
+### Getting started
+
+1. Open the repository in VS Code and choose **Reopen in Container**. Two configurations are offered: *Paradisu (prebuilt image)* pulls the image published by CI (fast, default); *Paradisu (build locally)* builds [.devcontainer/Dockerfile](.devcontainer/Dockerfile), which you want when editing the image.
+2. Wait for `dev bootstrap` (runs automatically) to build the jar, download the servers and plugins and seed the database. If it prints warnings (for example no network), fix the cause and run `dev bootstrap` again.
+The container installs the *pre-release* channel of the Red Hat Java and Gradle extensions (`@prerelease` in `devcontainer.json`), because Lombok support needs it, and the PostgreSQL extension finds two ready-made connections (`Paradisu Dev`, `LuckPerms Dev`) in the workspace settings, [.vscode/settings.json](.vscode/settings.json). They use the extension's "No Password" login with SSL off: the dev database trusts connections on the compose network (`.devcontainer/postgres/pg_hba.conf`; its port is not published), so no password is stored in the editor's credential store or prompted for. Outside the container, switch those two Java extensions to their pre-release versions yourself. If you created connections by hand earlier (they land in your *User* settings by default), delete them to avoid duplicates.
+3. Create `dev/dev.local.toml` (see [dev.local.toml.example](dev/dev.local.toml.example)) with `accept_eula = true`.
+4. Run `dev start`, then join `localhost:25565`. Online mode is on by default, so use a licensed account; set `online_mode = false` in `dev.local.toml` to let any username join.
+
+> The GHCR package must be public for the prebuilt image to be pulled without logging in. A repository admin sets this once, after the first successful run of the *Devcontainer* workflow (Package settings, Change visibility).
+
+### The `dev` command
+
+| Command | What it does |
+| --- | --- |
+| `dev setup [--refresh]` | Resolve versions and download Purpur, Velocity and plugins into `dev/.cache` |
+| `dev start [names]` / `stop` / `restart` | Build the jar, deploy it to every instance, apply preset configs and run them in tmux |
+| `dev status` | Running state and ports |
+| `dev console <name>` | Attach to a console (detach with Ctrl-b d); `dev logs <name> -f` follows the log |
+| `dev reset-world <name>` / `dev clean` | Delete worlds / all runtime data |
+| `dev db reset [--through 00N] [--all]` | Rebuild the database up to a changelog with seed data (`--all` also resets LuckPerms) |
+| `dev db seed` | Reseed at the current changelog position |
+| `dev db snapshot <n>` / `restore <n>` | Save and restore the database |
+| `dev db psql [args]` | Open psql |
+
+The network is defined in [dev/dev.toml](dev/dev.toml): the Minecraft and Velocity versions default to `auto` and follow `gradle/libs.versions.toml`, so bumping `paper-api` updates the dev network too. Backends run Purpur (a Paper fork, as in production) at the newest build for that Minecraft version. Override anything in the gitignored `dev/dev.local.toml`; `[[servers]]` and `[[plugins]]` entries merge by `name`/`key`. The tool is TypeScript run directly by Node 24 (`pnpm --dir dev typecheck` checks it).
+
+- **Add a backend server:** add a `[[servers]]` entry (unique ports) with `enabled = true` and, to attach the debugger, a matching configuration in `.vscode/launch.json`. Servers share the proxy, database and Redis; `context` sets the session, warp and inventory contexts.
+- **Add a plugin:** add a `[[plugins]]` entry with `source = "modrinth"` (and `slug`), `"url"`, `"jenkins"` (`job_url` of a Jenkins job; its latest successful build is used, `artifact_pattern` picks the jar), `"github"` (`repo = "owner/name"`; the latest release's jar, `asset_pattern` picks the asset; set `GITHUB_TOKEN` to avoid the anonymous API rate limit) or `"local"`. `platforms` may include `"limbo"` for plugins that run on the Limbo server. Modrinth plugins are resolved for the current game version; use `allow_prerelease` or `game_version_fallback` when only betas or older tags exist.
+- **Preset a plugin's config:** put files in `dev/templates/plugins/<key>/<paper|velocity>/`. They are copied into the plugin's data folder (`config_dir` in `dev.toml` when the folder name differs from the key) on every start, overwriting what is there. `${NAME}` placeholders are filled from [templates.ts](dev/src/templates.ts). Generate the real defaults by running the plugin once, then trim them down.
+- **Limbo:** a standalone [Limbo](https://modrinth.com/mod/limbo-server) waiting-room server (`[limbo]` in `dev.toml`, enabled by default) runs next to the proxy with ConnectorPlugin and [LimboTransfer](https://github.com/Kas-tle/LimboTransfer). It is deliberately not in the proxy's server list: the Paradisu proxy config's `limbo-server` section points at it, so `/vparadisu maintenance` transfers players there. When the proxy starts, `LimboListener` has Limbo (addressed as `limbo` over ConnectorPlugin and Redis) run `transferall` back to `transfer-return-target`, so restarting the proxy with `dev restart proxy` returns players from Limbo. Limbo is built for one Minecraft version per release and starts first so it is subscribed before the proxy speaks. Set `limbo.enabled = false` if no Limbo build exists yet for the Minecraft version in use.
+- **World presets:** `world_preset` is `redstone_ready` (flat: bedrock, 3 stone, 116 sandstone), `void` or `default`.
+
+Notes:
+- ConnectorPlugin and TC Coasters are not on Modrinth; they are fetched from their CI servers. Plugins that depend on each other (TrainCarts needs BKCommonLib, TC Coasters needs both) must all be listed.
+- Newer Minecraft versions enable the whitelist by default (empty, so nobody can join); the `server.properties` template turns it off. Add `white-list=true` to a server's own template under `dev/templates/servers/<name>/` if you want to test it.
+- `dev console <name>` works from inside tmux too (it ignores `TMUX`); detach with Ctrl-b d.
+- Paper rewrites its generated config files, but `dev/templates` always wins on the next start. Edit the templates, not the files in `dev/run`.
+
+### Joining from outside
+
+Compose publishes only the proxy port (`PARADISU_PROXY_PORT`, default 25565) and the Limbo port (`PARADISU_LIMBO_PORT`, default 30000) on all host interfaces, so other machines can join using the host's address. Backend and debug ports stay inside the container. Players are *transferred* to Limbo and back, so the addresses the proxy hands out must be reachable by them: set `public_host` in `dev/dev.local.toml` to your LAN or public address (default `localhost`), and `proxy.public_port` / `limbo.public_port` if you remapped a published port. On Windows with WSL2, forward the port from Windows to WSL (or use mirrored networking) and allow it through the firewall. In Codespaces or on a remote Docker host, forward port 25565 manually.
+
+### Debugging and hot reload
+
+Use **Run and Debug**, then **Debug network** (starts the network and attaches to the proxy and lobby; **Debug all** adds the creative server). The image uses JetBrains Runtime with `-XX:+AllowEnhancedClassRedefinition` and `java.debug.settings.hotCodeReplace` is `auto`: edit a method and save, and VS Code pushes the recompiled class into the running server. Enhanced redefinition also allows adding and removing methods and fields. Resource changes (`messages_en.properties`, `plugin.yml`) need `dev restart <name>`, as does anything the debugger refuses to redefine. Set `hotswap_agent = true` to additionally enable HotswapAgent.
+
+### Database and migration testing
+
+Seed data lives in `dev/db/seed/<NNN>.sql`, one file per changelog, written against the schema as of that changelog (the deliberate NULLs in `002.sql` exist so that changelog 003 has something to backfill). `dev db reset` applies each changelog with Liquibase, loads its seed, and finally checks that no already-applied changeset would be re-run by the proxy.
+
+To test a new changelog against realistic data:
+1. `dev db reset --through <previous changelog>`
+2. `dev start`: the proxy applies the new changelog on startup, exactly as in production.
+
+When you add a changelog that changes data shape, add `dev/db/seed/<NNN>.sql` for the new columns or tables. Personal rows (for example your own UUID) go in the gitignored `dev/db/seed/local.sql`. `PLAYER_INVENTORIES` is not seeded: inventories are Paper item blobs that a running server must create.
+
+### The published image
+
+[.github/workflows/devcontainer.yml](.github/workflows/devcontainer.yml) builds the image for amd64 and arm64, smoke-tests it, and publishes it to `ghcr.io/paradisu/paradisuplugin-devcontainer` (`latest` from the default branch, branch and commit tags, and a weekly rebuild for Debian updates). A second job builds the image from the current Dockerfile, starts the whole environment and checks bootstrap, seeding and a partial migration reset. To test an image change before it is merged, set `PARADISU_DEVCONTAINER_TAG=<branch>` in `.devcontainer/.env`. Pinned versions (JetBrains Runtime, Node, pnpm) are `ARG`s at the top of the Dockerfile; keep `PNPM_VERSION` equal to `packageManager` in `dev/package.json`.
+
+### Troubleshooting
+
+- **"additional privileges requested" in the Dev Containers log:** newer Docker Compose builds through bake, which refuses the Dockerfile the devcontainer CLI generates in `/tmp`. The *build locally* configuration avoids this by building the image itself (`initializeCommand`), and the prebuilt one never builds. If you add a `build:` section to a compose service yourself, set `BUILDX_BAKE_ENTITLEMENTS_FS=0` (or `COMPOSE_BAKE=false`) in the environment VS Code was started from.
+- **Gradle hangs for two minutes and fails with "The settings are not yet available":** another Gradle process was holding lock files in a shared `.gradle` directory and could not be asked to release them from inside the container. The compose file now mounts container-only volumes over `.gradle` and `build-logic/.gradle` (`gradle-project`, `gradle-build-logic`), so a Gradle daemon or Java extension on the host no longer interferes. If you ever see it again, something else is sharing the checkout; run `docker volume rm paradisu-dev_gradle-project paradisu-dev_gradle-build-logic` (with the container stopped) to reset the container's caches.
+- **`dev bootstrap` printed warnings:** it never fails container creation. Fix the cause (usually no network) and run it again; it is safe to repeat.
+- **A server does not stop:** `dev stop` sends `stop`/`shutdown` to the console and kills the tmux session after 60 seconds. Look at `dev console <name>` or `dev logs <name>` for what it is waiting on.
 
 ## Formatting (Spotless)
 
@@ -404,7 +475,7 @@ flowchart TD
 2. Update `velocity-api`. Velocity is on snapshot builds; use the latest `-SNAPSHOT` timestamped version that matches the proxy you run.
 3. Check that `cloud-paper`/`cloud-velocity`, `connectorplugin` and `luckperms-api` support the new version (see release notes) and bump them if needed.
 4. If the new Minecraft version needs a newer JDK, update the toolchain in `build-logic/.../net.paradisu.java-conventions.gradle.kts`, `build-logic/build.gradle.kts`, the CI workflows (`java-version`) and the devcontainer.
-5. Run `./gradlew build` and fix API breakages, then test on real servers.
+5. Run `./gradlew build` and fix API breakages, then test with `dev start` (it follows `paper-api` and `velocity-api`). If Paper bumped the `_version` of `paper-global.yml`, update `dev/templates/paper-common/config/paper-global.yml`. The JetBrains Runtime pin is in `.devcontainer/Dockerfile`.
 
 ### How to check for the latest version of a dependency
 

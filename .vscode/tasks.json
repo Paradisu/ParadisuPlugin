@@ -1,0 +1,39 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "dev: start",
+            "type": "shell",
+            "command": "dev start",
+            "isBackground": true,
+            "problemMatcher": {
+                "owner": "dev",
+                "pattern": { "regexp": "^__never_matches__$" },
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": "^Starting network",
+                    "endsPattern": "^Network ready"
+                }
+            }
+        },
+        { "label": "dev: stop", "type": "shell", "command": "dev stop", "problemMatcher": [] },
+        { "label": "dev: build", "type": "shell", "command": "dev build", "problemMatcher": [] },
+        { "label": "dev: status", "type": "shell", "command": "dev status", "problemMatcher": [] },
+        { "label": "dev: db reset", "type": "shell", "command": "dev db reset --yes", "problemMatcher": [] },
+        {
+            "label": "dev: db reset (migration test)",
+            "type": "shell",
+            "command": "dev db reset --yes --through ${input:changelog}",
+            "problemMatcher": []
+        }
+    ],
+    "inputs": [
+        {
+            "id": "changelog",
+            "type": "pickString",
+            "description": "Stop the database after this changelog",
+            "options": ["001", "002"],
+            "default": "002"
+        }
+    ]
+}

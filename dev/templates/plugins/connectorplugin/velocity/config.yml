@@ -1,0 +1,9 @@
+debug: false
+server-id: "proxy"
+messenger-type: redis
+redis:
+  host: ${REDIS_HOST}
+  port: 6379
+  db: 0
+  timeout: 60
+  password: paradisu

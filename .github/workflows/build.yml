@@ -9,7 +9,10 @@ on:
       - '.github/workflows/build.yml'
       - '.github/workflows/pull-request.yml'
       - '.gitignore'
-      - .devcontainer/devcontainer.json
+      - '.devcontainer/**'
+      - '.github/workflows/devcontainer.yml'
+      - '.vscode/**'
+      - 'dev/**'
       - 'CONTRIBUTING.md'
       - 'LICENSE'
       - 'README.md'

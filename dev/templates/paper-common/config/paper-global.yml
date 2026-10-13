@@ -1,0 +1,8 @@
+# Partial config; Paper merges its defaults. Rendered by dev/templates (overwritten on `dev start`).
+# _version must match the one Paper writes, or Paper tries to migrate this file.
+_version: 31
+proxies:
+  velocity:
+    enabled: true
+    online-mode: ${ONLINE_MODE}
+    secret: '${FORWARDING_SECRET}'
