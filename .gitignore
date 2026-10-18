@@ -188,3 +188,4 @@ dev/db/seed/local.sql
 dev/db/snapshots/
 dev/plugins-local/*.jar
 hs_err_pid*.log
+.pnpm-store/
