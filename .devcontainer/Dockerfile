@@ -107,7 +107,11 @@ RUN mkdir -p ~/.local/bin ~/.gradle \
 # Pre-fetch the Gradle distribution pinned by the wrapper
 COPY --chown=${USERNAME}:${USER_GID} gradlew /tmp/gw/gradlew
 COPY --chown=${USERNAME}:${USER_GID} gradle/wrapper /tmp/gw/gradle/wrapper
-RUN /tmp/gw/gradlew --version \
+# A Windows checkout with core.autocrlf may have turned the script into CRLF (see .gitattributes), which fails with
+# "gradlew: not found"; strip it so the image builds anyway
+RUN sed -i 's/\r$//' /tmp/gw/gradlew \
+    && chmod +x /tmp/gw/gradlew \
+    && /tmp/gw/gradlew --version \
     && rm -rf /tmp/gw
 
 # `dev` works from any directory once the workspace is mounted
