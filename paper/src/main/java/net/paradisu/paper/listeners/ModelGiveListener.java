@@ -17,14 +17,17 @@
 
 package net.paradisu.paper.listeners;
 
+import net.paradisu.core.locale.Messages;
 import net.paradisu.database.models.ItemModel;
 import net.paradisu.paper.ParadisuPaper;
 import net.paradisu.paper.inventory.ModelGiveInventory;
 import net.paradisu.paper.util.ModelItemFactory;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.ItemStack;
@@ -39,14 +42,23 @@ public class ModelGiveListener implements Listener {
         this.factory = new ModelItemFactory(paradisu);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onInventoryClick(InventoryClickEvent event) {
 
         if (!(event.getView().getTopInventory().getHolder() instanceof ModelGiveInventory menu)) {
             return;
         }
 
-        // Never allow modification of the GUI.
+        int topSize = event.getView().getTopInventory().getSize();
+        int rawSlot = event.getRawSlot();
+        if (rawSlot < 0 || rawSlot >= topSize) {
+            // Shift transfer can insert into the menu; collect-to-cursor can take its display items.
+            if (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY
+                    || event.getAction() == InventoryAction.COLLECT_TO_CURSOR) {
+                event.setCancelled(true);
+            }
+            return;
+        }
         event.setCancelled(true);
 
         if (!(event.getWhoClicked() instanceof Player player)) {
@@ -57,8 +69,11 @@ public class ModelGiveListener implements Listener {
             return;
         }
 
-        // Only ordinary left clicks perform actions.
-        if (event.getClick() != ClickType.LEFT) {
+        ClickType click = event.getClick();
+        if (click != ClickType.LEFT
+                && click != ClickType.RIGHT
+                && click != ClickType.SHIFT_LEFT
+                && click != ClickType.SHIFT_RIGHT) {
             return;
         }
 
@@ -66,19 +81,19 @@ public class ModelGiveListener implements Listener {
 
         if (slot == ModelGiveInventory.PREVIOUS_SLOT) {
             if (menu.page() > 0) {
-                ModelGiveInventory.openPage(paradisu, player, menu.page() - 1);
+                openPageAfterClick(player, menu, menu.page() - 1);
             }
             return;
         }
 
         if (slot == ModelGiveInventory.NEXT_SLOT) {
             if (menu.page() + 1 < menu.totalPages()) {
-                ModelGiveInventory.openPage(paradisu, player, menu.page() + 1);
+                openPageAfterClick(player, menu, menu.page() + 1);
             }
             return;
         }
 
-        // Only the first 45 slots contain models.
+        // Only the model rows contain selectable items.
         if (slot < 0 || slot >= ModelGiveInventory.PAGE_SIZE) {
             return;
         }
@@ -92,22 +107,52 @@ public class ModelGiveListener implements Listener {
         ItemStack item = factory.createItem(model);
 
         if (item == null) {
-            player.sendMessage("This model has an invalid item type.");
+            Messages.sendPrefixed(
+                    player,
+                    paradisu.messagesConfig().commands().mgive().output().get(1));
             return;
         }
 
-        // Give one copy without touching the GUI item.
+        if (click == ClickType.RIGHT) {
+            ItemStack cursor = player.getItemOnCursor();
+            if (cursor.getType().isAir()) {
+                player.setItemOnCursor(item);
+            } else if (cursor.isSimilar(item) && cursor.getAmount() < cursor.getMaxStackSize()) {
+                ItemStack combined = cursor.clone();
+                combined.setAmount(combined.getAmount() + 1);
+                player.setItemOnCursor(combined);
+            } else {
+                Messages.sendPrefixed(
+                        player, paradisu.messagesConfig().commands().mgive().cursorUnavailable());
+            }
+            return;
+        }
+
+        // Left and shift clicks give one copy without touching the GUI item.
         var leftover = player.getInventory().addItem(item);
 
         if (!leftover.isEmpty()) {
-            player.sendMessage("Your inventory is full.");
+            Messages.sendPrefixed(
+                    player,
+                    paradisu.messagesConfig().commands().mgive().output().get(2));
         }
+    }
+
+    private void openPageAfterClick(Player player, ModelGiveInventory menu, int page) {
+        Bukkit.getScheduler().runTask(paradisu, () -> {
+            if (player.isOnline() && player.getOpenInventory().getTopInventory().getHolder() == menu) {
+                ModelGiveInventory.openPage(paradisu, player, page, menu.tag());
+            }
+        });
     }
 
     @EventHandler
     public void onInventoryDrag(InventoryDragEvent event) {
 
-        if (event.getView().getTopInventory().getHolder() instanceof ModelGiveInventory) {
+        if (event.getView().getTopInventory().getHolder() instanceof ModelGiveInventory
+                && event.getRawSlots().stream()
+                        .anyMatch(
+                                slot -> slot < event.getView().getTopInventory().getSize())) {
             event.setCancelled(true);
         }
     }

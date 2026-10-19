@@ -82,9 +82,37 @@ public final class MessagesConfig {
     public static final class Commands {
         private Paradisu paradisu = new Paradisu();
         private Hat hat = new Hat();
+        private ModelGive mgive = new ModelGive();
         private Warp warp = new Warp();
         private Warps warps = new Warps();
         private RealSize realSize = new RealSize();
+
+        @Getter
+        @ConfigSerializable
+        public static final class ModelGive {
+            @Setting("help-msg")
+            private String helpMsg = "<lang:paradisu.command.help.mgive>";
+
+            @Setting("no-matches")
+            private String noMatches = "<lang:paradisu.command.output.mgive.4:'<tag>'>";
+
+            @Setting("cursor-unavailable")
+            private String cursorUnavailable = "<lang:paradisu.command.output.mgive.cursor>";
+
+            @Setting("receive-hint")
+            private String receiveHint = "<yellow><lang:paradisu.command.output.mgive.hint>";
+
+            @Setting("help-args")
+            private List<String> helpArgs = List.of("<lang:paradisu.command.help.mgive.0>");
+
+            @Setting("output")
+            private List<String> output = List.of(
+                    "<lang:paradisu.command.output.mgive.0>",
+                    "<lang:paradisu.command.output.mgive.1>",
+                    "<lang:paradisu.command.output.mgive.2>",
+                    "<lang:paradisu.command.output.mgive.3>",
+                    "<lang:paradisu.command.output.mgive.4:'<tag>'>");
+        }
 
         @Getter
         @ConfigSerializable
@@ -116,11 +144,30 @@ public final class MessagesConfig {
         @ConfigSerializable
         public static final class Paradisu {
             private About about = new About();
+            private Items items = new Items();
             private Reload reload = new Reload();
             private Warp warp = new Warp();
 
             @Setting("help-msg")
             private String helpMsg = "<lang:paradisu.command.help.paradisu>";
+
+            @Getter
+            @ConfigSerializable
+            public static final class Items {
+                private Reload reload = new Reload();
+
+                @Getter
+                @ConfigSerializable
+                public static final class Reload {
+                    @Setting("help-msg")
+                    private String helpMsg = "<lang:paradisu.command.help.paradisu.items.reload>";
+
+                    @Setting("output")
+                    private List<String> output = List.of(
+                            "<lang:paradisu.command.output.paradisu.items.reload.0>",
+                            "<lang:paradisu.command.output.paradisu.items.reload.1>");
+                }
+            }
 
             @Getter
             @ConfigSerializable

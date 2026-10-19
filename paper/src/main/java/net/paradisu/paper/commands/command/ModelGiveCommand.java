@@ -18,12 +18,15 @@
 package net.paradisu.paper.commands.command;
 
 import io.papermc.paper.command.brigadier.CommandSourceStack;
+import net.paradisu.core.locale.Messages;
 import net.paradisu.paper.ParadisuPaper;
 import net.paradisu.paper.commands.AbstractPaperCommand;
 import net.paradisu.paper.inventory.ModelGiveInventory;
 import org.bukkit.entity.Player;
 import org.incendo.cloud.context.CommandContext;
 import org.incendo.cloud.description.Description;
+import org.incendo.cloud.parser.standard.StringParser;
+import org.incendo.cloud.suggestion.SuggestionProvider;
 
 public class ModelGiveCommand extends AbstractPaperCommand {
 
@@ -36,7 +39,18 @@ public class ModelGiveCommand extends AbstractPaperCommand {
         var builder = this.commandManager
                 .commandBuilder("mgive")
                 .permission("paradisu.mgive")
-                .commandDescription(Description.of("Browse and obtain custom models"))
+                .commandDescription(Description.of(
+                        paradisu.messagesConfig().commands().mgive().helpMsg()))
+                .optional(
+                        "tag",
+                        StringParser.greedyStringParser(),
+                        Description.of(paradisu.messagesConfig()
+                                .commands()
+                                .mgive()
+                                .helpArgs()
+                                .get(0)),
+                        SuggestionProvider.blockingStrings(
+                                (context, input) -> paradisu.modelManager().tags()))
                 .handler(this::mgiveCommand);
 
         this.commandManager.command(builder);
@@ -45,10 +59,12 @@ public class ModelGiveCommand extends AbstractPaperCommand {
     private void mgiveCommand(CommandContext<CommandSourceStack> context) {
 
         if (!(context.sender().getSender() instanceof Player player)) {
-            context.sender().getSender().sendMessage("Only players can use this command.");
+            Messages.sendPrefixed(
+                    context.sender().getSender(),
+                    paradisu.messagesConfig().commands().mgive().output().get(3));
             return;
         }
 
-        ModelGiveInventory.openPage(paradisu, player, 0);
+        ModelGiveInventory.openPage(paradisu, player, 0, context.getOrDefault("tag", ""));
     }
 }

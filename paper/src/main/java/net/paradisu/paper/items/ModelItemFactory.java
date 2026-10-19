@@ -19,6 +19,8 @@ package net.paradisu.paper.util;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.paradisu.database.models.ItemModel;
 import net.paradisu.paper.ParadisuPaper;
 import org.bukkit.Material;
@@ -37,6 +39,13 @@ public class ModelItemFactory {
         this.paradisu = paradisu;
     }
 
+    /**
+     * Creates an item with optional saved NBT. A numeric model_path overrides the first custom model data float; a
+     * namespaced model_path selects an item model definition instead.
+     *
+     * @param model the cached model row
+     * @return the item, or null if its material or model path is invalid
+     */
     public ItemStack createItem(ItemModel model) {
         if (model.item_type() == null) {
             return null;
@@ -61,23 +70,36 @@ public class ModelItemFactory {
                     item.setAmount(1);
                 }
             } catch (Exception ex) {
-                paradisu.getLogger().warning("Could not deserialize item data for model " + model.identifier());
+                paradisu.logger().warn("Could not deserialize item data for model " + model.identifier());
             }
         }
 
         ItemMeta meta = item.getItemMeta();
 
         if (model.display_name() != null && !model.display_name().isBlank()) {
-            meta.displayName(Component.text(model.display_name()));
+            meta.displayName(MiniMessage.miniMessage()
+                    .deserialize(model.display_name())
+                    .decoration(TextDecoration.ITALIC, false));
         }
 
         if (model.model_path() != null && !model.model_path().isBlank()) {
-            NamespacedKey key = NamespacedKey.fromString(model.model_path());
-
-            if (key != null) {
+            String path = model.model_path().trim();
+            try {
+                float value = Float.parseFloat(path);
+                if (!Float.isFinite(value)) {
+                    throw new NumberFormatException("Non-finite custom model data");
+                }
+                var data = meta.getCustomModelDataComponent();
+                data.setFloats(List.of(value));
+                meta.setCustomModelDataComponent(data);
+                meta.setItemModel(null);
+            } catch (NumberFormatException e) {
+                NamespacedKey key = path.contains(":") ? NamespacedKey.fromString(path) : null;
+                if (key == null) {
+                    paradisu.logger().warn("Invalid model path for model " + model.identifier() + ": " + path);
+                    return null;
+                }
                 meta.setItemModel(key);
-            } else {
-                paradisu.getLogger().warning("Invalid model path: " + model.model_path());
             }
         }
 
@@ -102,7 +124,8 @@ public class ModelItemFactory {
         lore.add(Component.empty());
         lore.add(Component.text("ID: " + model.identifier(), NamedTextColor.GRAY));
 
-        lore.add(Component.text("Left-click to receive one", NamedTextColor.YELLOW));
+        lore.add(MiniMessage.miniMessage()
+                .deserialize(paradisu.messagesConfig().commands().mgive().receiveHint()));
 
         meta.lore(lore);
         item.setItemMeta(meta);

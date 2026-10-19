@@ -81,6 +81,12 @@ public final class ParadisuCommand extends AbstractPaperCommand {
                         CommandDescription.commandDescription(cText.reload().helpMsg()))
                 .handler(this::reloadCommand));
 
+        this.commandManager.command(builder.literal("items")
+                .literal("reload")
+                .permission("paradisu.items.reload")
+                .commandDescription(Description.of(cText.items().reload().helpMsg()))
+                .handler(this::reloadItemsCommand));
+
         var warpBuilder = builder.literal("warp");
         Paradisu.Warp wText = cText.warp();
         // Names are quoted strings, so suggest names containing spaces in quotes
@@ -203,6 +209,22 @@ public final class ParadisuCommand extends AbstractPaperCommand {
                         .reload()
                         .output()
                         .get(0));
+    }
+
+    /** Refreshes the local item cache and reports the database result. */
+    private void reloadItemsCommand(CommandContext<CommandSourceStack> context) {
+        var sender = context.sender().getSender();
+        paradisu.modelManager()
+                .syncModels()
+                .thenAccept(success -> Messages.sendPrefixed(
+                        sender,
+                        paradisu.messagesConfig()
+                                .commands()
+                                .paradisu()
+                                .items()
+                                .reload()
+                                .output()
+                                .get(success ? 0 : 1)));
     }
 
     /**

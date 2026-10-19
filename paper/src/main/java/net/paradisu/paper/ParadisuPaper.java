@@ -26,6 +26,7 @@ import net.paradisu.paper.commands.PaperCommandRegistrar;
 import net.paradisu.paper.config.PaperConfigManager;
 import net.paradisu.paper.config.configs.MessagesConfig;
 import net.paradisu.paper.config.configs.ParadisuConfig;
+import net.paradisu.paper.items.ModelManager;
 import net.paradisu.paper.listeners.ModelGiveListener;
 import net.paradisu.paper.listeners.PlayerJoinListener;
 import net.paradisu.paper.listeners.PlayerQuitListener;
@@ -53,6 +54,7 @@ public class ParadisuPaper extends JavaPlugin implements ParadisuPlugin<BukkitCo
     private DatabaseSession databaseSession;
     private SafeItemSerializer safeItemSerializer;
     private WarpManager warpManager;
+    private ModelManager modelManager;
     private PaperMessagingManager messagingManager;
 
     @Override
@@ -85,6 +87,9 @@ public class ParadisuPaper extends JavaPlugin implements ParadisuPlugin<BukkitCo
             this.messagingManager = new PaperMessagingManager(this);
             this.messagingManager.registerMessages();
             this.messagingManager.startHeartbeat();
+
+            this.modelManager = new ModelManager(this);
+            this.modelManager.syncModels();
 
             this.warpManager = new WarpManager(this);
             this.warpManager.syncWarps();
@@ -216,6 +221,11 @@ public class ParadisuPaper extends JavaPlugin implements ParadisuPlugin<BukkitCo
      */
     public PaperMessagingManager messagingManager() {
         return messagingManager;
+    }
+
+    /** Returns the custom model cache. */
+    public ModelManager modelManager() {
+        return modelManager;
     }
 
     /** Reloads the plugin. */
