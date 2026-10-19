@@ -3,7 +3,7 @@ import { existsSync } from 'node:fs';
 import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { type DevConfig, type Env, type Platform, type ServerConfig, env } from './config.ts';
-import { RUN, TEMPLATES, render } from './util.ts';
+import { RUN, TEMPLATES, TEMPLATES_LOCAL, render } from './util.ts';
 
 export interface Instance {
   /** `proxy` or the server name */
@@ -149,5 +149,13 @@ export async function applyTemplates(
       join(instance.dir, 'plugins', folder),
       vars,
     );
+  }
+  // Personal overrides win over everything above (same layout as dev/templates); profiles carry them
+  await overlay(join(TEMPLATES_LOCAL, base), instance.dir, vars);
+  await overlay(join(TEMPLATES_LOCAL, 'servers', instance.name), instance.dir, vars);
+  for (const key of installedPlugins) {
+    const plugin = config.plugins.find((candidate) => candidate.key === key);
+    const folder = plugin?.config_dir?.[instance.platform] ?? key;
+    await overlay(join(TEMPLATES_LOCAL, 'plugins', key, instance.platform), join(instance.dir, 'plugins', folder), vars);
   }
 }

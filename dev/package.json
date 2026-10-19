@@ -9,9 +9,11 @@
   },
   "scripts": {
     "dev": "node src/cli.ts",
-    "typecheck": "tsc -p ."
+    "typecheck": "tsc -p .",
+    "test": "node --disable-warning=ExperimentalWarning --test \"test/*.test.ts\""
   },
   "dependencies": {
+    "@inquirer/prompts": "8.7.3",
     "smol-toml": "1.9.1"
   },
   "devDependencies": {

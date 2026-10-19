@@ -3,7 +3,7 @@ services:
   dev:
     image: ghcr.io/paradisu/paradisuplugin-devcontainer:${PARADISU_DEVCONTAINER_TAG:-latest}
     command: sleep infinity
-    # Reaps the zombie processes left behind by tmux and the servers
+    # Reaps the zombie processes left behind by the servers and their supervisors
     init: true
     volumes:
       - ..:/workspaces/ParadisuPlugin:cached
@@ -23,6 +23,9 @@ services:
       - "${PARADISU_PROXY_PORT:-25565}:25565"
       # Limbo: players are transferred to it, so clients need to reach it too
       - "${PARADISU_LIMBO_PORT:-30000}:30000"
+      # zellij web client (`dev web start`). Only needed with web.bind = "0.0.0.0" (TLS); with the default 127.0.0.1
+      # bind, reach it through VS Code port forwarding instead.
+      # - "127.0.0.1:${PARADISU_WEB_PORT:-8082}:8082"
     depends_on:
       postgres:
         condition: service_healthy

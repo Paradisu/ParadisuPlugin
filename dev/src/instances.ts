@@ -6,23 +6,11 @@ import { readResolved, type ResolvedFiles } from './downloads.ts';
 import { type Instance, applyTemplates, instancesOf } from './templates.ts';
 import { RUN, ROOT, capture, fail, log, portListening, portOpen, run, sleep, waitFor, warn } from './util.ts';
 import { dbReachable } from './db.ts';
+import { attach, dotDir, isRunning, javaPid, kill, sendLine, spawnSupervisor } from './supervisor.ts';
 
 const PLUGIN_JAR = join(ROOT, 'build', 'libs', 'ParadisuPlugin.jar');
 
-function session(instance: Instance): string {
-  return `paradisu-${instance.name}`;
-}
-
-/** TMUX is set when the shell runs inside tmux; it makes tmux refuse to nest and talk to that server instead of ours. */
-const TMUX_ENV = { unsetEnv: ['TMUX'] };
-
-function tmux(args: string[]) {
-  return capture('tmux', args, TMUX_ENV);
-}
-
-function isRunning(instance: Instance): boolean {
-  return tmux(['has-session', '-t', session(instance)]).status === 0;
-}
+export { isRunning };
 
 /** Selects instances by name; no names means every enabled instance. */
 export function select(config: DevConfig, names: string[]): Instance[] {
@@ -31,12 +19,6 @@ export function select(config: DevConfig, names: string[]): Instance[] {
     return all.filter((instance) => instance.enabled);
   }
   return names.map((name) => all.find((instance) => instance.name === name) ?? fail(`Unknown instance "${name}"`));
-}
-
-function requireTmux(): void {
-  if (capture('tmux', ['-V']).status !== 0) {
-    fail('tmux is required (it is installed in the devcontainer image).');
-  }
 }
 
 /** Finds JVM flags the installed java accepts: enhanced redefinition needs JetBrains Runtime. */
@@ -97,21 +79,30 @@ async function prepare(config: DevConfig, resolved: ResolvedFiles, instance: Ins
   await applyTemplates(config, instance, installedKeys);
 }
 
-function launch(config: DevConfig, instance: Instance, flags: string[]): void {
+async function launch(instance: Instance, flags: string[]): Promise<void> {
   const args = [
     `-Xms${instance.memory}`,
     `-Xmx${instance.memory}`,
     ...flags,
+    // No X11 libraries in the image, and a forwarded DISPLAY (WSLg) would otherwise make AWT load them (BKCommonLib fails)
+    '-Djava.awt.headless=true',
     `-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:${instance.debugPort}`,
+    // stdin is a pipe owned by the supervisor, not a terminal: use the plain console reader, but keep colours
+    ...(instance.platform === 'limbo' ? [] : ['-Dterminal.jline=false', '-Dterminal.ansi=true']),
     '-jar',
     'server.jar',
     ...(instance.platform === 'velocity' ? [] : ['--nogui']),
   ];
-  const command = `exec java ${args.map((arg) => `'${arg}'`).join(' ')}`;
-  const result = tmux(['new-session', '-d', '-s', session(instance), '-c', instance.dir, command]);
-  if (result.status !== 0) {
-    fail(`Could not start ${instance.name}: ${result.stderr}`);
-  }
+  await spawnSupervisor(instance, {
+    cmd: 'java',
+    args,
+    cwd: instance.dir,
+    stopCommand: stopCommand(instance),
+  });
+}
+
+function stopCommand(instance: Instance): string {
+  return instance.platform === 'velocity' ? 'shutdown' : 'stop';
 }
 
 /** The current log file: Velocity and Paper write logs/latest.log, Limbo names logs after its start time. */
@@ -156,14 +147,13 @@ async function firstStartCommands(instance: Instance, since: number): Promise<vo
     return;
   }
   for (const command of instance.firstStartCommands) {
-    tmux(['send-keys', '-t', session(instance), command, 'Enter']);
+    await sendLine(instance, command);
     await sleep(500);
   }
   await writeFile(marker, new Date().toISOString());
 }
 
 export async function start(config: DevConfig, names: string[], noBuild: boolean, acceptEula: boolean): Promise<void> {
-  requireTmux();
   const instances = select(config, names);
   if (instances.some((instance) => instance.platform === 'paper') && !acceptEula) {
     fail('Set accept_eula = true in dev/dev.local.toml to accept the Minecraft EULA (https://aka.ms/MinecraftEULA).');
@@ -194,7 +184,7 @@ export async function start(config: DevConfig, names: string[], noBuild: boolean
       continue;
     }
     await prepare(config, resolved, instance);
-    launch(config, instance, flags);
+    await launch(instance, flags);
     started.push(instance);
     log(`  ${instance.name}: starting (port ${instance.port}, debug ${instance.debugPort})`);
     if (instance.platform === 'velocity') {
@@ -220,48 +210,42 @@ export async function start(config: DevConfig, names: string[], noBuild: boolean
 }
 
 export async function stop(config: DevConfig, names: string[]): Promise<void> {
-  if (capture('tmux', ['-V']).status !== 0) {
-    return;
-  }
   const instances = select(config, names).reverse();
   for (const instance of instances.filter((candidate) => isRunning(candidate))) {
     log(`Stopping ${instance.name}`);
-    tmux(['send-keys', '-t', session(instance), instance.platform === 'velocity' ? 'shutdown' : 'stop', 'Enter']);
+    await sendLine(instance, stopCommand(instance)).catch(() => {});
   }
   for (const instance of instances) {
     const stopped = await waitFor(() => !isRunning(instance), 60_000);
     if (!stopped) {
       warn(`${instance.name} did not stop in 60s; killing it`);
-      tmux(['kill-session', '-t', session(instance)]);
+      await kill(instance, 'SIGKILL');
+      await waitFor(() => !isRunning(instance), 5000);
     }
   }
 }
 
 export async function status(config: DevConfig): Promise<void> {
-  const tmuxAvailable = capture('tmux', ['-V']).status === 0;
   for (const instance of instancesOf(config)) {
     const enabled = instance.enabled;
-    const running = tmuxAvailable && isRunning(instance);
+    const running = isRunning(instance);
     const listening = await portListening(instance.port);
     log(
       `${instance.name.padEnd(10)} ${enabled ? 'enabled ' : 'disabled'} ${running ? 'running' : 'stopped'} ` +
-        `port ${instance.port} ${listening ? 'open' : 'closed'}, debug ${instance.debugPort} ${(await portListening(instance.debugPort)) ? 'open' : 'closed'}`,
+        `port ${instance.port} ${listening ? 'open' : 'closed'}, debug ${instance.debugPort} ${(await portListening(instance.debugPort)) ? 'open' : 'closed'}` +
+        (running ? `, pid ${javaPid(instance) ?? '?'}` : ''),
     );
   }
 }
 
-export function console_(config: DevConfig, name: string): void {
-  const instance = select(config, [name])[0]!;
-  if (!isRunning(instance)) {
-    fail(`${name} is not running`);
-  }
-  run('tmux', ['attach', '-t', session(instance)], TMUX_ENV);
+export function console_(config: DevConfig, name: string, options: { readOnly: boolean; wait: boolean }): Promise<void> {
+  return attach(select(config, [name])[0]!, options);
 }
 
-export function logs(config: DevConfig, name: string, follow: boolean): void {
+export function logs(config: DevConfig, name: string, follow: boolean, consoleLog = false): void {
   const instance = select(config, [name])[0]!;
-  const path = logFile(instance);
-  if (!path) {
+  const path = consoleLog ? join(dotDir(instance), 'console.log') : logFile(instance);
+  if (!path || !existsSync(path)) {
     fail(`No log for ${name} yet`);
   }
   run('tail', follow ? ['-n', '200', '-f', path] : ['-n', '200', path]);

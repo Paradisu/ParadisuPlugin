@@ -117,7 +117,9 @@ export async function resolveServers(config: DevConfig): Promise<ResolvedServers
     config.velocity_version === 'auto' ? `${velocityApi.split('-')[0]}-SNAPSHOT` : config.velocity_version;
   let velocity: FillBuild;
   try {
-    velocity = await getJson<FillBuild>(`${FILL}/velocity/versions/${velocityVersion}/builds/latest`);
+    velocity = await getJson<FillBuild>(
+      `${FILL}/velocity/versions/${velocityVersion}/builds/${config.velocity_build === 'auto' ? 'latest' : config.velocity_build}`,
+    );
   } catch (error) {
     const index = await getJson<{ versions: Record<string, string[]> }>(`${FILL}/velocity`);
     const available = Object.values(index.versions).flat().join(', ');
@@ -214,7 +216,8 @@ async function resolveJenkins(plugin: PluginConfig, platform: Platform): Promise
     key: plugin.key,
     platform,
     name: artifact.fileName,
-    url: `${job}/lastSuccessfulBuild/artifact/${artifact.relativePath}`,
+    // The build number, not lastSuccessfulBuild: the URL then keeps meaning the same jar
+    url: `${job}/${build.number}/artifact/${artifact.relativePath}`,
     version: `build-${build.number}`,
   };
 }

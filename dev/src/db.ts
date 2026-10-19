@@ -2,13 +2,14 @@ import { existsSync } from 'node:fs';
 import { mkdir, readdir } from 'node:fs/promises';
 import { basename, join } from 'node:path';
 import { env } from './config.ts';
-import { DEV, ROOT, capture, confirm, fail, log, run } from './util.ts';
+import { confirmAction } from './prompt.ts';
+import { DEV, ROOT, capture, fail, log, run } from './util.ts';
 
 const SEEDS = join(DEV, 'db', 'seed');
 const SNAPSHOTS = join(DEV, 'db', 'snapshots');
 const DEVTOOLS = join(ROOT, 'devtools', 'build', 'install', 'devtools', 'bin', 'devtools');
 
-function pgEnv(database?: string): Record<string, string> {
+export function pgEnv(database?: string): Record<string, string> {
   const { db } = env();
   return {
     PGHOST: db.host,
@@ -42,12 +43,42 @@ function query(sql: string, database?: string): string {
   return result.stdout.trim();
 }
 
+/**
+ * Runs a query and returns its rows as objects. The SQL is sent on stdin so psql interpolates variables:
+ * reference user input as :'name' and pass it in `vars`, never by string concatenation. Binary columns should be
+ * selected as translate(encode(col, 'base64'), E'\\n', '') (encode wraps lines).
+ */
+export function queryJson<T>(sql: string, vars: Record<string, string> = {}): T[] {
+  const args = ['-X', '-q', '-tA', '-v', 'ON_ERROR_STOP=1'];
+  for (const [name, value] of Object.entries(vars)) {
+    args.push('-v', `${name}=${value}`);
+  }
+  const wrapped = `select coalesce(json_agg(t), '[]'::json) from (${sql.trim().replace(/;$/, '')}) t;`;
+  const result = capture('psql', args, { env: pgEnv(), input: wrapped });
+  if (result.status !== 0) {
+    fail(`psql failed: ${result.stderr.trim()}`);
+  }
+  return JSON.parse(result.stdout.trim() || '[]') as T[];
+}
+
+/** Runs a SQL script (stdin, so :'var' works) and fails on the first error. */
+export function runSql(sql: string, vars: Record<string, string> = {}): void {
+  const args = ['-X', '-q', '-v', 'ON_ERROR_STOP=1'];
+  for (const [name, value] of Object.entries(vars)) {
+    args.push('-v', `${name}=${value}`);
+  }
+  const result = capture('psql', args, { env: pgEnv(), input: sql });
+  if (result.status !== 0) {
+    fail(`psql failed: ${result.stderr.trim()}`);
+  }
+}
+
 /** Whether Liquibase has ever run against the dev database. */
 export function isInitialised(): boolean {
   return query(`select to_regclass('public.databasechangelog') is not null`) === 't';
 }
 
-function appliedChangelogs(): string[] {
+export function appliedChangelogs(): string[] {
   if (!isInitialised()) {
     return [];
   }
@@ -62,6 +93,17 @@ function devtools(args: string[]): string {
   return result.stdout;
 }
 
+/** Changelog files in migrations.xml order; builds the devtools runner first. */
+export async function changelogFiles(): Promise<string[]> {
+  buildDevtools();
+  return devtools(['files']).split('\n').filter(Boolean);
+}
+
+function buildDevtools(): void {
+  log('Building migration tool');
+  run('./gradlew', ['-q', ':devtools:installDist']);
+}
+
 function changelogNumber(file: string): string {
   return basename(file, '.xml');
 }
@@ -70,6 +112,8 @@ export interface ResetOptions {
   through?: string;
   yes: boolean;
   all: boolean;
+  /** Skip loading dev/db/fixtures */
+  noFixtures?: boolean;
   stopAll: () => Promise<void>;
 }
 
@@ -79,15 +123,13 @@ export interface ResetOptions {
  */
 export async function reset(options: ResetOptions): Promise<void> {
   const target = options.through ? `changelog ${options.through}` : 'the latest changelog';
-  if (!(await confirm(`This DROPS the dev database${options.all ? 's (including LuckPerms)' : ''} and reseeds it through ${target}. Continue?`, options.yes))) {
+  if (!(await confirmAction(`This DROPS the dev database${options.all ? 's (including LuckPerms)' : ''} and reseeds it through ${target}. Continue?`, options.yes))) {
     log('Aborted');
     return;
   }
   await options.stopAll();
 
-  log('Building migration tool');
-  run('./gradlew', ['-q', ':devtools:installDist']);
-  const files = devtools(['files']).split('\n').filter(Boolean);
+  const files = await changelogFiles();
   if (options.through && !files.some((file) => changelogNumber(file) === options.through)) {
     fail(`Unknown changelog ${options.through}. Available: ${files.map(changelogNumber).join(", ")}`);
   }
@@ -113,6 +155,11 @@ export async function reset(options: ResetOptions): Promise<void> {
   if (existsSync(local)) {
     log('  seeding local.sql');
     run('psql', ['-X', '-v', 'ON_ERROR_STOP=1', '-q', '-f', local], { env: pgEnv() });
+  }
+
+  if (!options.noFixtures) {
+    const { loadFixtures } = await import('./mc/fixtures.ts');
+    await loadFixtures({ through: options.through, replace: false });
   }
 
   const remaining = new Set(files.filter((file) => !applying.includes(file)));
@@ -142,17 +189,27 @@ export async function snapshot(name: string): Promise<void> {
   log(`Saved ${file}`);
 }
 
+/** pg_restore of a custom-format dump into `database` (existing objects are dropped first). */
+export function restoreDump(file: string, database: string): void {
+  run('pg_restore', ['--clean', '--if-exists', '--no-owner', '-d', database, file], { env: pgEnv(database) });
+}
+
+/** pg_dump of `database` in custom format. */
+export function dumpDatabase(file: string, database: string): void {
+  run('pg_dump', ['-Fc', '-f', file], { env: pgEnv(database) });
+}
+
 export async function restore(name: string, yes: boolean, stopAll: () => Promise<void>): Promise<void> {
   const file = join(SNAPSHOTS, `${name}.dump`);
   if (!existsSync(file)) {
     const available = existsSync(SNAPSHOTS) ? (await readdir(SNAPSHOTS)).join(', ') : 'none';
     fail(`No snapshot "${name}" (available: ${available})`);
   }
-  if (!(await confirm(`Restore snapshot "${name}" over the dev database?`, yes))) {
+  if (!(await confirmAction(`Restore snapshot "${name}" over the dev database?`, yes))) {
     log('Aborted');
     return;
   }
   await stopAll();
-  run('pg_restore', ['--clean', '--if-exists', '--no-owner', '-d', env().db.name, file], { env: pgEnv() });
+  restoreDump(file, env().db.name);
   log(`Restored ${name}`);
 }

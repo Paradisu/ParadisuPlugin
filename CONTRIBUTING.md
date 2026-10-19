@@ -87,19 +87,28 @@ The container installs the *pre-release* channel of the Red Hat Java and Gradle 
 
 ### The `dev` command
 
+Run `dev` with no arguments for a menu. Missing arguments are asked for on a terminal (pick an instance, a changelog, a snapshot, a player, …); with arguments, or with `--no-input` (also: no terminal, `CI` set, `PARADISU_DEV_NO_INPUT=1`), it never prompts, and a destructive command without `--yes` refuses instead of waiting for an answer. `dev help [group]` lists everything.
+
 | Command | What it does |
 | --- | --- |
 | `dev setup [--refresh]` | Resolve versions and download Purpur, Velocity and plugins into `dev/.cache` |
-| `dev start [names]` / `stop` / `restart` | Build the jar, deploy it to every instance, apply preset configs and run them in tmux |
-| `dev status` | Running state and ports |
-| `dev console <name>` | Attach to a console (detach with Ctrl-b d); `dev logs <name> -f` follows the log |
+| `dev start [names] [--ui]` / `stop` / `restart` | Build the jar, deploy it to every instance, apply preset configs and run them under the console supervisor (`--ui` then opens the consoles) |
+| `dev status` | Running state, pids and ports |
+| `dev console <name> [--read-only] [--wait]` | Attach to a console; Ctrl-C detaches and the server keeps running |
+| `dev logs <name> [-f] [--console]` | The server's log (`--console`: the raw console output) |
+| `dev ui [layout\|kill] [--background]` | Open the zellij workspace of live consoles |
+| `dev web start\|stop\|status\|token` | Serve that workspace to a browser |
 | `dev reset-world <name>` / `dev clean` | Delete worlds / all runtime data |
-| `dev db reset [--through 00N] [--all]` | Rebuild the database up to a changelog with seed data (`--all` also resets LuckPerms) |
+| `dev db reset [--through 00N] [--all]` | Rebuild the database up to a changelog with seed data and fixtures (`--all` also resets LuckPerms) |
 | `dev db seed` | Reseed at the current changelog position |
 | `dev db snapshot <n>` / `restore <n>` | Save and restore the database |
+| `dev db fixtures [load\|list] [files] [--replace]` | Load Minecraft data fixtures (inventories) |
 | `dev db psql [args]` | Open psql |
+| `dev mc players\|inventory\|dump\|nbt\|item\|encode\|uuid\|columns` | Look up, decode and encode Minecraft data (below) |
+| `dev override <instance> <path>` | Keep a changed runtime config file across starts and in profiles |
+| `dev profile export\|import\|inspect\|list` | Share a whole dev setup (below) |
 
-The network is defined in [dev/dev.toml](dev/dev.toml): the Minecraft and Velocity versions default to `auto` and follow `gradle/libs.versions.toml`, so bumping `paper-api` updates the dev network too. Backends run Purpur (a Paper fork, as in production) at the newest build for that Minecraft version. Override anything in the gitignored `dev/dev.local.toml`; `[[servers]]` and `[[plugins]]` entries merge by `name`/`key`. The tool is TypeScript run directly by Node 24 (`pnpm --dir dev typecheck` checks it).
+The network is defined in [dev/dev.toml](dev/dev.toml): the Minecraft and Velocity versions default to `auto` and follow `gradle/libs.versions.toml`, so bumping `paper-api` updates the dev network too. Backends run Purpur (a Paper fork, as in production) at the newest build for that Minecraft version. Override anything in the gitignored `dev/dev.local.toml`; `[[servers]]` and `[[plugins]]` entries merge by `name`/`key`. The tool is TypeScript run directly by Node 24; `pnpm --dir dev typecheck` checks it and `pnpm --dir dev test` runs the codec tests (NBT, SNBT, Paper item blobs, UUIDs).
 
 - **Add a backend server:** add a `[[servers]]` entry (unique ports) with `enabled = true` and, to attach the debugger, a matching configuration in `.vscode/launch.json`. Servers share the proxy, database and Redis; `context` sets the session, warp and inventory contexts.
 - **Add a plugin:** add a `[[plugins]]` entry with `source = "modrinth"` (and `slug`), `"url"`, `"jenkins"` (`job_url` of a Jenkins job; its latest successful build is used, `artifact_pattern` picks the jar), `"github"` (`repo = "owner/name"`; the latest release's jar, `asset_pattern` picks the asset; set `GITHUB_TOKEN` to avoid the anonymous API rate limit) or `"local"`. `platforms` may include `"limbo"` for plugins that run on the Limbo server. Modrinth plugins are resolved for the current game version; use `allow_prerelease` or `game_version_fallback` when only betas or older tags exist.
@@ -110,7 +119,7 @@ The network is defined in [dev/dev.toml](dev/dev.toml): the Minecraft and Veloci
 Notes:
 - ConnectorPlugin and TC Coasters are not on Modrinth; they are fetched from their CI servers. Plugins that depend on each other (TrainCarts needs BKCommonLib, TC Coasters needs both) must all be listed.
 - Newer Minecraft versions enable the whitelist by default (empty, so nobody can join); the `server.properties` template turns it off. Add `white-list=true` to a server's own template under `dev/templates/servers/<name>/` if you want to test it.
-- `dev console <name>` works from inside tmux too (it ignores `TMUX`); detach with Ctrl-b d.
+- Each JVM runs under a small detached supervisor (`dev _supervise`, see below), not in a terminal: closing your terminal never stops a server, and `dev console` can be attached from any number of terminals.
 - Paper rewrites its generated config files, but `dev/templates` always wins on the next start. Edit the templates, not the files in `dev/run`.
 
 ### Joining from outside
@@ -129,7 +138,38 @@ To test a new changelog against realistic data:
 1. `dev db reset --through <previous changelog>`
 2. `dev start`: the proxy applies the new changelog on startup, exactly as in production.
 
-When you add a changelog that changes data shape, add `dev/db/seed/<NNN>.sql` for the new columns or tables. Personal rows (for example your own UUID) go in the gitignored `dev/db/seed/local.sql`. `PLAYER_INVENTORIES` is not seeded: inventories are Paper item blobs that a running server must create.
+When you add a changelog that changes data shape, add `dev/db/seed/<NNN>.sql` for the new columns or tables. Personal rows (for example your own UUID) go in the gitignored `dev/db/seed/local.sql`. Minecraft binary data (inventories) is not in the SQL seeds; see *Minecraft data* below.
+
+### Consoles, zellij and web access
+
+Every instance runs under a small detached supervisor (`dev _supervise <name>`, [supervisor.ts](dev/src/supervisor.ts)) that owns the JVM's stdin/stdout, writes `dev/run/<name>/.dev/console.log` and serves the console on a unix socket. `dev console <name>` is a client of that socket: it replays recent output, keeps a command history, and detaches on Ctrl-C or Ctrl-D without touching the server. Servers run with `-Dterminal.jline=false`, so there is no tab completion in the console. `--read-only` only watches, and `--wait` waits for the server (and reconnects after a restart), which is what the zellij panes use.
+
+`dev ui` opens a [zellij](https://zellij.dev) workspace made only of such clients, so closing or killing it (`dev ui kill`) never affects the servers. The default layout `network` has a *consoles* tab (proxy and Limbo stacked, then one pane per enabled backend), a *db* tab (psql) and a *shell* tab; `tabs` has one tab per instance. Layouts are generated from the enabled instances. Add your own as `dev/layouts.local/<name>.kdl` (gitignored; [dev/layouts/backends.kdl](dev/layouts/backends.kdl) is an example), then `dev ui <name>`. Inside zellij, `dev ui <layout>` adds the layout as a tab. Detach with Ctrl-o d; Ctrl-q closes the workspace (the servers keep running), which is why `.vscode/settings.json` stops VS Code from taking Ctrl+Q for itself in the terminal. Set `ui.default_layout` / `ui.session` in `dev.toml`.
+
+`dev web start` starts zellij's web client and creates the session in the background (`web_sharing "on"` in the generated config is what lets browsers attach; after changing it run `dev web stop`, `dev ui kill`, then `dev web start` since it needs a restart); open the printed URL and log in with a token (`dev web token`; `--read-only` tokens can only watch). It binds `127.0.0.1:8082` by default, which VS Code forwards from the container (`forwardPorts`). To expose it to the network set `web.bind = "0.0.0.0"` in `dev.local.toml`: zellij then requires TLS, so a self-signed certificate is generated into `dev/run/.zellij/tls` (browsers warn once), and the port must also be published in `docker-compose.yml` (a commented line is there). **Anyone with a normal token has a full shell in the container**; hand out read-only tokens and keep the default bind unless you need more.
+
+### Minecraft data: fixtures, lookup and decoding
+
+Paper stores items as NBT blobs: one item is the gzip of a named-root compound (`id`, `count`, `components`, `DataVersion`); an item array is a version byte (1), an int count, then a length-prefixed item per slot. The player inventory uses 41 slots (36 storage, 4 armor, 1 offhand), armor 4, the ender chest 27. The codecs ([dev/src/mc/](dev/src/mc)) are covered by tests and follow `ItemStack#serializeAsBytes` / `#serializeItemsAsBytes` in paper-api.
+
+- **Fixtures** (`dev/db/fixtures/*.toml`, private ones in the gitignored `dev/db/fixtures.local/`) describe inventories in SNBT, the syntax of `/give` (`{id:"minecraft:diamond_sword",count:1,components:{…}}`). `dev db reset` loads them after the SQL seeds (`--no-fixtures` skips them; `requires_changelog` skips a file when the reset stops before that changelog). Rows get deterministic ids, so `dev db fixtures load [files] [--replace]` can be repeated. The committed [inventories.toml](dev/db/fixtures/inventories.toml) documents the format; players are named by seed name, uuid or `offline:Name` (the UUID an `online_mode = false` server gives that name; it creates the player row). Items are stamped with the DataVersion of the downloaded server jar (`data_version` in `dev.local.toml` overrides it); older stamps are upgraded by the server's data fixers.
+- **Capture and reload:** play on the dev server, then `dev mc dump [--player p] [--raw]` writes the stored inventories as a fixture file you can load again (`--raw` keeps the exact bytes). `dev mc inventory <player> [--context c] [--all] [--format table|snbt|json|fixture|raw]` shows one decoded; `dev mc players [search]` lists players with their snapshot counts.
+- **Decoding:** `dev mc nbt <file|->` decodes gzip/zlib/plain NBT, `.mca` chunks (`--chunk x,z`) and has shortcuts `playerdata:<player>@<server>` and `level:<server>` (`--path Data.LevelName`, `--format json` for jq). `dev mc item <base64|hex|@file|->` decodes a blob copied from the database (a single item or an array); `dev mc encode '<snbt>' [--array]` produces one. `dev mc uuid <name|uuid|[I;…]>` converts UUID forms (dashed, undashed, int array, most/least), computes the offline-mode UUID and looks the player up in the dev database and at Mojang (`--offline` skips the network).
+- A new Minecraft blob column needs an entry in [columns.ts](dev/src/mc/columns.ts); a new inventory-like table needs its own fixture section in `fixtures.ts`.
+
+### Sharing a setup (profiles)
+
+`dev profile export [name]` packs a working setup into `dev/profiles/<name>.tar.gz`; `dev profile import <file>` applies one. You choose what goes in (`--include`, or the checkbox prompt):
+
+| Section | Contents | On import |
+| --- | --- | --- |
+| `plugins` | the exact plugin list: URL, version and SHA-256 per platform; jars that cannot be fetched again byte for byte (`url` and `local` sources) are embedded, all of them with `--embed-jars` | pins are written to `dev.local.toml`; `dev setup` re-downloads and verifies them |
+| `servers` | Minecraft/Purpur/Velocity/Limbo builds and the effective server, proxy, JVM and UI setup | written to `dev.local.toml`; your `accept_eula`, `public_host` and `web` are kept |
+| `overrides` | `dev/templates.local/` (see `dev override`) | replaces yours |
+| `db` | `pg_dump` of the Paradisu (and LuckPerms) database | restored; refuses if it has changelogs your checkout lacks (`--force`) |
+| `worlds` | world directories of the chosen (stopped) servers | replace the current worlds |
+
+Import treats the archive as untrusted: it rejects absolute paths, `..`, links and unexpected entries, prints a review (plugin download hosts, JVM flags, first-start console commands, what will be replaced) and asks before changing anything, then backs up `dev.local.toml` and `templates.local` to `dev/.profile-backup/`. Pass `--yes` only for archives you trust. `dev profile inspect` shows a profile without applying it. Config you edited under `dev/run` is not exported unless you saved it with `dev override <instance> <path>`, which copies it into `dev/templates.local/` (same layout as `dev/templates/`, applied after it on every start).
 
 ### The published image
 
@@ -140,8 +180,12 @@ When you add a changelog that changes data shape, add `dev/db/seed/<NNN>.sql` fo
 - **"additional privileges requested" in the Dev Containers log:** newer Docker Compose builds through bake, which refuses the Dockerfile the devcontainer CLI generates in `/tmp`. The *build locally* configuration avoids this by building the image itself (`initializeCommand`), and the prebuilt one never builds. If you add a `build:` section to a compose service yourself, set `BUILDX_BAKE_ENTITLEMENTS_FS=0` (or `COMPOSE_BAKE=false`) in the environment VS Code was started from.
 - **Gradle hangs for two minutes and fails with "The settings are not yet available":** another Gradle process was holding lock files in a shared `.gradle` directory and could not be asked to release them from inside the container. The compose file now mounts container-only volumes over `.gradle` and `build-logic/.gradle` (`gradle-project`, `gradle-build-logic`), so a Gradle daemon or Java extension on the host no longer interferes. If you ever see it again, something else is sharing the checkout; run `docker volume rm paradisu-dev_gradle-project paradisu-dev_gradle-build-logic` (with the container stopped) to reset the container's caches.
 - **Gradle fails with "Cannot create directory '/workspaces/ParadisuPlugin/.gradle/…'":** the container user's UID was changed to match yours (the Dev Containers tooling does this when your UID is not 1000, as on GitHub runners) but the Gradle volume belongs to another user. New volumes are created world-writable and `dev bootstrap` repairs old ones (it needs `sudo`, which the image allows); to start over, remove `paradisu-dev_gradle-project` and `paradisu-dev_gradle-build-logic` with the container stopped.
+- **"Supplied javaHome is not a valid folder: /home/<you>/.sdkman/…" (or other host paths) in the container:** the host and the container share the checkout, and a Java extension on the host wrote `.project`, `.classpath` and `.settings/` (including `org.eclipse.buildship.core.prefs` with your host `java.home`) into it; the container's Gradle import then hands that path to Gradle. `.vscode/settings.json` sets `java.import.generatesMetadataFilesAtProjectRoot` to `false` (window scope, so it overrides a `true` in your host user or machine settings), which stops both sides writing them. If they already exist, delete them (they are gitignored) with `rm -rf .project .classpath .settings */.project */.classpath */.settings`, then run **Java: Clean Java Language Server Workspace** in the container window (the language server caches the imported projects) and reload it.
+- **A plugin fails with `UnsatisfiedLinkError … libX11.so.6`:** the image has no X11 libraries and a `DISPLAY` forwarded into the container (WSLg) makes the JDK try the X11 toolkit. The dev tool starts every server with `-Djava.awt.headless=true`; if you start one by hand, add it too.
 - **`dev bootstrap` printed warnings:** it never fails container creation. Fix the cause (usually no network) and run it again; it is safe to repeat.
-- **A server does not stop:** `dev stop` sends `stop`/`shutdown` to the console and kills the tmux session after 60 seconds. Look at `dev console <name>` or `dev logs <name>` for what it is waiting on.
+- **A server does not stop:** `dev stop` sends `stop`/`shutdown` to the console and kills the JVM after 60 seconds. Look at `dev console <name>` or `dev logs <name> --console` for what it is waiting on.
+- **`dev status` says stopped but a java process is running:** the supervisor died (its crash output is in `dev/run/<name>/.dev/supervisor.log`). Kill the java process and start again. Stale pid files after a container restart are detected and cleaned automatically.
+- **zellij says the socket path is too long:** set `ZELLIJ_SOCKET_DIR` to a short directory such as `/tmp/zj` (only happens with a very long `TMPDIR`).
 
 ## Formatting (Spotless)
 

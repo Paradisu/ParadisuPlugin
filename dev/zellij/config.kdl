@@ -1,0 +1,16 @@
+// Generated into dev/run/.zellij/config.kdl by `dev ui` / `dev web`; edit dev/zellij/config.kdl, not the copy.
+default_layout "${DEFAULT_LAYOUT}"
+layout_dir "${LAYOUT_DIR}"
+show_startup_tips false
+show_release_notes false
+session_serialization false
+pane_frames true
+mouse_mode true
+// Sessions are only reachable from the web client when sharing is on (the default is off)
+web_sharing "on"
+web_server_ip "${WEB_IP}"
+web_server_port ${WEB_PORT}
+${WEB_TLS}
+web_client {
+    font "monospace"
+}

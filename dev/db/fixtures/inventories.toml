@@ -1,0 +1,49 @@
+# Minecraft inventories for the dev database. `dev db reset` loads this after the SQL seeds; `dev db fixtures load`
+# reloads it. Items are SNBT, the syntax of /give; "@name" refers to [items]. Players come from the seed data (by
+# name or uuid) or are created with "offline:Name", the UUID a server in offline mode gives that name.
+#
+# Slots: 0-8 hotbar, 9-35 main. Armor pieces are head/chest/legs/feet; offhand and ender_chest (0-26) follow.
+# Add your own files here, or private ones under dev/db/fixtures.local/ (gitignored). Capture real data from a
+# running server with `dev mc dump`.
+
+requires_changelog = "001"
+
+[items]
+sword = '{id:"minecraft:diamond_sword",count:1,components:{"minecraft:enchantments":{"minecraft:sharpness":5,"minecraft:unbreaking":3},"minecraft:custom_name":"Excalibur"}}'
+pickaxe = '{id:"minecraft:netherite_pickaxe",count:1,components:{"minecraft:enchantments":{"minecraft:efficiency":5,"minecraft:fortune":3},"minecraft:damage":120}}'
+steak = '{id:"minecraft:cooked_beef",count:64}'
+torch = '{id:"minecraft:torch",count:64}'
+rail = '{id:"minecraft:rail",count:64}'
+
+# A fully kitted-out survival inventory
+[[inventory]]
+player = "Abc"
+context = "paradisu"
+held_slot = 0
+slots = { 0 = "@sword", 1 = "@pickaxe", 2 = "@steak", 3 = "@torch", 4 = '{id:"minecraft:water_bucket",count:1}', 9 = "@rail", 10 = '{id:"minecraft:oak_planks",count:32}' }
+armor = { head = '{id:"minecraft:diamond_helmet",count:1,components:{"minecraft:enchantments":{"minecraft:protection":4}}}', chest = '{id:"minecraft:diamond_chestplate",count:1}', legs = '{id:"minecraft:diamond_leggings",count:1}', feet = '{id:"minecraft:diamond_boots",count:1}' }
+offhand = '{id:"minecraft:shield",count:1}'
+ender_chest = { 0 = '{id:"minecraft:elytra",count:1}', 1 = '{id:"minecraft:firework_rocket",count:64}' }
+
+# Two contexts for one player: paradisu (lobby) and creative keep separate inventories
+[[inventory]]
+player = "Max_Length_16_ch"
+context = "paradisu"
+created = "-3h"
+slots = { 0 = "@steak" }
+
+[[inventory]]
+player = "Max_Length_16_ch"
+context = "creative"
+created = "-1h"
+held_slot = 4
+slots = { 0 = "@rail", 1 = '{id:"minecraft:powered_rail",count:64}', 4 = '{id:"minecraft:minecart",count:1}' }
+
+# 17 snapshots: PlayerQuitSync keeps 16 per context, so the next quit of this player prunes one
+[[inventory]]
+player = "under_score"
+context = "paradisu"
+repeat = 17
+step = "30m"
+created = "-10m"
+slots = { 0 = "@torch" }

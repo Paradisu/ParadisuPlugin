@@ -1,0 +1,29 @@
+// Example user layout: only the backend consoles, side by side, plus a database shell.
+// Copy to dev/layouts.local/ to customise; every file there is available as `dev ui <name>`.
+// Pane commands use the dev tool, so panes survive server restarts (--wait).
+layout {
+    default_tab_template {
+        pane size=1 borderless=true {
+            plugin location="zellij:tab-bar"
+        }
+        children
+        pane size=2 borderless=true {
+            plugin location="zellij:status-bar"
+        }
+    }
+    tab name="backends" {
+        pane split_direction="vertical" {
+            pane name="lobby" command="dev" {
+                args "console" "lobby" "--wait"
+            }
+            pane name="creative" command="dev" {
+                args "console" "creative" "--wait"
+            }
+        }
+    }
+    tab name="db" {
+        pane command="dev" {
+            args "db" "psql"
+        }
+    }
+}

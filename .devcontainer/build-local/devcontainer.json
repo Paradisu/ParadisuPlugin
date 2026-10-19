@@ -12,6 +12,9 @@
     // The proxy port (25565) is published by compose; backend and JDWP ports stay inside the container.
     // Codespaces / remote Docker hosts: forward 25565 manually.
     "otherPortsAttributes": { "onAutoForward": "ignore" },
+    // zellij web client (`dev web start`): VS Code forwards it to the host with the default 127.0.0.1 bind
+    "forwardPorts": [8082],
+    "portsAttributes": { "8082": { "label": "zellij web", "onAutoForward": "silent" } },
     "customizations": {
         "vscode": {
             "extensions": [
@@ -36,6 +39,9 @@
                 ],
                 "java.debug.settings.hotCodeReplace": "auto",
                 "java.autobuild.enabled": true,
+                // Keep Eclipse/Buildship metadata (.project, .classpath, .settings) out of the bind-mounted checkout: the host IDE
+                // writes its own Java paths there, and the container would pick them up (and overwrite them for the host)
+                "java.import.generatesMetadataFilesAtProjectRoot": false,
                 "java.import.exclusions": [
                     "**/node_modules/**",
                     "**/.metadata/**",

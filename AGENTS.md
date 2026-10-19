@@ -29,7 +29,7 @@ Root project shades everything into `build/libs/ParadisuPlugin.jar`. Dependency 
 
 There is no test suite; verify by compiling (`build`). Do not claim runtime behavior was tested unless it was.
 
-The `dev/` tool (TypeScript run directly by Node 24, pnpm) has its own check: `pnpm --dir dev typecheck`. Only erasable TS syntax is allowed (no `enum`, `namespace`, parameter properties); relative imports end in `.ts`.
+The `dev/` tool (TypeScript run directly by Node 24, pnpm) has its own checks: `pnpm --dir dev typecheck` and `pnpm --dir dev test` (NBT/SNBT/item/UUID codecs). Only erasable TS syntax is allowed (no `enum`, `namespace`, parameter properties); relative imports end in `.ts`.
 
 ## Dev environment
 
@@ -37,13 +37,16 @@ The devcontainer (`.devcontainer/`) provides JetBrains Runtime 25, PostgreSQL 17
 
 ```bash
 dev setup                         # download Purpur, Velocity and plugins (versions follow libs.versions.toml)
-dev start / stop / status         # proxy + backends in tmux; debug ports 5005+ (VS Code: Debug network)
+dev start / stop / status         # proxy + backends under per-instance supervisors; debug ports 5005+ (VS Code: Debug network)
 dev db reset --through 00N        # rebuild the database up to changelog 00N with seed data
 ```
 
 - Verify a new changelog: `dev db reset --through <previous>`, then `dev start`; the proxy applies the new changelog to seeded data.
 - A changelog that changes data shape needs `dev/db/seed/00N.sql` for its new columns/tables. Seeds target the schema as of that changelog; never make an older seed depend on a later schema.
 - Preset configs for the servers and plugins are templates in `dev/templates/`; the network and plugin list are in `dev/dev.toml`.
+- Run `dev` non-interactively: pass names and arguments, add `--yes` to destructive commands and `--no-input` to anything that could prompt. Never run `dev console` or `dev ui` (they take over the terminal); read output with `dev logs <name>` or `dev logs <name> --console`.
+- Minecraft binary data: fixtures live in `dev/db/fixtures/*.toml` (SNBT items; `requires_changelog` gates them by schema like seeds do). A new item/NBT blob column needs an entry in `dev/src/mc/columns.ts`. Inspect with `dev mc inventory|nbt|item|uuid`; round-trip with `dev mc dump` then `dev db fixtures load`.
+- Profiles (`dev profile export|import`) are a versioned archive format (`format` in `profile.toml`, see `dev/src/profile.ts`); changing the layout means bumping `format` and still reading older ones. Imports treat the archive as untrusted; keep the validation and review screen intact. Config worth sharing goes in `dev/templates.local/` (via `dev override`), never into `dev/run`.
 - Do not claim a dev-environment flow worked unless you ran it.
 
 ## Rules

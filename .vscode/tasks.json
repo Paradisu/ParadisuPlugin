@@ -16,6 +16,13 @@
                 }
             }
         },
+        {
+            "label": "dev: consoles",
+            "type": "shell",
+            "command": "dev ui",
+            "problemMatcher": [],
+            "presentation": { "panel": "dedicated", "focus": true }
+        },
         { "label": "dev: stop", "type": "shell", "command": "dev stop", "problemMatcher": [] },
         { "label": "dev: build", "type": "shell", "command": "dev build", "problemMatcher": [] },
         { "label": "dev: status", "type": "shell", "command": "dev status", "problemMatcher": [] },

@@ -186,6 +186,11 @@ dev/.cache/
 dev/dev.local.toml
 dev/db/seed/local.sql
 dev/db/snapshots/
+dev/layouts.local/
+dev/templates.local/
+dev/profiles/
+dev/.profile-backup/
+dev/db/fixtures.local/
 dev/plugins-local/*.jar
 hs_err_pid*.log
 .pnpm-store/

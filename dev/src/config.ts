@@ -64,6 +64,29 @@ export interface PluginConfig {
   urls?: Partial<Record<Platform, string>>;
   path?: string;
   config_dir?: Partial<Record<Platform, string>>;
+  /** An exact artifact per platform, written by profile imports; setup downloads it instead of resolving the latest */
+  pinned?: Partial<Record<Platform, PinnedArtifact>>;
+}
+
+export interface PinnedArtifact {
+  url: string;
+  sha256: string;
+  version: string;
+  /** A jar shipped inside a profile, relative to the repository root; used instead of `url` */
+  file?: string;
+}
+
+export interface UiConfig {
+  /** Layout `dev ui` opens: network | tabs | the name of a file in dev/layouts or dev/layouts.local */
+  default_layout: string;
+  /** Name of the zellij session */
+  session: string;
+}
+
+export interface WebConfig {
+  port: number;
+  /** 127.0.0.1 = plain HTTP, reachable through port forwarding; anything else needs TLS (a self-signed certificate is generated) */
+  bind: string;
 }
 
 export interface DevConfig {
@@ -71,6 +94,10 @@ export interface DevConfig {
   minecraft_version: string;
   purpur_build: string;
   velocity_version: string;
+  /** "auto" = latest build of velocity_version, or a Fill build id (set by profile imports to pin the exact build) */
+  velocity_build: string;
+  /** Overrides the DataVersion detected from the server jar (for generated items) */
+  data_version?: number;
   limbo_version: string;
   /** Address clients use to reach this machine; the proxy tells players to transfer to it */
   public_host: string;
@@ -78,6 +105,8 @@ export interface DevConfig {
   jvm: JvmConfig;
   proxy: ProxyConfig;
   limbo: LimboConfig;
+  ui: UiConfig;
+  web: WebConfig;
   servers: ServerConfig[];
   plugins: PluginConfig[];
 }

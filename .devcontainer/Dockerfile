@@ -15,6 +15,8 @@ ARG NODE_VERSION=24.21.0
 ARG PNPM_VERSION=12.11.2
 # https://github.com/HotswapProjects/HotswapAgent/releases
 ARG HOTSWAP_AGENT_VERSION=2.0.3
+# https://github.com/zellij-org/zellij/releases (the default build includes the web client; not the no-web one)
+ARG ZELLIJ_VERSION=0.45.1
 
 ENV DEBIAN_FRONTEND=noninteractive \
     LANG=C.UTF-8 \
@@ -23,7 +25,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-        ca-certificates curl git jq tmux procps less unzip xz-utils sudo \
+        ca-certificates curl git jq openssl procps less unzip xz-utils sudo \
         postgresql-client openssh-client gnupg locales iproute2 netcat-openbsd \
     && rm -rf /var/lib/apt/lists/*
 
@@ -54,6 +56,18 @@ RUN case "${TARGETARCH}" in amd64) arch=x64 ;; arm64) arch=aarch64 ;; *) echo "u
 RUN mkdir -p /opt/jbr/lib/hotswap \
     && curl -fsSL -o /opt/jbr/lib/hotswap/hotswap-agent.jar \
         "https://github.com/HotswapProjects/HotswapAgent/releases/download/RELEASE-${HOTSWAP_AGENT_VERSION}/hotswap-agent-${HOTSWAP_AGENT_VERSION}.jar"
+
+# zellij: terminal workspace for the server consoles (`dev ui`), with a web client (`dev web`)
+RUN case "${TARGETARCH}" in amd64) arch=x86_64 ;; arm64) arch=aarch64 ;; *) echo "unsupported arch ${TARGETARCH}" >&2; exit 1 ;; esac \
+    && file="zellij-${arch}-unknown-linux-musl.tar.gz" \
+    && base="https://github.com/zellij-org/zellij/releases/download/v${ZELLIJ_VERSION}" \
+    && curl -fsSL -o "/tmp/${file}" "${base}/${file}" \
+    && curl -fsSL -o /tmp/zellij.sha256sum "${base}/zellij-${arch}-unknown-linux-musl.sha256sum" \
+    && mkdir /tmp/zellij-x && tar -xzf "/tmp/${file}" -C /tmp/zellij-x \
+    && echo "$(cut -d' ' -f1 /tmp/zellij.sha256sum)  /tmp/zellij-x/zellij" | sha256sum -c - \
+    && install -m 0755 /tmp/zellij-x/zellij /usr/local/bin/zellij \
+    && rm -rf /tmp/zellij* \
+    && zellij --version
 
 # Node.js (runs the TypeScript dev tool natively) + pnpm via corepack
 RUN case "${TARGETARCH}" in amd64) arch=x64 ;; arm64) arch=arm64 ;; *) echo "unsupported arch ${TARGETARCH}" >&2; exit 1 ;; esac \

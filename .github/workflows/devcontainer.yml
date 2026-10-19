@@ -98,7 +98,7 @@ jobs:
           node -v | grep "^v24"
           pnpm -v
           psql --version
-          tmux -V
+          zellij --version
           test -d ~/.gradle/wrapper/dists
           test -f /opt/jbr/lib/hotswap/hotswap-agent.jar
         '
@@ -142,4 +142,9 @@ jobs:
           dev db reset --yes --through 002
           test "$(dev db psql -tAc 'select count(*) from warps where world is null')" -gt 0
           pnpm --dir dev typecheck
+          pnpm --dir dev test
+          test "$(dev db psql -tAc 'select count(*) from player_inventories')" -gt 0
+          dev mc encode '{id:"minecraft:stone",count:1}' | dev mc item -
+          dev --no-input profile export ci --include db,plugins,servers --out /tmp/ci.tar.gz
+          dev profile inspect /tmp/ci.tar.gz
           ./gradlew build

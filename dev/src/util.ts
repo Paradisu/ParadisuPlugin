@@ -6,13 +6,14 @@ import net from 'node:net';
 import { dirname, join, resolve } from 'node:path';
 import { Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
-import { createInterface } from 'node:readline/promises';
 
 export const ROOT = resolve(import.meta.dirname, '..', '..');
 export const DEV = join(ROOT, 'dev');
 export const RUN = join(DEV, 'run');
 export const CACHE = join(DEV, '.cache');
 export const TEMPLATES = join(DEV, 'templates');
+/** Personal config overrides (gitignored), laid out like TEMPLATES and applied after it; exported by profiles */
+export const TEMPLATES_LOCAL = join(DEV, 'templates.local');
 export const USER_AGENT = 'paradisu-dev/1 (github.com/Paradisu/ParadisuPlugin)';
 
 /** An expected failure: printed without a stack trace. */
@@ -132,19 +133,6 @@ export async function portListening(port: number): Promise<boolean> {
   );
 }
 
-export async function confirm(question: string, assumeYes: boolean): Promise<boolean> {
-  if (assumeYes) {
-    return true;
-  }
-  const rl = createInterface({ input: process.stdin, output: process.stdout });
-  try {
-    const answer = await rl.question(`${question} [y/N] `);
-    return /^y(es)?$/i.test(answer.trim());
-  } finally {
-    rl.close();
-  }
-}
-
 export async function getJson<T>(url: string, headers: Record<string, string> = {}): Promise<T> {
   const response = await fetch(url, { headers: { 'User-Agent': USER_AGENT, Accept: 'application/json', ...headers } });
   if (!response.ok) {
@@ -181,6 +169,10 @@ export async function download(url: string, dest: string, checksums: Checksums =
     }
   }
   await rename(partial, dest);
+}
+
+export function sha256File(path: string): string {
+  return createHash('sha256').update(readFileSync(path)).digest('hex');
 }
 
 /** Replaces ${NAME} tokens; tokens without a value are left untouched. */

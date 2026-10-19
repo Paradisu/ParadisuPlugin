@@ -1,4 +1,9 @@
 {
+    // Let Ctrl+Q reach the terminal (zellij quits its UI with it) instead of closing the VS Code window
+    "terminal.integrated.commandsToSkipShell": ["-workbench.action.quickOpenView"],
+    // Host and container share this checkout: keep Eclipse/Buildship metadata (with machine-specific Java paths) out of it.
+    // Window scope, so it overrides a host user/machine setting of true.
+    "java.import.generatesMetadataFilesAtProjectRoot": false,
     "java.debug.settings.hotCodeReplace": "auto",
     "java.autobuild.enabled": true,
     "java.import.exclusions": [

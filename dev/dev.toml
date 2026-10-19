@@ -8,6 +8,7 @@ accept_eula = true
 minecraft_version = "auto"
 purpur_build = "auto"      # auto = latest Purpur build for the Minecraft version, or a build number
 velocity_version = "auto"  # or e.g. "4.2.1-SNAPSHOT"
+velocity_build = "auto"    # or a build id, to pin it exactly (profile imports do)
 # Online mode for the proxy; backends always trust the proxy's forwarded identity
 online_mode = true
 # Address clients use to reach this machine. The proxy transfers players to Limbo and back through it, so
@@ -20,6 +21,17 @@ limbo_version = "auto"
 enhanced_redefinition = true  # -XX:+AllowEnhancedClassRedefinition (needs JetBrains Runtime)
 hotswap_agent = false         # -XX:HotswapAgent=core
 extra_flags = []
+
+# Consoles: `dev ui` opens a zellij workspace of live server consoles. Layouts are generated from the enabled
+# instances (network, tabs); add your own as dev/layouts.local/<name>.kdl.
+[ui]
+default_layout = "network"
+session = "paradisu"
+
+# `dev web start` serves that workspace to a browser (zellij web client)
+[web]
+port = 8082
+bind = "127.0.0.1"  # 0.0.0.0 exposes it to the network over HTTPS (self-signed); also publish the port in docker-compose.yml
 
 [proxy]
 port = 25565
