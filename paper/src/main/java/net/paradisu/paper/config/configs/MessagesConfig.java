@@ -34,6 +34,7 @@ public final class MessagesConfig {
 
     private Utility utility = new Utility();
     private Commands commands = new Commands();
+    private AsyncEvents asyncevents = new AsyncEvents();
 
     @Getter
     @ConfigSerializable
@@ -68,11 +69,22 @@ public final class MessagesConfig {
 
     @Getter
     @ConfigSerializable
+    public static final class AsyncEvents {
+        @Setting("output")
+        private List<String> joinevent = List.of("<lang:paradisu.event.output.join:'<player>'>");
+
+        @Setting("output")
+        private List<String> leaveevent = List.of("<lang:paradisu.event.output.leave:'<player>'>");
+    }
+
+    @Getter
+    @ConfigSerializable
     public static final class Commands {
         private Paradisu paradisu = new Paradisu();
         private Hat hat = new Hat();
         private Warp warp = new Warp();
         private Warps warps = new Warps();
+        private RealSize realSize = new RealSize();
 
         @Getter
         @ConfigSerializable
@@ -82,6 +94,22 @@ public final class MessagesConfig {
 
             @Setting("output")
             private List<String> output = List.of("<lang:paradisu.command.output.hat>");
+        }
+
+        @Getter
+        @ConfigSerializable
+        public static final class RealSize {
+            @Setting("help-msg")
+            private String helpMsg = "<lang:paradisu.command.help.realsize>";
+
+            @Setting("help-msg")
+            private String tootall = "<lang:paradisu.command.output.realsize.tootall>";
+
+            @Setting("help-msg")
+            private String tooshort = "<lang:paradisu.command.output.realsize.toosmall>";
+
+            @Setting("output")
+            private List<String> output = List.of("<lang:paradisu.command.output.realsize>");
         }
 
         @Getter

@@ -1,0 +1,31 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+
+    <changeSet id="8" author="paradisu">
+        <createTable tableName="ITEM">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true" unique="true" nullable="false" />
+            </column>
+
+            <column name="identifier" type="INT">
+                <constraints unique="true" nullable="false" />
+            </column>
+            <column name="item_type" type="VARCHAR(255)" />  <!-- Block/item type meta -->
+            <column name="display_name" type="VARCHAR(1024)" />
+            <column name="model_path" type="VARCHAR(255)" />
+            <column name="nbt" type="${blob_type}" /> <!-- Lore / Enchants / Tags -->
+            <column name="uses" type="INT" />
+
+            <column name="item_use" type="VARCHAR(255)" />
+
+        </createTable>
+    </changeSet>
+
+
+</databaseChangeLog>

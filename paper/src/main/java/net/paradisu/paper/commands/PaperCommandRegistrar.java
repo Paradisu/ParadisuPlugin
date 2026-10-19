@@ -29,7 +29,12 @@ public class PaperCommandRegistrar {
      * @param paradisu ParadisuPaper instance
      */
     public static void registerCommands(ParadisuPaper paradisu) {
-        Stream.of(new ParadisuCommand(paradisu), new HatCommand(paradisu), new WarpCommand(paradisu))
+        Stream.of(
+                        new ParadisuCommand(paradisu),
+                        new HatCommand(paradisu),
+                        new WarpCommand(paradisu),
+                        new RealSizeCommand(paradisu),
+                        new ModelGiveCommand(paradisu))
                 .forEach(AbstractPaperCommand::register);
     }
 }

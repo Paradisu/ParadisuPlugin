@@ -26,8 +26,10 @@ import net.paradisu.paper.commands.PaperCommandRegistrar;
 import net.paradisu.paper.config.PaperConfigManager;
 import net.paradisu.paper.config.configs.MessagesConfig;
 import net.paradisu.paper.config.configs.ParadisuConfig;
+import net.paradisu.paper.listeners.ModelGiveListener;
 import net.paradisu.paper.listeners.PlayerJoinListener;
 import net.paradisu.paper.listeners.PlayerQuitListener;
+import net.paradisu.paper.listeners.PlayerRightClickListener;
 import net.paradisu.paper.messaging.PaperMessagingManager;
 import net.paradisu.paper.util.PaperLogger;
 import net.paradisu.paper.util.SafeItemSerializer;
@@ -94,6 +96,8 @@ public class ParadisuPaper extends JavaPlugin implements ParadisuPlugin<BukkitCo
 
             this.getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
             this.getServer().getPluginManager().registerEvents(new PlayerQuitListener(this), this);
+            this.getServer().getPluginManager().registerEvents(new ModelGiveListener(this), this);
+            this.getServer().getPluginManager().registerEvents(new PlayerRightClickListener(this), this);
         } catch (Exception e) {
             this.logger.error("Failed to enable ParadisuPlugin", e);
         }

@@ -13,6 +13,7 @@ export interface McColumn {
 }
 
 export const MC_COLUMNS: readonly McColumn[] = [
+  { table: 'item', column: 'nbt', codec: 'item' },
   { table: 'player_inventories', column: 'inventory', codec: 'item-array', slots: 41 },
   { table: 'player_inventories', column: 'armor', codec: 'item-array', slots: 4 },
   { table: 'player_inventories', column: 'off_hand', codec: 'item' },
