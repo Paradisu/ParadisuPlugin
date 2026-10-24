@@ -98,6 +98,7 @@ Run `dev` with no arguments for a menu. Missing arguments are asked for on a ter
 | `dev logs <name> [-f] [--console]` | The server's log (`--console`: the raw console output) |
 | `dev ui [layout\|kill] [--background]` | Open the zellij workspace of live consoles |
 | `dev web start\|stop\|status\|token` | Serve that workspace to a browser |
+| `dev share start\|stop\|status\|logs\|providers` | Public tunnels for the proxy, Limbo and web console (Pinggy by default) |
 | `dev reset-world <name>` / `dev clean` | Delete worlds / all runtime data |
 | `dev db reset [--through 00N] [--all]` | Rebuild the database up to a changelog with seed data and fixtures (`--all` also resets LuckPerms) |
 | `dev db seed` | Reseed at the current changelog position |
@@ -147,6 +148,17 @@ Every instance runs under a small detached supervisor (`dev _supervise <name>`, 
 `dev ui` opens a [zellij](https://zellij.dev) workspace made only of such clients, so closing or killing it (`dev ui kill`) never affects the servers. The default layout `network` has a *consoles* tab (proxy and Limbo stacked, then one pane per enabled backend), a *db* tab (psql) and a *shell* tab; `tabs` has one tab per instance. Layouts are generated from the enabled instances. Add your own as `dev/layouts.local/<name>.kdl` (gitignored; [dev/layouts/backends.kdl](dev/layouts/backends.kdl) is an example), then `dev ui <name>`. Inside zellij, `dev ui <layout>` adds the layout as a tab. Detach with Ctrl-o d; Ctrl-q closes the workspace (the servers keep running), which is why `.vscode/settings.json` stops VS Code from taking Ctrl+Q for itself in the terminal. Set `ui.default_layout` / `ui.session` in `dev.toml`.
 
 `dev web start` starts zellij's web client and creates the session in the background (`web_sharing "on"` in the generated config is what lets browsers attach; after changing it run `dev web stop`, `dev ui kill`, then `dev web start` since it needs a restart); open the printed URL and log in with a token (`dev web token`; `--read-only` tokens can only watch). It binds `127.0.0.1:8082` by default, which VS Code forwards from the container (`forwardPorts`). To expose it to the network set `web.bind = "0.0.0.0"` in `dev.local.toml`: zellij then requires TLS, so a self-signed certificate is generated into `dev/run/.zellij/tls` (browsers warn once), and the port must also be published in `docker-compose.yml` (a commented line is there). **Anyone with a normal token has a full shell in the container**; hand out read-only tokens and keep the default bind unless you need more.
+
+
+### Sharing over the internet (`dev share`)
+
+`dev share start [proxy] [limbo] [web]` opens public tunnels, so people outside your network can join without port forwarding. The proxy and Limbo are tunnelled over TCP and the zellij web console over HTTPS (it needs the default `web.bind = "127.0.0.1"`; the tunnel provides the TLS). Limbo is included because players are *transferred* to it and back by `/vparadisu maintenance`: the addresses in the proxy's `paradisu.yml` (`limbo-server`, `transfer-return-target`) must be reachable by them. While tunnels are live, `dev share` re-renders that file with the tunnel addresses and runs `vparadisu reload` on the proxy; `dev share stop` restores `public_host`.
+
+The default provider is [Pinggy](https://pinggy.io) through its Node SDK (an optional dependency with a native addon, downloaded on `pnpm install`). Without an account its tunnels last **60 minutes** and get random addresses, so a background daemon (`dev share logs -f` follows it) renews them about 30 seconds early (`share.renew_before_seconds`), reopens tunnels that drop, and publishes the new addresses. **Each renewal changes the address and disconnects players who joined through it.** A Pinggy token (`[share.providers.pinggy] token` in `dev.local.toml`, or `PINGGY_TOKEN`) removes the limit and keeps the address stable. Never put the token in `dev.toml`; profiles never carry `share` settings.
+
+By default the proxy tunnel sends the PROXY protocol (`share.proxy_protocol = "v2"`) and `velocity.toml` gets `haproxy-protocol = true` while sharing, so Velocity sees the players' real addresses (and its per-IP `login-ratelimit` works per player). The catch is that Velocity then refuses connections without the header, including your own `localhost:25565`: join through the tunnel address while sharing, or set `share.proxy_protocol = "off"` (then every remote player appears as 127.0.0.1 and shares one rate limit). Limbo's tunnel never sends the header. A normal web token is a shell in the container: share `web` with `dev web token --read-only` tokens only.
+
+Other services plug in as providers: implement `ProviderFactory` (see the header of `dev/src/share/provider.ts`), import the service's SDK lazily, register it in `dev/src/share/providers/index.ts` and select it with `share.provider` or `dev share start --provider <name>`. `dev share providers` lists what is available.
 
 ### Minecraft data: fixtures, lookup and decoding
 

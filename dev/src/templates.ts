@@ -3,6 +3,7 @@ import { existsSync } from 'node:fs';
 import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { type DevConfig, type Env, type Platform, type ServerConfig, env } from './config.ts';
+import { shareAddresses, shareProxyProtocol } from './share/state.ts';
 import { RUN, TEMPLATES, TEMPLATES_LOCAL, render } from './util.ts';
 
 export interface Instance {
@@ -86,12 +87,17 @@ export async function templateVars(config: DevConfig, instance: Instance): Promi
     .map((server) => `${server.name} = "127.0.0.1:${server.port}"`)
     .join('\n');
   const velocityTry = config.servers.filter((server) => server.enabled && server.try).map((server) => `"${server.name}"`);
+  // Live `dev share` tunnels replace the configured public address
+  const shared = shareAddresses();
   return {
     PROXY_PORT: String(config.proxy.port),
-    PROXY_PUBLIC_PORT: String(config.proxy.public_port ?? config.proxy.port),
+    HAPROXY_PROTOCOL: String(shareProxyProtocol()),
+    PROXY_PUBLIC_HOST: shared.proxy?.host ?? config.public_host,
+    PROXY_PUBLIC_PORT: String(shared.proxy?.port ?? config.proxy.public_port ?? config.proxy.port),
     PUBLIC_HOST: config.public_host,
     LIMBO_PORT: String(config.limbo.port),
-    LIMBO_PUBLIC_PORT: String(config.limbo.public_port ?? config.limbo.port),
+    LIMBO_PUBLIC_HOST: shared.limbo?.host ?? config.public_host,
+    LIMBO_PUBLIC_PORT: String(shared.limbo?.port ?? config.limbo.public_port ?? config.limbo.port),
     SERVER_NAME: instance.name,
     SERVER_PORT: String(instance.port),
     ONLINE_MODE: String(config.online_mode),

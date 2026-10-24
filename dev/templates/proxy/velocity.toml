@@ -112,8 +112,8 @@ connection-timeout = 5000
 read-timeout = 30000
 
 # Enables compatibility with HAProxy's PROXY protocol. If you don't know what this is for, then
-# don't enable it.
-haproxy-protocol = false
+# don't enable it. (Dev: on while `dev share` tunnels the proxy with share.proxy_protocol, so player IPs are real.)
+haproxy-protocol = ${HAPROXY_PROTOCOL}
 
 # Enables TCP fast open support on the proxy. Requires the proxy to run on Linux.
 tcp-fast-open = false

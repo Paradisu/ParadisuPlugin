@@ -9,6 +9,7 @@ import * as instances from './instances.ts';
 import { supervise } from './supervisor.ts';
 import { COMMANDS as ZELLIJ_COMMANDS, offerUi } from './zellij.ts';
 import { COMMANDS as PROFILE_COMMANDS } from './profile.ts';
+import { SHARE_COMMANDS, stopShare } from './share/commands.ts';
 import { configDataVersion, fixtureCommand, mcCommands } from './mc/commands.ts';
 import { askOptional, askText, disableInput, interactive, isPromptExit, pickFrom, pickInstance, pickInstances } from './prompt.ts';
 import type { Instance } from './templates.ts';
@@ -157,8 +158,9 @@ const COMMANDS: Command[] = [
     name: 'clean',
     usage: '[--all]',
     summary: 'Delete dev/run (and dev/.cache with --all)',
-    run: (_ctx, args) => {
+    run: async ({ config }, args) => {
       const { values } = parseArgs({ args, options: { all: { type: 'boolean' } } });
+      await stopShare(config);
       return instances.clean(values.all ?? false);
     },
   },
@@ -225,7 +227,7 @@ const COMMANDS: Command[] = [
   },
 ];
 
-COMMANDS.push(...ZELLIJ_COMMANDS, ...PROFILE_COMMANDS);
+COMMANDS.push(...ZELLIJ_COMMANDS, ...SHARE_COMMANDS, ...PROFILE_COMMANDS);
 
 /** Commands that need the loaded config are registered lazily in main(). */
 function registerConfigCommands(config: DevConfig): void {

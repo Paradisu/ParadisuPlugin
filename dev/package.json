@@ -19,5 +19,8 @@
   "devDependencies": {
     "@types/node": "24.19.2",
     "typescript": "7.0.2"
+  },
+  "optionalDependencies": {
+    "@pinggy/pinggy": "0.5.3"
   }
 }

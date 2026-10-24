@@ -237,7 +237,7 @@ function webArgs(config: DevConfig): string[] {
 }
 
 /** `zellij web --status` exits 0 even when the server is offline, so read its message. */
-function webRunning(config: DevConfig): boolean {
+export function webRunning(config: DevConfig): boolean {
   const result = zellij(config, ['web', '--status', '--timeout', '2', ...webArgs(config)]);
   return result.status === 0 && !/offline/i.test(result.stdout + result.stderr);
 }
@@ -251,7 +251,7 @@ function createToken(config: DevConfig, readOnly: boolean): void {
   log('This token is shown only once; create another with `dev web token` if you lose it.');
 }
 
-async function webStart(config: DevConfig): Promise<void> {
+export async function webStart(config: DevConfig): Promise<void> {
   requireZellij();
   writeConfig(config);
   writeLayouts(config);

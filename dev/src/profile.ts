@@ -93,7 +93,7 @@ function worldDirsOf(server: string): string[] {
     : [];
 }
 
-/** The settings a profile carries, from the effective config. Machine-specific keys never leave the machine. */
+/** The settings a profile carries, from the effective config. Machine-specific keys never leave the machine, and `share` (tunnel tokens) is never included. */
 function profileSettings(config: DevConfig, resolved: Awaited<ReturnType<typeof readResolved>>): Json {
   const { public_port: _p, ...proxy } = config.proxy;
   const { public_port: _l, ...limbo } = config.limbo;
@@ -386,7 +386,7 @@ export async function importProfile(ctx: Ctx, file: string, options: ImportOptio
       const current = existsSync(LOCAL_TOML) ? (parse(readFileSync(LOCAL_TOML, 'utf8')) as Json) : {};
       const next: Json = {};
       // Settings about this machine stay as they are
-      for (const key of ['accept_eula', 'public_host', 'web']) {
+      for (const key of ['accept_eula', 'public_host', 'web', 'share']) {
         if (key in current) next[key] = current[key];
       }
       next.accept_eula ??= ctx.config.accept_eula;

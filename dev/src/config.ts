@@ -89,6 +89,21 @@ export interface WebConfig {
   bind: string;
 }
 
+export type ShareTarget = 'proxy' | 'limbo' | 'web';
+
+export interface ShareConfig {
+  /** Tunnel service: a name from `dev share providers` */
+  provider: string;
+  /** Targets `dev share start` opens when none are named */
+  targets: ShareTarget[];
+  /** Renew this long before a provider's tunnel limit so the switch happens on our schedule */
+  renew_before_seconds: number;
+  /** PROXY protocol sent to the proxy so Velocity sees real player addresses; "off" keeps direct connections working while sharing */
+  proxy_protocol: 'off' | 'v1' | 'v2';
+  /** Per-provider options: [share.providers.<name>] */
+  providers: Record<string, Record<string, unknown>>;
+}
+
 export interface DevConfig {
   accept_eula: boolean;
   minecraft_version: string;
@@ -107,6 +122,7 @@ export interface DevConfig {
   limbo: LimboConfig;
   ui: UiConfig;
   web: WebConfig;
+  share: ShareConfig;
   servers: ServerConfig[];
   plugins: PluginConfig[];
 }

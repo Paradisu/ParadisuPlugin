@@ -4,10 +4,10 @@ database:
   url: '${DB_URL}'
   username: '${DB_USER}'
   password: '${DB_PASSWORD}'
-# Clients are transferred to these addresses, so they must be reachable by players (see public_host)
+# Clients are transferred to these addresses, so they must be reachable by players (see public_host and `dev share`)
 limbo-server:
-  host: ${PUBLIC_HOST}
+  host: ${LIMBO_PUBLIC_HOST}
   port: ${LIMBO_PUBLIC_PORT}
 transfer-return-target:
-  host: ${PUBLIC_HOST}
+  host: ${PROXY_PUBLIC_HOST}
   port: ${PROXY_PUBLIC_PORT}

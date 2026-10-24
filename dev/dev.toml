@@ -33,6 +33,23 @@ session = "paradisu"
 port = 8082
 bind = "127.0.0.1"  # 0.0.0.0 exposes it to the network over HTTPS (self-signed); also publish the port in docker-compose.yml
 
+# `dev share start` opens public tunnels (no port forwarding needed): the proxy and Limbo over TCP, the web
+# console over HTTPS. Free Pinggy tunnels get a new random address every 60 minutes; `dev share` renews them and
+# updates the proxy's transfer addresses, but players connected through an expiring tunnel are disconnected.
+[share]
+provider = "pinggy"
+targets = ["proxy", "limbo"]
+renew_before_seconds = 30
+# Velocity then sees real player IPs, but while the proxy is shared it accepts only connections that carry the
+# header, so direct joins (localhost, LAN) stop working: use the tunnel address, or set "off"
+proxy_protocol = "v2"
+
+# Put the token in dev.local.toml or PINGGY_TOKEN, never here (Pro: stable address, no 60-minute limit)
+[share.providers.pinggy]
+#token = ""
+#max_lifetime_minutes = 60
+#max_concurrent = 2  # refuse to share more targets than this at once
+
 [proxy]
 port = 25565
 debug_port = 5005

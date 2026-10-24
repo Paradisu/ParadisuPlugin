@@ -6,6 +6,7 @@ import { readResolved, type ResolvedFiles } from './downloads.ts';
 import { type Instance, applyTemplates, instancesOf } from './templates.ts';
 import { RUN, ROOT, capture, fail, log, portListening, portOpen, run, sleep, waitFor, warn } from './util.ts';
 import { dbReachable } from './db.ts';
+import { readState, summaryLines } from './share/state.ts';
 import { attach, dotDir, isRunning, javaPid, kill, sendLine, spawnSupervisor } from './supervisor.ts';
 
 const PLUGIN_JAR = join(ROOT, 'build', 'libs', 'ParadisuPlugin.jar');
@@ -236,6 +237,9 @@ export async function status(config: DevConfig): Promise<void> {
         (running ? `, pid ${javaPid(instance) ?? '?'}` : ''),
     );
   }
+  for (const line of summaryLines(readState())) {
+    log(line);
+  }
 }
 
 export function console_(config: DevConfig, name: string, options: { readOnly: boolean; wait: boolean }): Promise<void> {
@@ -277,4 +281,20 @@ export async function clean(all: boolean): Promise<void> {
 export async function build(): Promise<void> {
   log('Building plugin jar');
   run('./gradlew', ['-q', 'shadowJar']);
+}
+
+/**
+ * Re-renders an instance's preset configs from the current state (for example after `dev share` changed the
+ * public addresses). Returns false when the instance has never been prepared by `dev start`.
+ */
+export async function rerender(config: DevConfig, name: string): Promise<boolean> {
+  const instance = select(config, [name])[0]!;
+  const manifestPath = join(instance.dir, 'plugins', '.dev-managed.json');
+  if (!existsSync(manifestPath)) {
+    return false;
+  }
+  const names: string[] = JSON.parse(await readFile(manifestPath, 'utf8'));
+  const keys = names.filter((jar) => jar !== 'ParadisuPlugin.jar').map((jar) => jar.slice(0, -'.jar'.length));
+  await applyTemplates(config, instance, keys);
+  return true;
 }
