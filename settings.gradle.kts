@@ -3,6 +3,8 @@ include(":database")
 include(":paper")
 include(":velocity")
 include(":devtools")
+include(":devtools:capture")
+include(":devtools:migrate")
 
 
 pluginManagement {

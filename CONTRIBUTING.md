@@ -4,6 +4,7 @@ Thanks for helping out! This guide covers how the project is laid out and how to
 
 - [Project structure](#project-structure)
 - [Compiling](#compiling)
+- [Development Environment](#development-environment)
 - [Formatting (Spotless)](#formatting-spotless)
 - [Database changes](#database-changes)
 - [Adding commands](#adding-commands)
@@ -37,6 +38,8 @@ graph TD
 | `core` | Code shared by both platforms: the `ParadisuPlugin` interface, `DatabaseSession`, config loading (`ConfigManager`, `ConfigEntry`), `TranslationManager` and `Messages`, `HelpManager`, `PackManager`, the `messaging/` base classes, and utilities. Also holds the default language file `messages_en.properties`. |
 | `paper` | `ParadisuPaper`, Paper commands/parsers/listeners, `sync/` (async DB work), `warps/` (`WarpManager`), `messaging/` (`PaperMessagingManager`, heartbeat/cluster state, message classes), `config/configs/` (`paradisu.yml`, `messages.yml` models), `plugin.yml`. |
 | `velocity` | `ParadisuVelocity` (also runs Liquibase), Velocity commands/listeners, teleport utilities, `messaging/` (`VelocityMessagingManager`), config models, `velocity-plugin.json`. |
+| `devtools/migrate` | Dev-only Liquibase runner (`DevMigrate`) used by `dev db`; not part of `ParadisuPlugin.jar`. |
+| `devtools/capture` | Dev-only packet capture plugin (`ParadisuCapture.jar`) for the `dev capture` commands. One jar loads on Paper, Velocity and Limbo; it is not part of `ParadisuPlugin.jar` and has no Paradisu dependencies. |
 | `build-logic` | Included build with convention plugins (`net.paradisu.java-conventions`, `platform-conventions`, `shadow-conventions`): repositories, Java toolchain, Spotless, `processResources` templating. |
 
 Dependencies are declared per module in each `build.gradle.kts` using the version catalog [gradle/libs.versions.toml](gradle/libs.versions.toml). `core` uses `compileOnly` for most libraries; the platform modules decide what is bundled.
@@ -75,6 +78,20 @@ CI (`.github/workflows`) builds on every push. Pull requests run `spotlessApply`
 
 The devcontainer gives you a complete, runnable network: a Velocity proxy and one or more Paper backends running your working copy of the plugin, PostgreSQL 17 with sample data, and Redis for ConnectorPlugin.
 
+In this section: 
+- [Getting started](#getting-started)
+- [The `dev` command](#the-dev-command)
+- [Joining from outside](#joining-from-outside)
+- [Debugging and hot reload](#debugging-and-hot-reload) 
+- [Database and migration testing](#database-and-migration-testing)
+- [Consoles, zellij and web access](#consoles-zellij-and-web-access)
+- [Sharing over the internet (`dev share`)](#sharing-over-the-internet-dev-share)
+- [Packet capture (`dev capture`)](#packet-capture-dev-capture) 
+- [Minecraft data](#minecraft-data-fixtures-lookup-and-decoding) 
+- [Sharing a setup (profiles)](#sharing-a-setup-profiles) 
+- [The published image](#the-published-image) 
+- [Troubleshooting](#troubleshooting).
+
 ### Getting started
 
 1. Open the repository in VS Code and choose **Reopen in Container**. Two configurations are offered: *Paradisu (prebuilt image)* pulls the image published by CI (fast, default); *Paradisu (build locally)* builds [.devcontainer/Dockerfile](.devcontainer/Dockerfile), which you want when editing the image.
@@ -87,7 +104,7 @@ The container installs the *pre-release* channel of the Red Hat Java and Gradle 
 
 ### The `dev` command
 
-Run `dev` with no arguments for a menu. Missing arguments are asked for on a terminal (pick an instance, a changelog, a snapshot, a player, …); with arguments, or with `--no-input` (also: no terminal, `CI` set, `PARADISU_DEV_NO_INPUT=1`), it never prompts, and a destructive command without `--yes` refuses instead of waiting for an answer. `dev help [group]` lists everything.
+Run `dev` with no arguments for a menu, or a group name (`dev capture`, `dev db`, `dev share`, `dev mc`, `dev profile`, `dev web`) for the menu of that group. Missing arguments are asked for on a terminal (pick an instance, a changelog, a snapshot, a player, a capture, a filter, …); with arguments, or with `--no-input` (also: no terminal, `CI` set, `PARADISU_DEV_NO_INPUT=1`), it never prompts, and a destructive command without `--yes` refuses instead of waiting for an answer. `dev help [group]` lists every command with its options (for example `dev help capture`).
 
 | Command | What it does |
 | --- | --- |
@@ -98,7 +115,10 @@ Run `dev` with no arguments for a menu. Missing arguments are asked for on a ter
 | `dev logs <name> [-f] [--console]` | The server's log (`--console`: the raw console output) |
 | `dev ui [layout\|kill] [--background]` | Open the zellij workspace of live consoles |
 | `dev web start\|stop\|status\|token` | Serve that workspace to a browser |
-| `dev share start\|stop\|status\|logs\|providers` | Public tunnels for the proxy, Limbo and web console (Pinggy by default) |
+| `dev share start\|stop\|status\|logs\|providers` | Public tunnels for the proxy, Limbo and web console (Pinggy by default); [reference](#sharing-over-the-internet-dev-share) |
+| `dev capture start\|stop\|status\|watch` | Record the network's packets, or follow them live ([reference](#packet-capture-dev-capture)) |
+| `dev capture list\|show\|packet\|export\|rm` | Browse, dump, export and delete recorded captures |
+| `dev capture formats\|protocol\|doctor` | Export formats, the packet name tables, and a health check of the capture plugin |
 | `dev reset-world <name>` / `dev clean` | Delete worlds / all runtime data |
 | `dev db reset [--through 00N] [--all]` | Rebuild the database up to a changelog with seed data and fixtures (`--all` also resets LuckPerms) |
 | `dev db seed` | Reseed at the current changelog position |
@@ -149,16 +169,121 @@ Every instance runs under a small detached supervisor (`dev _supervise <name>`, 
 
 `dev web start` starts zellij's web client and creates the session in the background (`web_sharing "on"` in the generated config is what lets browsers attach; after changing it run `dev web stop`, `dev ui kill`, then `dev web start` since it needs a restart); open the printed URL and log in with a token (`dev web token`; `--read-only` tokens can only watch). It binds `127.0.0.1:8082` by default, which VS Code forwards from the container (`forwardPorts`). To expose it to the network set `web.bind = "0.0.0.0"` in `dev.local.toml`: zellij then requires TLS, so a self-signed certificate is generated into `dev/run/.zellij/tls` (browsers warn once), and the port must also be published in `docker-compose.yml` (a commented line is there). **Anyone with a normal token has a full shell in the container**; hand out read-only tokens and keep the default bind unless you need more.
 
-
 ### Sharing over the internet (`dev share`)
 
-`dev share start [proxy] [limbo] [web]` opens public tunnels, so people outside your network can join without port forwarding. The proxy and Limbo are tunnelled over TCP and the zellij web console over HTTPS (it needs the default `web.bind = "127.0.0.1"`; the tunnel provides the TLS). Limbo is included because players are *transferred* to it and back by `/vparadisu maintenance`: the addresses in the proxy's `paradisu.yml` (`limbo-server`, `transfer-return-target`) must be reachable by them. While tunnels are live, `dev share` re-renders that file with the tunnel addresses and runs `vparadisu reload` on the proxy; `dev share stop` restores `public_host`.
+| Command | What it does |
+| --- | --- |
+| `dev share start [proxy] [limbo] [web]` | Open tunnels for the named targets and keep them renewed (default targets: `share.targets`; a checkbox menu on a terminal). `--provider <name>` picks the tunnel service, `--foreground` runs the daemon in this terminal instead of the background |
+| `dev share status` | Tunnel addresses and when they renew |
+| `dev share logs [-f]` | The daemon's log (`-f` follows it) |
+| `dev share stop` | Close the tunnels and restore `public_host` |
+| `dev share providers` | The available tunnel services |
+
+`dev share start` opens public tunnels, so people outside your network can join without port forwarding. The proxy and Limbo are tunnelled over TCP and the zellij web console over HTTPS (it needs the default `web.bind = "127.0.0.1"`; the tunnel provides the TLS). Limbo is included because players are *transferred* to it and back by `/vparadisu maintenance`: the addresses in the proxy's `paradisu.yml` (`limbo-server`, `transfer-return-target`) must be reachable by them. While tunnels are live, `dev share` re-renders that file with the tunnel addresses and runs `vparadisu reload` on the proxy; `dev share stop` restores `public_host`.
 
 The default provider is [Pinggy](https://pinggy.io) through its Node SDK (an optional dependency with a native addon, downloaded on `pnpm install`). Without an account its tunnels last **60 minutes** and get random addresses, so a background daemon (`dev share logs -f` follows it) renews them about 30 seconds early (`share.renew_before_seconds`), reopens tunnels that drop, and publishes the new addresses. **Each renewal changes the address and disconnects players who joined through it.** A Pinggy token (`[share.providers.pinggy] token` in `dev.local.toml`, or `PINGGY_TOKEN`) removes the limit and keeps the address stable. Never put the token in `dev.toml`; profiles never carry `share` settings.
 
 By default the proxy tunnel sends the PROXY protocol (`share.proxy_protocol = "v2"`) and `velocity.toml` gets `haproxy-protocol = true` while sharing, so Velocity sees the players' real addresses (and its per-IP `login-ratelimit` works per player). The catch is that Velocity then refuses connections without the header, including your own `localhost:25565`: join through the tunnel address while sharing, or set `share.proxy_protocol = "off"` (then every remote player appears as 127.0.0.1 and shares one rate limit). Limbo's tunnel never sends the header. A normal web token is a shell in the container: share `web` with `dev web token --read-only` tokens only.
 
 Other services plug in as providers: implement `ProviderFactory` (see the header of `dev/src/share/provider.ts`), import the service's SDK lazily, register it in `dev/src/share/providers/index.ts` and select it with `share.provider` or `dev share start --provider <name>`. `dev share providers` lists what is available.
+
+### Packet capture (`dev capture`)
+
+`dev capture` records the packets of the running dev network, for debugging protocol-level problems: forwarding between the proxy and a backend, transfers to Limbo, plugin messages, the configuration phase. It sees the decoded frames of **both** legs of the proxy (client to proxy, and proxy to each backend) and of every backend and Limbo, which an external MITM proxy such as SniffCraft cannot. Captures are compressed (gzip), live in `dev/captures/<id>/` (gitignored, not part of profiles) and can be read back with filters, exported for other tools, or followed live.
+
+The recorder is a separate small plugin, `devtools/capture` (`ParadisuCapture.jar`), which `dev start` installs on the proxy, Limbo and every backend. While nothing is recorded it only follows each connection's login state; recording copies frames to a queue that a background thread compresses, and when that queue fills up packets are dropped and counted instead of slowing the server. Set `[capture] enabled = false` in `dev.local.toml` to leave it out (restart the instances after changing it).
+
+#### Quick start
+
+```bash
+dev start
+dev capture start                     # asks whose packets to record and when to stop
+# ...join the network, do the thing you want to look at...
+dev capture stop
+dev capture show                      # pick the capture, optionally build a filter
+dev capture export                    # pick the capture, the format and the instances
+```
+
+Without arguments on a terminal every command below asks for what it needs (a capture from a menu, a filter step by step, the export format). Each guided run prints the **equivalent command line** (`Same as: dev capture show 2026… --type play/move_* --dir cb`), so you can learn the options and script them. Passing any option of a step skips that step's questions, and `--no-input` never asks.
+
+#### Commands
+
+| Command | What it does |
+| --- | --- |
+| `dev capture start [options]` | Start recording on the running instances ([options](#recording-options)). Guided when given no recording options |
+| `dev capture stop [--on names]` | Stop the recordings; prints packets, size and anything dropped |
+| `dev capture status` | Plugin state, active recordings and live connections of every running instance |
+| `dev capture watch [--on names] [filters] [--hex N]` | Follow packets live. Guided filter when given none. Ctrl-C ends; it does not stop a recording |
+| `dev capture list` | All captures: id, instances, packets, size, why it stopped |
+| `dev capture show [id] [--instance a,b] [filters] [--limit N] [--hex N] [--stats]` | Print a capture's packets, or with `--stats` counts and bytes per packet type and connection |
+| `dev capture packet [id [seq]] [--instance x] [--raw file] [--no-id]` | Hex dump of one packet (the `#seq` from `show`); `--raw` writes its bytes to a file, `--no-id` leaves out the packet id |
+| `dev capture export [id] [--format name] [--instance a,b] [--out dir] [filters] [--opt k=v]` | Convert a capture for another tool ([formats](#exporting)). Asks for the format when `--format` is missing |
+| `dev capture formats` | The export formats |
+| `dev capture rm [ids...] [--yes]` | Delete captures; a multi-select menu without ids, one confirmation for all |
+| `dev capture protocol [--refresh]` | Generate or show the packet name table for the current Minecraft version |
+| `dev capture doctor [instances...]` | Check that capture works: see [Troubleshooting](#troubleshooting-capture) |
+
+A capture `id` is the full id, any unique prefix, or `latest`; without one, commands on a terminal show a menu (newest first), and `show` and `export` use `latest` when scripted.
+
+#### Recording options
+
+`dev capture start`:
+
+| Option | Meaning |
+| --- | --- |
+| `--on <instances>` | Instances to record (comma separated or repeated). Default: all running ones, with a checkbox menu when there are several |
+| `--player <name\|uuid>` | Only these players (repeatable or comma separated; names are case-insensitive). Default: everyone |
+| `--next-join` | Wait for the next login that matches `--player` (anyone if none given) and record only that connection, from its handshake. Existing connections are ignored |
+| `--duration <time>` | Stop after this long (`30s`, `5m`, `1h`); with `--next-join` it counts from the join |
+| `--packets <n>` | Stop after this many recorded packets (across the connections of one instance) |
+| `--max-size <size>` | Stop after this much uncompressed data (`64M`, `2G`); default `capture.max_size` |
+| `--until <type>` | Stop once a packet of this type was recorded (repeatable; see [filters](#filters) for the type syntax) |
+| `--label <text>` | Appended to the capture id, to find it again |
+| `--watch` | Also follow the packets live; Ctrl-C leaves the recording running |
+| `--live` | Only watch: nothing is saved and the session ends when you exit |
+
+Server list pings are never recorded. Only one recording per instance runs at a time; a live-only session (what `watch` starts when nothing is recording) steps aside for a real one, and the watch carries on with it.
+
+#### Filters
+
+`watch`, `show` and `export` take the same filters; all given filters must match. On a terminal, leaving all of them out starts a guided builder (search-as-you-type for packet types, menus for the rest).
+
+| Option | Matches |
+| --- | --- |
+| `--type <pattern>` | Packet types, repeatable or comma separated. Names are case-insensitive, `minecraft:` is optional, `*` is a wildcard, and `state/name` (`play/move_entity_pos`, `login/hello`) is exact about the connection state. A pattern that matches nothing is an error |
+| `--dir sb\|cb` | Serverbound (towards the server) or clientbound |
+| `--to <receiver>` | Who receives the packet: `client`, `proxy`, or an instance name such as `lobby` or `limbo`. On the proxy the backend links are told apart by port |
+| `--player <name\|uuid>` | Packets of these players' connections |
+| `--state <state>` | `handshake`, `status`, `login`, `configuration` or `play` |
+| `--conn <n>` | One connection, by the number `dev capture status` shows and `watch` prints in its connection lines (`#6`) |
+
+`watch` also takes `--hex <n>` and `show` takes `--hex <n>` and `--limit <n>`: they append the first n payload bytes of each packet, or stop after n packets.
+
+#### Exporting
+
+`dev capture formats` lists the formats; files go to `dev/captures/<id>/export/<format>/` unless `--out` says otherwise, one set per instance. Filters apply, so you can export a single player or packet type.
+
+- **`sniffcraft`** writes the binary session files SniffCraft's `--headless` mode would (`.scbin`; drag them onto a SniffCraft window). SniffCraft keeps one session per connection, so you get one file per player and leg (`<id>_proxy_backend_Steve.scbin`). Use a SniffCraft build for the same Minecraft version: it refuses other protocol numbers and stops at the first packet id it does not know. Packets of connections whose state could not be followed are skipped.
+- **`jsonl`** writes one JSON object per packet (sequence number, connection, player, receiver, state, name, id, size, hex) for jq and scripts.
+
+Packet names come from Mojang's data generator for the Minecraft version in `libs.versions.toml` (`dev setup` generates the table once; `dev capture protocol --refresh` redoes it). Each capture keeps a copy of the table it was recorded with, so old captures stay readable after an update; ids missing from it show as `unknown_0x..`.
+
+#### Troubleshooting (capture)
+
+Run `dev capture doctor` first, whenever capture misbehaves or after a Minecraft, Paper, Velocity or Limbo update. For every running instance it checks that the plugin answers, that its packet table matches the current protocol, and that a probe client (logged in without a real Minecraft client) is seen by the plugin; it prints the live netty pipeline and checks that the capture handlers sit right before the packet decoder and encoder.
+
+- *"The capture plugin is not running on X (no control socket)":* the instance was started before `[capture]` was enabled or before `dev build`; restart it with `dev restart X`.
+- *"protocol hints missing/STALE":* run `dev capture protocol --refresh` and restart the instances.
+- *Dropped packets:* the writer could not keep up. Raise `capture.queue_capacity`, narrow the recording (`--player`, `--max-size`), or lower `capture.gzip_level`.
+- *The proxy probe fails while `dev share` is active:* the shared proxy then requires the PROXY protocol header, which the probe does not send. Stop `dev share`, or set `share.proxy_protocol = "off"`.
+
+#### How it works, and extending it
+
+- **Plugin** (`devtools/capture`, one jar for Paper, Velocity and Limbo, no Paradisu dependencies, compiled against Limbo from `repo.loohpjames.com`): a platform-free `core/` (`CaptureEngine`, the login state follower `ProtocolSniffer`, a writer thread, `DumpWriter`), `control/ControlServer` (JSON lines on a Unix socket; its path is passed by `dev start` as `-Dparadisu.capture.socket`) and one hook per platform. Without the socket property it does nothing.
+- **If an update breaks injection**, fix the isolated places: `netty/PipelineLayout.java` (handler names; Paper and Velocity), `CapturePaper.register()` (Paper's `ChannelInitializeListenerHolder`, by reflection), `CaptureVelocity.hook()` (Velocity's `ConnectionManager` initializer holders, by reflection) and `CaptureLimbo.onConnect()` (Limbo's stream wrapping). The hot path (`CaptureEngine.onFrame`) must stay allocation-light, never block and catch everything: capture must never break a connection.
+- **CLI** (`dev/src/capture/`): `commands.ts` (the commands), `wizard.ts` (the prompts), `filters.ts`, `receivers.ts`, `format.ts` (dump reader/writer), `protocol.ts` (packet tables), `exporters/` (formats), `control.ts` (socket client).
+- **Dump format:** `<instance>.bin.gz` in the capture folder is a gzip of a small record stream (`DumpWriter.java`, `dev/src/capture/format.ts`). Changing a record means bumping `FORMAT` in both and still reading older ones.
+- **Adding an export format:** implement `Exporter` (`dev/src/capture/exporters/types.ts`) in a new file and register it in `exporters/index.ts`. The context gives you the filtered packets, the connections, the protocol table and the receiver helper; `jsonl.ts` is the smallest example. It then shows up in `dev capture formats` and in the export menu.
 
 ### Minecraft data: fixtures, lookup and decoding
 
@@ -543,11 +668,12 @@ flowchart TD
 | `paper-api` | `https://repo.papermc.io/service/rest/repository/browse/maven-public/io/papermc/paper/paper-api/`, or the [PaperMC downloads](https://papermc.io/downloads/paper) |
 | `velocity-api` | `https://repo.papermc.io/service/rest/repository/browse/maven-public/com/velocitypowered/velocity-api/` (snapshots), or the [Velocity downloads](https://papermc.io/downloads/velocity) |
 | `connectorplugin-*` | `https://repo.minebench.de/` (`de/themoep/connectorplugin/`); see also the [ConnectorPlugin repo](https://github.com/Phoenix616/ConnectorPlugin) |
+| `limbo` | `https://repo.loohpjames.com/repository/com/loohp/Limbo/` has no `maven-metadata.xml`; read `<version>` in the [Limbo `pom.xml`](https://github.com/LOOHP/Limbo/blob/master/pom.xml) and check the `.pom` exists under that version. Only `devtools/capture` uses it. |
 | `fastutil-object-object-maps` | OpenCollab repo, `https://repo.opencollab.dev/main/` (`com/nukkitx/fastutil/`) |
 | Gradle plugins (shadow, blossom, indra, lombok, spotless) | [Gradle Plugin Portal](https://plugins.gradle.org/) or Maven Central; the `[plugins]` entries use the plugin id |
 | `luckperms-api` | [LuckPerms releases](https://github.com/LuckPerms/LuckPerms/releases) / Maven Central `net.luckperms:api` |
 
-Repositories used by the build are declared in `net.paradisu.java-conventions.gradle.kts` (Maven Central, PaperMC, OpenCollab, Minebench). Fetch metadata directly, for example:
+Repositories used by the build are declared in `net.paradisu.java-conventions.gradle.kts` (Maven Central, PaperMC, OpenCollab, Minebench, and LoohpJames' repository for Limbo). Fetch metadata directly, for example:
 
 ```bash
 curl -s https://repo.maven.apache.org/maven2/org/hibernate/orm/hibernate-core/maven-metadata.xml | grep -E "<(latest|release)>"

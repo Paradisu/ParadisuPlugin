@@ -104,6 +104,17 @@ export interface ShareConfig {
   providers: Record<string, Record<string, unknown>>;
 }
 
+export interface CaptureConfig {
+  /** Install the capture plugin (devtools/capture) on every instance */
+  enabled: boolean;
+  /** Dump compression, 1 (fast) to 9 (small); runs on a background thread */
+  gzip_level: number;
+  /** Default per-instance cap on captured (uncompressed) bytes, e.g. "512M" */
+  max_size: string;
+  /** Packets buffered for the writer; when full, packets are dropped and counted instead of blocking the server */
+  queue_capacity: number;
+}
+
 export interface DevConfig {
   accept_eula: boolean;
   minecraft_version: string;
@@ -123,6 +134,7 @@ export interface DevConfig {
   ui: UiConfig;
   web: WebConfig;
   share: ShareConfig;
+  capture: CaptureConfig;
   servers: ServerConfig[];
   plugins: PluginConfig[];
 }

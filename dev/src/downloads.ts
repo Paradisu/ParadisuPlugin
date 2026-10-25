@@ -5,6 +5,7 @@ import type { DevConfig, Platform, PluginConfig } from './config.ts';
 import { CACHE, ROOT, download, fail, log, sha256File, warn } from './util.ts';
 import { resolvePlugin, resolveServers } from './versions.ts';
 import type { Artifact } from './versions.ts';
+import { ensureProtocol } from './capture/protocol.ts';
 
 const RESOLVED = join(CACHE, 'resolved.json');
 
@@ -185,6 +186,14 @@ export async function setup(config: DevConfig, refresh: boolean): Promise<void> 
       warn(failure);
     }
     fail(`${failures.length} plugin download(s) failed (the rest were downloaded)`);
+  }
+  if (config.capture.enabled) {
+    // The capture plugin follows connection states with ids from Mojang's packet report; never let this fail setup
+    try {
+      await ensureProtocol(config, refresh);
+    } catch (error) {
+      warn(`Could not generate the capture packet table (${(error as Error).message}); run \`dev capture protocol\` later`);
+    }
   }
   log('Setup complete');
 }

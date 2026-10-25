@@ -7,7 +7,7 @@ import { DEV, ROOT, capture, fail, log, run } from './util.ts';
 
 const SEEDS = join(DEV, 'db', 'seed');
 const SNAPSHOTS = join(DEV, 'db', 'snapshots');
-const DEVTOOLS = join(ROOT, 'devtools', 'build', 'install', 'devtools', 'bin', 'devtools');
+const DEVTOOLS = join(ROOT, 'devtools', 'migrate', 'build', 'install', 'migrate', 'bin', 'migrate');
 
 export function pgEnv(database?: string): Record<string, string> {
   const { db } = env();
@@ -101,7 +101,7 @@ export async function changelogFiles(): Promise<string[]> {
 
 function buildDevtools(): void {
   log('Building migration tool');
-  run('./gradlew', ['-q', ':devtools:installDist']);
+  run('./gradlew', ['-q', ':devtools:migrate:installDist']);
 }
 
 function changelogNumber(file: string): string {

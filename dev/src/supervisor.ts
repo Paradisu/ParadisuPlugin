@@ -44,12 +44,15 @@ export function dotDir(instance: Instance): string {
   return join(instance.dir, '.dev');
 }
 
-/** Unix socket paths are limited to ~107 bytes and checkouts can live deep, so sockets go under the temp dir. */
-export function socketPath(instance: Instance): string {
+/**
+ * Unix socket paths are limited to ~107 bytes and checkouts can live deep, so sockets go under the temp dir.
+ * `suffix` distinguishes other sockets of the same instance (the capture plugin's control socket).
+ */
+export function socketPath(instance: Instance, suffix = ''): string {
   const checkout = createHash('sha1').update(RUN).digest('hex').slice(0, 8);
   const dir = join(tmpdir(), `paradisu-dev-${process.getuid?.() ?? 'u'}`);
   mkdirSync(dir, { recursive: true, mode: 0o700 });
-  return join(dir, `${checkout}-${instance.name}.sock`);
+  return join(dir, `${checkout}-${instance.name}${suffix}.sock`);
 }
 
 function readPid(file: string): number | undefined {

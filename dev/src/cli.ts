@@ -10,6 +10,7 @@ import { supervise } from './supervisor.ts';
 import { COMMANDS as ZELLIJ_COMMANDS, offerUi } from './zellij.ts';
 import { COMMANDS as PROFILE_COMMANDS } from './profile.ts';
 import { SHARE_COMMANDS, stopShare } from './share/commands.ts';
+import { CAPTURE_COMMANDS } from './capture/commands.ts';
 import { configDataVersion, fixtureCommand, mcCommands } from './mc/commands.ts';
 import { askOptional, askText, disableInput, interactive, isPromptExit, pickFrom, pickInstance, pickInstances } from './prompt.ts';
 import type { Instance } from './templates.ts';
@@ -227,7 +228,7 @@ const COMMANDS: Command[] = [
   },
 ];
 
-COMMANDS.push(...ZELLIJ_COMMANDS, ...SHARE_COMMANDS, ...PROFILE_COMMANDS);
+COMMANDS.push(...ZELLIJ_COMMANDS, ...SHARE_COMMANDS, ...CAPTURE_COMMANDS, ...PROFILE_COMMANDS);
 
 /** Commands that need the loaded config are registered lazily in main(). */
 function registerConfigCommands(config: DevConfig): void {
@@ -350,7 +351,7 @@ function ensureGradleCachesWritable(): void {
 async function bootstrap(config: DevConfig): Promise<void> {
   const { run } = await import('./util.ts');
   const steps: [string, () => Promise<void> | void][] = [
-    ['Building the plugin jar', () => run('./gradlew', ['-q', 'shadowJar'])],
+    ['Building the plugin jars', () => run('./gradlew', ['-q', 'shadowJar', ':devtools:capture:jar'])],
     ['Downloading servers and plugins', () => setup(config, false)],
     [
       'Preparing the database',

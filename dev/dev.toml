@@ -50,6 +50,14 @@ proxy_protocol = "v2"
 #max_lifetime_minutes = 60
 #max_concurrent = 2  # refuse to share more targets than this at once
 
+# `dev capture`: packet capture plugin (devtools/capture), loaded on every instance when enabled. It costs almost
+# nothing while no capture is running; restart instances after changing it.
+[capture]
+enabled = true
+gzip_level = 3          # 1 (fast) to 9 (small); compression runs on a background thread
+max_size = "512M"       # default cap on captured (uncompressed) bytes per instance
+queue_capacity = 65536  # packets buffered for the writer; when full, packets are dropped and counted, never blocking the server
+
 [proxy]
 port = 25565
 debug_port = 5005

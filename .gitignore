@@ -183,6 +183,7 @@ pteropub.json
 dev/node_modules/
 dev/run/
 dev/.cache/
+dev/captures/
 dev/dev.local.toml
 dev/db/seed/local.sql
 dev/db/snapshots/

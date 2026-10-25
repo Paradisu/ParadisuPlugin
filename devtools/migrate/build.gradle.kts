@@ -13,4 +13,4 @@ application {
     mainClass.set("net.paradisu.devtools.DevMigrate")
 }
 
-description = "devtools"
+description = "migrate"

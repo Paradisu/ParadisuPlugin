@@ -35,6 +35,12 @@ accept_eula = true
 #[web]
 #bind = "0.0.0.0"
 
+# Packet capture (`dev capture`): disable the plugin, or tune the dump
+#[capture]
+#enabled = false
+#gzip_level = 6
+#max_size = "2G"
+
 # Public tunnels (`dev share start`); a Pinggy Pro token gives a stable address and removes the 60-minute limit
 #[share]
 #targets = ["proxy", "limbo", "web"]

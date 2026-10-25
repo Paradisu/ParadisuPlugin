@@ -1,0 +1,6 @@
+name: ParadisuCapture
+version: ${version}
+authors: [${authors}]
+main: net.paradisu.capture.paper.CapturePaper
+api-version: '${paperApiVersion}'
+description: Dev-only packet capture (controlled by the dev CLI)

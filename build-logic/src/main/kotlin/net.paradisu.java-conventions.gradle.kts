@@ -15,6 +15,8 @@ repositories {
     maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://repo.opencollab.dev/main")
     maven("https://repo.minebench.de/")
+    // Limbo (dev-only capture plugin compiles against it); keep last so other artifacts resolve elsewhere first
+    maven("https://repo.loohpjames.com/repository")
 }
 
 // Use providers.gradleProperty(...) instead of properties[...]

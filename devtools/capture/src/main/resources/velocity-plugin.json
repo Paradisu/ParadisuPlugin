@@ -1,0 +1,7 @@
+{
+    "id": "paradisucapture",
+    "name": "ParadisuCapture",
+    "version": "${version}",
+    "main": "net.paradisu.capture.velocity.CaptureVelocity",
+    "authors": ["${authors}"]
+}

@@ -8,8 +8,11 @@ import { RUN, ROOT, capture, fail, log, portListening, portOpen, run, sleep, wai
 import { dbReachable } from './db.ts';
 import { readState, summaryLines } from './share/state.ts';
 import { attach, dotDir, isRunning, javaPid, kill, sendLine, spawnSupervisor } from './supervisor.ts';
+import { controlSocket } from './capture/paths.ts';
+import { hintsFile } from './capture/protocol.ts';
 
 const PLUGIN_JAR = join(ROOT, 'build', 'libs', 'ParadisuPlugin.jar');
+const CAPTURE_JAR = join(ROOT, 'devtools', 'capture', 'build', 'libs', 'ParadisuCapture.jar');
 
 export { isRunning };
 
@@ -69,6 +72,12 @@ async function prepare(config: DevConfig, resolved: ResolvedFiles, instance: Ins
   if (instance.platform !== 'limbo') {
     wanted.set('ParadisuPlugin.jar', PLUGIN_JAR);
   }
+  if (config.capture.enabled) {
+    if (!existsSync(CAPTURE_JAR)) {
+      fail(`${CAPTURE_JAR} does not exist; run \`dev build\` (or set capture.enabled = false)`);
+    }
+    wanted.set('ParadisuCapture.jar', CAPTURE_JAR);
+  }
   for (const stale of previous.filter((name) => !wanted.has(name))) {
     await rm(join(instance.dir, 'plugins', stale), { force: true });
   }
@@ -80,11 +89,15 @@ async function prepare(config: DevConfig, resolved: ResolvedFiles, instance: Ins
   await applyTemplates(config, instance, installedKeys);
 }
 
-async function launch(instance: Instance, flags: string[]): Promise<void> {
+async function launch(config: DevConfig, minecraft: string, instance: Instance, flags: string[]): Promise<void> {
   const args = [
     `-Xms${instance.memory}`,
     `-Xmx${instance.memory}`,
     ...flags,
+    // The capture plugin does nothing without its control socket
+    ...(config.capture.enabled
+      ? [`-Dparadisu.capture.socket=${controlSocket(instance)}`, `-Dparadisu.capture.protocol=${hintsFile(minecraft)}`]
+      : []),
     // No X11 libraries in the image, and a forwarded DISPLAY (WSLg) would otherwise make AWT load them (BKCommonLib fails)
     '-Djava.awt.headless=true',
     `-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:${instance.debugPort}`,
@@ -185,7 +198,7 @@ export async function start(config: DevConfig, names: string[], noBuild: boolean
       continue;
     }
     await prepare(config, resolved, instance);
-    await launch(instance, flags);
+    await launch(config, resolved.minecraft, instance, flags);
     started.push(instance);
     log(`  ${instance.name}: starting (port ${instance.port}, debug ${instance.debugPort})`);
     if (instance.platform === 'velocity') {
@@ -280,7 +293,7 @@ export async function clean(all: boolean): Promise<void> {
 
 export async function build(): Promise<void> {
   log('Building plugin jar');
-  run('./gradlew', ['-q', 'shadowJar']);
+  run('./gradlew', ['-q', 'shadowJar', ':devtools:capture:jar']);
 }
 
 /**
@@ -294,7 +307,7 @@ export async function rerender(config: DevConfig, name: string): Promise<boolean
     return false;
   }
   const names: string[] = JSON.parse(await readFile(manifestPath, 'utf8'));
-  const keys = names.filter((jar) => jar !== 'ParadisuPlugin.jar').map((jar) => jar.slice(0, -'.jar'.length));
+  const keys = names.filter((jar) => jar !== 'ParadisuPlugin.jar' && jar !== 'ParadisuCapture.jar').map((jar) => jar.slice(0, -'.jar'.length));
   await applyTemplates(config, instance, keys);
   return true;
 }
