@@ -19,7 +19,8 @@ limbo_version = "auto"
 
 [jvm]
 enhanced_redefinition = true  # -XX:+AllowEnhancedClassRedefinition (needs JetBrains Runtime)
-hotswap_agent = false         # -XX:HotswapAgent=core
+hotswap_agent = true         # -XX:HotswapAgent=fatjar with only the plugins the project's libraries need (not on Limbo)
+hotswap_plugins = []         # extra HotswapAgent plugin names to keep loaded, e.g. ["Log4j2"]
 extra_flags = []
 
 # Consoles: `dev ui` opens a zellij workspace of live server consoles. Layouts are generated from the enabled

@@ -10,6 +10,7 @@ import { readState, summaryLines } from './share/state.ts';
 import { attach, dotDir, isRunning, javaPid, kill, sendLine, spawnSupervisor } from './supervisor.ts';
 import { controlSocket } from './capture/paths.ts';
 import { hintsFile } from './capture/protocol.ts';
+import { catalogGroups, hotswapFlags } from './hotswap.ts';
 
 const PLUGIN_JAR = join(ROOT, 'build', 'libs', 'ParadisuPlugin.jar');
 const CAPTURE_JAR = join(ROOT, 'devtools', 'capture', 'build', 'libs', 'ParadisuCapture.jar');
@@ -40,9 +41,6 @@ function jvmFlags(config: DevConfig): string[] {
     } else {
       warn('This java does not support -XX:+AllowEnhancedClassRedefinition (is it JetBrains Runtime?); hot reload is limited');
     }
-  }
-  if (config.jvm.hotswap_agent) {
-    flags.push('-XX:+AllowEnhancedClassRedefinition', '-XX:HotswapAgent=core');
   }
   flags.push(...config.jvm.extra_flags);
   return [...new Set(flags)];
@@ -187,6 +185,7 @@ export async function start(config: DevConfig, names: string[], noBuild: boolean
   const launchedAt = Date.now();
   const started: Instance[] = [];
   const flags = jvmFlags(config);
+  const groups = config.jvm.hotswap_agent ? await catalogGroups() : [];
   // Limbo goes first so it is subscribed before the proxy tells it to transfer players back, then the proxy
   // (it runs the database migrations before it binds its port), then the backends
   const ordered = (['limbo', 'velocity', 'paper'] as const).flatMap((platform) =>
@@ -198,7 +197,8 @@ export async function start(config: DevConfig, names: string[], noBuild: boolean
       continue;
     }
     await prepare(config, resolved, instance);
-    await launch(config, resolved.minecraft, instance, flags);
+    const agent = config.jvm.hotswap_agent ? hotswapFlags(instance.platform, groups, config.jvm.hotswap_plugins) : [];
+    await launch(config, resolved.minecraft, instance, [...new Set([...flags, ...agent])]);
     started.push(instance);
     log(`  ${instance.name}: starting (port ${instance.port}, debug ${instance.debugPort})`);
     if (instance.platform === 'velocity') {

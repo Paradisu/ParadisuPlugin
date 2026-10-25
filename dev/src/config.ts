@@ -10,6 +10,8 @@ export type Platform = 'paper' | 'velocity' | 'limbo';
 export interface JvmConfig {
   enhanced_redefinition: boolean;
   hotswap_agent: boolean;
+  /** HotswapAgent plugins to load besides the ones the project's libraries need (see hotswap.ts) */
+  hotswap_plugins: string[];
   extra_flags: string[];
 }
 
