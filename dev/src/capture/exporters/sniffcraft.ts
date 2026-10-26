@@ -1,11 +1,10 @@
 import { createWriteStream } from 'node:fs';
 import { mkdir } from 'node:fs/promises';
 import { once } from 'node:events';
-import { join } from 'node:path';
 import type { WriteStream } from 'node:fs';
 import { deflateSync } from 'node:zlib';
 import { varInt, varLong } from './encode.ts';
-import { type ExportContext, type Exporter, safeName } from './types.ts';
+import { connectionFile, type ExportContext, type Exporter } from './types.ts';
 
 interface Output {
   stream: WriteStream;
@@ -40,13 +39,11 @@ export const sniffcraft: Exporter = {
       let output = outputs.get(packet.conn);
       if (!output) {
         const conn = ctx.connections.get(packet.conn);
-        const who = conn?.name ?? `conn${packet.conn}`;
-        const leg = conn?.leg === 1 ? 'backend' : 'frontend';
-        const path = join(ctx.outDir, `${safeName(`${ctx.capture.id}_${ctx.instance}_${leg}_${who}`)}.scbin`);
+        const { path, label } = connectionFile(ctx, packet.conn, 'scbin');
         const stream = createWriteStream(path);
         const protocol = conn && conn.protocol >= 0 ? conn.protocol : fallbackProtocol;
         stream.write(Buffer.concat([varInt(protocol), varLong(ctx.startEpochMs + Math.floor(packet.us / 1000))]));
-        output = { stream, path, firstUs: packet.us, packets: 0, label: `${leg} ${who}` };
+        output = { stream, path, firstUs: packet.us, packets: 0, label };
         outputs.set(packet.conn, output);
       }
       // SniffCraft's origin: Server = a clientbound packet

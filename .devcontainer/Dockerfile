@@ -25,7 +25,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-        ca-certificates curl git jq openssl procps less unzip xz-utils sudo \
+        ca-certificates curl git jq openssl procps python3 less unzip xz-utils sudo \
         postgresql-client openssh-client gnupg locales iproute2 netcat-openbsd \
     && rm -rf /var/lib/apt/lists/*
 

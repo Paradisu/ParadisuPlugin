@@ -182,6 +182,7 @@ const START_OPTIONS = {
   duration: { type: 'string' },
   packets: { type: 'string' },
   until: { type: 'string', multiple: true },
+  'stop-on-disconnect': { type: 'boolean' },
   'max-size': { type: 'string' },
   label: { type: 'string' },
   live: { type: 'boolean' },
@@ -202,6 +203,7 @@ async function startCommand(ctx: Ctx, args: string[]): Promise<void> {
     packets: values.packets,
     maxSize: values['max-size'],
     until: split(values.until),
+    stopOnDisconnect: values['stop-on-disconnect'] ?? false,
     label: values.label,
     watch: values.watch ?? false,
   };
@@ -247,6 +249,7 @@ async function startCommand(ctx: Ctx, args: string[]): Promise<void> {
         maxBytes: parseSize(rec.maxSize ?? ctx.config.capture.max_size),
         durationMs: rec.duration ? parseSpan(rec.duration) : 0,
         until,
+        stopOnDisconnect: rec.stopOnDisconnect,
         gzipLevel: ctx.config.capture.gzip_level,
         queueCapacity: ctx.config.capture.queue_capacity,
       };
@@ -867,7 +870,7 @@ async function doctorCommand(ctx: Ctx, args: string[]): Promise<void> {
 export const CAPTURE_COMMANDS: Command[] = [
   {
     name: 'capture start',
-    usage: '[--on names] [--player p] [--next-join] [--duration 5m] [--packets N] [--until type] [--max-size 512M] [--label x] [--live|--watch]',
+    usage: '[--on names] [--player p] [--next-join] [--duration 5m] [--packets N] [--until type] [--stop-on-disconnect] [--max-size 512M] [--label x] [--live|--watch]',
     summary: 'Start capturing packets on running instances; guided without options',
     run: startCommand,
   },

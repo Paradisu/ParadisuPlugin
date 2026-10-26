@@ -242,6 +242,7 @@ test('the wizards only run when no matching flag was given, and print equivalent
   assert.equal(hasRecordingFlags({ 'next-join': false }), false);
   assert.equal(hasRecordingFlags({ player: ['Steve'] }), true);
   assert.equal(hasRecordingFlags({ watch: true }), true);
+  assert.equal(hasRecordingFlags({ 'stop-on-disconnect': true }), true);
   assert.equal(
     filterFlags({ type: ['play/move_*', 'login/hello'], dir: 'cb', to: ['lobby'], player: ["O'Neil"], state: 'play', conn: ['3', '4'] }),
     "--type 'play/move_*,login/hello' --dir cb --to lobby --player 'O'\\''Neil' --state play --conn 3,4",
@@ -251,6 +252,7 @@ test('the wizards only run when no matching flag was given, and print equivalent
     "--player Steve --next-join --duration 30s --packets 100 --max-size 64M --until finish_configuration --label 'join test' --watch",
   );
   assert.equal(recordingFlags({ players: [], nextJoin: false, until: [], watch: false }), '');
+  assert.equal(recordingFlags({ players: ['Steve'], nextJoin: false, until: [], stopOnDisconnect: true, watch: false }), '--player Steve --stop-on-disconnect');
 });
 
 test('packet type listing merges directions per state/name', () => {

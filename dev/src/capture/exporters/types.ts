@@ -1,3 +1,4 @@
+import { join } from 'node:path';
 import type { PacketRecord } from '../format.ts';
 import type { ProtocolTable } from '../protocol.ts';
 import type { CaptureMeta, ConnMeta } from '../store.ts';
@@ -32,4 +33,12 @@ export interface Exporter {
 
 export function safeName(text: string): string {
   return text.replace(/[^A-Za-z0-9_.-]+/g, '_');
+}
+
+/** `<capture>_<instance>_<leg>_<player>.<ext>` in outDir, plus a label for the result line; shared by the per-connection exporters. */
+export function connectionFile(ctx: ExportContext, connId: number, ext: string): { path: string; label: string } {
+  const conn = ctx.connections.get(connId);
+  const who = conn?.name ?? `conn${connId}`;
+  const leg = conn?.leg === 1 ? 'backend' : 'frontend';
+  return { path: join(ctx.outDir, `${safeName(`${ctx.capture.id}_${ctx.instance}_${leg}_${who}`)}.${ext}`), label: `${leg} ${who}` };
 }

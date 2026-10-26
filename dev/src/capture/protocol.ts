@@ -16,6 +16,8 @@ export interface ProtocolFile {
   protocolVersion: number;
   /** state -> dir -> id -> name */
   packets: Record<string, Record<string, Record<string, string>>>;
+  /** Id of `minecraft:player` in the entity type registry; absent in protocol files made before exporters needed it */
+  playerEntityType?: number;
 }
 
 export interface PacketKey {
@@ -27,17 +29,21 @@ export interface PacketKey {
 export class ProtocolTable {
   readonly minecraftVersion: string;
   readonly protocolVersion: number;
+  readonly playerEntityType: number | undefined;
   private readonly names = new Map<string, string>();
+  private readonly ids = new Map<string, number>();
   private readonly entries: { key: PacketKey; name: string }[] = [];
 
   constructor(file: ProtocolFile) {
     this.minecraftVersion = file.minecraftVersion;
     this.protocolVersion = file.protocolVersion;
+    this.playerEntityType = file.playerEntityType;
     for (const [state, dirs] of Object.entries(file.packets)) {
       for (const [dir, ids] of Object.entries(dirs)) {
         for (const [id, name] of Object.entries(ids)) {
           const key = { state: Number(state), dir: Number(dir), id: Number(id) };
           this.names.set(`${key.state}/${key.dir}/${key.id}`, name);
+          this.ids.set(`${key.state}/${key.dir}/${name.replace(/^minecraft:/, '')}`, key.id);
           this.entries.push({ key, name });
         }
       }
@@ -47,6 +53,11 @@ export class ProtocolTable {
   /** `minecraft:name`, or `unknown_0x1A` when the id is not in the table. */
   name(state: number, dir: number, id: number): string {
     return this.names.get(`${state}/${dir}/${id}`) ?? `unknown_0x${id.toString(16).toUpperCase()}`;
+  }
+
+  /** The id of a packet by name (with or without `minecraft:`), or undefined when this version has no such packet. */
+  id(state: number, dir: number, name: string): number | undefined {
+    return this.ids.get(`${state}/${dir}/${name.replace(/^minecraft:/, '')}`);
   }
 
   /** One entry per `state/name` with the directions it exists in (0 serverbound, 1 clientbound), sorted. */
@@ -112,6 +123,7 @@ interface VersionManifest {
 interface VersionJson {
   downloads: { server?: { url: string; sha1: string } };
 }
+type RegistryReport = Record<string, { entries: Record<string, { protocol_id: number }> }>;
 type PacketReport = Record<string, Partial<Record<(typeof DIRECTIONS)[number], Record<string, { protocol_id: number }>>>>;
 
 /** The id of a packet by Mojang name; fails loudly so a renamed packet is noticed. */
@@ -125,6 +137,7 @@ export function buildProtocol(
   report: PacketReport,
   minecraftVersion: string,
   protocolVersion: number,
+  registries?: RegistryReport,
 ): { file: ProtocolFile; properties: string } {
   const packets: ProtocolFile['packets'] = {};
   STATES.forEach((state, stateIndex) => {
@@ -142,7 +155,8 @@ export function buildProtocol(
     `play.serverbound.configuration_acknowledged=${idOf(report, 'play', 'serverbound', 'configuration_acknowledged')}`,
     '',
   ].join('\n');
-  return { file: { minecraftVersion, protocolVersion, packets }, properties };
+  const playerEntityType = registries?.['minecraft:entity_type']?.entries['minecraft:player']?.protocol_id;
+  return { file: { minecraftVersion, protocolVersion, packets, playerEntityType }, properties };
 }
 
 /**
@@ -156,7 +170,11 @@ export async function ensureProtocol(config: DevConfig, refresh = false): Promis
   const dir = protocolDir(minecraft);
   const jsonPath = join(dir, 'protocol.json');
   if (!refresh && existsSync(jsonPath) && existsSync(hintsFile(minecraft))) {
-    return loadProtocolFile(jsonPath);
+    const cached = await loadProtocolFile(jsonPath);
+    if (cached.playerEntityType !== undefined) {
+      return cached;
+    }
+    // Made before the exporters needed the player entity type; regenerate once.
   }
   log(`Generating the packet table for Minecraft ${minecraft}`);
   await mkdir(dir, { recursive: true });
@@ -185,7 +203,8 @@ export async function ensureProtocol(config: DevConfig, refresh = false): Promis
     if (typeof protocolVersion !== 'number') {
       fail('Could not read protocol_version from the server jar');
     }
-    const { file, properties } = buildProtocol(report, minecraft, protocolVersion);
+    const registries = JSON.parse(await readFile(join(dir, 'generated', 'reports', 'registries.json'), 'utf8')) as RegistryReport;
+    const { file, properties } = buildProtocol(report, minecraft, protocolVersion, registries);
     await writeFile(jsonPath, JSON.stringify(file));
     await writeFile(hintsFile(minecraft), properties);
   } finally {

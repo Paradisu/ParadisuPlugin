@@ -211,11 +211,12 @@ export interface RecordingChoices {
   packets?: string;
   maxSize?: string;
   until: string[];
+  stopOnDisconnect?: boolean;
   label?: string;
   watch: boolean;
 }
 
-const RECORDING_KEYS = ['player', 'next-join', 'duration', 'packets', 'until', 'max-size', 'label', 'live', 'watch'] as const;
+const RECORDING_KEYS = ['player', 'next-join', 'duration', 'packets', 'until', 'stop-on-disconnect', 'max-size', 'label', 'live', 'watch'] as const;
 
 /** Whether any `capture start` recording option was given. */
 export function hasRecordingFlags(values: Partial<Record<(typeof RECORDING_KEYS)[number], unknown>>): boolean {
@@ -239,6 +240,7 @@ export async function askRecording(knownPlayers: string[], table: ProtocolTable)
     { name: 'a number of packets has been recorded', value: 'packets' },
     { name: 'the capture reaches a size', value: 'max-size' },
     { name: 'a certain packet type shows up', value: 'until' },
+    { name: 'the last recorded player disconnects', value: 'stop-on-disconnect' },
   ]);
   const choices: RecordingChoices = { players, nextJoin: who === 'next' || who === 'next-player', until: [], watch: false };
   if (stops.includes('duration')) {
@@ -256,6 +258,7 @@ export async function askRecording(knownPlayers: string[], table: ProtocolTable)
   if (stops.includes('until')) {
     choices.until = await askTypes(table);
   }
+  choices.stopOnDisconnect = stops.includes('stop-on-disconnect');
   const label = (await askText('Label to put in the capture id (optional)', { default: '' })).trim();
   choices.label = label || undefined;
   choices.watch = await askOptional('Watch the packets live while recording?', false);
@@ -271,6 +274,7 @@ export function recordingFlags(choices: RecordingChoices): string {
   if (choices.packets) parts.push(`--packets ${choices.packets}`);
   if (choices.maxSize) parts.push(`--max-size ${choices.maxSize}`);
   if (choices.until.length > 0) parts.push(`--until ${quoted(choices.until.join(','))}`);
+  if (choices.stopOnDisconnect) parts.push('--stop-on-disconnect');
   if (choices.label) parts.push(`--label ${quoted(choices.label)}`);
   if (choices.watch) parts.push('--watch');
   return parts.join(' ');

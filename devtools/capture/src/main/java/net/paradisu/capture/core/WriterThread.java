@@ -45,6 +45,9 @@ final class WriterThread extends Thread {
     private final Manifest manifest = new Manifest();
     private final Map<Integer, Manifest.Conn> conns = new LinkedHashMap<>();
     private final Set<PacketKey> until = new HashSet<>();
+    /** Frontend connections that logged in as a player and have not closed yet (for stopOnDisconnect). */
+    private final Set<Integer> players = new HashSet<>();
+
     private DumpWriter dump;
     private long seq;
     private long firstOpenNanos = -1;
@@ -133,6 +136,9 @@ final class WriterThread extends Thread {
                 if (c != null) {
                     c.name = i.name();
                     c.uuid = i.uuid() == null ? null : i.uuid().toString();
+                    if (c.leg == Leg.FRONTEND.code()) {
+                        players.add(i.conn());
+                    }
                 }
                 if (dump != null) {
                     dump.identify(i.conn(), i.name(), i.uuid());
@@ -169,6 +175,9 @@ final class WriterThread extends Thread {
                     dump.close(c.conn(), micros);
                 }
                 hub.event("{\"t\":\"close\",\"conn\":" + c.conn() + "}");
+                if (players.remove(c.conn()) && players.isEmpty() && session.spec.stopOnDisconnect) {
+                    trigger("disconnect");
+                }
             }
         }
     }

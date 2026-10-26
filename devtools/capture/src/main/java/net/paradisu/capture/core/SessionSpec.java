@@ -34,6 +34,8 @@ public final class SessionSpec {
     public long maxPackets;
     public long maxBytes;
     public long durationMs;
+    /** Stop once the last recorded player's connection has closed (status pings and backend links do not count). */
+    public boolean stopOnDisconnect;
     /** Stop after a packet of one of these types has been recorded. */
     public List<PacketKey> until = new ArrayList<>();
 
