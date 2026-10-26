@@ -63,6 +63,20 @@ final class TapInputStream extends FilterInputStream {
         return n;
     }
 
+    /**
+     * Limbo discards packets it does not know with {@code DataInputStream.skipBytes}, which calls {@code skip}. The
+     * default would bypass the tap and desync the frame splitter, so skipped bytes are read through it instead.
+     */
+    @Override
+    public long skip(long n) throws IOException {
+        if (n <= 0) {
+            return 0;
+        }
+        byte[] scratch = new byte[(int) Math.min(n, 8192)];
+        int read = read(scratch, 0, scratch.length);
+        return Math.max(read, 0);
+    }
+
     @Override
     public void close() throws IOException {
         closed();
