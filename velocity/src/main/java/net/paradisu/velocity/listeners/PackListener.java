@@ -17,7 +17,6 @@
 
 package net.paradisu.velocity.listeners;
 
-import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.player.ServerPostConnectEvent;
 import com.velocitypowered.api.proxy.Player;
@@ -38,7 +37,7 @@ public class PackListener {
      *
      * @param event The ServerPostConnectEvent
      */
-    @Subscribe(order = PostOrder.EARLY)
+    @Subscribe(priority = Short.MAX_VALUE / 2)
     public void onPostConnect(ServerPostConnectEvent event) {
         // TODO: Track per-player pack state
         // For now, we can just assume they will not have any packs applied if they just joined the proxy

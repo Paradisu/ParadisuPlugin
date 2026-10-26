@@ -17,7 +17,6 @@
 
 package net.paradisu.velocity.listeners;
 
-import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.DisconnectEvent;
 import com.velocitypowered.api.event.player.PlayerChooseInitialServerEvent;
@@ -39,7 +38,7 @@ public class ConnectionListener {
      *
      * @param event The PlayerChooseInitialServerEvent
      */
-    @Subscribe(order = PostOrder.EARLY)
+    @Subscribe(priority = Short.MAX_VALUE / 2)
     public void onPlayerChooseInitialServer(PlayerChooseInitialServerEvent event) {
         final Instant calltime = Instant.now();
 
@@ -91,7 +90,7 @@ public class ConnectionListener {
      *
      * @param event The ServerConnectedEvent
      */
-    @Subscribe(order = PostOrder.EARLY)
+    @Subscribe(priority = Short.MAX_VALUE / 2)
     public void onServerConnected(ServerConnectedEvent event) {
 
         try (EntityManager entityManager = paradisu.databaseSession().factory().createEntityManager(); ) {
@@ -116,7 +115,7 @@ public class ConnectionListener {
      *
      * @param event The DisconnectEvent
      */
-    @Subscribe(order = PostOrder.LAST)
+    @Subscribe(priority = Short.MIN_VALUE + 1)
     public void onDisconnect(DisconnectEvent event) {
         final Instant calltime = Instant.now();
 

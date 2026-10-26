@@ -17,7 +17,6 @@
 
 package net.paradisu.velocity.listeners;
 
-import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ListenerBoundEvent;
 import com.velocitypowered.api.network.ListenerType;
@@ -34,7 +33,7 @@ public class LimboListener {
      * @param event The ListenerBoundEvent
      */
     @SuppressWarnings("unchecked")
-    @Subscribe(order = PostOrder.LAST)
+    @Subscribe(priority = Short.MIN_VALUE + 1)
     public void onListenerBoundEvent(ListenerBoundEvent event) {
         if (!event.getListenerType().equals(ListenerType.MINECRAFT)) {
             return;

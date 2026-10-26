@@ -6,6 +6,9 @@
     "java.import.generatesMetadataFilesAtProjectRoot": false,
     "java.debug.settings.hotCodeReplace": "auto",
     "java.autobuild.enabled": true,
+    // Adventure/Guava/Cloud ship JSpecify/Checker null annotations but this codebase does not use them;
+    // JDT's annotation-based null analysis would flag nearly every library call (and the em.find null checks as dead code).
+    "java.compile.nullAnalysis.mode": "disabled",
     "java.import.exclusions": [
         "**/node_modules/**",
         "**/.metadata/**",

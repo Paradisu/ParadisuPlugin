@@ -17,34 +17,23 @@
 
 package net.paradisu.velocity.commands.util.teleport;
 
+import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 import com.velocitypowered.api.proxy.Player;
 
+import java.time.Duration;
 import java.util.Arrays;
-import java.util.concurrent.TimeUnit;
 
 public class TeleportQueue {
-    private static LoadingCache<TeleportRequestHeader, Player[]> teleportQueue = CacheBuilder.newBuilder()
+    private static final Cache<TeleportRequestHeader, Player[]> teleportQueue = CacheBuilder.newBuilder()
             .maximumSize(1000)
-            .expireAfterWrite(120, TimeUnit.SECONDS)
-            .build(new CacheLoader<TeleportRequestHeader, Player[]>() {
-                @Override
-                public Player[] load(@SuppressWarnings("null") final TeleportRequestHeader player) throws Exception {
-                    return null;
-                }
-            });
+            .expireAfterWrite(Duration.ofSeconds(120))
+            .build();
 
-    private static LoadingCache<Player, Player> recentTeleportQueue = CacheBuilder.newBuilder()
+    private static final Cache<Player, Player> recentTeleportQueue = CacheBuilder.newBuilder()
             .maximumSize(1000)
-            .expireAfterWrite(120, TimeUnit.SECONDS)
-            .build(new CacheLoader<Player, Player>() {
-                @Override
-                public Player load(@SuppressWarnings("null") final Player player) throws Exception {
-                    return null;
-                }
-            });
+            .expireAfterWrite(Duration.ofSeconds(120))
+            .build();
 
     /**
      * Adds a player to the recent teleport queue and the teleport queue
@@ -94,9 +83,8 @@ public class TeleportQueue {
      *     otherwise
      */
     public boolean isTeleportQueued(TeleportRequestHeader requestHeader, Player[] teleportArray) {
-        return teleportQueue.getIfPresent(requestHeader) != null
-                ? Arrays.equals(teleportArray, teleportQueue.getIfPresent(requestHeader))
-                : false;
+        Player[] queued = teleportQueue.getIfPresent(requestHeader);
+        return queued != null && Arrays.equals(teleportArray, queued);
     }
 
     /**
@@ -119,10 +107,11 @@ public class TeleportQueue {
      *     is not in the recent teleport queue
      */
     public Player getPlayer(TeleportRequestHeader requestHeader, int n) {
-        return teleportQueue.getIfPresent(requestHeader) == null
-                ? null
-                : (teleportQueue.getIfPresent(requestHeader)[n].isActive()
-                        ? teleportQueue.getIfPresent(requestHeader)[n]
-                        : null);
+        Player[] queued = teleportQueue.getIfPresent(requestHeader);
+        if (queued == null) {
+            return null;
+        }
+        Player player = queued[n];
+        return player.isActive() ? player : null;
     }
 }
