@@ -7,7 +7,7 @@ import { type ExportContext, type Exporter, safeName } from './types.ts';
 /** One JSON object per line (jq friendly), with the frame as hex. */
 export const jsonl: Exporter = {
   name: 'jsonl',
-  summary: 'JSON lines, one packet per line, for jq and scripts',
+  summary: 'JSON lines, one packet per line',
   async export(ctx: ExportContext): Promise<string[]> {
     await mkdir(ctx.outDir, { recursive: true });
     const path = join(ctx.outDir, `${safeName(`${ctx.capture.id}_${ctx.instance}`)}.jsonl`);
@@ -36,6 +36,6 @@ export const jsonl: Exporter = {
     }
     stream.end();
     await once(stream, 'finish');
-    return [`${path}  (${count} packets)`];
+    return [path];
   },
 };

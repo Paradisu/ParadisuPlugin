@@ -1,6 +1,7 @@
 import { appendFileSync, existsSync, mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { ShareTarget } from '../config.ts';
+import { formatDuration, status, table } from '../output.ts';
 import { RUN, log } from '../util.ts';
 import type { TunnelAddress } from './provider.ts';
 
@@ -121,22 +122,29 @@ export function logLine(message: string): void {
   }
 }
 
-/** "renews in 12m" for a timestamp, or undefined. */
-function relative(iso: string | undefined): string | undefined {
+/** Time until a timestamp, "now" once it has passed, or an empty cell. */
+function renewsIn(iso: string | undefined): string {
   if (!iso) {
-    return undefined;
+    return '';
   }
-  const minutes = Math.round((Date.parse(iso) - Date.now()) / 60_000);
-  return minutes <= 0 ? 'renewing now' : `renews in ${minutes}m`;
+  const ms = Date.parse(iso) - Date.now();
+  return ms <= 0 ? 'now' : formatDuration(ms);
 }
 
-/** One line per tunnel for `dev share status` and `dev status`. */
-export function summaryLines(state: ShareState | undefined): string[] {
+/** The tunnels as a table, for `dev share status` and `dev status`. */
+export function shareTable(state: ShareState | undefined): string {
   if (!state) {
-    return ['share      off'];
+    return `Sharing ${status('off')}`;
   }
-  return Object.entries(state.tunnels).map(([name, tunnel]) => {
-    const parts = [tunnel.address?.display ?? tunnel.status, relative(tunnel.expiresAt), tunnel.error && `error: ${tunnel.error}`];
-    return `share ${name.padEnd(5)} ${tunnel.status.padEnd(8)} ${parts.filter(Boolean).join(', ')} (${state.provider})`;
-  });
+  const entries = Object.entries(state.tunnels);
+  const withErrors = entries.some(([, tunnel]) => tunnel.error);
+  const stateWord = (word: TunnelState['status']) => status(word === 'live' ? 'live' : word === 'failed' ? 'failed' : 'starting');
+  const rows = entries.map(([name, tunnel]) => [
+    name,
+    stateWord(tunnel.status),
+    tunnel.address?.display ?? '',
+    renewsIn(tunnel.expiresAt),
+    ...(withErrors ? [tunnel.error ?? ''] : []),
+  ]);
+  return `Sharing via ${state.provider}\n${table(['tunnel', 'status', 'address', 'renews in', ...(withErrors ? ['error'] : [])], rows)}`;
 }

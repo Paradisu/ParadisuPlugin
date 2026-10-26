@@ -1,3 +1,4 @@
+import { paint } from './output.ts';
 import { parseArgs } from 'node:util';
 import { accessSync, constants, existsSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
@@ -14,6 +15,8 @@ import { CAPTURE_COMMANDS } from './capture/commands.ts';
 import { configDataVersion, fixtureCommand, mcCommands } from './mc/commands.ts';
 import { askOptional, askText, disableInput, interactive, isPromptExit, pickFrom, pickInstance, pickInstances } from './prompt.ts';
 import type { Instance } from './templates.ts';
+import { dim, step } from './output.ts';
+import { commandHelp, groupOf, menuChoices, usage as helpUsage } from './help.ts';
 import { DEV, DevError, ROOT, capture, log, warn } from './util.ts';
 
 const noBuildFlag = { 'no-build': { type: 'boolean' } } as const;
@@ -53,8 +56,8 @@ async function changelogChoice(): Promise<string | undefined> {
   const files = await db.changelogFiles();
   const numbers = files.map((file) => file.replace(/^.*\/(\w+)\.xml$/, '$1'));
   return pickFrom(
-    'Reset the database through which changelog?',
-    numbers.map((n, i) => ({ name: i === numbers.length - 1 ? `${n} (latest)` : n, value: i === numbers.length - 1 ? undefined : n })),
+    'Reset through which changelog?',
+    numbers.map((n, i) => ({ name: i === numbers.length - 1 ? `${n} ${dim('latest')}` : n, value: i === numbers.length - 1 ? undefined : n })),
   );
 }
 
@@ -69,23 +72,30 @@ const COMMANDS: Command[] = [
   {
     name: 'bootstrap',
     usage: '',
-    summary: 'Install deps, build, download servers/plugins, seed the database (devcontainer postCreate)',
+    summary: 'Install, build, download and seed (devcontainer setup)',
     run: ({ config }) => bootstrap(config),
   },
   {
     name: 'setup',
-    usage: '[--refresh]',
+    usage: '',
     summary: 'Resolve versions and download servers and plugins',
+    options: [
+      { flag: '--refresh', summary: 'Re-resolve versions and re-download URL plugins' },
+    ],
     run: ({ config }, args) => {
       const { values } = parseArgs({ args, options: { refresh: { type: 'boolean' } } });
       return setup(config, values.refresh ?? false);
     },
   },
-  { name: 'build', usage: '', summary: 'Build the plugin jar (./gradlew shadowJar)', run: () => instances.build() },
+  { name: 'build', usage: '', summary: 'Build the plugin jar', run: () => instances.build() },
   {
     name: 'start',
-    usage: '[names...] [--no-build] [--ui]',
-    summary: 'Start the proxy and every enabled server (or only the named ones)',
+    usage: '[names...]',
+    summary: 'Start the network, or only the named instances',
+    options: [
+      { flag: '--no-build', summary: 'Skip building the plugin jar' },
+      { flag: '--ui', summary: 'Open the zellij consoles afterwards' },
+    ],
     run: async (ctx, args) => {
       const { values, positionals } = parseArgs({
         args,
@@ -109,8 +119,11 @@ const COMMANDS: Command[] = [
   },
   {
     name: 'restart',
-    usage: '[names...] [--no-build]',
+    usage: '[names...]',
     summary: 'Stop, then start',
+    options: [
+      { flag: '--no-build', summary: 'Skip building the plugin jar' },
+    ],
     run: async (ctx, args) => {
       const { values, positionals } = parseArgs({ args, options: noBuildFlag, allowPositionals: true });
       const names = await namesOrPick(ctx, positionals, 'Restart which instances?', (i) => instances.isRunning(i));
@@ -118,11 +131,16 @@ const COMMANDS: Command[] = [
       return instances.start(ctx.config, names, values['no-build'] ?? false, ctx.config.accept_eula);
     },
   },
-  { name: 'status', usage: '', summary: 'Show what is running', run: ({ config }) => instances.status(config) },
+  { name: 'status', usage: '', summary: 'Show instances and sharing', run: ({ config }) => instances.status(config) },
   {
     name: 'console',
-    usage: '<name> [--read-only] [--wait]',
-    summary: 'Attach to an instance console (Ctrl-C detaches; the server keeps running)',
+    usage: '<name>',
+    summary: 'Attach to an instance console',
+    details: 'Ctrl-C detaches; the server keeps running.',
+    options: [
+      { flag: '--read-only', summary: 'Do not send input' },
+      { flag: '--wait', summary: 'Wait for the instance to start' },
+    ],
     run: async (ctx, args) => {
       const { values, positionals } = parseArgs({
         args,
@@ -136,8 +154,12 @@ const COMMANDS: Command[] = [
   },
   {
     name: 'logs',
-    usage: '<name> [-f] [--console]',
-    summary: 'Show an instance log (--console: the raw console output captured by the supervisor)',
+    usage: '<name>',
+    summary: 'Show an instance log',
+    options: [
+      { flag: '-f, --follow', summary: 'Keep following the log' },
+      { flag: '--console', summary: 'Show the raw console output kept by the supervisor' },
+    ],
     run: async (ctx, args) => {
       const { values, positionals } = parseArgs({
         args,
@@ -151,14 +173,17 @@ const COMMANDS: Command[] = [
   {
     name: 'reset-world',
     usage: '<name>',
-    summary: "Delete an instance's worlds",
+    summary: 'Delete an instance\'s worlds',
     run: async (ctx, args) =>
       instances.resetWorld(ctx.config, await instanceArg(ctx, args, 'Reset the worlds of which instance?', (i) => i.platform === 'paper')),
   },
   {
     name: 'clean',
-    usage: '[--all]',
-    summary: 'Delete dev/run (and dev/.cache with --all)',
+    usage: '',
+    summary: 'Delete dev/run',
+    options: [
+      { flag: '--all', summary: 'Also delete dev/.cache' },
+    ],
     run: async ({ config }, args) => {
       const { values } = parseArgs({ args, options: { all: { type: 'boolean' } } });
       await stopShare(config);
@@ -167,8 +192,14 @@ const COMMANDS: Command[] = [
   },
   {
     name: 'db reset',
-    usage: '[--through 00N] [--all] [--no-fixtures] [--yes]',
-    summary: 'Rebuild the database up to a changelog, with seed data and fixtures',
+    usage: '',
+    summary: 'Rebuild the database with seed data and fixtures',
+    options: [
+      { flag: '--through <00N>', summary: 'Stop at this changelog (default: latest)' },
+      { flag: '--all', summary: 'Also reset the LuckPerms database' },
+      { flag: '--no-fixtures', summary: 'Skip dev/db/fixtures' },
+      { flag: '--yes', summary: 'Do not ask for confirmation' },
+    ],
     run: async (ctx, args) => {
       const { values } = parseArgs({
         args,
@@ -190,8 +221,11 @@ const COMMANDS: Command[] = [
   },
   {
     name: 'db seed',
-    usage: '[--yes]',
-    summary: 'Reseed at the current changelog position',
+    usage: '',
+    summary: 'Reseed at the current changelog',
+    options: [
+      { flag: '--yes', summary: 'Do not ask for confirmation' },
+    ],
     run: (ctx, args) => {
       const { values } = parseArgs({ args, options: { yes: { type: 'boolean' } } });
       return db.reseed(values.yes ?? false, ctx.stopAll);
@@ -206,8 +240,11 @@ const COMMANDS: Command[] = [
   },
   {
     name: 'db restore',
-    usage: '<name> [--yes]',
+    usage: '<name>',
     summary: 'Restore a snapshot',
+    options: [
+      { flag: '--yes', summary: 'Do not ask for confirmation' },
+    ],
     run: async (ctx, args) => {
       const { values, positionals } = parseArgs({ args, options: { yes: { type: 'boolean' } }, allowPositionals: true });
       const name =
@@ -223,7 +260,9 @@ const COMMANDS: Command[] = [
   {
     name: 'db psql',
     usage: '[psql args...]',
-    summary: 'Open psql (extra args are passed through)',
+    summary: 'Open psql',
+    details: 'Extra arguments are passed to psql.',
+    passthrough: true,
     run: (_ctx, args) => db.psql(args),
   },
 ];
@@ -245,24 +284,6 @@ function visible(): Command[] {
   return COMMANDS.filter((command) => !command.hidden);
 }
 
-function groupOf(command: Command): string | undefined {
-  return command.name.includes(' ') ? command.name.split(' ')[0] : undefined;
-}
-
-function helpLines(commands: Command[]): string {
-  return commands
-    .map((command) => {
-      const left = `${command.name} ${command.usage}`.trim();
-      return left.length <= 40 ? `  ${left.padEnd(40)} ${command.summary}` : `  ${left}\n  ${' '.repeat(41)}${command.summary}`;
-    })
-    .join('\n');
-}
-
-function usage(group?: string): string {
-  const commands = visible().filter((command) => !group || groupOf(command) === group);
-  return `Usage: dev <command>${group ? ` (group: ${group})` : ''}\n\n${helpLines(commands)}\n`;
-}
-
 function groups(): string[] {
   return [...new Set(visible().map(groupOf).filter((g): g is string => Boolean(g)))];
 }
@@ -280,20 +301,7 @@ function find(argv: string[]): { command: Command; args: string[] } | undefined 
 
 /** `dev` with no arguments on a terminal: a menu of top-level commands and groups. */
 async function menu(group?: string): Promise<string[]> {
-  const commands = visible().filter((command) => (group ? groupOf(command) === group : true));
-  const entries = new Map<string, string>();
-  for (const command of commands) {
-    const g = groupOf(command);
-    if (!group && g) {
-      entries.set(g, `${g}…`);
-    } else {
-      entries.set(command.name, `${command.name.padEnd(14)} ${command.summary}`);
-    }
-  }
-  const chosen = await pickFrom(
-    group ? `dev ${group}` : 'What do you want to do?',
-    [...entries].map(([value, name]) => ({ name, value })),
-  );
+  const chosen = await pickFrom(group ? `dev ${group}` : 'What do you want to do?', menuChoices(visible(), group));
   return groups().includes(chosen) && !group ? menu(chosen) : chosen.split(' ');
 }
 
@@ -305,19 +313,32 @@ async function main(argv: string[]): Promise<void> {
   const config = await loadConfig();
   registerConfigCommands(config);
   if (argv[0] === 'help' || argv[0] === '--help' || argv[0] === '-h') {
-    log(usage(argv[1]));
+    const topic = find(argv.slice(1));
+    if (topic) {
+      log(commandHelp(topic.command));
+    } else {
+      log(helpUsage(visible(), groups().includes(argv[1] ?? '') ? argv[1] : undefined));
+    }
+    return;
+  }
+  if (groups().includes(argv[0] ?? '') && argv.length === 2 && (argv[1] === '--help' || argv[1] === '-h')) {
+    log(helpUsage(visible(), argv[0]));
     return;
   }
   if (argv.length === 0 || (argv.length === 1 && groups().includes(argv[0]!))) {
     if (!interactive()) {
-      log(usage(argv[0]));
+      log(helpUsage(visible(), argv[0]));
       return;
     }
     argv = await menu(argv[0]);
   }
   const found = find(argv);
   if (!found) {
-    throw new DevError(`Unknown command "${argv.join(' ')}"\n\n${usage()}`);
+    throw new DevError(`Unknown command "${argv.join(' ')}". Run dev help.`);
+  }
+  if (!found.command.passthrough && (found.args.includes('--help') || found.args.includes('-h'))) {
+    log(commandHelp(found.command));
+    return;
   }
   const ctx: Ctx = { config, stopAll: () => instances.stop(config, []) };
   await found.command.run(ctx, found.args);
@@ -367,10 +388,10 @@ async function bootstrap(config: DevConfig): Promise<void> {
   ];
   ensureGradleCachesWritable();
   let failed = false;
-  for (const [label, step] of steps) {
-    log(`\n==> ${label}`);
+  for (const [label, action] of steps) {
+    step(label);
     try {
-      await step();
+      await action();
     } catch (error) {
       failed = true;
       warn(`${label} failed: ${(error as Error).message}`);
@@ -386,7 +407,7 @@ main(process.argv.slice(2)).catch((error: unknown) => {
     process.exit(130);
   }
   if (error instanceof DevError) {
-    console.error(`Error: ${error.message}`);
+    console.error(`${paint('red', 'error:', process.stderr)} ${error.message}`);
   } else {
     console.error(error);
   }

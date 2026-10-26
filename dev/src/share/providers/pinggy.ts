@@ -18,7 +18,7 @@ function optional<T>(options: Record<string, unknown>, key: string, type: 'strin
 
 export const pinggyFactory: ProviderFactory = {
   name: 'pinggy',
-  summary: 'Pinggy (pinggy.io): TCP and HTTPS tunnels; the free tier lasts 60 minutes and gets random addresses',
+  summary: 'pinggy.io tunnels (free tier: 60 min, random address)',
   async create(options) {
     const token = optional<string>(options, 'token', 'string') ?? (process.env.PINGGY_TOKEN || undefined);
     const serverAddress = optional<string>(options, 'server_address', 'string');

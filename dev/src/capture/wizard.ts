@@ -1,3 +1,4 @@
+import { columns, dim } from '../output.ts';
 import { type Choice, askOptional, askText, pickFrom, pickMany, searchFrom } from '../prompt.ts';
 import { fail } from '../util.ts';
 import { FILTER_OPTIONS, type FilterValues } from './filters.ts';
@@ -17,16 +18,15 @@ import { parseCount, parseSize, parseSpan, split, validator } from './units.ts';
 // ---------------------------------------------------------------------------------------------------------------
 
 async function captureChoices(): Promise<Choice<Capture>[]> {
-  const choices: Choice<Capture>[] = [];
-  for (const capture of await listCaptures()) {
+  const captures = await listCaptures();
+  const rows: string[][] = [];
+  for (const capture of captures) {
     const summary = await summarize(capture);
     const who = capture.meta.nextJoin ? `next join of ${capture.meta.players.join(', ') || 'anyone'}` : capture.meta.players.join(', ') || 'all players';
-    choices.push({
-      name: `${capture.meta.id}  ${capture.meta.instances.join(',')}  ${summary.packets} packets  ${formatBytes(summary.size)}  (${who})`,
-      value: capture,
-    });
+    rows.push([capture.meta.id, capture.meta.instances.join(','), `${summary.packets} packets`, formatBytes(summary.size), dim(who)]);
   }
-  return choices;
+  const labels = columns(rows, ['left', 'left', 'right', 'right', 'left']);
+  return captures.map((capture, i) => ({ name: labels[i]!, value: capture }));
 }
 
 export async function pickCapture(message: string): Promise<Capture> {
@@ -114,8 +114,8 @@ async function askTypes(table: ProtocolTable): Promise<string[]> {
   while (true) {
     const choice = await searchFrom<string>(
       picked.length > 0
-        ? `Packet types, ${picked.length} chosen (${picked.slice(-3).join(', ')}): search for more, or pick Done`
-        : 'Packet types: type to search (a * works as a wildcard, for example move_*)',
+        ? `Packet types, ${picked.length} chosen: add more or pick Done`
+        : 'Packet types (search; * is a wildcard)',
       (term) => {
         const needle = term.trim().toLowerCase().replace(/^minecraft:/, '');
         const choices: Choice<string>[] = [];
@@ -125,14 +125,14 @@ async function askTypes(table: ProtocolTable): Promise<string[]> {
         if (needle.includes('*')) {
           const matches = table.keys(needle).length;
           if (matches > 0) {
-            choices.push({ name: `pattern ${needle}  (${matches} packet types)`, value: needle });
+            choices.push({ name: `${needle}  ${dim(`pattern, ${matches} types`)}`, value: needle });
           }
         }
         for (const entry of listing) {
           if (choices.length >= 30) break;
           if (!picked.includes(entry.pattern) && entry.pattern.includes(needle)) {
             const dirs = entry.dirs.length === 2 ? 'both ways' : entry.dirs[0] === 0 ? 'serverbound' : 'clientbound';
-            choices.push({ name: `${entry.pattern}  (${dirs})`, value: entry.pattern });
+            choices.push({ name: `${entry.pattern}  ${dim(dirs)}`, value: entry.pattern });
           }
         }
         return choices;
@@ -149,7 +149,7 @@ async function askTypes(table: ProtocolTable): Promise<string[]> {
 export async function askPlayers(message: string, known: string[], required: boolean): Promise<string[]> {
   const picked = known.length > 0 ? await pickMany(message, known.map((name) => ({ name, value: name }))) : [];
   const typed = await askText(
-    known.length > 0 ? 'Other players, names or UUIDs separated by commas (empty for none)' : `${message} (names or UUIDs, separated by commas)`,
+    known.length > 0 ? 'Other players (comma separated, optional)' : `${message} (comma separated)`,
     { default: '', validate: (text) => (required && picked.length === 0 && !text.trim() ? 'Enter at least one player' : true) },
   );
   return [...new Set([...picked, ...split([typed])])];
@@ -160,17 +160,17 @@ export async function askPlayers(message: string, known: string[], required: boo
  * share it.
  */
 export async function askFilter(source: FilterSource): Promise<FilterValues> {
-  if (!(await askOptional('Narrow down the packets with a filter?', false))) {
+  if (!(await askOptional('Filter packets?', false))) {
     return {};
   }
   const parts = await pickMany(
-    'Filter by (space toggles, enter confirms)',
+    'Filter by',
     [
       { name: 'Packet type', value: 'type' },
-      { name: 'Direction (serverbound or clientbound)', value: 'dir' },
-      { name: 'Receiver (client, proxy or a server)', value: 'to' },
+      { name: 'Direction', value: 'dir' },
+      { name: 'Receiver', value: 'to' },
       { name: 'Player', value: 'player' },
-      { name: 'Connection state (handshake, login, configuration, play)', value: 'state' },
+      { name: 'Connection state', value: 'state' },
       ...(source.conns && source.conns.length > 0 ? [{ name: 'One connection', value: 'conn' }] : []),
     ],
     'Filter flags',
@@ -181,8 +181,8 @@ export async function askFilter(source: FilterSource): Promise<FilterValues> {
   }
   if (parts.includes('dir')) {
     values.dir = await pickFrom('Direction', [
-      { name: 'Serverbound (towards the server)', value: 'sb' },
-      { name: 'Clientbound (towards the client)', value: 'cb' },
+      { name: 'Serverbound', value: 'sb' },
+      { name: 'Clientbound', value: 'cb' },
     ]);
   }
   if (parts.includes('to')) {
@@ -228,29 +228,29 @@ export function hasRecordingFlags(values: Partial<Record<(typeof RECORDING_KEYS)
 
 /** Walks through what to record and when to stop. */
 export async function askRecording(knownPlayers: string[], table: ProtocolTable): Promise<RecordingChoices> {
-  const who = await pickFrom('Whose packets?', [
+  const who = await pickFrom('Record whom?', [
     { name: 'Everyone', value: 'all' },
     { name: 'Specific players', value: 'players' },
-    { name: 'The next player to log in (just that connection, from its handshake)', value: 'next' },
-    { name: 'The next login of a specific player', value: 'next-player' },
+    { name: 'Next login (any player)', value: 'next' },
+    { name: 'Next login of specific players', value: 'next-player' },
   ]);
   const players = who === 'players' || who === 'next-player' ? await askPlayers('Which players', knownPlayers, true) : [];
-  const stops = await pickMany('Stop automatically when (none: until `dev capture stop`)', [
-    { name: 'a time has passed', value: 'duration' },
-    { name: 'a number of packets has been recorded', value: 'packets' },
-    { name: 'the capture reaches a size', value: 'max-size' },
-    { name: 'a certain packet type shows up', value: 'until' },
-    { name: 'the last recorded player disconnects', value: 'stop-on-disconnect' },
+  const stops = await pickMany('Stop automatically when (none: manual stop)', [
+    { name: 'Time passed', value: 'duration' },
+    { name: 'Packet count reached', value: 'packets' },
+    { name: 'Size reached', value: 'max-size' },
+    { name: 'Packet type seen', value: 'until' },
+    { name: 'Last player disconnects', value: 'stop-on-disconnect' },
   ]);
   const choices: RecordingChoices = { players, nextJoin: who === 'next' || who === 'next-player', until: [], watch: false };
   if (stops.includes('duration')) {
-    choices.duration = await askText('How long (for example 30s, 5m, 1h)', { default: '1m', validate: validator(parseSpan) });
+    choices.duration = await askText('Duration (30s, 5m, 1h)', { default: '1m', validate: validator(parseSpan) });
   }
   if (stops.includes('packets')) {
-    choices.packets = await askText('How many packets', { default: '10000', validate: validator((text) => parseCount(text, 'The packet count')) });
+    choices.packets = await askText('Packet count', { default: '10000', validate: validator((text) => parseCount(text, 'The packet count')) });
   }
   if (stops.includes('max-size')) {
-    choices.maxSize = await askText('Size of the captured data before compression (for example 64M, 2G)', {
+    choices.maxSize = await askText('Max size before compression (64M, 2G)', {
       default: '64M',
       validate: validator(parseSize),
     });
@@ -259,9 +259,9 @@ export async function askRecording(knownPlayers: string[], table: ProtocolTable)
     choices.until = await askTypes(table);
   }
   choices.stopOnDisconnect = stops.includes('stop-on-disconnect');
-  const label = (await askText('Label to put in the capture id (optional)', { default: '' })).trim();
+  const label = (await askText('Label (optional)', { default: '' })).trim();
   choices.label = label || undefined;
-  choices.watch = await askOptional('Watch the packets live while recording?', false);
+  choices.watch = await askOptional('Watch live while recording?', false);
   return choices;
 }
 

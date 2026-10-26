@@ -1,3 +1,4 @@
+import type { OptionDoc } from '../command.ts';
 import { DevError } from '../util.ts';
 import { type PacketKey, ProtocolTable, STATES } from './protocol.ts';
 import type { ConnMeta } from './store.ts';
@@ -11,6 +12,16 @@ export const FILTER_OPTIONS = {
   state: { type: 'string' },
   conn: { type: 'string', multiple: true },
 } as const;
+
+/** Help text for the filter options, shared by `watch`, `show` and `export`. */
+export const FILTER_DOCS: OptionDoc[] = [
+  { flag: '--type <types>', summary: 'Packet types (wildcards like move_* work)' },
+  { flag: '--dir <sb|cb>', summary: 'Serverbound or clientbound only' },
+  { flag: '--to <receivers>', summary: 'Receiver: client, proxy or a server' },
+  { flag: '--player <names>', summary: 'Only these players' },
+  { flag: '--state <state>', summary: 'Connection state' },
+  { flag: '--conn <ids>', summary: 'Connection numbers' },
+];
 
 export interface FilterValues {
   type?: string[];

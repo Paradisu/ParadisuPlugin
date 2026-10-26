@@ -6,6 +6,7 @@ import type { Command, Ctx } from './command.ts';
 import { type DevConfig, type PluginConfig, type Platform, loadConfig } from './config.ts';
 import { appliedChangelogs, dbReachable, dumpDatabase, restoreDump } from './db.ts';
 import { readResolved, setup } from './downloads.ts';
+import { bold, formatBytes, keyValue, next, relPath, status as statusWord, table } from './output.ts';
 import { isRunning } from './supervisor.ts';
 import { askText, confirmAction, interactive, pickFrom, pickMany, searchFrom } from './prompt.ts';
 import { instancesOf } from './templates.ts';
@@ -232,7 +233,7 @@ export async function exportProfile(config: DevConfig, options: ExportOptions): 
   mkdirSync(dirname(out), { recursive: true });
   tar(['-czf', out, '-C', stage, '.']);
   rmSync(stage, { recursive: true, force: true });
-  log(`Exported ${out} (${(statSync(out).size / 1024 / 1024).toFixed(1)} MB; includes: ${manifest.includes.join(', ') || 'nothing'})`);
+  log(`Exported ${relPath(out)} (${formatBytes(statSync(out).size)})`);
   return out;
 }
 
@@ -285,9 +286,10 @@ function validateEntries(
 export async function inspectProfile(file: string): Promise<Manifest> {
   validateArchive(file, ALLOWED_TOP, 'profile');
   const manifest = readManifest(file);
-  log(stringify(manifest as unknown as Json));
-  log('Contents:');
-  log(tar(['-tvzf', file]).trimEnd());
+  log(reviewText(manifest, undefined));
+  log('');
+  log(bold('Contents'));
+  log(tar(['-tvzf', file]).trimEnd().replace(/^/gm, '  '));
   return manifest;
 }
 
@@ -305,33 +307,33 @@ function hostOf(url: string): string {
   }
 }
 
-function reviewText(manifest: Manifest, settings: Json | undefined, extractDir: string): string {
-  const lines = [
-    `Profile "${manifest.name}" by ${manifest.created_by} (${manifest.created_at.slice(0, 10)}, commit ${manifest.source_commit})`,
-  ];
-  if (manifest.description) lines.push(`  ${manifest.description}`);
-  lines.push(`It will replace: ${manifest.includes.join(', ') || 'nothing'}`);
+function reviewText(manifest: Manifest, settings: Json | undefined): string {
+  const rows: [string, string][] = [];
+  if (manifest.description) rows.push(['about', manifest.description]);
+  rows.push(['by', `${manifest.created_by}, ${manifest.created_at.slice(0, 10)}, commit ${manifest.source_commit}`]);
+  rows.push(['replaces', manifest.includes.join(', ') || 'nothing']);
   if (manifest.servers) {
-    lines.push(`Servers: Minecraft ${manifest.servers.minecraft}, Purpur build ${manifest.servers.purpur_build}, Velocity ${manifest.servers.velocity_version} build ${manifest.servers.velocity_build}`);
+    rows.push(['servers', `Minecraft ${manifest.servers.minecraft}, Purpur build ${manifest.servers.purpur_build}, Velocity ${manifest.servers.velocity_version} build ${manifest.servers.velocity_build}`]);
   }
   if (manifest.plugins) {
     const hosts = new Set(manifest.plugins.filter((p) => !p.embedded && p.url).map((p) => hostOf(p.url!)));
-    lines.push(`Plugins: ${manifest.plugins.length} jars; downloads from ${[...hosts].join(', ') || 'nowhere'}; ${manifest.plugins.filter((p) => p.embedded).length} embedded in the archive`);
+    const embedded = manifest.plugins.filter((p) => p.embedded).length;
+    rows.push(['plugins', `${manifest.plugins.length} jars, from ${[...hosts].join(', ') || 'nowhere'}${embedded > 0 ? `, ${embedded} embedded` : ''}`]);
   }
   const flags = (settings?.jvm as { extra_flags?: string[] } | undefined)?.extra_flags ?? [];
-  if (flags.length > 0) lines.push(`JVM flags that will be used: ${flags.join(' ')}`);
+  if (flags.length > 0) rows.push(['jvm flags', flags.join(' ')]);
+  if (manifest.db) rows.push(['database', `${manifest.db.databases.join(', ')} at changelogs ${manifest.db.changelogs.join(', ')}`]);
+  if (manifest.worlds) rows.push(['worlds', manifest.worlds.map((w) => `${w.server} (${w.dirs.join(', ')})`).join('; ')]);
   const commands: string[] = [];
   const collect = (owner: string, value: unknown) => {
     const list = (value as { first_start_commands?: string[] } | undefined)?.first_start_commands ?? [];
-    for (const command of list) commands.push(`${owner}: ${command}`);
+    for (const command of list) commands.push(`  ${owner}: ${command}`);
   };
   collect('proxy', settings?.proxy);
   collect('limbo', settings?.limbo);
   for (const server of (settings?.servers as { name: string }[] | undefined) ?? []) collect(server.name, server);
-  if (commands.length > 0) lines.push(`First-start console commands:\n    ${commands.join('\n    ')}`);
-  if (manifest.db) lines.push(`Database: ${manifest.db.databases.join(', ')} at changelogs ${manifest.db.changelogs.join(', ')} (replaces the current data)`);
-  if (manifest.worlds) lines.push(`Worlds: ${manifest.worlds.map((w) => `${w.server} (${w.dirs.join(', ')})`).join('; ')} (replaces the current worlds)`);
-  void extractDir;
+  const lines = [bold(`Profile "${manifest.name}"`), keyValue(rows)];
+  if (commands.length > 0) lines.push('', bold('First-start commands'), ...commands);
   return lines.join('\n');
 }
 
@@ -361,7 +363,7 @@ export async function importProfile(ctx: Ctx, file: string, options: ImportOptio
       validateTarArchive(join(extract, world.file), `worlds/${world.server}`);
     }
 
-    log(reviewText(manifest, settings, extract));
+    log(reviewText(manifest, settings));
     if (wanted.has('db') && manifest.db) {
       const local = new Set(localChangelogs());
       const missing = manifest.db.changelogs.filter((c) => !local.has(c));
@@ -370,7 +372,7 @@ export async function importProfile(ctx: Ctx, file: string, options: ImportOptio
       }
     }
     if (!(await confirmAction('Apply this profile? Your current settings are backed up first.', options.yes))) {
-      log('Aborted');
+      log('Aborted.');
       return;
     }
     await ctx.stopAll();
@@ -434,7 +436,7 @@ export async function importProfile(ctx: Ctx, file: string, options: ImportOptio
     if (touchesSettings) {
       await setup(await loadConfig(), false);
     }
-    log(`Imported "${manifest.name}". Run \`dev start\`. Your previous settings are in ${backup}`);
+    log(`Imported "${manifest.name}"; previous settings saved to ${relPath(backup)}`);
   } finally {
     rmSync(extract, { recursive: true, force: true });
   }
@@ -490,7 +492,7 @@ async function overrideCommand(config: DevConfig, args: string[]): Promise<void>
   const target = overrideTarget(config, name, relative);
   mkdirSync(dirname(target), { recursive: true });
   cpSync(source, target);
-  log(`Saved to ${target.replace(`${ROOT}/`, '')}; it is applied on every start and included in profile exports`);
+  log(`Saved ${relPath(target)}; applied on every start and included in profile exports`);
 }
 
 // ---------------------------------------------------------------------------------------------------------------
@@ -527,13 +529,22 @@ export const COMMANDS: Command[] = [
   {
     name: 'override',
     usage: '<instance> <path-in-instance>',
-    summary: 'Keep a changed runtime config file: re-applied on each start and exported with profiles',
+    summary: 'Keep a changed runtime config file',
+    details: 'The file is re-applied on each start and exported with profiles.',
     run: ({ config }, args) => overrideCommand(config, args),
   },
   {
     name: 'profile export',
-    usage: '[name] [--include plugins,servers,overrides,db,worlds] [--worlds a,b] [--embed-jars] [--out file]',
-    summary: 'Pack the dev setup into a shareable .tar.gz (default: everything except worlds)',
+    usage: '[name]',
+    summary: 'Pack the dev setup into a shareable archive',
+    details: 'Default: everything except worlds.',
+    options: [
+      { flag: '--include <list>', summary: 'plugins, servers, overrides, db, worlds' },
+      { flag: '--worlds <names>', summary: 'Servers whose worlds to include' },
+      { flag: '--embed-jars', summary: 'Embed plugin jars in the archive' },
+      { flag: '--out <file>', summary: 'Output file' },
+      { flag: '--description <text>', summary: 'Description stored in the profile' },
+    ],
     run: async (ctx, args) => {
       const { values, positionals } = parseArgs({
         args,
@@ -572,8 +583,14 @@ export const COMMANDS: Command[] = [
   },
   {
     name: 'profile import',
-    usage: '<file|name> [--include a,b] [--yes] [--force]',
-    summary: 'Apply a profile (reviews it first; backs up your settings to dev/.profile-backup)',
+    usage: '<file|name>',
+    summary: 'Apply a profile (backs up current settings)',
+    details: 'Your previous settings are backed up to dev/.profile-backup.',
+    options: [
+      { flag: '--include <list>', summary: 'Only these sections' },
+      { flag: '--yes', summary: 'Do not ask for confirmation' },
+      { flag: '--force', summary: 'Import even if changelogs are missing' },
+    ],
     run: async (ctx, args) => {
       const { values, positionals } = parseArgs({
         args,
@@ -587,7 +604,7 @@ export const COMMANDS: Command[] = [
   {
     name: 'profile inspect',
     usage: '<file|name>',
-    summary: 'Show what a profile contains without applying it',
+    summary: 'Show a profile\'s contents',
     run: async (_ctx, args) => {
       await inspectProfile(await pickProfile(args[0]));
     },
@@ -598,16 +615,20 @@ export const COMMANDS: Command[] = [
     summary: 'List profiles in dev/profiles',
     run: () => {
       const files = profileFiles();
-      if (files.length === 0) log('No profiles in dev/profiles');
-      for (const file of files) {
+      if (files.length === 0) {
+        log('No profiles in dev/profiles.');
+        return;
+      }
+      const rows = files.map((file) => {
         const path = join(PROFILES, file);
         try {
           const manifest = readManifest(path);
-          log(`${file}  ${(statSync(path).size / 1024 / 1024).toFixed(1)} MB  ${manifest.includes.join(',')}  ${manifest.created_at.slice(0, 10)} by ${manifest.created_by}`);
+          return [file, formatBytes(statSync(path).size), manifest.includes.join(','), manifest.created_at.slice(0, 10), manifest.created_by];
         } catch {
-          log(`${file}  (unreadable)`);
+          return [file, '', statusWord('failed'), '', 'unreadable'];
         }
-      }
+      });
+      log(table(['file', { header: 'size', align: 'right' }, 'includes', 'created', 'by'], rows));
     },
   },
 ];

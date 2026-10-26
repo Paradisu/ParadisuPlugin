@@ -1,3 +1,4 @@
+import { dim } from './output.ts';
 import { spawn } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import {
@@ -264,7 +265,7 @@ export async function attach(instance: Instance, options: AttachOptions): Promis
         fail(`${instance.name} is not running`);
       }
       if (!announced) {
-        log(`waiting for ${instance.name}…`);
+        log(dim(`Waiting for ${instance.name}…`));
         announced = true;
       }
       await sleep(1000);

@@ -237,10 +237,6 @@ export class BlockTracker {
   }
 }
 
-export function breakNote(count: number): string {
-  return `note: ${count} block breaks of the recording player were rebuilt (the server never sends a player its own break particles and sound)`;
-}
-
 interface Dig {
   us: number;
   sequence: number;

@@ -6,6 +6,7 @@ import { join } from 'node:path';
 import { parseArgs } from 'node:util';
 import type { Command, Ctx } from '../command.ts';
 import type { DevConfig } from '../config.ts';
+import { bold, columns, dim, formatDuration, keyValue, next, red, relPath, sameAs, status as statusWord, streamRow, table } from '../output.ts';
 import { askText, confirmAction, interactive, pickFrom, pickInstances } from '../prompt.ts';
 import { isRunning } from '../supervisor.ts';
 import { type Instance, instancesOf } from '../templates.ts';
@@ -13,7 +14,7 @@ import { DevError, fail, log, sleep, warn } from '../util.ts';
 import { request, watch } from './control.ts';
 import { exporter, EXPORTERS } from './exporters/index.ts';
 import { string, varInt } from './exporters/encode.ts';
-import { FILTER_OPTIONS, type FilterValues, compileFilter, parseFilter, toServerFilter } from './filters.ts';
+import { FILTER_DOCS, FILTER_OPTIONS, type FilterValues, compileFilter, parseFilter, toServerFilter } from './filters.ts';
 import type { PacketRecord } from './format.ts';
 import { controlSocket } from './paths.ts';
 import { type ProtocolTable, STATES, ensureProtocol, hintsFile, loadProtocolFile, protocolDir } from './protocol.ts';
@@ -61,15 +62,6 @@ function clock(epochMs: number): string {
   const d = new Date(epochMs);
   const p = (n: number, width = 2) => String(n).padStart(width, '0');
   return `${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}.${p(d.getMilliseconds(), 3)}`;
-}
-
-function dim(text: string): string {
-  return process.stdout.isTTY ? `\x1b[2m${text}\x1b[0m` : text;
-}
-
-function table(rows: string[][]): string {
-  const widths = rows[0]!.map((_, column) => Math.max(...rows.map((row) => (row[column] ?? '').length)));
-  return rows.map((row) => row.map((cell, column) => cell.padEnd(widths[column]!)).join('  ').trimEnd()).join('\n');
 }
 
 function instanceNamed(config: DevConfig, name: string): Instance {
@@ -160,15 +152,34 @@ interface LineContext {
   conns: Map<number, ConnMeta>;
   startEpochMs: number;
   prefix: string;
+  row: (cells: string[]) => string;
+}
+
+/** Column layout shared by the lines of one `show`/`watch`; widths grow, and the seeds avoid most reflowing. */
+function packetRow(seed: { player?: number; link?: number } = {}): (cells: string[]) => string {
+  return streamRow([
+    {},
+    { align: 'right', min: 3 },
+    { min: seed.player ?? 12 },
+    { min: seed.link ?? 14 },
+    { min: 13 },
+    { min: 20 },
+    { align: 'right' },
+  ]);
 }
 
 function formatPacket(ctx: LineContext, p: { seq: number; conn: number; us: number; dir: number; state: number; id: number; size: number }, hex?: string): string {
   const conn = ctx.conns.get(p.conn);
   const link = conn ? linkOf(ctx.config, ctx.instance, conn, p.dir) : p.dir === 0 ? '→server' : 'server→';
-  const state = STATES[p.state] ?? '?';
-  const line =
-    `${clock(ctx.startEpochMs + p.us / 1000)}  #${p.seq}  ${ctx.prefix}${who(conn, p.conn)}  ${link}  ${state}  ` +
-    `${ctx.table.name(p.state, p.dir, p.id)}  ${p.size} B`;
+  const line = ctx.row([
+    clock(ctx.startEpochMs + p.us / 1000),
+    `#${p.seq}`,
+    `${ctx.prefix}${who(conn, p.conn)}`,
+    link,
+    STATES[p.state] ?? '?',
+    ctx.table.name(p.state, p.dir, p.id).replace(/^minecraft:/, ''),
+    `${p.size} B`,
+  ]);
   return hex ? `${line}  ${dim(hex)}` : line;
 }
 
@@ -209,7 +220,7 @@ async function startCommand(ctx: Ctx, args: string[]): Promise<void> {
   };
   if (interactive() && !hasRecordingFlags(values)) {
     rec = await askRecording(await connectedPlayers(targets), table);
-    log(dim(`Same as: dev capture start --on ${targets.map((instance) => instance.name).join(',')} ${recordingFlags(rec)}`.trimEnd()));
+    sameAs(`dev capture start --on ${targets.map((instance) => instance.name).join(',')} ${recordingFlags(rec)}`.trimEnd());
   }
   const { players, nextJoin } = rec;
   const until = rec.until.flatMap((pattern) => {
@@ -265,15 +276,7 @@ async function startCommand(ctx: Ctx, args: string[]): Promise<void> {
     }
     throw error;
   }
-  const what = nextJoin
-    ? `waiting for the next login${players.length > 0 ? ` of ${players.join(', ')}` : ''}`
-    : players.length > 0
-      ? `recording ${players.join(', ')}`
-      : 'recording all players';
-  log(`${live ? 'Live session' : `Capture ${id}`} started on ${started.map((i) => i.name).join(', ')}: ${what}`);
-  if (!live) {
-    log(`  Stop: dev capture stop    Inspect: dev capture show ${id}`);
-  }
+  log(`${live ? 'Live session' : `Capture ${id}`} started on ${started.map((i) => i.name).join(', ')}`);
   if (rec.watch || live) {
     await watchInstances(ctx, started, { ...values, player: players }, live ? new Map(started.map((i) => [i.name, id])) : new Map());
   }
@@ -283,7 +286,9 @@ async function stopCommand(ctx: Ctx, args: string[]): Promise<void> {
   const { values } = parseArgs({ args, options: { on: { type: 'string', multiple: true } } });
   const names = split(values.on);
   const candidates = names.length > 0 ? names.map((name) => instanceNamed(ctx.config, name)) : instancesOf(ctx.config).filter((i) => isRunning(i));
-  let stopped = 0;
+  const rows: string[][] = [];
+  const dropped: number[] = [];
+  const warnings: string[] = [];
   for (const instance of candidates) {
     let state: any;
     try {
@@ -293,20 +298,37 @@ async function stopCommand(ctx: Ctx, args: string[]): Promise<void> {
       continue;
     }
     if (!state.session) {
-      if (names.length > 0) warn(`${instance.name} has no capture running`);
+      if (names.length > 0) warnings.push(`${instance.name} has no capture running`);
       continue;
     }
     const outputDir: string | undefined = state.session.spec.outputDir;
     const result = await request(socketOf(instance), instance.name, { cmd: 'stop' });
-    stopped++;
-    const size = outputDir ? `, ${formatBytes(sizeOnDisk(join(outputDir, `${instance.name}.bin.gz`)))} on disk` : ' (live only, nothing saved)';
-    log(`${instance.name}: stopped (${result.reason}): ${result.packets} packets, ${formatBytes(result.bytes)}${size}${result.dropped > 0 ? `, ${result.dropped} DROPPED` : ''}`);
+    rows.push([
+      instance.name,
+      result.reason,
+      String(result.packets),
+      formatBytes(result.bytes),
+      outputDir ? formatBytes(sizeOnDisk(join(outputDir, `${instance.name}.bin.gz`))) : 'live only',
+    ]);
+    dropped.push(result.dropped);
     if (result.dropped > 0) {
-      warn(`${instance.name} dropped ${result.dropped} packets because the writer fell behind; raise capture.queue_capacity or narrow the capture`);
+      warnings.push(`${instance.name} dropped ${result.dropped} packets; raise capture.queue_capacity or narrow the capture`);
     }
   }
-  if (stopped === 0) {
+  if (rows.length === 0) {
     log('No capture was running.');
+  } else {
+    const anyDropped = dropped.some((count) => count > 0);
+    const cols = ['instance', 'reason', { header: 'packets', align: 'right' as const }, { header: 'data', align: 'right' as const }, { header: 'on disk', align: 'right' as const }];
+    log(
+      table(
+        anyDropped ? [...cols, { header: 'dropped', align: 'right' as const }] : cols,
+        rows.map((row, i) => (anyDropped ? [...row, dropped[i]! > 0 ? red(String(dropped[i])) : '0'] : row)),
+      ),
+    );
+  }
+  for (const warning of warnings) {
+    warn(warning);
   }
 }
 
@@ -316,24 +338,42 @@ async function statusCommand(ctx: Ctx): Promise<void> {
     log('Nothing is running.');
     return;
   }
+  const rows: string[][] = [];
+  const connRows: string[][] = [];
+  let hintsMissing = false;
   for (const instance of running) {
     try {
       const state = await status(instance);
-      const hints = state.protocolHints.complete ? `protocol ${state.protocolHints.protocol}` : 'protocol hints missing (run `dev capture protocol`, then restart)';
-      log(`${instance.name} (${state.platform}): ready, ${hints}`);
-      if (state.session) {
-        const s = state.session;
-        log(
-          `  capture ${s.id}: ${s.waitingForJoin ? 'waiting for the next login, ' : ''}${s.packets} packets, ${formatBytes(s.bytes)}` +
-            `${s.dropped > 0 ? `, ${s.dropped} dropped` : ''}${s.spec.outputDir ? '' : ' (live only)'}`,
-        );
-      }
+      const complete: boolean = state.protocolHints.complete;
+      hintsMissing ||= !complete;
+      const s = state.session;
+      const summary = s
+        ? [
+            s.id,
+            s.waitingForJoin ? 'waiting for login' : '',
+            `${s.packets} packets`,
+            formatBytes(s.bytes),
+            s.dropped > 0 ? `${s.dropped} dropped` : '',
+            s.spec.outputDir ? '' : 'live only',
+          ]
+            .filter(Boolean)
+            .join(', ')
+        : '';
+      rows.push([instance.name, state.platform, complete ? String(state.protocolHints.protocol) : statusWord('missing'), summary]);
       for (const c of state.connections.filter((conn: any) => !conn.ignored)) {
-        log(`  #${c.id} ${c.leg === 1 ? 'backend ' : ''}${c.name ?? '(unidentified)'} ${STATES[c.state] ?? '?'} ${c.remote ?? ''}${c.recording ? '  [recording]' : ''}`);
+        connRows.push([instance.name, String(c.id), c.name ?? '(unidentified)', c.leg === 1 ? 'backend' : 'client', STATES[c.state] ?? '?', c.remote ?? '', c.recording ? 'yes' : '']);
       }
     } catch (error) {
-      log(`${instance.name}: ${(error as Error).message.split('\n')[0]}`);
+      rows.push([instance.name, instance.platform, statusWord('failed'), (error as Error).message.split('\n')[0]!]);
     }
+  }
+  log(table(['instance', 'platform', 'protocol', 'capture'], rows));
+  if (connRows.length > 0) {
+    log('');
+    log(table(['instance', { header: '#', align: 'right' }, 'player', 'link', 'state', 'remote', 'rec'], connRows));
+  }
+  if (hintsMissing) {
+    next('dev capture protocol', 'restart the instance');
   }
 }
 
@@ -395,6 +435,7 @@ async function watchInstances(
             conns,
             startEpochMs: Date.parse(state.session.startedAt),
             prefix: targets.length > 1 ? `[${instance.name}] ` : '',
+            row: packetRow(),
           };
           const keep = compileFilter(filter, table, conns, (conn, dir) => receiverOf(ctx.config, instance, conn, dir));
           log(dim(`watching ${instance.name} (Ctrl-C to stop)`));
@@ -468,7 +509,7 @@ async function watchCommand(ctx: Ctx, args: string[]): Promise<void> {
     });
     values = { ...values, ...picked };
     const flags = filterFlags(picked);
-    if (flags) log(dim(`Same as: dev capture watch --on ${targets.map((instance) => instance.name).join(',')} ${flags}`));
+    if (flags) sameAs(`dev capture watch --on ${targets.map((instance) => instance.name).join(',')} ${flags}`);
   }
   await watchInstances(ctx, targets, values, new Map());
 }
@@ -480,15 +521,15 @@ async function watchCommand(ctx: Ctx, args: string[]): Promise<void> {
 async function listCommand(): Promise<void> {
   const captures = await listCaptures();
   if (captures.length === 0) {
-    log('No captures yet. Start one with `dev capture start`.');
+    log('No captures.');
     return;
   }
-  const rows = [['ID', 'INSTANCES', 'PACKETS', 'SIZE', 'STOPPED BY']];
+  const rows: string[][] = [];
   for (const capture of captures) {
     const summary = await summarize(capture);
     rows.push([capture.meta.id, capture.meta.instances.join(','), String(summary.packets), formatBytes(summary.size), summary.reasons.join(',')]);
   }
-  log(table(rows));
+  log(table(['id', 'instances', { header: 'packets', align: 'right' }, { header: 'size', align: 'right' }, 'stopped by'], rows));
 }
 
 async function openDump(ctx: Ctx, capture: Capture, instanceName: string) {
@@ -556,7 +597,7 @@ async function showCommand(ctx: Ctx, args: string[]): Promise<void> {
     const picked = await askFilter(await captureFilterSource(ctx, capture, names, table_));
     filterValues = { ...values, ...picked };
     const flags = filterFlags(picked);
-    if (flags) log(dim(`Same as: dev capture show ${capture.meta.id} ${flags}`));
+    if (flags) sameAs(`dev capture show ${capture.meta.id} ${flags}`);
   }
   const filter = parseFilter(filterValues);
   const limit = values.limit ? parseCount(values.limit, '--limit') : Infinity;
@@ -564,13 +605,21 @@ async function showCommand(ctx: Ctx, args: string[]): Promise<void> {
   for (const name of names) {
     const { file, instance, conns, startEpochMs, manifest } = await openDump(ctx, capture, name);
     if (names.length > 1) {
-      log(`== ${name} ==`);
+      log(bold(name));
     }
     if (manifest?.dropped) {
       warn(`${name}: ${manifest.dropped} packets were dropped while capturing`);
     }
     const keep = compileFilter(filter, table_, conns, (conn, dir) => receiverOf(ctx.config, instance, conn, dir));
-    const lineCtx: LineContext = { config: ctx.config, instance, table: table_, conns, startEpochMs, prefix: '' };
+    const lineCtx: LineContext = {
+      config: ctx.config,
+      instance,
+      table: table_,
+      conns,
+      startEpochMs,
+      prefix: '',
+      row: packetRow({ player: Math.max(0, ...[...conns.values()].map((conn) => (conn.name ?? '').length)) }),
+    };
     if (values.stats) {
       printStats(ctx, lineCtx, await collect(file, keep));
       continue;
@@ -603,29 +652,36 @@ async function collect(file: string, keep: (p: PacketRecord) => boolean): Promis
 }
 
 function printStats(ctx: Ctx, lineCtx: LineContext, packets: PacketRecord[]): void {
-  const byType = new Map<string, { count: number; bytes: number }>();
-  const byConn = new Map<number, { count: number; bytes: number }>();
+  type Totals = { count: number; bytes: number };
+  const byType = new Map<string, Totals & { receiver: string; name: string }>();
+  const byConn = new Map<number, Totals>();
   for (const p of packets) {
-    const receiver = lineCtx.conns.get(p.conn) ? receiverOf(ctx.config, lineCtx.instance, lineCtx.conns.get(p.conn)!, p.dir) : '?';
-    const key = `→${receiver}  ${lineCtx.table.name(p.state, p.dir, p.id)}`;
-    for (const [map, k] of [[byType, key], [byConn, p.conn]] as const) {
-      const entry = (map as Map<string | number, { count: number; bytes: number }>).get(k) ?? { count: 0, bytes: 0 };
-      entry.count++;
-      entry.bytes += p.frame.length;
-      (map as Map<string | number, { count: number; bytes: number }>).set(k, entry);
-    }
+    const conn = lineCtx.conns.get(p.conn);
+    const receiver = conn ? receiverOf(ctx.config, lineCtx.instance, conn, p.dir) : '?';
+    const name = lineCtx.table.name(p.state, p.dir, p.id).replace(/^minecraft:/, '');
+    const key = `${receiver}\u0000${name}`;
+    const type = byType.get(key) ?? { receiver, name, count: 0, bytes: 0 };
+    type.count++;
+    type.bytes += p.frame.length;
+    byType.set(key, type);
+    const total = byConn.get(p.conn) ?? { count: 0, bytes: 0 };
+    total.count++;
+    total.bytes += p.frame.length;
+    byConn.set(p.conn, total);
   }
-  const rows = [['RECEIVER  PACKET', 'COUNT', 'BYTES', 'AVG']];
-  for (const [key, e] of [...byType].sort((a, b) => b[1].bytes - a[1].bytes).slice(0, 60)) {
-    rows.push([key, String(e.count), formatBytes(e.bytes), formatBytes(Math.round(e.bytes / e.count))]);
-  }
-  log(table(rows));
+  const right = (header: string) => ({ header, align: 'right' as const });
+  const rows = [...byType.values()]
+    .sort((a, b) => b.bytes - a.bytes)
+    .slice(0, 60)
+    .map((e) => [e.receiver, e.name, String(e.count), formatBytes(e.bytes), formatBytes(Math.round(e.bytes / e.count))]);
+  log(table(['receiver', 'packet', right('count'), right('bytes'), right('avg')], rows));
   log('');
-  const connRows = [['CONNECTION', 'PACKETS', 'BYTES']];
-  for (const [id, e] of byConn) {
-    connRows.push([who(lineCtx.conns.get(id), id), String(e.count), formatBytes(e.bytes)]);
-  }
-  log(table(connRows));
+  log(
+    table(
+      ['connection', right('packets'), right('bytes')],
+      [...byConn].map(([id, e]) => [who(lineCtx.conns.get(id), id), String(e.count), formatBytes(e.bytes)]),
+    ),
+  );
 }
 
 async function packetCommand(ctx: Ctx, args: string[]): Promise<void> {
@@ -645,7 +701,7 @@ async function packetCommand(ctx: Ctx, args: string[]): Promise<void> {
   const seqText =
     positionals[1] ??
     (interactive()
-      ? await askText('Packet number (the #n that `dev capture show` prints)', {
+      ? await askText('Packet number (#n from dev capture show)', {
           validate: validator((text) => {
             if (!/^\d+$/.test(text.trim())) throw new DevError('Enter a whole number');
           }),
@@ -664,7 +720,7 @@ async function packetCommand(ctx: Ctx, args: string[]): Promise<void> {
       log(`Wrote ${body.length} bytes to ${values.raw}`);
       return;
     }
-    log(formatPacket({ config: ctx.config, instance, table: table_, conns, startEpochMs, prefix: '' }, { ...p, size: p.frame.length }));
+    log(formatPacket({ config: ctx.config, instance, table: table_, conns, startEpochMs, prefix: '', row: packetRow() }, { ...p, size: p.frame.length }));
     log('');
     log(hexdump(body));
     return;
@@ -684,7 +740,11 @@ async function exportCommand(ctx: Ctx, args: string[]): Promise<void> {
     (interactive()
       ? await pickFrom(
           'Export format',
-          Object.values(EXPORTERS).map((candidate) => ({ name: `${candidate.name}  ${candidate.summary}`, value: candidate.name })),
+          (() => {
+            const exporters = Object.values(EXPORTERS);
+            const labels = columns(exporters.map((candidate) => [candidate.name, dim(candidate.summary)]));
+            return exporters.map((candidate, i) => ({ name: labels[i]!, value: candidate.name }));
+          })(),
         )
       : 'sniffcraft');
   const format = exporter(formatName);
@@ -701,7 +761,7 @@ async function exportCommand(ctx: Ctx, args: string[]): Promise<void> {
   }
   if (interactive() && (!values.format || !hasFilterFlags(values))) {
     const instanceFlag = names.length < dumpInstances(capture).length ? ` --instance ${names.join(',')}` : '';
-    log(dim(`Same as: dev capture export ${capture.meta.id} --format ${format.name}${instanceFlag} ${filterFlags(picked)}`.trimEnd()));
+    sameAs(`dev capture export ${capture.meta.id} --format ${format.name}${instanceFlag} ${filterFlags(picked)}`.trimEnd());
   }
   const filter = parseFilter(filterValues);
   const options: Record<string, string | boolean | undefined> = {};
@@ -725,20 +785,26 @@ async function exportCommand(ctx: Ctx, args: string[]): Promise<void> {
       outDir,
       options,
     });
-    log(`${name}:`);
-    for (const line of lines) {
-      log(`  ${line}`);
-    }
+    printExport(name, names.length > 1, lines);
+  }
+}
+
+/** The files written, one path per line; notes are problems, so they are warnings. */
+function printExport(name: string, heading: boolean, lines: string[]): void {
+  if (heading) log(bold(name));
+  for (const line of lines) {
+    if (line.startsWith('note: ')) warn(line.slice('note: '.length));
+    else log(relPath(line));
   }
 }
 
 function formatsCommand(): void {
-  log(table([['FORMAT', 'DESCRIPTION'], ...Object.values(EXPORTERS).map((e) => [e.name, e.summary])]));
+  log(table(['format', 'description'], Object.values(EXPORTERS).map((e) => [e.name, e.summary])));
 }
 
 async function rmCommand(ctx: Ctx, args: string[]): Promise<void> {
   const { values, positionals } = parseArgs({ args, options: { yes: { type: 'boolean' } }, allowPositionals: true });
-  const captures = positionals.length > 0 ? await Promise.all(positionals.map((id) => loadCapture(id))) : await pickCaptures('Delete which captures? (space selects, enter confirms)');
+  const captures = positionals.length > 0 ? await Promise.all(positionals.map((id) => loadCapture(id))) : await pickCaptures('Delete which captures?');
   if (captures.length === 0) {
     log('Nothing selected.');
     return;
@@ -769,8 +835,6 @@ async function protocolCommand(ctx: Ctx, args: string[]): Promise<void> {
   const { values } = parseArgs({ args, options: { refresh: { type: 'boolean' } } });
   const protocol = await ensureProtocol(ctx.config, values.refresh ?? false);
   log(`Minecraft ${protocol.minecraftVersion}, protocol ${protocol.protocolVersion}`);
-  log(table([['STATE', 'SERVERBOUND', 'CLIENTBOUND'], ...protocol.counts().map((c) => [c.state, String(c.serverbound), String(c.clientbound)])]));
-  log(`Hints for the plugin: ${hintsFile(protocol.minecraftVersion)} (read at server start)`);
 }
 
 const PROBE_NAME = 'CaptureProbe';
@@ -807,7 +871,7 @@ async function probe(instance: Instance, protocol: ProtocolTable): Promise<{ ok:
   }
 }
 
-function checkPlacement(handlers: string[]): string | undefined {
+function checkPlacement(handlers: string[]): { ok: boolean; text: string } | undefined {
   const inIndex = handlers.indexOf('paradisu_capture_in');
   const outIndex = handlers.indexOf('paradisu_capture_out');
   if (inIndex === -1 || outIndex === -1) {
@@ -819,7 +883,7 @@ function checkPlacement(handlers: string[]): string | undefined {
   const problems: string[] = [];
   if (!decoders.includes(handlers[inIndex + 1] ?? '')) problems.push(`inbound tap is followed by "${handlers[inIndex + 1]}", not a decoder`);
   if (!encoders.includes(handlers[outIndex + 1] ?? '')) problems.push(`outbound tap is followed by "${handlers[outIndex + 1]}", not an encoder`);
-  return problems.length > 0 ? problems.join('; ') : 'OK: taps sit directly before the decoder and encoder';
+  return problems.length > 0 ? { ok: false, text: problems.join('; ') } : { ok: true, text: 'taps sit before the decoder and encoder' };
 }
 
 async function doctorCommand(ctx: Ctx, args: string[]): Promise<void> {
@@ -827,42 +891,49 @@ async function doctorCommand(ctx: Ctx, args: string[]): Promise<void> {
   const targets = await runningTargets(ctx, positionals, 'Check which instances?');
   const protocol = await ensureProtocol(ctx.config);
   let failed = false;
+  let probeFailed = false;
+  const verdict = (ok: boolean, text: string) => `${statusWord(ok ? 'ok' : 'failed')}  ${text}`;
   for (const instance of targets) {
-    log(`${instance.name} (${instance.platform})`);
+    log(bold(`${instance.name} (${instance.platform})`));
+    const rows: [string, string][] = [];
     try {
       const state = await status(instance);
       const hints = state.protocolHints;
-      log(`  control socket: ok, plugin on ${state.platform}`);
+      rows.push(['control socket', `${statusWord('ok')}  plugin on ${state.platform}`]);
       if (!hints.complete) {
-        log('  protocol hints: MISSING; run `dev capture protocol`, then restart this instance (states after login will not be tracked)');
+        rows.push(['protocol hints', `${statusWord('missing')}  run dev capture protocol, then restart this instance`]);
         failed = true;
       } else if (hints.protocol !== protocol.protocolVersion) {
-        log(`  protocol hints: STALE (plugin has ${hints.protocol}, current is ${protocol.protocolVersion}); restart this instance`);
+        rows.push(['protocol hints', `${statusWord('stale')}  plugin has ${hints.protocol}, current is ${protocol.protocolVersion}; restart this instance`]);
         failed = true;
       } else {
-        log(`  protocol hints: ok (${hints.protocol})`);
+        rows.push(['protocol hints', `${statusWord('ok')}  protocol ${hints.protocol}`]);
       }
       const result = await probe(instance, protocol);
-      log(`  login probe: ${result.ok ? 'ok' : 'FAILED'}: ${result.detail}`);
+      rows.push(['login probe', verdict(result.ok, result.detail)]);
       if (!result.ok) {
         failed = true;
-        log('  fix: see PipelineLayout.java (paper, velocity), CapturePaper.java / CaptureVelocity.java (hooks), CaptureLimbo.java (limbo)');
+        probeFailed = true;
       }
       if (result.handlers) {
-        log(`  pipeline: ${result.handlers.join(' > ')}`);
         const placement = checkPlacement(result.handlers);
         if (placement) {
-          log(`  placement: ${placement}`);
-          failed ||= !placement.startsWith('OK');
+          rows.push(['placement', verdict(placement.ok, placement.text)]);
+          failed ||= !placement.ok;
         }
+        if (!result.ok || (placement && !placement.ok)) rows.push(['pipeline', dim(result.handlers.join(' > '))]);
       }
     } catch (error) {
       failed = true;
-      log(`  FAILED: ${(error as Error).message}`);
+      rows.push(['error', verdict(false, (error as Error).message)]);
     }
+    log(keyValue(rows, { indent: 2 }));
+  }
+  if (probeFailed) {
+    log(dim('Fix: PipelineLayout.java (paper, velocity), CapturePaper.java / CaptureVelocity.java (hooks), CaptureLimbo.java (limbo)'));
   }
   if (failed) {
-    fail('Some checks failed (see above).');
+    fail('Some checks failed.');
   }
   log('All checks passed.');
 }
@@ -870,44 +941,86 @@ async function doctorCommand(ctx: Ctx, args: string[]): Promise<void> {
 export const CAPTURE_COMMANDS: Command[] = [
   {
     name: 'capture start',
-    usage: '[--on names] [--player p] [--next-join] [--duration 5m] [--packets N] [--until type] [--stop-on-disconnect] [--max-size 512M] [--label x] [--live|--watch]',
-    summary: 'Start capturing packets on running instances; guided without options',
+    usage: '',
+    summary: 'Start a packet capture',
+    details: 'Guided when no options are given.',
+    options: [
+      { flag: '--on <names>', summary: 'Instances to use (default: all running)' },
+      { flag: '--player <names>', summary: 'Only these players' },
+      { flag: '--next-join', summary: 'Wait for the next login' },
+      { flag: '--duration <span>', summary: 'Stop after a time, e.g. 5m' },
+      { flag: '--packets <n>', summary: 'Stop after n packets' },
+      { flag: '--until <types>', summary: 'Stop when a packet type shows up' },
+      { flag: '--stop-on-disconnect', summary: 'Stop when the last player disconnects' },
+      { flag: '--max-size <size>', summary: 'Stop at this size, e.g. 512M' },
+      { flag: '--label <text>', summary: 'Label in the capture id' },
+      { flag: '--live', summary: 'Stream without saving' },
+      { flag: '--watch', summary: 'Watch packets while recording' },
+    ],
     run: startCommand,
   },
-  { name: 'capture stop', usage: '[--on names]', summary: 'Stop the running captures', run: stopCommand },
-  { name: 'capture status', usage: '', summary: 'Show capture state and live connections', run: statusCommand },
+  { name: 'capture stop', usage: '', summary: 'Stop the running captures', options: [{ flag: '--on <names>', summary: 'Instances to use (default: all running)' }], run: stopCommand },
+  { name: 'capture status', usage: '', summary: 'Show capture state and connections', run: statusCommand },
   {
     name: 'capture watch',
-    usage: '[--on names] [--type t] [--dir sb|cb] [--to receiver] [--player p] [--state s] [--conn n] [--hex N]',
-    summary: 'Follow packets live (guided filter without options; Ctrl-C ends)',
+    usage: '',
+    summary: 'Follow packets live',
+    details: 'Guided filter when no options are given; Ctrl-C ends.',
+    options: [
+      { flag: '--on <names>', summary: 'Instances to use (default: all running)' },
+      ...FILTER_DOCS,
+      { flag: '--hex <n>', summary: 'Show n payload bytes' },
+    ],
     run: watchCommand,
   },
   { name: 'capture list', usage: '', summary: 'List captures', run: listCommand },
   {
     name: 'capture show',
-    usage: '[<id|latest>] [--instance x] [filters] [--limit N] [--hex N] [--stats]',
-    summary: 'Print the packets of a capture, or statistics (guided without options)',
+    usage: '[<id|latest>]',
+    summary: 'Print a capture\'s packets or statistics',
+    details: 'Guided when no options are given.',
+    options: [
+      { flag: '--instance <name>', summary: 'Instance dump to read' },
+      ...FILTER_DOCS,
+      { flag: '--limit <n>', summary: 'Stop after n packets' },
+      { flag: '--hex <n>', summary: 'Show n payload bytes' },
+      { flag: '--stats', summary: 'Print statistics instead of packets' },
+    ],
     run: showCommand,
   },
   {
     name: 'capture packet',
-    usage: '[<id|latest> [<seq>]] [--instance x] [--raw file] [--no-id]',
-    summary: 'Hex dump one packet, or write its bytes to a file',
+    usage: '[<id|latest> [<seq>]]',
+    summary: 'Hex dump or save one packet',
+    options: [
+      { flag: '--instance <name>', summary: 'Instance dump to read' },
+      { flag: '--raw <file>', summary: 'Write the packet bytes to a file' },
+      { flag: '--no-id', summary: 'Leave out the packet id' },
+    ],
     run: packetCommand,
   },
   {
     name: 'capture export',
-    usage: '[<id|latest>] [--format name] [--instance x[,y]] [--out dir] [filters] [--opt k=v]',
-    summary: 'Export a capture for other tools (asks for the format without --format)',
+    usage: '[<id|latest>]',
+    summary: 'Export a capture for other tools',
+    details: 'Asks for the format when --format is missing.',
+    options: [
+      { flag: '--format <name>', summary: 'Export format (see dev capture formats)' },
+      { flag: '--instance <names>', summary: 'Instance dumps to export' },
+      { flag: '--out <dir>', summary: 'Output directory' },
+      ...FILTER_DOCS,
+      { flag: '--opt <key=value>', summary: 'Exporter option' },
+    ],
     run: exportCommand,
   },
   { name: 'capture formats', usage: '', summary: 'List export formats', run: formatsCommand },
-  { name: 'capture rm', usage: '[<id...>] [--yes]', summary: 'Delete captures (pick from a menu without ids)', run: rmCommand },
-  { name: 'capture protocol', usage: '[--refresh]', summary: 'Generate the packet table for the current Minecraft version', run: protocolCommand },
+  { name: 'capture rm', usage: '[<id...>]', summary: 'Delete captures', details: 'Pick from a menu when no ids are given.', options: [{ flag: '--yes', summary: 'Do not ask for confirmation' }], run: rmCommand },
+  { name: 'capture protocol', usage: '', summary: 'Generate the packet table for this Minecraft version', options: [{ flag: '--refresh', summary: 'Regenerate even when cached' }], run: protocolCommand },
   {
     name: 'capture doctor',
     usage: '[names...]',
-    summary: 'Check that capture works on each instance (login probe, handler placement)',
+    summary: 'Check capture works on each instance',
+    details: 'Runs a login probe and checks handler placement.',
     run: doctorCommand,
   },
 ];

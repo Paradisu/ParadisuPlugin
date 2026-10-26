@@ -125,12 +125,7 @@ export function sizeOnDisk(path: string): number {
   return existsSync(path) ? statSync(path).size : 0;
 }
 
-export function formatBytes(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KiB`;
-  if (bytes < 1024 ** 3) return `${(bytes / 1024 ** 2).toFixed(1)} MiB`;
-  return `${(bytes / 1024 ** 3).toFixed(2)} GiB`;
-}
+export { formatBytes } from '../output.ts';
 
 /** First pass over a dump: the connections (from OPEN/IDENTIFY records) and the capture start time. */
 export async function readConnections(file: string): Promise<{ conns: Map<number, ConnMeta>; startEpochMs: number }> {

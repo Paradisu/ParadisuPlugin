@@ -104,7 +104,25 @@ The container installs the *pre-release* channel of the Red Hat Java and Gradle 
 
 ### The `dev` command
 
-Run `dev` with no arguments for a menu, or a group name (`dev capture`, `dev db`, `dev share`, `dev mc`, `dev profile`, `dev web`) for the menu of that group. Missing arguments are asked for on a terminal (pick an instance, a changelog, a snapshot, a player, a capture, a filter, …); with arguments, or with `--no-input` (also: no terminal, `CI` set, `PARADISU_DEV_NO_INPUT=1`), it never prompts, and a destructive command without `--yes` refuses instead of waiting for an answer. `dev help [group]` lists every command with its options (for example `dev help capture`).
+Run `dev` with no arguments for a menu, or a group name (`dev capture`, `dev db`, `dev share`, `dev mc`, `dev profile`, `dev web`) for the menu of that group. Missing arguments are asked for on a terminal (pick an instance, a changelog, a snapshot, a player, a capture, a filter, …); with arguments, or with `--no-input` (also: no terminal, `CI` set, `PARADISU_DEV_NO_INPUT=1`), it never prompts, and a destructive command without `--yes` refuses instead of waiting for an answer. `dev help` lists the commands by section, `dev help <group>` one group (`dev help capture`), and `dev help <command>` (or `dev <command> --help`) the options of one command.
+
+#### Output style
+
+Everything `dev` prints goes through [output.ts](dev/src/output.ts) so that menus and tables look the same everywhere:
+
+1. Tabular data uses `table()` (header row), `columns()` (menu labels), `keyValue()` (label/value blocks) or `streamRow()` (lines that arrive one at a time). Never align with `padEnd`/`padStart`; they break on colors and wide names.
+2. Table headers are written lower case in code and shown UPPERCASE, columns are separated by two spaces and numbers are right-aligned. An empty result is one plain sentence (`No captures.`), never an empty table.
+3. Color is minimal and never the only signal: bold for headings and table headers, dim for secondary text (hints, `Same as:`), green/yellow/red only for status words (`status()`) and the `warning:`/`error:` prefixes. It switches off for pipes, `NO_COLOR` and `TERM=dumb`.
+4. Status words are lower case: `running`, `stopped`, `disabled`, `starting`, `ok`, `failed`, `missing`, `stale`, `live`, `off`.
+5. Command summaries are at most 60 characters, imperative, without parentheticals. Put flags in `options` (one line each) and detail in `details`; `usage` holds positional arguments only.
+6. Print only what the user cannot already know: the result (a new path or id) and problems. Never echo what they just chose, counts they just saw in a picker, how-to-use hints or reminders after success, or details of work that is expected to just work. A warning is the problem, a semicolon and the fix. `next(...)` is only for the fix to a problem, never a tour of follow-up commands.
+7. Show paths repo-relative (`relPath()`), sizes with `formatBytes()` and durations with `formatDuration()`.
+8. Machine-readable output (`--format json|snbt|raw`, `mc encode`) stays unstyled.
+
+```ts
+log(table(['id', { header: 'size', align: 'right' }], rows));
+next('dev capture show latest');
+```
 
 | Command | What it does |
 | --- | --- |

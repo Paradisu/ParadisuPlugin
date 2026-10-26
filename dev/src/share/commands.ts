@@ -8,10 +8,11 @@ import { isRunning, rerender, select } from '../instances.ts';
 import { interactive, pickMany } from '../prompt.ts';
 import { sendLine } from '../supervisor.ts';
 import { ROOT, fail, log, run, waitFor, warn } from '../util.ts';
+import { table, dim } from '../output.ts';
 import { webRunning, webStart } from '../zellij.ts';
 import { runDaemon } from './daemon.ts';
 import { createProvider, providers } from './providers/index.ts';
-import { LOG_FILE, clearState, daemonPid, readState, summaryLines } from './state.ts';
+import { LOG_FILE, clearState, daemonPid, readState, shareTable } from './state.ts';
 import { TARGETS, parseTargets } from './targets.ts';
 
 const CLI_PATH = fileURLToPath(new URL('../cli.ts', import.meta.url));
@@ -46,39 +47,26 @@ function printSummary(config: DevConfig): void {
   if (!state) {
     return;
   }
-  log(`Sharing through ${state.provider}`);
-  const expiries: number[] = [];
+  log(`Sharing via ${state.provider}`);
+  const rows: string[][] = [];
   for (const [name, tunnel] of Object.entries(state.tunnels) as [ShareTarget, NonNullable<(typeof state.tunnels)[ShareTarget]>][]) {
     if (tunnel.address) {
-      log(`  ${name.padEnd(6)} ${TARGETS[name].describe(tunnel.address, config)}`);
+      rows.push([name, TARGETS[name].describe(tunnel.address, config)]);
     } else {
-      warn(`${name} is ${tunnel.status}${tunnel.error ? `: ${tunnel.error}` : ''} (see dev share logs)`);
-    }
-    if (tunnel.expiresAt) {
-      expiries.push(Date.parse(tunnel.expiresAt));
+      warn(`${name} is ${tunnel.status}${tunnel.error ? `: ${tunnel.error}` : ''}; see dev share logs`);
     }
   }
-  if (expiries.length > 0) {
-    const next = new Date(Math.min(...expiries) - config.share.renew_before_seconds * 1000);
-    log(
-      `This provider limits tunnel lifetime: the next renewal is at ${next.toLocaleTimeString()}; addresses will change and connected players will be disconnected.`,
-    );
+  if (rows.length > 0) {
+    log(table(['target', 'address'], rows));
   }
   if (state.tunnels.proxy?.proxyProtocol) {
     warn(
-      `The proxy now expects the PROXY protocol (${state.tunnels.proxy.proxyProtocol}), so direct connections to port ${config.proxy.port} (localhost, LAN) are refused while sharing: join through the tunnel address, or set share.proxy_protocol = "off".`,
+      `Direct connections to :${config.proxy.port} are refused while sharing (PROXY protocol); join via the tunnel or set share.proxy_protocol = "off".`,
     );
   }
   if (state.tunnels.proxy && !state.tunnels.limbo && config.limbo.enabled) {
-    warn('Limbo is not shared: remote players cannot reach it, so /vparadisu maintenance will lose them. Add the limbo target.');
+    warn('Limbo is not shared; maintenance mode will drop remote players. Add the limbo target.');
   }
-  if (state.tunnels.web) {
-    warn('Anyone with a normal web token has a shell in this container; hand out read-only tokens (`dev web token --read-only`).');
-  }
-  if (!isRunning(select(config, ['proxy'])[0]!)) {
-    log('The proxy is not running; it picks up the addresses on `dev start`.');
-  }
-  log('Follow: dev share logs -f    Stop: dev share stop');
 }
 
 async function start(config: DevConfig, args: string[]): Promise<void> {
@@ -168,16 +156,24 @@ export const SHARE_COMMANDS: Command[] = [
   },
   {
     name: 'share start',
-    usage: '[targets...] [--provider <name>] [--foreground]',
-    summary: 'Open public tunnels (targets: proxy, limbo, web) and keep them renewed',
+    usage: '[targets...]',
+    summary: 'Open public tunnels and keep them renewed',
+    details: 'Targets: proxy, limbo, web.',
+    options: [
+      { flag: '--provider <name>', summary: 'Tunnel provider (see dev share providers)' },
+      { flag: '--foreground', summary: 'Run in this terminal' },
+    ],
     run: ({ config }, args) => start(config, args),
   },
-  { name: 'share stop', usage: '', summary: 'Close the tunnels and restore the configured addresses', run: ({ config }) => stopShare(config) },
-  { name: 'share status', usage: '', summary: 'Show the tunnels, their addresses and renewal times', run: () => summaryLines(readState()).forEach((line) => log(line)) },
+  { name: 'share stop', usage: '', summary: 'Close tunnels and restore configured addresses', run: ({ config }) => stopShare(config) },
+  { name: 'share status', usage: '', summary: 'Show tunnels, addresses and renewal times', run: () => log(shareTable(readState())) },
   {
     name: 'share logs',
-    usage: '[-f]',
+    usage: '',
     summary: 'Show the tunnel daemon log',
+    options: [
+      { flag: '-f', summary: 'Keep following the log' },
+    ],
     run: (_ctx, args) => {
       if (!existsSync(LOG_FILE)) {
         fail('No share log yet');
@@ -188,11 +184,17 @@ export const SHARE_COMMANDS: Command[] = [
   {
     name: 'share providers',
     usage: '',
-    summary: 'List the available tunnel providers',
+    summary: 'List tunnel providers',
     run: ({ config }) => {
-      for (const provider of providers()) {
-        log(`${provider.name === config.share.provider ? '*' : ' '} ${provider.name.padEnd(10)} ${provider.summary}`);
-      }
+      log(
+        table(
+          ['provider', 'description'],
+          providers().map((provider) => [
+            provider.name + (provider.name === config.share.provider ? dim(' (default)') : ''),
+            provider.summary,
+          ]),
+        ),
+      );
     },
   },
 ];

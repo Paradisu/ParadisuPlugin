@@ -1,5 +1,5 @@
 import { mkdir } from 'node:fs/promises';
-import { BreakEvents, breakNote } from './blocks.ts';
+import { BreakEvents } from './blocks.ts';
 import { i32, varIntWidth } from './bytes.ts';
 import { varInt } from './encode.ts';
 import { connectionFile, type ExportContext, type Exporter } from './types.ts';
@@ -202,7 +202,7 @@ class Session {
  */
 export const replaymod: Exporter = {
   name: 'replaymod',
-  summary: 'ReplayMod .mcpr, one file per connection (ReplayMod, same Minecraft version)',
+  summary: 'ReplayMod .mcpr, one per connection',
   async export(ctx: ExportContext): Promise<string[]> {
     await mkdir(ctx.outDir, { recursive: true });
     const lines: string[] = [];
@@ -214,9 +214,9 @@ export const replaymod: Exporter = {
     };
     let self: SelfPackets | undefined;
     if (playerType === undefined || Number.isNaN(playerType)) {
-      lines.push('note: the recording player is not spawned: this capture has no player entity type id (run `dev capture protocol --refresh` and capture again, or pass --opt player-type=<id>)');
+      lines.push('note: recording player not spawned: no player entity type id; run dev capture protocol --refresh and recapture, or pass --opt player-type=<id>');
     } else if (ids.addEntity === undefined || ids.positionSync === undefined || ids.rotateHead === undefined) {
-      lines.push('note: the recording player is not spawned: the packet table lacks add_entity, entity_position_sync or rotate_head');
+      lines.push('note: recording player not spawned: the packet table lacks add_entity, entity_position_sync or rotate_head');
     } else {
       self = { playerType, addEntity: ids.addEntity, positionSync: ids.positionSync, rotateHead: ids.rotateHead };
     }
@@ -238,18 +238,16 @@ export const replaymod: Exporter = {
       session.handle(ctx.protocol.name(packet.state, packet.dir, packet.id).replace(/^minecraft:/, ''), packet);
     }
     let errors = 0;
-    let rebuilt = 0;
     let firstError: string | undefined;
     const written: string[] = [];
     for (const [connId, session] of sessions) {
       session.finish(lastUs.get(connId) ?? session.firstUs);
       errors += session.errors + session.breaks.errors;
       firstError ??= session.firstError ?? session.breaks.firstError;
-      rebuilt += session.breaks.count;
       const { path, label } = connectionFile(ctx, connId, 'mcpr');
       if (session.broken || !session.joined) {
         written.push(
-          `note: ${label}: ${session.broken ?? 'no complete join in this capture (start the capture before the player joins)'}, skipped`,
+          `note: ${label}: ${session.broken ?? 'no complete join; start capturing before the player joins'}, skipped`,
         );
         continue;
       }
@@ -271,26 +269,18 @@ export const replaymod: Exporter = {
         { name: 'recording.tmcpr', data: Buffer.concat(session.records) },
         { name: 'metaData.json', data: Buffer.from(JSON.stringify(metadata)) },
       ]);
-      written.push(`${path}  (${label}, ${session.packets} packets, ${(session.lastMs / 1000).toFixed(1)} s)`);
+      written.push(path);
     }
     lines.push(...written);
     if (sessions.size === 0) {
-      lines.push('(no packets matched, nothing written)');
+      lines.push('note: no packets matched; nothing written');
     }
     if (skipped > 0) {
-      lines.push(`note: ${skipped} packets with an unknown connection state were skipped`);
-    }
-    if (rebuilt > 0) {
-      lines.push(breakNote(rebuilt));
+      lines.push(`note: ${skipped} packets skipped (unknown connection state)`);
     }
     if (errors > 0) {
-      lines.push(`note: ${errors} packets could not be decoded and were left out (first: ${firstError})`);
+      lines.push(`note: ${errors} packets could not be decoded (first: ${firstError})`);
     }
-    lines.push(
-      `note: copy the .mcpr into .minecraft/replay_recordings/ and open it with ReplayMod on Minecraft ${ctx.protocol.minecraftVersion} ` +
-        `(protocol ${ctx.protocol.protocolVersion}). Filters that drop login or configuration packets make the replay unplayable. ` +
-        'The recording player is rebuilt from the serverbound movement packets.',
-    );
     return lines;
   },
 };

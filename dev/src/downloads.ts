@@ -1,3 +1,4 @@
+import { step, streamRow } from './output.ts';
 import { copyFile, mkdir, readFile, writeFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { join, resolve, sep } from 'node:path';
@@ -55,36 +56,49 @@ export async function readResolved(): Promise<ResolvedFiles> {
   return resolved;
 }
 
-async function fetchArtifact(artifact: Artifact, subdir: string, fileName: string, force: boolean): Promise<string> {
+async function fetchArtifact(artifact: Artifact, subdir: string, fileName: string, force: boolean): Promise<{ file: string; note: string }> {
   const dest = join(CACHE, subdir, fileName);
   if (force || !existsSync(dest)) {
-    log(`  downloading ${artifact.name}`);
     await download(artifact.url, dest, { md5: artifact.md5, sha256: artifact.sha256, sha512: artifact.sha512 });
+    return { file: dest, note: 'downloaded' };
   }
-  return dest;
+  return { file: dest, note: 'cached' };
 }
 
 /** Resolves versions, downloads everything into dev/.cache and records the result in resolved.json. */
 export async function setup(config: DevConfig, refresh: boolean): Promise<void> {
-  log('Resolving server versions');
+  step('Resolving versions');
   const servers = await resolveServers(config);
-  log(`  Minecraft ${servers.minecraft}, Purpur build ${servers.purpur.build}, Velocity ${servers.velocity.version} build ${servers.velocity.build}`);
+  log(`Minecraft ${servers.minecraft}`);
 
-  const purpurFile = await fetchArtifact(servers.purpur, 'servers', servers.purpur.name, false);
-  const velocityFile = await fetchArtifact(
+  step('Servers');
+  const serverRow = streamRow([{ min: 8 }, { min: 14 }, {}]);
+  const purpur = await fetchArtifact(servers.purpur, 'servers', servers.purpur.name, false);
+  const purpurFile = purpur.file;
+  log(`  ${serverRow(['Purpur', `build ${servers.purpur.build}`, purpur.note])}`);
+  const velocity = await fetchArtifact(
     servers.velocity,
     'servers',
     `velocity-${servers.velocity.version}-${servers.velocity.build}.jar`,
     false,
   );
+  const velocityFile = velocity.file;
+  log(`  ${serverRow(['Velocity', `${servers.velocity.version} build ${servers.velocity.build}`, velocity.note])}`);
 
   let limbo: ResolvedFiles['limbo'];
   if (servers.limbo) {
-    log(`  Limbo ${servers.limbo.version}`);
-    const limboFile = await fetchArtifact(servers.limbo, 'servers', servers.limbo.name, false);
+    const limboFetch = await fetchArtifact(servers.limbo, 'servers', servers.limbo.name, false);
+    const limboFile = limboFetch.file;
+    log(`  ${serverRow(['Limbo', servers.limbo.version, limboFetch.note])}`);
     limbo = { version: servers.limbo.version, file: limboFile, url: servers.limbo.url, sha256: sha256File(limboFile) };
   }
 
+  step('Plugins');
+  const pluginRow = streamRow([
+    { min: Math.max(0, ...config.plugins.flatMap((plugin) => plugin.platforms.map((platform) => `${plugin.key} (${platform})`.length))) },
+    { min: 14 },
+    {},
+  ]);
   const plugins: ResolvedFiles['plugins'] = [];
   const failures: string[] = [];
   for (const plugin of config.plugins) {
@@ -111,19 +125,20 @@ export async function setup(config: DevConfig, refresh: boolean): Promise<void> 
             sha256: sha256File(dest),
             immutable: false,
           });
-          log(`  ${label}: local ${plugin.path}`);
+          log(`  ${pluginRow([label, 'local', plugin.path])}`);
           continue;
         }
         const pin = plugin.pinned?.[platform];
         if (pin) {
-          const file = pin.file
-            ? resolve(ROOT, pin.file)
+          const pinned = pin.file
+            ? { file: resolve(ROOT, pin.file), note: 'pinned' }
             : await fetchArtifact(
                 { name: `${plugin.key}.jar`, url: pin.url, sha256: pin.sha256 },
                 join('plugins', platform),
                 `${plugin.key}-${pin.version.replace(/[^A-Za-z0-9._-]/g, '_')}.jar`,
                 false,
               );
+          const file = pinned.file;
           if (!existsSync(file)) {
             fail(`pinned jar ${pin.file} does not exist`);
           }
@@ -137,17 +152,18 @@ export async function setup(config: DevConfig, refresh: boolean): Promise<void> 
             sha256: pin.sha256,
             immutable: true,
           });
-          log(`  ${label}: ${pin.version} (pinned)`);
+          log(`  ${pluginRow([label, pin.version, pin.file ? 'pinned, local file' : `pinned, ${pinned.note}`])}`);
           continue;
         }
         const artifact = await resolvePlugin(plugin, platform, servers.minecraft);
         // URL sources have no checksum, so they are re-downloaded on --refresh only
-        const file = await fetchArtifact(
+        const fetched = await fetchArtifact(
           artifact,
           join('plugins', platform),
           `${plugin.key}-${artifact.version.replace(/[^A-Za-z0-9._-]/g, '_')}.jar`,
           refresh && plugin.source === 'url',
         );
+        const file = fetched.file;
         plugins.push({
           key: plugin.key,
           platform,
@@ -158,7 +174,7 @@ export async function setup(config: DevConfig, refresh: boolean): Promise<void> 
           sha256: sha256File(file),
           immutable: plugin.source !== 'url',
         });
-        log(`  ${label}: ${artifact.version}`);
+        log(`  ${pluginRow([label, artifact.version, fetched.note])}`);
       } catch (error) {
         failures.push(`${label}: ${pinFailureHint(plugin, platform, (error as Error).message)}`);
       }
@@ -195,5 +211,5 @@ export async function setup(config: DevConfig, refresh: boolean): Promise<void> 
       warn(`Could not generate the capture packet table (${(error as Error).message}); run \`dev capture protocol\` later`);
     }
   }
-  log('Setup complete');
+  log('Setup complete.');
 }

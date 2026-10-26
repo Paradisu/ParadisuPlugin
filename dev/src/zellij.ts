@@ -1,3 +1,4 @@
+import { dim, status as statusWord } from './output.ts';
 import { spawnSync } from 'node:child_process';
 import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { isIP } from 'node:net';
@@ -225,7 +226,7 @@ function ensureCertificate(config: DevConfig): void {
     '-keyout', join(TLS_DIR, 'key.pem'),
     '-out', join(TLS_DIR, 'cert.pem'),
   ]);
-  log('Generated a self-signed certificate (browsers will warn once)');
+  log('Generated a self-signed certificate; browsers will warn once.');
 }
 
 function webArgs(config: DevConfig): string[] {
@@ -248,7 +249,7 @@ function createToken(config: DevConfig, readOnly: boolean): void {
     fail(`Could not create a token: ${result.stderr.trim()}`);
   }
   log(result.stdout.trim());
-  log('This token is shown only once; create another with `dev web token` if you lose it.');
+  log(dim('The token is shown only once.'));
 }
 
 export async function webStart(config: DevConfig): Promise<void> {
@@ -257,7 +258,7 @@ export async function webStart(config: DevConfig): Promise<void> {
   writeLayouts(config);
   ensureCertificate(config);
   if (webRunning(config)) {
-    log('The web server is already running');
+    log('The web server is already running.');
   } else {
     const started = spawnSync('zellij', ['--config', CONFIG_FILE, 'web', '--daemonize', ...webArgs(config)], {
       stdio: 'inherit',
@@ -272,20 +273,18 @@ export async function webStart(config: DevConfig): Promise<void> {
   const tokens = zellij(config, ['web', '--list-tokens']).stdout.trim();
   if (!tokens || /no tokens/i.test(tokens)) {
     createToken(config, false);
-  } else {
-    log('Log in with an existing token, or create one with `dev web token`.');
   }
   if (config.web.bind !== '127.0.0.1') {
-    warn('The web client is a shell in this container: anyone with a token has full access. Prefer `dev web token --read-only` for observers.');
+    warn('Web tokens grant a shell; give observers read-only tokens (dev web token --read-only).');
   }
 }
 
 const WEB_COMMANDS: Command[] = [
-  { name: 'web start', usage: '', summary: 'Serve the consoles to a browser (zellij web client)', run: ({ config }) => webStart(config) },
+  { name: 'web start', usage: '', summary: 'Serve the consoles to a browser', run: ({ config }) => webStart(config) },
   {
     name: 'web stop',
     usage: '',
-    summary: 'Stop the zellij web server',
+    summary: 'Stop the web server',
     run: ({ config }) => {
       requireZellij();
       writeConfig(config);
@@ -295,17 +294,21 @@ const WEB_COMMANDS: Command[] = [
   {
     name: 'web status',
     usage: '',
-    summary: 'Show whether the web server is running and its URL',
+    summary: 'Show web server state and URL',
     run: ({ config }) => {
       requireZellij();
       writeConfig(config);
-      log(webRunning(config) ? `running: ${webUrl(config)}` : 'not running');
+      log(webRunning(config) ? `${statusWord('running')} ${webUrl(config)}` : statusWord('stopped'));
     },
   },
   {
     name: 'web token',
-    usage: '[--read-only]',
-    summary: 'Create a login token (shown once)',
+    usage: '',
+    summary: 'Create a login token',
+    details: 'The token is shown only once.',
+    options: [
+      { flag: '--read-only', summary: 'Observer token without input' },
+    ],
     run: ({ config }, args) => {
       requireZellij();
       writeConfig(config);
@@ -317,8 +320,12 @@ const WEB_COMMANDS: Command[] = [
 export const COMMANDS: Command[] = [
   {
     name: 'ui',
-    usage: '[layout|kill] [--background]',
-    summary: 'Open the zellij workspace of server consoles (kill: close it; servers keep running)',
+    usage: '[layout|kill]',
+    summary: 'Open the zellij console workspace',
+    details: 'kill closes the workspace; the servers keep running.',
+    options: [
+      { flag: '--background', summary: 'Create the session without attaching' },
+    ],
     run: async ({ config }, args) => {
       const background = args.includes('--background');
       const positionals = args.filter((arg) => !arg.startsWith('--'));

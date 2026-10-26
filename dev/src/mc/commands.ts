@@ -1,3 +1,4 @@
+import { bold, dim, keyValue, relPath, table } from '../output.ts';
 import { parseArgs } from 'node:util';
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
@@ -36,11 +37,6 @@ function formatArg(value: string | undefined, allowed: Format[], fallback: Forma
   const format = (value ?? fallback) as Format;
   if (!allowed.includes(format)) fail(`--format must be one of ${allowed.join(', ')}`);
   return format;
-}
-
-function table(rows: string[][]): string {
-  const widths = rows[0]!.map((_, c) => Math.max(...rows.map((r) => (r[c] ?? '').length)));
-  return rows.map((r) => r.map((cell, c) => cell.padEnd(widths[c]!)).join('  ').trimEnd()).join('\n');
 }
 
 function describe(summary: ItemSummary): string[] {
@@ -88,8 +84,12 @@ function snbtOf(tag: Tag): string {
 
 function printSlots(title: string, items: (Tag | null)[], label: (i: number) => string): void {
   const rows = items.flatMap((item, i) => (item ? [[label(i), ...describe(summarize(item))]] : []));
-  log(`${title}`);
-  log(rows.length === 0 ? '  (empty)' : table([['slot', 'item', 'count', 'name', 'enchantments'], ...rows]).replace(/^/gm, '  '));
+  log(bold(title));
+  log(
+    rows.length === 0
+      ? dim('  (empty)')
+      : table(['slot', 'item', { header: 'count', align: 'right' }, 'name', 'enchantments'], rows, { indent: 2 }),
+  );
 }
 
 // ---------------------------------------------------------------------------------------------------------------
@@ -100,13 +100,13 @@ function playersCommand(args: string[]): void {
   const { values, positionals } = parseArgs({ args, options: { online: { type: 'boolean' } }, allowPositionals: true });
   const rows = listPlayers(positionals[0] ?? '', values.online ?? false);
   if (rows.length === 0) {
-    log('No players');
+    log('No players.');
     return;
   }
   log(
-    table([
-      ['uuid', 'name', 'online', 'last server', 'playtime', 'inventories'],
-      ...rows.map((p) => [
+    table(
+      ['uuid', 'name', 'online', 'last server', { header: 'playtime', align: 'right' }, { header: 'inventories', align: 'right' }],
+      rows.map((p) => [
         p.uuid,
         p.display_name ?? '',
         p.online ? 'yes' : '',
@@ -114,9 +114,9 @@ function playersCommand(args: string[]): void {
         p.playtime == null ? '' : `${(p.playtime / 3600).toFixed(1)}h`,
         String(p.inventories),
       ]),
-    ]),
+    ),
   );
-  if (rows.length === 200) log('(first 200 shown; narrow the search)');
+  if (rows.length === 200) log(dim('First 200 shown; narrow the search.'));
 }
 
 function fixtureToml(player: string, row: InventoryRow, raw: boolean, index: number): string {
@@ -218,11 +218,18 @@ async function inventoryCommand(args: string[]): Promise<void> {
       log(`off_hand: ${off ? snbtOf(decodeItem(off)) : '(empty)'}`);
       log(`ender_chest:\n${named(ender).join('\n') || '  (empty)'}`);
     } else {
-      log(`${player.name} (${player.uuid})  context=${row.context}  created=${row.created}  held slot ${row.held_slot}`);
+      log(
+        keyValue([
+          ['player', `${player.name} (${player.uuid})`],
+          ['context', String(row.context)],
+          ['created', row.created],
+          ['held slot', String(row.held_slot)],
+        ]),
+      );
       printSlots('Inventory', inventory, slotLabel);
       if (inventory.length !== 41 && inventory.length > 0) warn(`inventory has ${inventory.length} slots (expected 41)`);
       if (armor.length > 0 && armor.length !== ARMOR_SLOTS) warn(`armor has ${armor.length} slots (expected ${ARMOR_SLOTS})`);
-      log(`Off hand: ${off ? describe(summarize(decodeItem(off))).filter(Boolean).join(' ') : '(empty)'}`);
+      log(`${bold('Off hand')}  ${off ? describe(summarize(decodeItem(off))).filter(Boolean).join(' ') : dim('(empty)')}`);
       printSlots('Ender chest', ender, (i) => `ender ${i}`);
     }
     if (n < rows.length - 1) log('');
@@ -407,8 +414,7 @@ async function uuidCommand(args: string[]): Promise<void> {
       warn(`Mojang lookup failed: ${(error as Error).message}`);
     }
   }
-  const width = Math.max(...rows.map(([k]) => k.length));
-  for (const [key, value] of rows) log(`${key.padEnd(width)}  ${value}`);
+  log(keyValue(rows));
 }
 
 // ---------------------------------------------------------------------------------------------------------------
@@ -423,11 +429,19 @@ async function fixturesCommand(args: string[]): Promise<void> {
   ], 'An action: load | list'));
   if (action === 'list') {
     const files = fixtureFiles();
-    if (files.length === 0) log('No fixtures');
-    for (const file of files) {
-      const fixture = readFixture(file);
-      log(`${fixture.path.replace(`${DEV}/`, 'dev/')}  inventories=${fixture.inventory.length}${fixture.requires_changelog ? `  requires changelog ${fixture.requires_changelog}` : ''}`);
+    if (files.length === 0) {
+      log('No fixtures.');
+      return;
     }
+    log(
+      table(
+        ['file', { header: 'inventories', align: 'right' }, 'requires changelog'],
+        files.map((file) => {
+          const fixture = readFixture(file);
+          return [relPath(fixture.path), String(fixture.inventory.length), fixture.requires_changelog ?? ''];
+        }),
+      ),
+    );
     return;
   }
   if (action !== 'load') fail(`Unknown fixtures action "${action}" (load | list)`);
@@ -436,40 +450,59 @@ async function fixturesCommand(args: string[]): Promise<void> {
     only = await pickMany('Load which fixtures?', fixtureFiles().map((f) => ({ name: f.replace(`${DEV}/`, 'dev/'), value: f, checked: true })));
   }
   const loaded = await loadFixtures({ only, replace: values.replace ?? false });
-  if (loaded === 0) log('Nothing loaded');
+  if (loaded === 0) log('Nothing loaded.');
 }
 
 // ---------------------------------------------------------------------------------------------------------------
 
 export function mcCommands(getVersion: () => Promise<number>, serverNames: () => string[]): Command[] {
   return [
-    { name: 'mc players', usage: '[search] [--online]', summary: 'List players in the dev database', run: (_c, a) => playersCommand(a) },
+    { name: 'mc players', usage: '[search]', summary: 'List players in the dev database', options: [{ flag: '--online', summary: 'Only online players' }], run: (_c, a) => playersCommand(a) },
     {
       name: 'mc inventory',
-      usage: '<player> [--context c] [--index n|--all] [--format table|snbt|json|fixture|raw]',
-      summary: 'Show a player\'s stored inventory, decoded (fixture: as a loadable fixture entry)',
+      usage: '<player>',
+      summary: 'Show a player\'s stored inventory',
+      options: [
+        { flag: '--context <name>', summary: 'Only this context' },
+        { flag: '--index <n>', summary: 'One snapshot (newest is 0)' },
+        { flag: '--all', summary: 'Every snapshot' },
+        { flag: '--format <name>', summary: 'table, snbt, json, fixture or raw' },
+      ],
       run: (_c, a) => inventoryCommand(a),
     },
     {
       name: 'mc dump',
-      usage: '[--player p] [--context c] [--out file] [--raw]',
-      summary: 'Write stored inventories as a fixture file you can reload',
+      usage: '',
+      summary: 'Write stored inventories as a fixture file',
+      options: [
+        { flag: '--player <name>', summary: 'Only this player' },
+        { flag: '--context <name>', summary: 'Only this context' },
+        { flag: '--out <file>', summary: 'Output file' },
+        { flag: '--raw', summary: 'Keep the stored bytes undecoded' },
+      ],
       run: (_c, a) => dumpCommand(a),
     },
     {
       name: 'mc nbt',
-      usage: '<file|-|playerdata:<player>@<server>|level:<server>> [--path a.b[0]] [--format snbt|json] [--chunk x,z]',
-      summary: 'Decode an NBT file, region chunk, player data file or level.dat',
+      usage: '<source>',
+      summary: 'Decode NBT, a region chunk, player data or level.dat',
+      details: 'Source: a file, - for stdin, playerdata:<player>@<server> or level:<server>.',
+      options: [
+        { flag: '--path <path>', summary: 'Select a sub-tag, e.g. a.b[0]' },
+        { flag: '--format <name>', summary: 'snbt or json' },
+        { flag: '--chunk <x,z>', summary: 'Region chunk to read' },
+        { flag: '--compact', summary: 'Single-line SNBT' },
+      ],
       run: (_c, a) => nbtCommand(serverNames(), a),
     },
-    { name: 'mc item', usage: '<base64|hex|@file|-> [--format snbt|json|table]', summary: 'Decode a Paper item or item-array blob', run: (_c, a) => itemCommand(a) },
-    { name: 'mc encode', usage: '<snbt> [--array] [--hex]', summary: 'Encode SNBT into the Paper blob format (base64)', run: (_c, a) => encodeCommand(getVersion, a) },
-    { name: 'mc uuid', usage: '<name|uuid|[I;…]> [--offline]', summary: 'Convert UUID forms, compute the offline UUID, look the player up', run: (_c, a) => uuidCommand(a) },
+    { name: 'mc item', usage: '<data>', summary: 'Decode a Paper item blob', details: 'Data: base64, hex, @file or - for stdin.', options: [{ flag: '--format <name>', summary: 'snbt, json or table' }, { flag: '--compact', summary: 'Single-line SNBT' }], run: (_c, a) => itemCommand(a) },
+    { name: 'mc encode', usage: '<snbt>', summary: 'Encode SNBT as a Paper item blob', options: [{ flag: '--array', summary: 'Encode an item array' }, { flag: '--hex', summary: 'Print hex instead of base64' }], run: (_c, a) => encodeCommand(getVersion, a) },
+    { name: 'mc uuid', usage: '<name|uuid>', summary: 'Convert UUID forms and look a player up', options: [{ flag: '--offline', summary: 'Skip the Mojang lookup' }], run: (_c, a) => uuidCommand(a) },
     {
       name: 'mc columns',
       usage: '',
-      summary: 'List the database columns that hold Minecraft binary data',
-      run: () => log(table([['table', 'column', 'codec'], ...MC_COLUMNS.map((c) => [c.table, c.column, c.codec])])),
+      summary: 'List database columns holding Minecraft data',
+      run: () => log(table(['table', 'column', 'codec'], MC_COLUMNS.map((c) => [c.table, c.column, c.codec]))),
     },
   ];
 }
@@ -477,8 +510,11 @@ export function mcCommands(getVersion: () => Promise<number>, serverNames: () =>
 export function fixtureCommand(): Command {
   return {
     name: 'db fixtures',
-    usage: '[load|list] [files...] [--replace]',
-    summary: 'Load Minecraft data fixtures (inventories) into the dev database',
+    usage: '[load|list] [files...]',
+    summary: 'Load or list Minecraft data fixtures',
+    options: [
+      { flag: '--replace', summary: 'Replace existing inventory snapshots' },
+    ],
     run: (_c, a) => fixturesCommand(a),
   };
 }

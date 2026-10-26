@@ -2,7 +2,7 @@ import { mkdir } from 'node:fs/promises';
 import { randomUUID } from 'node:crypto';
 import { bool, f32, f64, i32, uuidBytes, varIntWidth } from './bytes.ts';
 import { string, varInt } from './encode.ts';
-import { BreakEvents, breakNote } from './blocks.ts';
+import { BreakEvents } from './blocks.ts';
 import { connectionFile, type ExportContext, type Exporter } from './types.ts';
 import { decodeLoginFinished, decodePlayLogin, decodeRespawn, EntityTracker, type EntityPos, LocalPlayer } from './play.ts';
 import { writeZip } from './zip.ts';
@@ -359,7 +359,7 @@ class Session {
  */
 export const flashback: Exporter = {
   name: 'flashback',
-  summary: 'Flashback replay .zip, one file per connection (Flashback mod, same Minecraft version)',
+  summary: 'Flashback replay .zip, one per connection',
   async export(ctx: ExportContext): Promise<string[]> {
     await mkdir(ctx.outDir, { recursive: true });
     const override = ctx.options.gamemode === undefined || ctx.options.gamemode === true ? undefined : Number(ctx.options.gamemode);
@@ -380,17 +380,15 @@ export const flashback: Exporter = {
     }
     const lines: string[] = [];
     let errors = 0;
-    let rebuilt = 0;
     let firstError: string | undefined;
     for (const [connId, session] of sessions) {
       session.finish();
       errors += session.errors + session.breaks.errors;
       firstError ??= session.firstError ?? session.breaks.firstError;
-      rebuilt += session.breaks.count;
       const { path, label } = connectionFile(ctx, connId, 'zip');
       if (session.broken || !session.joined) {
         lines.push(
-          `note: ${label}: ${session.broken ?? 'no complete join in this capture (start the capture before the player joins)'}, skipped`,
+          `note: ${label}: ${session.broken ?? 'no complete join; start capturing before the player joins'}, skipped`,
         );
         continue;
       }
@@ -409,26 +407,17 @@ export const flashback: Exporter = {
         chunks,
       };
       await writeZip(path, [{ name: 'metadata.json', data: Buffer.from(JSON.stringify(metadata, null, 2)) }, ...entries]);
-      lines.push(`${path}  (${label}, ${session.packets} packets, ${session.ticks} ticks = ${(session.ticks / 20).toFixed(1)} s)`);
+      lines.push(path);
     }
     if (lines.length === 0) {
-      lines.push('(no packets matched, nothing written)');
+      lines.push('note: no packets matched; nothing written');
     }
     if (skipped > 0) {
-      lines.push(`note: ${skipped} packets with an unknown connection state were skipped`);
-    }
-    if (rebuilt > 0) {
-      lines.push(breakNote(rebuilt));
+      lines.push(`note: ${skipped} packets skipped (unknown connection state)`);
     }
     if (errors > 0) {
-      lines.push(`note: ${errors} packets could not be decoded and were left out (first: ${firstError})`);
+      lines.push(`note: ${errors} packets could not be decoded (first: ${firstError})`);
     }
-    lines.push(
-      `note: copy the .zip into .minecraft/flashback/replays/ and open it with Flashback on Minecraft ${ctx.protocol.minecraftVersion} ` +
-        `(protocol ${ctx.protocol.protocolVersion}). Filters that drop login or configuration packets make the replay unplayable. ` +
-        'The recording player and entity movement are rebuilt from movement packets; Flashback has no snapshots inside a session, ' +
-        'so seeking backwards replays the chunk from its start.',
-    );
     return lines;
   },
 };

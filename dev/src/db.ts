@@ -1,3 +1,4 @@
+import { dim, relPath, step, streamRow } from './output.ts';
 import { existsSync } from 'node:fs';
 import { mkdir, readdir } from 'node:fs/promises';
 import { basename, join } from 'node:path';
@@ -100,7 +101,7 @@ export async function changelogFiles(): Promise<string[]> {
 }
 
 function buildDevtools(): void {
-  log('Building migration tool');
+  log(dim('Building migration tool'));
   run('./gradlew', ['-q', ':devtools:migrate:installDist']);
 }
 
@@ -124,7 +125,7 @@ export interface ResetOptions {
 export async function reset(options: ResetOptions): Promise<void> {
   const target = options.through ? `changelog ${options.through}` : 'the latest changelog';
   if (!(await confirmAction(`This DROPS the dev database${options.all ? 's (including LuckPerms)' : ''} and reseeds it through ${target}. Continue?`, options.yes))) {
-    log('Aborted');
+    log('Aborted.');
     return;
   }
   await options.stopAll();
@@ -141,20 +142,22 @@ export async function reset(options: ResetOptions): Promise<void> {
     run('psql', ['-X', '-q', '-v', 'ON_ERROR_STOP=1', '-c', reset], { env: pgEnv('luckperms') });
   }
 
+  step('Applying changelogs');
+  const row = streamRow([{ min: 5 }, {}]);
   for (const file of applying) {
     const number = changelogNumber(file);
-    log(`Applying ${file}`);
     devtools(['update-file', file]);
     const seed = join(SEEDS, `${number}.sql`);
-    if (existsSync(seed)) {
-      log(`  seeding ${number}.sql`);
+    const seeded = existsSync(seed);
+    if (seeded) {
       run('psql', ['-X', '-v', 'ON_ERROR_STOP=1', '-q', '-f', seed], { env: pgEnv() });
     }
+    log(`  ${row([number, seeded ? 'applied, seeded' : 'applied'])}`);
   }
   const local = join(SEEDS, 'local.sql');
   if (existsSync(local)) {
-    log('  seeding local.sql');
     run('psql', ['-X', '-v', 'ON_ERROR_STOP=1', '-q', '-f', local], { env: pgEnv() });
+    log(`  ${row(['local', 'seeded'])}`);
   }
 
   if (!options.noFixtures) {
@@ -172,7 +175,7 @@ export async function reset(options: ResetOptions): Promise<void> {
     );
   }
   const last = changelogNumber(applying[applying.length - 1]!);
-  log(`Database is at changelog ${last}${remaining.size > 0 ? `; start the proxy to apply ${[...remaining].map(changelogNumber).join(', ')} against the seeded data` : ''}.`);
+  log(`Database at changelog ${last}${remaining.size > 0 ? `; ${[...remaining].map(changelogNumber).join(', ')} apply on the next proxy start` : ''}.`);
 }
 
 /** Recreates the database at its current changelog position with fresh seed data. */
@@ -186,7 +189,7 @@ export async function snapshot(name: string): Promise<void> {
   await mkdir(SNAPSHOTS, { recursive: true });
   const file = join(SNAPSHOTS, `${name}.dump`);
   run('pg_dump', ['-Fc', '-f', file], { env: pgEnv() });
-  log(`Saved ${file}`);
+  log(`Saved ${relPath(file)}`);
 }
 
 /** pg_restore of a custom-format dump into `database` (existing objects are dropped first). */
@@ -206,10 +209,10 @@ export async function restore(name: string, yes: boolean, stopAll: () => Promise
     fail(`No snapshot "${name}" (available: ${available})`);
   }
   if (!(await confirmAction(`Restore snapshot "${name}" over the dev database?`, yes))) {
-    log('Aborted');
+    log('Aborted.');
     return;
   }
   await stopAll();
   restoreDump(file, env().db.name);
-  log(`Restored ${name}`);
+  log(`Restored ${name}.`);
 }

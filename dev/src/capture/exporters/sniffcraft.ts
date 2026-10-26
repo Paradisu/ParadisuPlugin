@@ -25,7 +25,7 @@ interface Output {
  */
 export const sniffcraft: Exporter = {
   name: 'sniffcraft',
-  summary: 'SniffCraft .scbin sessions, one file per connection (open them in SniffCraft)',
+  summary: 'SniffCraft .scbin, one file per connection',
   async export(ctx: ExportContext): Promise<string[]> {
     await mkdir(ctx.outDir, { recursive: true });
     const fallbackProtocol = Number(ctx.options.protocol ?? ctx.protocol.protocolVersion);
@@ -66,18 +66,14 @@ export const sniffcraft: Exporter = {
     for (const output of outputs.values()) {
       output.stream.end();
       await once(output.stream, 'finish');
-      lines.push(`${output.path}  (${output.label}, ${output.packets} packets)`);
+      lines.push(output.path);
     }
     if (lines.length === 0) {
-      lines.push('(no packets matched, nothing written)');
+      lines.push('note: no packets matched; nothing written');
     }
     if (skipped > 0) {
-      lines.push(`note: ${skipped} packets with an unknown connection state were skipped (SniffCraft needs the state)`);
+      lines.push(`note: ${skipped} packets skipped (unknown connection state)`);
     }
-    lines.push(
-      `note: open these in a SniffCraft build for protocol ${fallbackProtocol} (Minecraft ${ctx.protocol.minecraftVersion}); ` +
-        'SniffCraft stops loading at the first packet id it does not know. Bandwidth is the uncompressed frame size.',
-    );
     return lines;
   },
 };

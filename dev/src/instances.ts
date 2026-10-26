@@ -6,7 +6,8 @@ import { readResolved, type ResolvedFiles } from './downloads.ts';
 import { type Instance, applyTemplates, instancesOf } from './templates.ts';
 import { RUN, ROOT, capture, fail, log, portListening, portOpen, run, sleep, waitFor, warn } from './util.ts';
 import { dbReachable } from './db.ts';
-import { readState, summaryLines } from './share/state.ts';
+import { readState, shareTable } from './share/state.ts';
+import { dim, next, status as statusWord, step, streamRow, table, yellow } from './output.ts';
 import { attach, dotDir, isRunning, javaPid, kill, sendLine, spawnSupervisor } from './supervisor.ts';
 import { controlSocket } from './capture/paths.ts';
 import { hintsFile } from './capture/protocol.ts';
@@ -181,7 +182,7 @@ export async function start(config: DevConfig, names: string[], noBuild: boolean
     fail('PostgreSQL is not reachable (check PARADISU_DB_HOST).');
   }
 
-  log('Starting network');
+  step('Starting network');
   const launchedAt = Date.now();
   const started: Instance[] = [];
   const flags = jvmFlags(config);
@@ -191,16 +192,17 @@ export async function start(config: DevConfig, names: string[], noBuild: boolean
   const ordered = (['limbo', 'velocity', 'paper'] as const).flatMap((platform) =>
     instances.filter((i) => i.platform === platform),
   );
+  const row = streamRow([{ min: Math.max(0, ...ordered.map((i) => i.name.length)) }, { min: 8 }]);
   for (const instance of ordered) {
     if (isRunning(instance)) {
-      log(`  ${instance.name}: already running`);
+      log(`  ${row([instance.name, statusWord('running'), dim('already')])}`);
       continue;
     }
     await prepare(config, resolved, instance);
     const agent = config.jvm.hotswap_agent ? hotswapFlags(instance.platform, groups, config.jvm.hotswap_plugins) : [];
     await launch(config, resolved.minecraft, instance, [...new Set([...flags, ...agent])]);
     started.push(instance);
-    log(`  ${instance.name}: starting (port ${instance.port}, debug ${instance.debugPort})`);
+    log(`  ${row([instance.name, statusWord('starting'), `port ${instance.port}  debug ${instance.debugPort}`])}`);
     if (instance.platform === 'velocity') {
       const up = await waitFor(() => portOpen(instance.port), 120_000);
       if (!up) {
@@ -216,17 +218,16 @@ export async function start(config: DevConfig, names: string[], noBuild: boolean
   }
   await Promise.all(started.map((instance) => firstStartCommands(instance, launchedAt)));
 
-  log('Network ready');
-  log(`  Join: localhost:${config.proxy.port} (or this machine's address for others on your network)`);
-  for (const instance of ordered) {
-    log(`  ${instance.name}: debug port ${instance.debugPort}, console: dev console ${instance.name}`);
-  }
+  log(`Ready. Join at localhost:${config.proxy.port}`);
 }
 
 export async function stop(config: DevConfig, names: string[]): Promise<void> {
   const instances = select(config, names).reverse();
-  for (const instance of instances.filter((candidate) => isRunning(candidate))) {
-    log(`Stopping ${instance.name}`);
+  const running = instances.filter((candidate) => isRunning(candidate));
+  if (running.length > 0) {
+    log(`Stopping ${running.map((instance) => instance.name).join(', ')}`);
+  }
+  for (const instance of running) {
     await sendLine(instance, stopCommand(instance)).catch(() => {});
   }
   for (const instance of instances) {
@@ -240,19 +241,25 @@ export async function stop(config: DevConfig, names: string[]): Promise<void> {
 }
 
 export async function status(config: DevConfig): Promise<void> {
+  const rows: string[][] = [];
   for (const instance of instancesOf(config)) {
-    const enabled = instance.enabled;
     const running = isRunning(instance);
-    const listening = await portListening(instance.port);
-    log(
-      `${instance.name.padEnd(10)} ${enabled ? 'enabled ' : 'disabled'} ${running ? 'running' : 'stopped'} ` +
-        `port ${instance.port} ${listening ? 'open' : 'closed'}, debug ${instance.debugPort} ${(await portListening(instance.debugPort)) ? 'open' : 'closed'}` +
-        (running ? `, pid ${javaPid(instance) ?? '?'}` : ''),
-    );
+    const port = async (value: number) => {
+      const listening = await portListening(value);
+      return running && !listening ? `${value} ${dim('closed')}` : !running && listening ? `${value} ${yellow('in use')}` : String(value);
+    };
+    rows.push([
+      instance.name,
+      instance.platform,
+      statusWord(running ? 'running' : instance.enabled ? 'stopped' : 'disabled'),
+      await port(instance.port),
+      await port(instance.debugPort),
+      running ? String(javaPid(instance) ?? '?') : '',
+    ]);
   }
-  for (const line of summaryLines(readState())) {
-    log(line);
-  }
+  log(table(['instance', 'platform', 'state', 'port', 'debug', { header: 'pid', align: 'right' }], rows));
+  log('');
+  log(shareTable(readState()));
 }
 
 export function console_(config: DevConfig, name: string, options: { readOnly: boolean; wait: boolean }): Promise<void> {
@@ -281,7 +288,7 @@ export async function resetWorld(config: DevConfig, name: string): Promise<void>
       await rm(join(instance.dir, entry), { recursive: true, force: true });
     }
   }
-  log(`Reset worlds of ${name}`);
+  log(`Reset worlds of ${name}.`);
 }
 
 export async function clean(all: boolean): Promise<void> {
@@ -292,7 +299,7 @@ export async function clean(all: boolean): Promise<void> {
 }
 
 export async function build(): Promise<void> {
-  log('Building plugin jar');
+  log(dim('Building plugin jar'));
   run('./gradlew', ['-q', 'shadowJar', ':devtools:capture:jar']);
 }
 

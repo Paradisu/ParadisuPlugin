@@ -1,3 +1,4 @@
+import { dim } from '../output.ts';
 import { createHash } from 'node:crypto';
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { basename, join, resolve } from 'node:path';
@@ -206,7 +207,7 @@ export async function loadFixtures(options: LoadOptions): Promise<number> {
   }
   const loadable = files.map(readFixture).filter((file) => {
     if (options.through && file.requires_changelog && file.requires_changelog > options.through) {
-      log(`  fixtures: skipping ${file.name} (needs changelog ${file.requires_changelog})`);
+      log(dim(`  fixtures  skipped ${file.name}; needs changelog ${file.requires_changelog}`));
       return false;
     }
     return file.inventory.length > 0;
@@ -251,7 +252,7 @@ export async function loadFixtures(options: LoadOptions): Promise<number> {
   }
   const prefix = options.replace ? [`DELETE FROM player_inventories WHERE id IN (${ids.map((id) => `'${id}'`).join(', ')});`] : [];
   runSql(`BEGIN;\n${[...prefix, ...statements].join('\n')}\nCOMMIT;\n`);
-  log(`  fixtures: loaded ${count} inventory snapshot(s) from ${loadable.map((f) => f.name).join(', ')}`);
+  log(`  fixtures  loaded ${count} inventories (${loadable.map((f) => f.name).join(', ')})`);
   return count;
 }
 

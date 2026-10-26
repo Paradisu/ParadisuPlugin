@@ -6,6 +6,7 @@ import net from 'node:net';
 import { dirname, join, resolve } from 'node:path';
 import { Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
+import { paint } from './output.ts';
 
 export const ROOT = resolve(import.meta.dirname, '..', '..');
 export const DEV = join(ROOT, 'dev');
@@ -28,7 +29,7 @@ export function log(message: string): void {
 }
 
 export function warn(message: string): void {
-  console.warn(`WARNING: ${message}`);
+  console.warn(`${paint('yellow', 'warning:', process.stderr)} ${message}`);
 }
 
 export interface CaptureResult {

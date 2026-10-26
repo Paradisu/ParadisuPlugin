@@ -445,7 +445,6 @@ test('both exporters record the recording player\'s own block breaks', async () 
 
   const fb = context(packets, table());
   const lines = await flashback.export(fb);
-  assert.ok(lines.some((line) => line.includes('1 block breaks')), lines.join('\n'));
   const zip = readZip(readFileSync(join(fb.outDir, 'cap_proxy_frontend_Steve.zip')));
   const chunk = readChunk(zip.get('c0.flashback')!);
   const fbFrames = chunk.actions.filter((a) => a.name === 'flashback:action/game_packet').map((a) => a.payload);
@@ -457,7 +456,6 @@ test('both exporters record the recording player\'s own block breaks', async () 
 
   const rm = context(packets, table());
   const rmLines = await replaymod.export(rm);
-  assert.ok(rmLines.some((line) => line.includes('1 block breaks')), rmLines.join('\n'));
   const records = readRecords(readZip(readFileSync(join(rm.outDir, 'cap_proxy_frontend_Steve.mcpr'))).get('recording.tmcpr')!);
   const rmEvents = events(records.map((r) => r.frame));
   assert.equal(rmEvents.length, 1);
