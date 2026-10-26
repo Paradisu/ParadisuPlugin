@@ -40,7 +40,7 @@ graph TD
 | `velocity` | `ParadisuVelocity` (also runs Liquibase), Velocity commands/listeners, teleport utilities, `messaging/` (`VelocityMessagingManager`), config models, `velocity-plugin.json`. |
 | `devtools/migrate` | Dev-only Liquibase runner (`DevMigrate`) used by `dev db`; not part of `ParadisuPlugin.jar`. |
 | `devtools/capture` | Dev-only packet capture plugin (`ParadisuCapture.jar`) for the `dev capture` commands. One jar loads on Paper, Velocity and Limbo; it is not part of `ParadisuPlugin.jar` and has no Paradisu dependencies. |
-| `build-logic` | Included build with convention plugins (`net.paradisu.java-conventions`, `platform-conventions`, `shadow-conventions`): repositories, Java toolchain, Spotless, `processResources` templating. |
+| `build-logic` | Included build with the `net.paradisu.java-conventions` convention plugin: repositories, Java toolchain, Spotless, `processResources` templating. Only the root project applies Shadow. |
 
 Dependencies are declared per module in each `build.gradle.kts` using the version catalog [gradle/libs.versions.toml](gradle/libs.versions.toml). `core` uses `compileOnly` for most libraries; the platform modules decide what is bundled.
 
@@ -67,10 +67,11 @@ Requirements: **JDK 25** (the Gradle toolchain also resolves it automatically th
 ```
 
 Notes:
-- The final jar is `build/libs/ParadisuPlugin.jar`. Per-module jars are in each module's `build/libs/`.
+- The final jar is `build/libs/ParadisuPlugin.jar`. Per-module jars in each module's `build/libs/` are plain, unshaded jars.
 - Lombok is used throughout (annotation processing is already configured).
 - `plugin.yml`, `velocity-plugin.json` and `*.properties` are passed through Gradle `expand(...)`, so `${version}`, `${name}`, etc. are substituted at build time. A literal `$` in a `.properties` file must be escaped as `\$`.
 - Version, id, authors and URL come from [gradle.properties](gradle.properties).
+- `gradle.properties` also enables parallel execution, the build cache and the configuration cache. Build scripts must stay configuration-cache compatible: read values with `providers.gradleProperty(...)` / `providers.environmentVariable(...)`, never capture `project` or script functions inside task actions, and do not apply Shadow outside the root project.
 
 CI (`.github/workflows`) builds on every push. Pull requests run `spotlessApply` and push a formatting commit, then run `./gradlew build`.
 
@@ -693,7 +694,7 @@ flowchart TD
 | Gradle plugins (shadow, blossom, indra, lombok, spotless) | [Gradle Plugin Portal](https://plugins.gradle.org/) or Maven Central; the `[plugins]` entries use the plugin id |
 | `luckperms-api` | [LuckPerms releases](https://github.com/LuckPerms/LuckPerms/releases) / Maven Central `net.luckperms:api` |
 
-Repositories used by the build are declared in `net.paradisu.java-conventions.gradle.kts` (Maven Central, PaperMC, OpenCollab, Minebench, and LoohpJames' repository for Limbo). Fetch metadata directly, for example:
+Repositories used by the build are declared in `net.paradisu.java-conventions.gradle.kts`, each non-Central one limited to its groups with `includeGroup` (add the group there when a new dependency comes from one of them) (Maven Central, PaperMC, OpenCollab, Minebench, and LoohpJames' repository for Limbo). Fetch metadata directly, for example:
 
 ```bash
 curl -s https://repo.maven.apache.org/maven2/org/hibernate/orm/hibernate-core/maven-metadata.xml | grep -E "<(latest|release)>"

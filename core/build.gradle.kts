@@ -8,7 +8,7 @@ plugins {
     alias(libs.plugins.blossom)
     alias(libs.plugins.indra.git)
     alias(libs.plugins.lombok)
-    id("net.paradisu.shadow-conventions")
+    id("net.paradisu.java-conventions")
     `eclipse`
 }
 
@@ -61,17 +61,17 @@ sourceSets {
     main {
         blossom {
             javaSources {
-                property("plugin.id", rootProject.property("id") as String)
-                property("plugin.name", rootProject.property("pluginName") as String)
-                property("plugin.version", rootProject.property("version") as String)
-                property("plugin.description", rootProject.property("description") as String)
-                property("plugin.url", rootProject.property("url") as String)
-                property("plugin.authors", rootProject.property("authors") as String)
+                property("plugin.id", providers.gradleProperty("id").get())
+                property("plugin.name", providers.gradleProperty("pluginName").get())
+                property("plugin.version", providers.gradleProperty("version").get())
+                property("plugin.description", providers.gradleProperty("description").get())
+                property("plugin.url", providers.gradleProperty("url").get())
+                property("plugin.authors", providers.gradleProperty("authors").get())
                 
                 property("git.branch", gitBranch)
                 property("git.commit", gitCommitName)
                 property("git.commitAbbrev", gitCommitAbbrev)
-                property("git.buildNumber", System.getenv("GITHUB_RUN_NUMBER") ?: "-1")
+                property("git.buildNumber", providers.environmentVariable("GITHUB_RUN_NUMBER").orElse("-1"))
                 property("git.commitMessage", gitCommitMessage)
                 property("git.repository", gitRepositoryUrl)
             }

@@ -14,3 +14,9 @@ application {
 }
 
 description = "migrate"
+
+// `dev` only uses installDist
+tasks {
+    distZip { enabled = false }
+    distTar { enabled = false }
+}

@@ -11,12 +11,28 @@ val libs = the<LibrariesForLibs>()
 
 repositories {
     // mavenLocal()
-    maven("https://repo.maven.apache.org/maven2/")
-    maven("https://repo.papermc.io/repository/maven-public/")
-    maven("https://repo.opencollab.dev/main")
-    maven("https://repo.minebench.de/")
-    // Limbo (dev-only capture plugin compiles against it); keep last so other artifacts resolve elsewhere first
-    maven("https://repo.loohpjames.com/repository")
+    // Every repository except Central is limited to the groups it serves, so Gradle never probes it for anything else.
+    // A new dependency from one of these repositories may need its group added here.
+    mavenCentral()
+    maven("https://repo.papermc.io/repository/maven-public/") {
+        content {
+            includeGroup("io.papermc.paper")
+            includeGroup("com.velocitypowered")
+            // Transitives of paper-api / velocity-api that Central does not carry
+            includeGroup("com.mojang")
+            includeGroup("net.md-5")
+        }
+    }
+    maven("https://repo.opencollab.dev/main") {
+        content { includeGroup("com.nukkitx.fastutil") }
+    }
+    maven("https://repo.minebench.de/") {
+        content { includeGroup("de.themoep.connectorplugin") }
+    }
+    // Limbo (dev-only capture plugin compiles against it)
+    maven("https://repo.loohpjames.com/repository") {
+        content { includeGroup("com.loohp") }
+    }
 }
 
 // Use providers.gradleProperty(...) instead of properties[...]
@@ -56,18 +72,22 @@ tasks.withType<Javadoc> {
     options.encoding = "UTF-8"
 }
 
+// Resolved eagerly so the processResources action only captures plain strings (configuration cache)
+val expandProperties: Map<String, String> = mapOf(
+    "id" to providers.gradleProperty("id").get(),
+    "name" to providers.gradleProperty("pluginName").get(),
+    "version" to providers.gradleProperty("version").get(),
+    "paperApiVersion" to parseApiVersion(libs.versions.paper.api.get()),
+    "description" to providers.gradleProperty("description").get(),
+    "url" to providers.gradleProperty("url").get(),
+    "authors" to providers.gradleProperty("authors").get()
+)
+
 tasks {
     processResources {
+        val properties = expandProperties
         filesMatching(listOf("plugin.yml", "velocity-plugin.json", "*.properties")) {
-            expand(
-                "id" to providers.gradleProperty("id").get(),
-                "name" to providers.gradleProperty("pluginName").get(),
-                "version" to providers.gradleProperty("version").get(),
-                "paperApiVersion" to parseApiVersion(libs.versions.paper.api.get()),
-                "description" to providers.gradleProperty("description").get(),
-                "url" to providers.gradleProperty("url").get(),
-                "authors" to providers.gradleProperty("authors").get()
-            )
+            expand(properties)
         }
     }
 }

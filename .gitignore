@@ -195,3 +195,4 @@ dev/db/fixtures.local/
 dev/plugins-local/*.jar
 hs_err_pid*.log
 .pnpm-store/
+.agents/

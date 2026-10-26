@@ -58,6 +58,7 @@ dev db reset --through 00N        # rebuild the database up to changelog 00N wit
 - Always run `./gradlew spotlessApply` then `./gradlew build` after editing Java. Do not hand-format or add license headers (Spotless adds them; new files only need `package`).
 - Use Lombok in the existing style (`@Accessors(fluent = true)`, `@Getter`, `@Builder(toBuilder = true)`, `@RequiredArgsConstructor`). Accessors are fluent: `model.name()`, not `getName()`.
 - Match surrounding code: Javadoc on public methods, fluent builders, `paradisu.logger()` for logging (never `System.out`).
+- The build uses the configuration cache, parallel execution and the build cache (`gradle.properties`). Keep build scripts compatible: read values with `providers.gradleProperty(...)` / `providers.environmentVariable(...)`, never capture `project` or script functions in task actions, and only the root project applies Shadow.
 - Keep `database` free of Paper/Velocity/`core` imports.
 - Don't hard-code dependency versions in module `build.gradle.kts`; use the version catalog.
 - `*.properties`, `plugin.yml`, `velocity-plugin.json` are processed with Gradle `expand`: `${...}` is substituted; write a literal `$` as `\$`.
@@ -113,7 +114,8 @@ Paradisu's own server<->server/proxy messages run on ConnectorPlugin's `Connecto
 
 ## Updating dependencies
 
-- Edit `gradle/libs.versions.toml` `[versions]` only. Keep shared `version.ref`s together (Hibernate artifacts, Adventure, Cloud minecraft artifacts).
+- Edit `gradle/libs.versions.toml` `[versions]` only.
+- Repositories in `net.paradisu.java-conventions` (except Maven Central) are filtered to the groups they serve (`includeGroup`). A new dependency from Paper, OpenCollab, Minebench or LoohpJames needs its group added there, or it will fail to resolve. Keep shared `version.ref`s together (Hibernate artifacts, Adventure, Cloud minecraft artifacts).
 - Look up latest versions from the real source, don't guess:
   - Most libs/plugins: `curl -s https://repo.maven.apache.org/maven2/<group/as/path>/<artifact>/maven-metadata.xml` (Maven Central) or the Gradle Plugin Portal.
   - `paper-api`, `velocity-api`: `https://repo.papermc.io/repository/maven-public/<group path>/<artifact>/maven-metadata.xml` (Velocity is a timestamped SNAPSHOT; Paper is a `build.N-beta`-style version).
