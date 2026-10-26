@@ -166,7 +166,8 @@ export async function supervise(instance: Instance): Promise<void> {
           continue;
         }
         if (message.t === 'hello') {
-          const replay = ring.split('\n').slice(-(message.replay ?? 200)).join('\n');
+          const count = message.replay ?? 200;
+          const replay = count > 0 ? ring.split('\n').slice(-count).join('\n') : '';
           client.write(`${JSON.stringify({ t: 'out', data: replay })}\n`);
           clients.add(client);
         } else if (message.t === 'in' && typeof message.line === 'string') {
@@ -236,6 +237,56 @@ async function send(instance: Instance, message: object): Promise<void> {
 /** Writes a line to the server console. */
 export function sendLine(instance: Instance, line: string): Promise<void> {
   return send(instance, { t: 'in', line });
+}
+
+export interface LineResult {
+  /** Everything the console wrote while waiting */
+  output: string;
+  /** Exit code when the server exited while waiting */
+  exited?: number;
+}
+
+/** Sends one line to the server console and collects what the console writes for `ms` milliseconds (or until the server exits). */
+export async function runLine(instance: Instance, line: string, ms: number): Promise<LineResult> {
+  const socket = await connect(instance);
+  return new Promise((resolve) => {
+    const result: LineResult = { output: '' };
+    let pending = '';
+    let finished = false;
+    const finish = () => {
+      if (finished) {
+        return;
+      }
+      finished = true;
+      clearTimeout(timer);
+      socket.destroy();
+      resolve(result);
+    };
+    const timer = setTimeout(finish, ms);
+    socket.on('data', (chunk) => {
+      pending += chunk.toString('utf8');
+      for (let newline = pending.indexOf('\n'); newline !== -1; newline = pending.indexOf('\n')) {
+        const raw = pending.slice(0, newline);
+        pending = pending.slice(newline + 1);
+        let message: { t: string; data?: string; code?: number };
+        try {
+          message = JSON.parse(raw);
+        } catch {
+          continue;
+        }
+        if (message.t === 'out' && message.data) {
+          result.output += message.data;
+        } else if (message.t === 'exit') {
+          result.exited = message.code ?? 1;
+          finish();
+        }
+      }
+    });
+    socket.on('close', finish);
+    socket.on('error', finish);
+    socket.write(`${JSON.stringify({ t: 'hello', replay: 0 })}\n`);
+    socket.write(`${JSON.stringify({ t: 'in', line })}\n`);
+  });
 }
 
 /** Kills the JVM (SIGKILL); falls back to signalling it directly if the socket is gone. */

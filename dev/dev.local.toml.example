@@ -1,6 +1,6 @@
 # Copy to dev.local.toml (gitignored) to override dev.toml.
 
-accept_eula = true
+# accept_eula is already true in dev.toml (starting the network accepts https://aka.ms/MinecraftEULA)
 #online_mode = false  # let any username join (UUIDs will not match production)
 
 # Pin the Minecraft DataVersion stamped on generated items (normally read from the downloaded server jar)
@@ -12,10 +12,10 @@ accept_eula = true
 #[jvm]
 #hotswap_agent = true
 
-# Enable a second backend for cross-server testing
+# Disable the second backend to save memory
 #[[servers]]
 #name = "creative"
-#enabled = true
+#enabled = false
 
 # Add a plugin
 #[[plugins]]

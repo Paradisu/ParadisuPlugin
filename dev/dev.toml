@@ -1,7 +1,7 @@
 # Development network definition. Override anything in dev/dev.local.toml (gitignored):
 # tables merge, and [[servers]] / [[plugins]] entries merge by name / key.
 
-# Must be set to true in dev.local.toml: you accept https://aka.ms/MinecraftEULA
+# Starting the network means you accept https://aka.ms/MinecraftEULA (set to false in dev.local.toml to refuse)
 accept_eula = true
 # "auto" derives the Minecraft version from paper-api and the Velocity version from velocity-api in
 # gradle/libs.versions.toml. Backends run Purpur (a Paper fork, like production).
@@ -88,7 +88,7 @@ context = { server = "lobby", warp = "paradisu", inventory = "paradisu" }
 
 [[servers]]
 name = "creative"
-enabled = true  # enable in dev.local.toml for cross-server testing
+enabled = true  # second backend for cross-server testing; set enabled = false in dev.local.toml to save memory
 port = 30067
 debug_port = 5007
 memory = "2G"

@@ -14,6 +14,9 @@ on:
       - '.vscode/**'
       - 'dev/**'
       - 'CONTRIBUTING.md'
+      - 'AGENTS.md'
+      - 'CLAUDE.md'
+      - 'docs/**'
       - 'LICENSE'
       - 'README.md'
 

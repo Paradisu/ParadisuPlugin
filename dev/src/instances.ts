@@ -8,7 +8,7 @@ import { RUN, ROOT, capture, fail, log, portListening, portOpen, run, sleep, wai
 import { dbReachable } from './db.ts';
 import { readState, shareTable } from './share/state.ts';
 import { dim, next, status as statusWord, step, streamRow, table, yellow } from './output.ts';
-import { attach, dotDir, isRunning, javaPid, kill, sendLine, spawnSupervisor } from './supervisor.ts';
+import { attach, dotDir, isRunning, javaPid, kill, runLine, sendLine, spawnSupervisor } from './supervisor.ts';
 import { controlSocket } from './capture/paths.ts';
 import { hintsFile } from './capture/protocol.ts';
 import { catalogGroups, hotswapFlags } from './hotswap.ts';
@@ -264,6 +264,20 @@ export async function status(config: DevConfig): Promise<void> {
 
 export function console_(config: DevConfig, name: string, options: { readOnly: boolean; wait: boolean }): Promise<void> {
   return attach(select(config, [name])[0]!, options);
+}
+
+/** Runs one console command without a terminal and prints what the console wrote within `seconds`. */
+export async function consoleSend(config: DevConfig, name: string, line: string, seconds: number): Promise<void> {
+  const instance = select(config, [name])[0]!;
+  if (!isRunning(instance)) {
+    fail(`${name} is not running`);
+  }
+  const result = await runLine(instance, line, seconds * 1000);
+  const text = process.stdout.isTTY ? result.output : result.output.replace(/\x1b\[[0-9;]*m/g, '');
+  process.stdout.write(text.endsWith('\n') || text === '' ? text : `${text}\n`);
+  if (result.exited !== undefined) {
+    fail(`${name} exited with code ${result.exited}`);
+  }
 }
 
 export function logs(config: DevConfig, name: string, follow: boolean, consoleLog = false): void {

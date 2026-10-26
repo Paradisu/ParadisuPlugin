@@ -11,8 +11,8 @@
                 "pattern": { "regexp": "^__never_matches__$" },
                 "background": {
                     "activeOnStart": true,
-                    "beginsPattern": "^Starting network",
-                    "endsPattern": "^Network ready"
+                    "beginsPattern": "Starting network",
+                    "endsPattern": "Ready\\. Join at"
                 }
             }
         },

@@ -17,7 +17,7 @@ import { askOptional, askText, disableInput, interactive, isPromptExit, pickFrom
 import type { Instance } from './templates.ts';
 import { dim, step } from './output.ts';
 import { commandHelp, groupOf, menuChoices, usage as helpUsage } from './help.ts';
-import { DEV, DevError, ROOT, capture, log, warn } from './util.ts';
+import { DEV, DevError, ROOT, capture, fail, log, warn } from './util.ts';
 
 const noBuildFlag = { 'no-build': { type: 'boolean' } } as const;
 
@@ -136,17 +136,36 @@ const COMMANDS: Command[] = [
     name: 'console',
     usage: '<name>',
     summary: 'Attach to an instance console',
-    details: 'Ctrl-C detaches; the server keeps running.',
+    details:
+      'Ctrl-C detaches; the server keeps running. With --send the command runs without a terminal: it prints what the console wrote within the timeout and exits.',
     options: [
       { flag: '--read-only', summary: 'Do not send input' },
       { flag: '--wait', summary: 'Wait for the instance to start' },
+      { flag: '--send <line>', summary: 'Run one console command and print its output' },
+      { flag: '--timeout <seconds>', summary: 'How long --send collects output (default 3)' },
     ],
     run: async (ctx, args) => {
       const { values, positionals } = parseArgs({
         args,
-        options: { 'read-only': { type: 'boolean' }, wait: { type: 'boolean' } },
+        options: {
+          'read-only': { type: 'boolean' },
+          wait: { type: 'boolean' },
+          send: { type: 'string' },
+          timeout: { type: 'string' },
+        },
         allowPositionals: true,
       });
+      if (values.send !== undefined) {
+        const target = positionals[0];
+        if (!target) {
+          fail('--send needs an instance name');
+        }
+        const seconds = values.timeout === undefined ? 3 : Number(values.timeout);
+        if (!Number.isFinite(seconds) || seconds <= 0) {
+          fail('--timeout must be a positive number of seconds');
+        }
+        return instances.consoleSend(ctx.config, target, values.send, seconds);
+      }
       const wait = values.wait ?? false;
       const name = await instanceArg(ctx, positionals, 'Attach to which console?', (i) => wait || instances.isRunning(i));
       return instances.console_(ctx.config, name, { readOnly: values['read-only'] ?? false, wait });
