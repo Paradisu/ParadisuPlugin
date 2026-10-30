@@ -40,8 +40,19 @@ public class ModelGiveCommand extends AbstractPaperCommand {
                 .commandBuilder("mgive")
                 .permission("paradisu.mgive")
                 .commandDescription(Description.of(
-                        paradisu.messagesConfig().commands().mgive().helpMsg()))
-                .optional(
+                        paradisu.messagesConfig().commands().mgive().helpMsg()));
+
+        this.commandManager.command(builder.literal("search")
+                .commandDescription(Description.of(
+                        paradisu.messagesConfig().commands().mgive().searchHelp()))
+                .required(
+                        "query",
+                        StringParser.greedyStringParser(),
+                        Description.of(
+                                paradisu.messagesConfig().commands().mgive().searchArgument()))
+                .handler(this::mgiveCommand));
+
+        builder = builder.optional(
                         "tag",
                         StringParser.greedyStringParser(),
                         Description.of(paradisu.messagesConfig()
@@ -65,6 +76,7 @@ public class ModelGiveCommand extends AbstractPaperCommand {
             return;
         }
 
-        ModelGiveInventory.openPage(paradisu, player, 0, context.getOrDefault("tag", ""));
+        ModelGiveInventory.openPage(
+                paradisu, player, 0, context.getOrDefault("tag", ""), context.getOrDefault("query", ""), true);
     }
 }

@@ -19,6 +19,8 @@ package net.paradisu.paper.inventory;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.paradisu.core.locale.Messages;
 import net.paradisu.database.models.ItemModel;
 import net.paradisu.paper.ParadisuPaper;
@@ -44,12 +46,15 @@ public class ModelGiveInventory implements InventoryHolder {
     private final List<ItemModel> models;
     private final int page;
     private final String tag;
+    private final String query;
     private final int totalPages;
 
-    public ModelGiveInventory(int page, int totalPages, List<ItemModel> models, ModelItemFactory factory, String tag) {
+    public ModelGiveInventory(
+            int page, int totalPages, List<ItemModel> models, ModelItemFactory factory, String tag, String query) {
 
         this.page = page;
         this.tag = tag;
+        this.query = query;
         this.totalPages = totalPages;
         this.models = List.copyOf(models);
 
@@ -113,6 +118,11 @@ public class ModelGiveInventory implements InventoryHolder {
         return tag;
     }
 
+    /** Returns the name search carried across menu pages. */
+    public String query() {
+        return query;
+    }
+
     public int totalPages() {
         return totalPages;
     }
@@ -129,6 +139,17 @@ public class ModelGiveInventory implements InventoryHolder {
 
     /** Opens a page of cached models filtered by their item_use tag. */
     public static void openPage(ParadisuPaper paradisu, Player player, int requestedPage, String tag) {
+        openPage(paradisu, player, requestedPage, tag, "");
+    }
+
+    /** Opens a page filtered by tag or, when supplied, a model display name search. */
+    public static void openPage(ParadisuPaper paradisu, Player player, int requestedPage, String tag, String query) {
+        openPage(paradisu, player, requestedPage, tag, query, false);
+    }
+
+    /** Opens a model page and optionally confirms the command and its filter. */
+    public static void openPage(
+            ParadisuPaper paradisu, Player player, int requestedPage, String tag, String query, boolean announce) {
 
         if (!player.hasPermission("paradisu.mgive")) {
             return;
@@ -140,19 +161,40 @@ public class ModelGiveInventory implements InventoryHolder {
                     paradisu.messagesConfig().commands().mgive().output().get(0));
             return;
         }
-        List<ItemModel> allModels = paradisu.modelManager().models(tag);
+        List<ItemModel> allModels = query.isBlank()
+                ? paradisu.modelManager().models(tag)
+                : paradisu.modelManager().search(query);
+        if (allModels.isEmpty() && !query.isBlank()) {
+            Messages.sendPrefixed(
+                    player,
+                    paradisu.messagesConfig().commands().mgive().searchNoMatches(),
+                    Placeholder.component("query", Component.text(query, TextColor.color(0xFFA500))));
+            return;
+        }
         if (allModels.isEmpty() && !tag.isBlank()) {
             Messages.sendPrefixed(
                     player,
                     paradisu.messagesConfig().commands().mgive().noMatches(),
-                    net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.unparsed("tag", tag));
+                    Placeholder.component("tag", Component.text(tag, TextColor.color(0xFFA500))));
             return;
         }
         int totalPages = Math.max(1, (allModels.size() + PAGE_SIZE - 1) / PAGE_SIZE);
         int page = Math.max(0, Math.min(requestedPage, totalPages - 1));
         int start = page * PAGE_SIZE;
         List<ItemModel> models = allModels.subList(start, Math.min(start + PAGE_SIZE, allModels.size()));
-        ModelGiveInventory menu = new ModelGiveInventory(page, totalPages, models, new ModelItemFactory(paradisu), tag);
+        ModelGiveInventory menu =
+                new ModelGiveInventory(page, totalPages, models, new ModelItemFactory(paradisu), tag, query);
         player.openInventory(menu.getInventory());
+        if (announce) {
+            var messages = paradisu.messagesConfig().commands().mgive();
+            String message = !query.isBlank()
+                    ? messages.openedSearch()
+                    : !tag.isBlank() ? messages.openedTag() : messages.opened();
+            Messages.sendPrefixed(
+                    player,
+                    message,
+                    Placeholder.component("tag", Component.text(tag, TextColor.color(0xFFA500))),
+                    Placeholder.component("query", Component.text(query, TextColor.color(0xFFA500))));
+        }
     }
 }

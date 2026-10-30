@@ -90,6 +90,24 @@ public final class MessagesConfig {
         @Getter
         @ConfigSerializable
         public static final class ModelGive {
+            @Setting("opened")
+            private String opened = "<lang:paradisu.command.output.mgive.opened>";
+
+            @Setting("opened-tag")
+            private String openedTag = "<lang:paradisu.command.output.mgive.opened-tag:'<tag>'>";
+
+            @Setting("opened-search")
+            private String openedSearch = "<lang:paradisu.command.output.mgive.opened-search:'<query>'>";
+
+            @Setting("search-help")
+            private String searchHelp = "<lang:paradisu.command.help.mgive.search>";
+
+            @Setting("search-argument")
+            private String searchArgument = "<lang:paradisu.command.help.mgive.search.0>";
+
+            @Setting("search-no-matches")
+            private String searchNoMatches = "<lang:paradisu.command.output.mgive.search:'<query>'>";
+
             @Setting("help-msg")
             private String helpMsg = "<lang:paradisu.command.help.mgive>";
 
@@ -130,14 +148,20 @@ public final class MessagesConfig {
             @Setting("help-msg")
             private String helpMsg = "<lang:paradisu.command.help.realsize>";
 
-            @Setting("help-msg")
+            @Setting("too-tall")
             private String tootall = "<lang:paradisu.command.output.realsize.tootall>";
 
-            @Setting("help-msg")
-            private String tooshort = "<lang:paradisu.command.output.realsize.toosmall>";
+            @Setting("too-short")
+            private String tooshort = "<lang:paradisu.command.output.realsize.tootshort>";
 
             @Setting("output")
             private List<String> output = List.of("<lang:paradisu.command.output.realsize>");
+
+            @Setting("player-required")
+            private String playerRequired = "<lang:paradisu.command.output.realsize.player-required>";
+
+            @Setting("reset")
+            private String reset = "<lang:paradisu.command.output.realsize.reset:'<player>'>";
         }
 
         @Getter

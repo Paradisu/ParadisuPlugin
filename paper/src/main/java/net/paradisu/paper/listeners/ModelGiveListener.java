@@ -141,7 +141,7 @@ public class ModelGiveListener implements Listener {
     private void openPageAfterClick(Player player, ModelGiveInventory menu, int page) {
         Bukkit.getScheduler().runTask(paradisu, () -> {
             if (player.isOnline() && player.getOpenInventory().getTopInventory().getHolder() == menu) {
-                ModelGiveInventory.openPage(paradisu, player, page, menu.tag());
+                ModelGiveInventory.openPage(paradisu, player, page, menu.tag(), menu.query());
             }
         });
     }

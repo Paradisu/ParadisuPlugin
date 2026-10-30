@@ -27,6 +27,10 @@ import org.bukkit.entity.Player;
 import org.incendo.cloud.bukkit.parser.PlayerParser;
 import org.incendo.cloud.context.CommandContext;
 import org.incendo.cloud.description.Description;
+import org.incendo.cloud.parser.standard.IntegerParser;
+import org.incendo.cloud.suggestion.SuggestionProvider;
+
+import java.util.List;
 
 public class RealSizeCommand extends AbstractPaperCommand {
 
@@ -38,31 +42,52 @@ public class RealSizeCommand extends AbstractPaperCommand {
     public void register() {
         var builder = this.commandManager
                 .commandBuilder("realsize")
+                .permission("paradisu.realsize")
                 .commandDescription(Description.of(
                         paradisu.messagesConfig().commands().realSize().helpMsg()));
 
         this.commandManager.command(builder.literal("set")
-                .required("feet", PlayerParser.playerParser())
-                .permission("paradisu.realsize")
-                .optional("inches", PlayerParser.playerParser())
+                .required(
+                        "feet",
+                        IntegerParser.integerParser(0, 100),
+                        SuggestionProvider.blockingStrings((context, input) -> List.of("5", "6")))
+                .optional("inches", IntegerParser.integerParser(0, 11))
                 .handler(this::realSize));
 
-        this.commandManager.command(
-                builder.literal("reset").handler(context -> {
-                    Player player = (Player) context.sender();
+        this.commandManager.command(builder.literal("reset")
+                .optional("player", PlayerParser.playerParser())
+                .handler(context -> {
+                    Player player = context.getOrDefault("player", null);
+                    if (player == null && context.sender().getSender() instanceof Player sender) {
+                        player = sender;
+                    }
+                    if (player == null) {
+                        Messages.sendPrefixed(
+                                context.sender().getSender(),
+                                paradisu.messagesConfig().commands().realSize().playerRequired());
+                        return;
+                    }
                     player.getAttribute(Attribute.SCALE).setBaseValue(1.0);
-                    // this.helpManager.getMinecraftHelp().queryCommands(player.getAttribute(Attribute.SCALE).setBaseValue(1.0), context.sender());
+                    Messages.sendPrefixedPlaceholder(
+                            context.sender().getSender(),
+                            paradisu.messagesConfig().commands().realSize().reset(),
+                            "player",
+                            player.getName());
                 }));
-
-        this.commandManager.command(builder);
     }
 
+    /** Applies the requested height in feet and inches to the player. */
     public void realSize(CommandContext<CommandSourceStack> context) {
-        Player player = (Player) context.sender().getSender();
+        if (!(context.sender().getSender() instanceof Player player)) {
+            Messages.sendPrefixed(
+                    context.sender().getSender(),
+                    paradisu.messagesConfig().commands().realSize().playerRequired());
+            return;
+        }
 
-        int feet = Integer.parseInt(context.get("feet"));
-        int inches = Integer.parseInt(context.getOrDefault("inches", "0"));
-        int totalinches = feet + inches; // totalinches
+        int feet = context.get("feet");
+        int inches = context.getOrDefault("inches", 0);
+        int totalinches = feet * 12 + inches;
 
         if (totalinches <= 76 && totalinches >= 60) { // this is in inches
             player.getAttribute(Attribute.SCALE).setBaseValue(calculatePlayerSize(totalinches));
@@ -82,6 +107,7 @@ public class RealSizeCommand extends AbstractPaperCommand {
         }
     }
 
+    /** Converts a height in inches to the player scale relative to 1.85 meters. */
     public double calculatePlayerSize(int totalinches) {
         Double totalheight = totalinches * 0.0254;
         totalheight = totalheight / 1.85;

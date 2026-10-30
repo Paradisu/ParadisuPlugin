@@ -53,6 +53,15 @@ public class ModelManager {
                 .toList();
     }
 
+    /** Returns cached models whose display name contains the query, ignoring case. */
+    public List<ItemModel> search(String query) {
+        String term = query.strip().toLowerCase(Locale.ROOT);
+        return models.stream()
+                .filter(model -> model.display_name() != null
+                        && model.display_name().toLowerCase(Locale.ROOT).contains(term))
+                .toList();
+    }
+
     /** Returns distinct cached item_use tags for command completion without database requests. */
     public List<String> tags() {
         return tags;
