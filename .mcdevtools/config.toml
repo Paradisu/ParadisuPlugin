@@ -76,7 +76,7 @@ proxy_protocol = "v2"
 #max_lifetime_minutes = 60
 #max_concurrent = 2  # refuse to share more targets than this at once
 
-# `mcdev capture`: packet capture plugin (dev/java/capture), loaded on every instance when enabled. It costs almost
+# `mcdev capture`: packet capture (a Java agent, dev/java/capture-agent), added to every instance when enabled. It costs almost
 # nothing while no capture is running; restart instances after changing it.
 [capture]
 enabled = true
