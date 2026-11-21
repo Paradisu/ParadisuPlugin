@@ -1,0 +1,4 @@
+{
+  "extends": "@mcdevtools/cli/tsconfig.base.json",
+  "include": ["src"]
+}

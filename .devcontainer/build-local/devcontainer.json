@@ -2,19 +2,20 @@
     // Builds the Dockerfile locally (use when editing the Dockerfile or GHCR is unreachable). Keep in sync with ../devcontainer.json.
     "name": "Paradisu (build locally)",
     "dockerComposeFile": ["../docker-compose.yml", "../docker-compose.local.yml"],
+    // The submodule has to be checked out first (it holds the Dockerfile)
     // Runs on the host before the container is created, from the workspace folder. Layer caching makes repeats quick.
-    "initializeCommand": "docker build -f .devcontainer/Dockerfile -t paradisuplugin-devcontainer:local .",
+    "initializeCommand": "git submodule update --init --recursive && docker build -f dev/devcontainer/Dockerfile -t mcdevtools-devcontainer:local dev",
     "service": "dev",
     "workspaceFolder": "/workspaces/ParadisuPlugin",
     "shutdownAction": "stopCompose",
     "remoteUser": "vscode",
     // gh and git-over-HTTPS (after `gh auth setup-git`) pick this token up. Export GITHUB_TOKEN on the host (e.g. `export GITHUB_TOKEN=$(gh auth token)`).
     "remoteEnv": { "GH_TOKEN": "${localEnv:GH_TOKEN}" },
-    "postCreateCommand": "dev bootstrap",
+    "postCreateCommand": "sudo ln -sf /usr/local/bin/mcdev /usr/local/bin/dev && mcdev bootstrap",
     // The proxy port (25565) is published by compose; backend and JDWP ports stay inside the container.
     // Codespaces / remote Docker hosts: forward 25565 manually.
     "otherPortsAttributes": { "onAutoForward": "ignore" },
-    // zellij web client (`dev web start`): VS Code forwards it to the host with the default 127.0.0.1 bind
+    // zellij web client (`mcdev web start`): VS Code forwards it to the host with the default 127.0.0.1 bind
     "forwardPorts": [8082],
     "portsAttributes": { "8082": { "label": "zellij web", "onAutoForward": "silent" } },
     "customizations": {
@@ -49,11 +50,11 @@
                     "**/.metadata/**",
                     "**/archetype-resources/**",
                     "**/META-INF/maven/**",
-                    "**/dev/run/**",
-                    "**/dev/.cache/**"
+                    "**/.mcdevtools/run/**",
+                    "**/.mcdevtools/.cache/**"
                 ],
-                "files.watcherExclude": { "**/dev/run/**": true, "**/dev/.cache/**": true },
-                "search.exclude": { "**/dev/run": true, "**/dev/.cache": true }
+                "files.watcherExclude": { "**/.mcdevtools/run/**": true, "**/.mcdevtools/.cache/**": true },
+                "search.exclude": { "**/.mcdevtools/run": true, "**/.mcdevtools/.cache": true }
             }
         }
     }

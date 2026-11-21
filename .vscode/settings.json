@@ -14,16 +14,16 @@
         "**/.metadata/**",
         "**/archetype-resources/**",
         "**/META-INF/maven/**",
-        "**/dev/run/**",
-        "**/dev/.cache/**"
+        "**/.mcdevtools/run/**",
+        "**/.mcdevtools/.cache/**"
     ],
     "files.watcherExclude": {
-        "**/dev/run/**": true,
-        "**/dev/.cache/**": true
+        "**/.mcdevtools/run/**": true,
+        "**/.mcdevtools/.cache/**": true
     },
     "search.exclude": {
-        "**/dev/run": true,
-        "**/dev/.cache": true
+        "**/.mcdevtools/run": true,
+        "**/.mcdevtools/.cache": true
     },
     "pgsql.serverGroups": [
         {

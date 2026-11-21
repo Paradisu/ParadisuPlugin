@@ -1,0 +1,5 @@
+packages:
+  - dev/packages/*
+  - .mcdevtools/extensions/*
+allowBuilds:
+  '@pinggy/pinggy': true

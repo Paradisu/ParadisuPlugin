@@ -2,9 +2,6 @@ include(":core")
 include(":database")
 include(":paper")
 include(":velocity")
-include(":devtools")
-include(":devtools:capture")
-include(":devtools:migrate")
 
 
 pluginManagement {
@@ -17,3 +14,7 @@ pluginManagement {
 plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version ("1.0.0")
 }
+
+// mcdevtools:begin
+includeBuild("dev/java") { name = "mcdevtools" }
+// mcdevtools:end

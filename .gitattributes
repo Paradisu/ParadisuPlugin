@@ -1,5 +1,5 @@
 # Normalise line endings to LF in the working tree on every platform. Windows checkouts with core.autocrlf=true
-# otherwise turn gradlew, dev/dev and the Dockerfile into CRLF files, and the kernel then looks for an interpreter
+# otherwise turn gradlew, dev/bin/mcdev and the Dockerfile into CRLF files, and the kernel then looks for an interpreter
 # called "/bin/sh\r" ("not found", exit code 127) when the container runs them.
 * text=auto eol=lf
 

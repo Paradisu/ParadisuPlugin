@@ -35,7 +35,7 @@ flowchart LR
 
 ## Project overview
 
-A multi-module Gradle project (Kotlin DSL). The root project shades `paper` and `velocity` (and transitively `core` and `database`) into one `build/libs/ParadisuPlugin.jar`. The two `devtools` modules only exist for the dev environment and are never shaded.
+A multi-module Gradle project (Kotlin DSL). The root project shades `paper` and `velocity` (and transitively `core` and `database`) into one `build/libs/ParadisuPlugin.jar`. The development tooling is not part of the Gradle project's modules: it is the [mcdevtools](https://github.com/Paradisu/mcdevtools) git submodule in `dev/` (included as a Gradle build for its Java tools) plus Paradisu's own configuration and extension in `.mcdevtools/`. None of it is shaded.
 
 ```mermaid
 graph TD
@@ -44,17 +44,12 @@ graph TD
     velocity["velocity<br/>Velocity plugin"]
     core["core<br/>shared platform-agnostic code"]
     database["database<br/>Hibernate models + Liquibase changelogs"]
-    migrate["devtools/migrate<br/>Liquibase runner for dev db"]
-    capture["devtools/capture<br/>ParadisuCapture.jar"]
 
     root --> paper
     root --> velocity
     paper --> core
     velocity --> core
     core --> database
-    migrate -.-> database
-    classDef dev stroke-dasharray: 5 5
-    class migrate,capture dev
 ```
 
 | Module | Contents | Depends on |
@@ -63,8 +58,8 @@ graph TD
 | `core` | `ParadisuPlugin` interface, `DatabaseSession`, config loading (`ConfigManager`, `ConfigEntry`), `TranslationManager` and `Messages`, `HelpManager`, `PackManager`, `messaging/` base classes, `utils/` (`Constants`, `FileUtils`, `ParadisuLogger`, [reusable helpers](#reusable-utilities)). Holds the default language file `messages_en.properties` | `database` |
 | `paper` | `ParadisuPaper`; commands, `commands/parser/` (e.g. `ClusterPlayerParser`), listeners; `sync/` (async DB jobs: `PlayerJoinSync`, `PlayerQuitSync`, `WarpSync`); `warps/WarpManager`; `messaging/` (`PaperMessagingManager`, heartbeat, `ClusterPlayer`/`ServerState`, message classes); `util/SafeItemSerializer`; `config/configs/`; `plugin.yml` | `core` |
 | `velocity` | `ParadisuVelocity` (also runs Liquibase); commands and listeners (`LimboListener`, `PackListener`, `ConnectionListener`); teleport utilities (`TeleportHistory`, `TeleportQueue`, `TeleportRequestHeader`); `messaging/` (`VelocityMessagingManager`); config models; `velocity-plugin.json` | `core` |
-| `devtools/migrate` | Liquibase runner (`DevMigrate`) used by `dev db` | `database` |
-| `devtools/capture` | Packet capture plugin (`ParadisuCapture.jar`) for `dev capture`; one jar for Paper, Velocity and Limbo; no Paradisu dependencies | none |
+| `dev/` (submodule) | [mcdevtools](https://github.com/Paradisu/mcdevtools): the `dev` CLI, the packet capture plugin and the Liquibase runner (`dev/java`, an included build `mcdevtools`), the dev container image. Change it in that repository; `dev update` moves the pinned version | - |
+| `.mcdevtools/` | Paradisu's dev setup: `config.toml` (network), templates, DB seeds and fixtures, layouts, profiles, and `extensions/paradisu` (TypeScript: template variables, `vparadisu reload` on share changes, the commands that read the Paradisu schema) | - |
 | `build-logic` | Included build with the `net.paradisu.java-conventions` plugin: repositories, Java toolchain, Spotless, `processResources` templating | - |
 
 Dependencies are declared per module in `build.gradle.kts` using the version catalog [gradle/libs.versions.toml](gradle/libs.versions.toml). `core` uses `compileOnly` for most libraries; the platform modules decide what is bundled.
@@ -100,7 +95,7 @@ Requirements: **JDK 25** (the Gradle toolchain resolves it through foojay) and G
 
 ## Development environment
 
-The devcontainer runs a complete network of your working copy: Velocity proxy, Limbo, Paper (Purpur) backends `lobby` and `creative`, PostgreSQL 17 with seed data, and Redis. The `dev` command controls it; `dev help` lists everything, and commands prompt on a terminal unless you pass arguments or `--no-input`.
+The devcontainer runs a complete network of your working copy: Velocity proxy, Limbo, Paper (Purpur) backends `lobby` and `creative`, PostgreSQL 17 with seed data, and Redis. The `dev` command (the mcdevtools CLI, also `mcdev`) controls it; `dev help` lists everything, and commands prompt on a terminal unless you pass arguments or `--no-input`.
 
 | Task | Command |
 | --- | --- |
@@ -114,7 +109,7 @@ The devcontainer runs a complete network of your working copy: Velocity proxy, L
 | Inspect data | `dev db psql`, `dev mc inventory <player>` |
 | Record packets | `dev capture start`, `dev capture stop`, `dev capture show` |
 
-Full reference: [dev environment](docs/dev-environment.md) (all commands, configuration, debugging, troubleshooting) · [sharing the network and setups](docs/dev-sharing.md) · [packet capture](docs/dev-capture.md) · [working on the `dev` tool](docs/dev-tool.md).
+Full reference, in the submodule: [development environment](dev/docs/environment.md) (all commands, configuration, debugging, troubleshooting) · [sharing the network and setups](dev/docs/sharing.md) · [packet capture](dev/docs/capture.md) · [extensions](dev/docs/extensions.md) · [working on the tool](dev/docs/tool.md). Paradisu-specific parts (instances, seeds, fixtures, the extension) are described in [.mcdevtools/README.md](.mcdevtools/README.md). After cloning, run `git submodule update --init` (the devcontainer does).
 
 ## Database changes
 
@@ -142,7 +137,7 @@ Rules:
 - Prefer Liquibase change types (`createTable`, `addColumn`, `createIndex`, ...) over raw SQL. Give new columns on tables that hold data a sensible `defaultValue`/`nullable`.
 - Table names are upper snake case (`PLAYERS`, `PLAYER_SERVER_SESSIONS`); column names are lower snake case. Foreign keys are named `fk_<table>_<ref>` and join columns `id_<entity>`.
 - Migrations run only when the **proxy** starts (`ParadisuVelocity`), before players can connect. Deploy the proxy before Paper servers that depend on the new schema.
-- A changelog that changes data shape also needs `dev/db/seed/<NNN>.sql` for its new columns or tables, written against the schema as of that changelog ([details](docs/dev-environment.md#database-and-migration-testing)).
+- A changelog that changes data shape also needs `.mcdevtools/db/seed/<NNN>.sql` for its new columns or tables, written against the schema as of that changelog ([details](dev/docs/environment.md#database-and-migration-testing)).
 
 Example:
 
@@ -319,7 +314,7 @@ Then add the nested class as a field of `Commands` (`private Hat hat = new Hat()
 
 ## Configuration files
 
-Config files (`paradisu.yml`, `messages.yml`) are Configurate `@ConfigSerializable` classes under `paper/.../config/configs/` and `velocity/.../config/configs/`, registered as `ConfigEntry`s in `PaperConfigManager` / `VelocityConfigManager`. To add a new config file, create the class and register a `ConfigEntry` there. Use kebab-case `@Setting` names and `@Comment` for non-obvious options. Configs are reloaded by `/paradisu reload` and `/vparadisu reload`; new settings with defaults appear in existing files after a reload or restart. In the dev network, the starting configs come from `dev/templates` ([details](docs/dev-environment.md#configuring-the-network)).
+Config files (`paradisu.yml`, `messages.yml`) are Configurate `@ConfigSerializable` classes under `paper/.../config/configs/` and `velocity/.../config/configs/`, registered as `ConfigEntry`s in `PaperConfigManager` / `VelocityConfigManager`. To add a new config file, create the class and register a `ConfigEntry` there. Use kebab-case `@Setting` names and `@Comment` for non-obvious options. Configs are reloaded by `/paradisu reload` and `/vparadisu reload`; new settings with defaults appear in existing files after a reload or restart. In the dev network, the starting configs come from `.mcdevtools/templates` ([details](dev/docs/environment.md#templates)).
 
 ## Cross-server messaging
 
@@ -442,7 +437,7 @@ flowchart TD
 2. Update `velocity-api`. Velocity is on snapshot builds; use the latest `-SNAPSHOT` timestamped version that matches the proxy you run.
 3. Check that `cloud-paper`/`cloud-velocity`, `connectorplugin` and `luckperms-api` support the new version (see release notes) and bump them if needed.
 4. If the new Minecraft version needs a newer JDK, update the toolchain in `build-logic/.../net.paradisu.java-conventions.gradle.kts`, `build-logic/build.gradle.kts`, the CI workflows (`java-version`) and the devcontainer.
-5. Run `./gradlew build` and fix API breakages. Then `dev setup --refresh` and `dev start` (the dev network follows `paper-api` and `velocity-api`), `dev capture protocol --refresh` for the packet tables and `dev capture doctor` for the capture plugin. If Paper bumped the `_version` of `paper-global.yml`, update `dev/templates/paper-common/config/paper-global.yml`. The JetBrains Runtime, Node and pnpm pins are `ARG`s at the top of `.devcontainer/Dockerfile` (keep `PNPM_VERSION` equal to `packageManager` in `dev/package.json`).
+5. Run `./gradlew build` and fix API breakages. Then `dev setup --refresh` and `dev start` (the dev network follows `paper-api` and `velocity-api` through `[versions.auto]` in `.mcdevtools/config.toml`). The capture plugin compiles against its own copy of those versions: bump `paper-api` and `velocity-api` in `dev/java/gradle/libs.versions.toml` too (in the mcdevtools repository), `dev capture protocol --refresh` for the packet tables and `dev capture doctor` for the capture plugin. If Paper bumped the `_version` of `paper-global.yml`, update `paper-global.yml` in mcdevtools (`dev/packages/cli/templates/paper-common/config/`). The JetBrains Runtime, Node and pnpm pins are `ARG`s at the top of `dev/devcontainer/Dockerfile` in mcdevtools (keep `PNPM_VERSION` equal to `packageManager` in `dev/package.json`).
 
 ### How to check for the latest version of a dependency
 
@@ -452,7 +447,7 @@ flowchart TD
 | `paper-api` | `https://repo.papermc.io/service/rest/repository/browse/maven-public/io/papermc/paper/paper-api/`, or the [PaperMC downloads](https://papermc.io/downloads/paper) |
 | `velocity-api` | `https://repo.papermc.io/service/rest/repository/browse/maven-public/com/velocitypowered/velocity-api/` (snapshots), or the [Velocity downloads](https://papermc.io/downloads/velocity) |
 | `connectorplugin-*` | `https://repo.minebench.de/` (`de/themoep/connectorplugin/`); see also the [ConnectorPlugin repo](https://github.com/Phoenix616/ConnectorPlugin) |
-| `limbo` | `https://repo.loohpjames.com/repository/com/loohp/Limbo/` has no `maven-metadata.xml`; read `<version>` in the [Limbo `pom.xml`](https://github.com/LOOHP/Limbo/blob/master/pom.xml) and check the `.pom` exists under that version. Only `devtools/capture` uses it. |
+| `limbo` | `https://repo.loohpjames.com/repository/com/loohp/Limbo/` has no `maven-metadata.xml`; read `<version>` in the [Limbo `pom.xml`](https://github.com/LOOHP/Limbo/blob/master/pom.xml) and check the `.pom` exists under that version. Only the capture plugin in mcdevtools (`dev/java`) uses it; its catalog is `dev/java/gradle/libs.versions.toml`. |
 | `fastutil-object-object-maps` | OpenCollab repo, `https://repo.opencollab.dev/main/` (`com/nukkitx/fastutil/`) |
 | Gradle plugins (shadow, blossom, indra, lombok, spotless) | [Gradle Plugin Portal](https://plugins.gradle.org/) or Maven Central; the `[plugins]` entries use the plugin id |
 | `luckperms-api` | [LuckPerms releases](https://github.com/LuckPerms/LuckPerms/releases) / Maven Central `net.luckperms:api` |
@@ -479,7 +474,7 @@ Documentation is part of the change; update it in the same pull request.
 | A command, permission, config key or user-visible feature | [README.md](README.md) (features, permissions, configuration) |
 | A pattern others will repeat (a new kind of message, config, utility) | The matching guide in this file |
 | A convention or rule | This file **and** [AGENTS.md](AGENTS.md); they must agree |
-| A `dev` command, flag or config key | Its `summary`/`options` in code, the page under [docs/](docs/dev-environment.md), and the cheat sheet above if it is common |
+| A `dev` command, flag or config key | In the mcdevtools repository: its `summary`/`options` and the page under `docs/`; then move the submodule here (`dev update`). Paradisu's own config and extension: [.mcdevtools/README.md](.mcdevtools/README.md), and the cheat sheet above if it is common |
 | A module or major class | The module table above |
 
 Also: Javadoc on public methods, and keep examples in these docs compiling in spirit (names, paths and ids match the code).

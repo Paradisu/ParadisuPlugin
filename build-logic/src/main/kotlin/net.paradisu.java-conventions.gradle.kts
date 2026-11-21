@@ -29,10 +29,6 @@ repositories {
     maven("https://repo.minebench.de/") {
         content { includeGroup("de.themoep.connectorplugin") }
     }
-    // Limbo (dev-only capture plugin compiles against it)
-    maven("https://repo.loohpjames.com/repository") {
-        content { includeGroup("com.loohp") }
-    }
 }
 
 // Use providers.gradleProperty(...) instead of properties[...]

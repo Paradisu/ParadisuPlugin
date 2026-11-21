@@ -3,4 +3,4 @@
 # devcontainer CLI builds through Docker Compose, whose bake integration refuses the Dockerfile the CLI generates.
 services:
   dev:
-    image: paradisuplugin-devcontainer:local
+    image: mcdevtools-devcontainer:local

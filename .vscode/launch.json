@@ -1,5 +1,5 @@
 {
-    // To add a server: add its debug_port to dev/dev.toml and copy one of the configs below.
+    // To add a server: add its debug_port to .mcdevtools/config.toml and copy one of the configs below.
     "version": "0.2.0",
     "configurations": [
         { "type": "java", "request": "attach", "name": "Attach: proxy", "projectName": "velocity", "hostName": "localhost", "port": 5005 },

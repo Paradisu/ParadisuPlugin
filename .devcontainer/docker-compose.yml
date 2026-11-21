@@ -1,7 +1,8 @@
 name: paradisu-dev
 services:
   dev:
-    image: ghcr.io/paradisu/paradisuplugin-devcontainer:${PARADISU_DEVCONTAINER_TAG:-latest}
+    # The generic mcdevtools image (dev/devcontainer/Dockerfile); the `dev` alias is created by postCreateCommand
+    image: ghcr.io/paradisu/mcdevtools-devcontainer:${MCDEVTOOLS_DEVCONTAINER_TAG:-latest}
     command: sleep infinity
     # Reaps the zombie processes left behind by the servers and their supervisors
     init: true
@@ -12,20 +13,23 @@ services:
       # container's own, so it never waits on locks held by a Gradle daemon or IDE running on the host.
       - gradle-project:/workspaces/ParadisuPlugin/.gradle
       - gradle-build-logic:/workspaces/ParadisuPlugin/build-logic/.gradle
+      # The same for the included build of the dev tools (the dev/ submodule)
+      - gradle-mcdevtools:/workspaces/ParadisuPlugin/dev/java/.gradle
+      - gradle-mcdevtools-logic:/workspaces/ParadisuPlugin/dev/java/build-logic/.gradle
     environment:
-      PARADISU_DB_HOST: postgres
-      PARADISU_DB_NAME: paradisu
-      PARADISU_DB_USER: paradisu
-      PARADISU_DB_PASSWORD: paradisu
-      PARADISU_REDIS_HOST: redis
+      MCDEV_DB_HOST: postgres
+      MCDEV_DB_NAME: paradisu
+      MCDEV_DB_USER: paradisu
+      MCDEV_DB_PASSWORD: paradisu
+      MCDEV_REDIS_HOST: redis
     ports:
       # Binds 0.0.0.0 on the host, so the proxy is joinable from the LAN
-      - "${PARADISU_PROXY_PORT:-25565}:25565"
+      - "${MCDEV_PROXY_PORT:-25565}:25565"
       # Limbo: players are transferred to it, so clients need to reach it too
-      - "${PARADISU_LIMBO_PORT:-30000}:30000"
-      # zellij web client (`dev web start`). Only needed with web.bind = "0.0.0.0" (TLS); with the default 127.0.0.1
+      - "${MCDEV_LIMBO_PORT:-30000}:30000"
+      # zellij web client (`mcdev web start`). Only needed with web.bind = "0.0.0.0" (TLS); with the default 127.0.0.1
       # bind, reach it through VS Code port forwarding instead.
-      # - "127.0.0.1:${PARADISU_WEB_PORT:-8082}:8082"
+      # - "127.0.0.1:${MCDEV_WEB_PORT:-8082}:8082"
     depends_on:
       postgres:
         condition: service_healthy
@@ -55,4 +59,6 @@ volumes:
   gradle-cache:
   gradle-project:
   gradle-build-logic:
+  gradle-mcdevtools:
+  gradle-mcdevtools-logic:
   pgdata:
