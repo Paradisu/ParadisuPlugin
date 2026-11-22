@@ -2,9 +2,11 @@
     // Builds the Dockerfile locally (use when editing the Dockerfile or GHCR is unreachable). Keep in sync with ../devcontainer.json.
     "name": "Paradisu (build locally)",
     "dockerComposeFile": ["../docker-compose.yml", "../docker-compose.local.yml"],
-    // The submodule has to be checked out first (it holds the Dockerfile)
-    // Runs on the host before the container is created, from the workspace folder. Layer caching makes repeats quick.
-    "initializeCommand": "git submodule update --init --recursive && docker build -f dev/devcontainer/Dockerfile -t mcdevtools-devcontainer:local dev",
+    // The submodule has to be checked out first (it holds the Dockerfile).
+    // Runs on the host every time VS Code connects, from the workspace folder, so it only initializes submodules that are
+    // missing: `git submodule update` on an existing checkout would reset dev/ to the commit recorded here and detach `main`.
+    // Layer caching makes the docker build quick on repeats.
+    "initializeCommand": "for p in $(git submodule status | sed -n 's/^-[0-9a-f]* \\([^ ]*\\).*/\\1/p'); do git submodule update --init --recursive -- \"$p\"; done; docker build -f dev/devcontainer/Dockerfile -t mcdevtools-devcontainer:local dev",
     "service": "dev",
     "workspaceFolder": "/workspaces/ParadisuPlugin",
     "shutdownAction": "stopCompose",
