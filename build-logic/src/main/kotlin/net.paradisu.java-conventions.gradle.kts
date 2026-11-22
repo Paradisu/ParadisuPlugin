@@ -24,7 +24,12 @@ repositories {
         }
     }
     maven("https://repo.opencollab.dev/main") {
-        content { includeGroup("com.nukkitx.fastutil") }
+        content {
+            includeGroup("com.nukkitx.fastutil")
+            // The mcdevtools testkit (integration-tests) and its transitives
+            includeGroup("org.geysermc.mcprotocollib")
+            includeGroup("org.cloudburstmc.math")
+        }
     }
     maven("https://repo.minebench.de/") {
         content { includeGroup("de.themoep.connectorplugin") }

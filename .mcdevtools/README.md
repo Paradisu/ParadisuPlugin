@@ -9,9 +9,15 @@ The dev network is run by [mcdevtools](https://github.com/Paradisu/mcdevtools) (
 | `db/seed/` | SQL seeds, one per changelog (`001.sql`, `002.sql`; the deliberate NULLs in `002.sql` exist so that changelog 003 has something to backfill). Personal rows: `db/seed/local.sql` (gitignored) |
 | `db/fixtures/` | Inventory fixtures in SNBT, loaded after a reset (`requires_changelog` skips a file when the reset stops earlier). Private ones: `db/fixtures.local/` |
 | `layouts/` | Extra zellij layouts (`dev ui backends`) |
+| `tests/manual/` | Manual test suites for `dev manual run <suite> --player <name>` (TOML: `[[tests]]` with `setup`, `steps`, `expect`, `cleanup`); `smoke.toml` is the starter. Reference: [dev/docs/testing.md](../dev/docs/testing.md#manual-tests) |
+| `test-results/` | Results of `dev test run` and `dev manual run` (gitignored) |
 | `profiles/` | Exported setups (gitignored) |
 | `extensions/paradisu/` | The Paradisu extension (TypeScript), see below |
 | `run/`, `.cache/`, `captures/`, ... | Runtime data (gitignored). Never edit files in `run/`: edit the templates |
+
+## Tests
+
+`config.toml` has a `[test]` table: `dev test run` runs `./gradlew :integration-tests:integrationTest` (the JUnit tests in `integration-tests/`, which use the mcdevtools testkit through the included build), keeps a Flashback replay of every failing test (`capture = "on-failure"`), fails a test when a server logs an error, and sets `in_game = true` so the Paper backends carry the in-game manual test runner (`/mcdevtest`). Bots join the backends directly with forged Velocity forwarding because the proxy runs in online mode; see [CONTRIBUTING.md](../CONTRIBUTING.md#integration-tests).
 
 ## Instances
 

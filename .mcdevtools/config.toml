@@ -84,6 +84,18 @@ gzip_level = 3          # 1 (fast) to 9 (small); compression runs on a backgroun
 max_size = "512M"       # default cap on captured (uncompressed) bytes per instance
 queue_capacity = 65536  # packets buffered for the writer; when full, packets are dropped and counted, never blocking the server
 
+# `mcdev test run`: the JUnit integration tests (integration-tests/) that drive bots against this network (docs: dev/docs/testing.md)
+[test]
+command = ["./gradlew", ":integration-tests:integrationTest"]
+reports = "integration-tests/build/test-results/integrationTest"
+capture = "on-failure"           # keep a packet capture of a test only when it fails: always, on-failure or never
+export = ["flashback"]           # replay formats made from a kept capture (`mcdev capture formats`)
+# Server log lines that fail the test that was running; add known noise to log_ignore_patterns
+log_fail_patterns = ["\\bERROR\\b", "Exception"]
+log_ignore_patterns = []
+in_game = true                  # install the in-game manual test runner on Paper instances: `mcdev manual run <suite> --player <name>`
+manual_dir = "tests/manual"      # manual test suites, relative to .mcdevtools
+
 [[networks]]
 name = "main"
 forwarding = "modern"

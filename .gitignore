@@ -192,6 +192,7 @@ hs_err_pid*.log
 .mcdevtools/run/
 .mcdevtools/.cache/
 .mcdevtools/captures/
+.mcdevtools/test-results/
 .mcdevtools/db/snapshots/
 .mcdevtools/db/fixtures.local/
 .mcdevtools/templates.local/

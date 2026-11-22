@@ -86,7 +86,7 @@ Requirements: **JDK 25** (the Gradle toolchain resolves it through foojay) and G
 ./gradlew :velocity:compileJava  # compile one module
 ```
 
-- There is no automated Java test suite: verify by compiling and by running the change in the [dev network](#development-environment).
+- There are no unit tests: verify by compiling, by running the change in the [dev network](#development-environment), and with a [bot or integration test](#integration-tests) for anything a player does.
 - Per-module jars in `<module>/build/libs/` are plain, unshaded jars. Lombok is configured already.
 - `plugin.yml`, `velocity-plugin.json` and `*.properties` go through Gradle `expand(...)`: `${version}`, `${name}` are substituted; write a literal `$` as `\$`. Version, id, authors and URL come from [gradle.properties](gradle.properties).
 - `gradle.properties` enables parallel execution, the build cache and the configuration cache. Keep build scripts compatible: read values with `providers.gradleProperty(...)` / `providers.environmentVariable(...)`, never capture `project` or script functions in task actions, and apply Shadow only in the root project.
@@ -108,8 +108,36 @@ The devcontainer runs a complete network of your working copy: Velocity proxy, L
 | Test a migration | `dev db reset --through <previous>`, then `dev start` |
 | Inspect data | `dev db psql`, `dev mc inventory <player>` |
 | Record packets | `dev capture start`, `dev capture stop`, `dev capture show` |
+| Play as a bot | `dev bot start alice --to lobby --via direct`, `dev bot do alice cmd hat`, `dev bot stop --all` |
+| Run the integration tests | `dev test run` (then `dev test results`) |
+| Check a Minecraft update | `dev test doctor` |
 
-Full reference, in the submodule: [development environment](dev/docs/environment.md) (all commands, configuration, debugging, troubleshooting) · [sharing the network and setups](dev/docs/sharing.md) · [packet capture](dev/docs/capture.md) · [extensions](dev/docs/extensions.md) · [working on the tool](dev/docs/tool.md). Paradisu-specific parts (instances, seeds, fixtures, the extension) are described in [.mcdevtools/README.md](.mcdevtools/README.md). After cloning, run `git submodule update --init` (the devcontainer does).
+Full reference, in the submodule: [development environment](dev/docs/environment.md) (all commands, configuration, debugging, troubleshooting) · [sharing the network and setups](dev/docs/sharing.md) · [packet capture](dev/docs/capture.md) · [extensions](dev/docs/extensions.md) · [working on the tool](dev/docs/tool.md). Paradisu-specific parts (instances, seeds, fixtures, the extension) are described in [.mcdevtools/README.md](.mcdevtools/README.md). After cloning, run `git submodule update --init` (the devcontainer does it for a submodule that is missing, and leaves an existing checkout alone, so a reload never undoes work in `dev/`). After committing in `dev/`, commit the new pointer here (`git add dev`), otherwise a later `git submodule update` returns `dev/` to the older recorded commit.
+
+### Integration tests
+
+The `integration-tests` module holds JUnit tests that play against the running dev network with **bots**: headless players that join, chat, run commands, open and click menus and walk (no rendering). They are not part of `./gradlew build`; `dev test run` starts the network if needed, runs them and writes `.mcdevtools/test-results/<run>/summary.json` with, for every failure, the console and log excerpts, the bot's chat and packets, and a packet capture exported as a Flashback replay.
+
+```java
+@McDevTest
+class CommandTest {
+    @Test
+    void hatReplacesTheHelmetAndSaysSo(Network network, Bots bots) throws IOException {
+        Bot bot = bots.join(BotOptions.named("itCmd").target("lobby").via(Via.DIRECT));
+        McAssertions.assertConsole(network.instance("lobby"), "lp user itCmd permission set paradisu.hat true", "paradisu.hat");
+        McAssertions.assertChat(bot, Pattern.quote(english("paradisu.command.output.hat")), () -> bot.command("hat"));
+    }
+}
+```
+
+- Read expected text from `core/src/main/resources/messages_en.properties`, not a copy, so the test follows edits to the message.
+- A server log line with `ERROR` or an exception fails the test that was running; excuse known noise with `@AllowLog` (or `log_ignore_patterns` in `.mcdevtools/config.toml`).
+- Bots are real players and the plugin keeps their data by name (inventory sync, LuckPerms): use a fresh name per run when a test counts items, and clean up console state in `@AfterEach`.
+- Bots reach a backend directly (`Via.DIRECT`): they forge the proxy's player forwarding, so the online-mode proxy does not need accounts. To test the proxy itself, sign in with `dev bot login`.
+- For what a person must judge, mark a test `@ManualReview("...")` (its replay is kept; record the verdict with `dev test review`) or write a suite in `.mcdevtools/tests/manual/` and run `dev manual run <suite> --player <name>`.
+- Run one class with `dev test run --tests '*CommandTest*'`; read results with `dev test results`.
+
+Full reference: [dev/docs/testing.md](dev/docs/testing.md).
 
 ## Database changes
 
@@ -437,7 +465,7 @@ flowchart TD
 2. Update `velocity-api`. Velocity is on snapshot builds; use the latest `-SNAPSHOT` timestamped version that matches the proxy you run.
 3. Check that `cloud-paper`/`cloud-velocity`, `connectorplugin` and `luckperms-api` support the new version (see release notes) and bump them if needed.
 4. If the new Minecraft version needs a newer JDK, update the toolchain in `build-logic/.../net.paradisu.java-conventions.gradle.kts`, `build-logic/build.gradle.kts`, the CI workflows (`java-version`) and the devcontainer.
-5. Run `./gradlew build` and fix API breakages. Then `dev setup --refresh` and `dev start` (the dev network follows `paper-api` and `velocity-api` through `[versions.auto]` in `.mcdevtools/config.toml`). Bump `limbo` in `dev/java/gradle/libs.versions.toml` (in the mcdevtools repository) when it publishes a matching build, then `dev capture protocol --refresh` for the packet tables and `dev capture doctor` for packet capture. If Paper bumped the `_version` of `paper-global.yml`, update `paper-global.yml` in mcdevtools (`dev/packages/cli/templates/paper-common/config/`). The JetBrains Runtime, Node and pnpm pins are `ARG`s at the top of `dev/devcontainer/Dockerfile` in mcdevtools (keep `PNPM_VERSION` equal to `packageManager` in `dev/package.json`).
+5. Run `./gradlew build` and fix API breakages. Then `dev setup --refresh` and `dev start` (the dev network follows `paper-api` and `velocity-api` through `[versions.auto]` in `.mcdevtools/config.toml`). Bump `limbo` and `mcprotocollib` in `dev/java/gradle/libs.versions.toml` (in the mcdevtools repository) when they publish a matching build, then `dev capture protocol --refresh` for the packet tables, `dev capture doctor` for packet capture and `dev test doctor` for the bots (bump `mcprotocollib` in `dev/java/gradle/libs.versions.toml` first: the bots speak the protocol of that build; run `dev test run` afterwards as the regression check). If Paper bumped the `_version` of `paper-global.yml`, update `paper-global.yml` in mcdevtools (`dev/packages/cli/templates/paper-common/config/`). The JetBrains Runtime, Node and pnpm pins are `ARG`s at the top of `dev/devcontainer/Dockerfile` in mcdevtools (keep `PNPM_VERSION` equal to `packageManager` in `dev/package.json`).
 
 ### How to check for the latest version of a dependency
 

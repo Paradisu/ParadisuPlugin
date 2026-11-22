@@ -1,5 +1,6 @@
 include(":core")
 include(":database")
+include(":integration-tests")
 include(":paper")
 include(":velocity")
 

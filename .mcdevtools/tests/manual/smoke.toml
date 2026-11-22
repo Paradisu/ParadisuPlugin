@@ -1,0 +1,41 @@
+# Manual tests: `dev manual run smoke --player <name>` (see dev/docs/testing.md#manual-tests).
+#
+# Only put a test here when a person has to judge it: how something looks or feels, or what a real client does with it.
+# A bot can already check everything else, and that belongs in integration-tests/ (command results, permissions,
+# chat delivery, menus, sync, transfers). Each test below says what a bot cannot see.
+#
+# Join through the proxy with a real client. {player} is the tester's name in setup and cleanup.
+title = "Paradisu: things a person has to judge"
+on = "lobby"
+
+# A bot can run /warps and check the text, and /warp <name> works when run as a command. What it cannot see is whether the
+# list is understandable as something to click, or what a real click on one name does (the click is a client feature).
+[[tests]]
+id = "warps-click"
+title = "The /warps list reads as clickable and a click warps"
+setup = ["lp user {player} permission set paradisu.warp true"]
+steps = [
+    "Run /warps",
+    "Look at the list: could a new player tell the names can be clicked?",
+    "Click one name",
+]
+expect = "The names are easy to tell apart, and the click teleports you (or says clearly why it cannot)"
+cleanup = ["lp user {player} clear"]
+
+# Assertions can prove a message exists and has the right words. Whether a success and an error look different, and whether
+# the styling is readable in a real chat window, is a judgment.
+[[tests]]
+id = "message-style"
+title = "Replies look consistent, and errors look different from successes"
+setup = [
+    "lp user {player} permission set paradisu.hat true",
+    "lp user {player} permission set paradisu.warp true",
+    "give {player} minecraft:stone 1",
+]
+steps = [
+    "Hold the stone and run /hat (a success)",
+    "Run /warp qqqqqqq (an error: no such warp)",
+    "Run /warps",
+]
+expect = "All replies share one prefix and style, the error stands out from the success, nothing looks cramped or wraps badly, and no raw keys like paradisu.command.* or & codes show"
+cleanup = ["lp user {player} clear", "clear {player}"]

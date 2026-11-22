@@ -16,6 +16,7 @@ Paradisu Plugin: one jar containing a **Velocity** plugin and a **Paper** plugin
 | `velocity` | `ParadisuVelocity` (runs migrations), commands, listeners, teleport utils, `messaging/VelocityMessagingManager`, configs | `core` |
 | `build-logic` | Convention plugin `net.paradisu.java-conventions` (repos, toolchain, Spotless, resource expansion) | - |
 | `dev/` | **Git submodule**: [mcdevtools](https://github.com/Paradisu/mcdevtools) (the `dev` CLI, capture plugin, Liquibase runner as the included Gradle build `mcdevtools`, dev container image). Change it in that repository (see its AGENTS.md) and move the pinned version with `dev update` | - |
+| `integration-tests` | JUnit tests that drive bots against the running dev network (`dev test run`); not part of `./gradlew build` | testkit of mcdevtools |
 | `.mcdevtools/` | Paradisu's dev config: `config.toml` (network), templates, seeds, fixtures, layouts, profiles and `extensions/paradisu` (TypeScript). See [.mcdevtools/README.md](.mcdevtools/README.md) | - |
 
 Root project shades everything into `build/libs/ParadisuPlugin.jar`. Dependency versions live only in `gradle/libs.versions.toml`.
@@ -35,11 +36,11 @@ Root project shades everything into `build/libs/ParadisuPlugin.jar`. Dependency 
 ./gradlew :velocity:compileJava  # fast single-module compile check
 ```
 
-There is no Java test suite: compiling proves it builds, not that it works. Never claim runtime behavior or a `dev` flow worked unless you ran it.
+There are no unit tests. Compiling proves it builds, not that it works: player-facing behavior is checked with bots in the `integration-tests` module (see [Runtime testing](#runtime-testing-with-dev)). Never claim runtime behavior or a `dev` flow worked unless you ran it.
 
 ## Runtime testing with `dev`
 
-The devcontainer runs a full network (Velocity proxy `proxy`, `limbo`, Paper backends `lobby` and `creative`, PostgreSQL, Redis) from your working copy. Use it to verify startup, migrations, config/message changes, console-reachable commands and messaging. Full reference: [dev/docs/environment.md](dev/docs/environment.md) (the `dev` command is `mcdev`; the devcontainer adds the `dev` alias).
+The devcontainer runs a full network (Velocity proxy `proxy`, `limbo`, Paper backends `lobby` and `creative`, PostgreSQL, Redis) from your working copy. Use it to verify startup, migrations, config/message changes, console-reachable commands and messaging. Full reference: [dev/docs/environment.md](dev/docs/environment.md), and [dev/docs/testing.md](dev/docs/testing.md) for bots, JUnit tests and manual tests (the `dev` command is `mcdev`; the devcontainer adds the `dev` alias).
 
 Rules for running `dev`:
 - Pass names and arguments; add `--no-input` so nothing can prompt; add `--yes` only to the destructive commands that take it (`db reset`, `db seed`, `db restore`, `capture rm`, `profile import`).
@@ -61,7 +62,8 @@ dev stop --no-input
 
 Caveats:
 - `dev start` exits 0 even if a backend did not finish starting (it waits 240 s per server); always confirm with `dev status` and the logs. After a crash `.mcdevtools/run/<name>/.dev/exit.json` has the exit code.
-- No player is connected, so player-only commands, listeners and inventory sync cannot be exercised; the console is not a player. Say so in your report instead of claiming they work.
+- The console is not a player, but **bots** are: they join, chat, run commands, open and click menus and trigger join/quit listeners and inventory sync (see below). They are protocol clients with no rendering, so anything that needs a real client (visuals, client-side prediction) still cannot be exercised; say so in your report.
+- Bots are real players whose data persists by name (inventory, LuckPerms entries, sync rows): give a test a fresh name when it counts items.
 - Paper and Velocity commands are `paradisu ...` and `vparadisu ...` on the matching console. Edit `.mcdevtools/templates`, never files in `.mcdevtools/run`.
 
 What to use for what:
@@ -73,6 +75,9 @@ What to use for what:
 | Console-capable command | `dev console <name> --send "<command>"` |
 | Liquibase changelog | `dev db reset --yes --through <previous>`, `dev start`, then the proxy log for the migration and `dev db psql -c "<sql>"` for the result |
 | Item/NBT blob columns | `dev mc inventory <player>`, `dev mc item`, `dev mc nbt` (the first is from the Paradisu extension) |
+| Player commands, chat, menus, join/quit listeners, inventory sync | `dev bot start alice --to lobby --via direct --no-input`, then `dev bot do alice cmd hat`, `... chat 5`, `... gui`, `dev bot stop --all`; for a repeatable check add a test to `integration-tests/` and run `dev test run --no-input` (`--tests '*HatTest*'` for one class), then `dev test results` |
+| Things a person must judge (looks, feel) | A suite in `.mcdevtools/tests/manual/*.toml`, `dev manual run <suite> --player <name>` (the tester clicks PASS/FAIL in game), or `@ManualReview` on an automated test |
+| After a Minecraft/Paper/Velocity update | `dev test doctor` (protocol library matches, bots join every instance), then `dev test run` |
 | Proxy<->backend packets, transfers | `dev capture start --no-input --duration 30s`, trigger it, `dev capture show latest --type <pattern>`; `dev capture doctor` after any Minecraft/Paper/Velocity/Limbo update |
 
 ## Dev environment rules
@@ -81,7 +86,7 @@ What to use for what:
 - **Config and templates:** the network and plugin list are in `.mcdevtools/config.toml` (personal overrides in the gitignored `.mcdevtools/config.local.toml`); preset configs in `.mcdevtools/templates/`. Config worth sharing that only you changed at runtime goes in `.mcdevtools/templates.local/` via `dev override`, never into `.mcdevtools/run`. Tokens live in `config.local.toml` or the environment, never in `config.toml` or profiles.
 - **Minecraft data:** fixtures are `.mcdevtools/db/fixtures/*.toml` (SNBT items; `requires_changelog` gates them like seeds). A new item/NBT blob column needs an entry in `.mcdevtools/extensions/paradisu/src/mc/columns.ts`.
 - **The Paradisu extension** (`.mcdevtools/extensions/paradisu`, TypeScript, [.mcdevtools/README.md](.mcdevtools/README.md)): erasable TypeScript only (no `enum`, `namespace`, parameter properties), relative imports end in `.ts`, print through `@mcdevtools/cli/output`, register everything through the `api` object. Check with `pnpm -r typecheck`.
-- **The `dev` tool itself** is the `dev/` submodule ([mcdevtools](https://github.com/Paradisu/mcdevtools)). Its rules (command conventions, versioned formats, capture, share providers) are in `dev/AGENTS.md`. Change it in that repository, commit there, then move the pin here with `dev update` (or `dev update --ref <sha>`) and commit the submodule pointer. Never edit files under `dev/` in this repository. If something Paradisu needs is missing from the extension API, add it in mcdevtools (`dev/docs/extensions.md`).
+- **The `dev` tool itself** is the `dev/` submodule ([mcdevtools](https://github.com/Paradisu/mcdevtools)). Its rules (command conventions, versioned formats, capture, share providers) are in `dev/AGENTS.md`. Change it in that repository, commit there, then move the pin here with `dev update` (or `dev update --ref <sha>`) and commit the submodule pointer. Never edit files under `dev/` in this repository. If `dev/` shows `HEAD detached`, a submodule update moved it to the recorded commit; your commits are still on the branch (`git -C dev checkout main`), and committing the pointer (`git add dev`) keeps them from being hidden again. If something Paradisu needs is missing from the extension API, add it in mcdevtools (`dev/docs/extensions.md`).
 
 ## Rules
 
@@ -151,7 +156,7 @@ Paradisu's own server<->server/proxy messages run on ConnectorPlugin's `Connecto
   - `paper-api`, `velocity-api`: `https://repo.papermc.io/repository/maven-public/<group path>/<artifact>/maven-metadata.xml` (Velocity is a timestamped SNAPSHOT; Paper is a `build.N-beta`-style version).
   - `connectorplugin-*`: `https://repo.minebench.de/de/themoep/connectorplugin/` (snapshot).
   - `fastutil-object-object-maps`: `https://repo.opencollab.dev/main/com/nukkitx/fastutil/`.
-- New Minecraft version: bump `paper-api` and `velocity-api` (mcdevtools no longer has its own copies; only `limbo`, in `dev/java/gradle/libs.versions.toml`, follows the Minecraft version there), then check `connectorplugin`, `luckperms-api`, `cloud-*` compatibility; `plugin.yml` `api-version` derives from `paper-api` automatically; `dev` follows `paper-api` and `velocity-api` (then `dev setup --refresh`, `dev capture protocol --refresh`, `dev capture doctor`). Also compare `_version` in mcdevtools' `dev/packages/cli/templates/paper-common/config/paper-global.yml` with the file Paper generates. Update JDK in `build-logic` (`java-conventions` and `build-logic/build.gradle.kts`), `.github/workflows`, and the mcdevtools devcontainer image (`dev/devcontainer/Dockerfile`) if required. Run `./gradlew build`.
+- New Minecraft version: bump `paper-api` and `velocity-api` (mcdevtools no longer has its own copies; only `limbo` and `mcprotocollib`, in `dev/java/gradle/libs.versions.toml`, follow the Minecraft version there), then check `connectorplugin`, `luckperms-api`, `cloud-*` compatibility; `plugin.yml` `api-version` derives from `paper-api` automatically; `dev` follows `paper-api` and `velocity-api` (then `dev setup --refresh`, `dev capture protocol --refresh`, `dev capture doctor`, `dev test doctor`; bump `mcprotocollib` in mcdevtools first, or the bots speak the old protocol). Also compare `_version` in mcdevtools' `dev/packages/cli/templates/paper-common/config/paper-global.yml` with the file Paper generates. Update JDK in `build-logic` (`java-conventions` and `build-logic/build.gradle.kts`), `.github/workflows`, and the mcdevtools devcontainer image (`dev/devcontainer/Dockerfile`) if required. Run `./gradlew build`.
 - Upgrade Hibernate/Liquibase/PostgreSQL together and flag that migrations need testing on a database copy.
 - The Palantir Java Format version (`2.83.0`) is pinned in `net.paradisu.java-conventions.gradle.kts`, not the catalog.
 
@@ -166,6 +171,7 @@ Paradisu's own server<->server/proxy messages run on ConnectorPlugin's `Connecto
 | `dev` command, flag, config key or workflow | In the mcdevtools repository: its `summary`/`options` and the page in its `docs/`; then `dev update` here, and the [Runtime testing](#runtime-testing-with-dev) section if agents should use it. Paradisu's own config and extension: [.mcdevtools/README.md](.mcdevtools/README.md) |
 | New module or major class | Module tables in `CONTRIBUTING.md` and here |
 | Liquibase changelog | `.mcdevtools/db/seed/00N.sql` when data shape changes; say in your summary that the proxy must be deployed first |
+| Player-facing behavior | A test in `integration-tests/` (see [CONTRIBUTING.md](CONTRIBUTING.md#integration-tests)); a manual suite in `.mcdevtools/tests/manual/` when a person has to judge it |
 
 Ownership: `README.md` users/admins · `CONTRIBUTING.md` contributor workflow and code guides · `dev/docs/` (mcdevtools) the dev environment, `.mcdevtools/README.md` Paradisu's dev setup · `AGENTS.md` agent rules. Edit the page that owns the topic; don't create new doc files unless asked. Public methods get Javadoc; non-obvious `dev/src` modules get a header comment.
 
@@ -178,4 +184,5 @@ Ownership: `README.md` users/admins · `CONTRIBUTING.md` contributor workflow an
 5. New message -> registered in `registerMessages()`, sent from the main thread on Paper.
 6. Runtime checks done where applicable ([Runtime testing](#runtime-testing-with-dev)), or the reason they were not.
 7. Docs updated ([Documentation](#documentation)).
-8. Your summary states what you could not verify (no automated Java tests, no player connected, anything you did not run).
+8. Player-facing behavior has a test in `integration-tests/` or was checked with a bot, and `dev test run --no-input` passes (or the reason it was not run is stated).
+9. Your summary states what you could not verify (no real client, anything you did not run).
